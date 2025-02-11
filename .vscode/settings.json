@@ -1,6 +1,6 @@
 {
-    "cmake.buildDirectory": "${workspaceFolder}/build/group_name",
-    "cmake.sourceDirectory": "${workspaceFolder}/src/group_name",
+    "cmake.buildDirectory": "${workspaceFolder}/build/39_TorjusVlad",
+    "cmake.sourceDirectory": "/workspaces/2025-ikt218-osdev/src/39_TorjusVlad",
     "cmake.useCMakePresets": "never",
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
