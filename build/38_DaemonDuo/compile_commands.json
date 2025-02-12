@@ -1,11 +1,11 @@
 [
 {
-  "directory": "/workspaces/2025-ikt218-osdev/build/DaemonDuo",
+  "directory": "/workspaces/2025-ikt218-osdev/build/38_DaemonDuo",
   "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/38_DaemonDuo/include -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o /workspaces/2025-ikt218-osdev/src/38_DaemonDuo/src/multiboot2.asm",
   "file": "/workspaces/2025-ikt218-osdev/src/38_DaemonDuo/src/multiboot2.asm"
 },
 {
-  "directory": "/workspaces/2025-ikt218-osdev/build/DaemonDuo",
+  "directory": "/workspaces/2025-ikt218-osdev/build/38_DaemonDuo",
   "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/38_DaemonDuo/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2025-ikt218-osdev/src/38_DaemonDuo/src/kernel.c",
   "file": "/workspaces/2025-ikt218-osdev/src/38_DaemonDuo/src/kernel.c"
 }
