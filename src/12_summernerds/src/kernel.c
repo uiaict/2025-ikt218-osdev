@@ -14,6 +14,8 @@ struct multiboot_info {
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
+    
+
     return 0;
 
 }
