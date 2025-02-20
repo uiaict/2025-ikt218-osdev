@@ -2,8 +2,12 @@
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 #include <multiboot2.h>
+#include "../include/teminal.h"
 
-
+/*
+#include "gdt.h"
+#include "stdio.h"
+*/
 
 struct multiboot_info {
     uint32_t size;
@@ -14,6 +18,10 @@ struct multiboot_info {
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
-    return 0;
+    printf("Hello, World!");
 
+
+    while(1);
+    return 0;
 }
+

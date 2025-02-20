@@ -58,8 +58,11 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 
 # Add executable target for the kernel
 add_executable(uiaos-kernel 
-	# src/multiboot2.asm # TODO: Add multiboot2 support
+	src/multiboot2.asm # TODO: Add multiboot2 support
     src/kernel.c
+	src/gdt/gdt.c
+	src/terminal.c
+	src/gdt/gdt_flush.asm
 )
 
 # Include directories for the kernel target
@@ -135,3 +138,13 @@ add_custom_target(
 	DEPENDS create-fat32-disk uiaos-kernel
 	VERBATIM
 )
+
+
+
+# set(SOURCES
+  #  src/kernel.c
+  # src/gdt.c
+  #  src/terminal.c
+  # src/arch/i386/gdt_flush.asm
+#)
+
