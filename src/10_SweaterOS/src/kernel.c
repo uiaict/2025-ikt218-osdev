@@ -3,6 +3,9 @@
 #include "libc/stdbool.h"
 #include <multiboot2.h>
 
+#include "gdt.h"
+#include "terminal.h"
+
 
 
 struct multiboot_info {
@@ -14,6 +17,14 @@ struct multiboot_info {
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
-    return 0;
+    terminal_initialize();
+    terminal_write("Hello and welcome to SweaterOS!\n");
+    terminal_write_color("This is red text!\n", COLOR_RED);
+    terminal_write_color("This is green text!\n", COLOR_GREEN);
+    terminal_write_color("This is blue text!\n", COLOR_BLUE);
+    terminal_write_color("This is yellow text!\n", COLOR_YELLOW);
 
+    while (1);
+
+    return 0;
 }
