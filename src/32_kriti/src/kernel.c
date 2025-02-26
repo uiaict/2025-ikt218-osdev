@@ -13,7 +13,12 @@ struct multiboot_info {
 
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-
+    const char *str = "Hello World";
+    char *video_memory = (char*) 0xb8000;
+    for (int i = 0; str[i] != '\0'; i++) {
+        video_memory[i*2] = str[i];
+        video_memory[i*2 + 1] = 0x07;
+    }
     return 0;
 
 }
