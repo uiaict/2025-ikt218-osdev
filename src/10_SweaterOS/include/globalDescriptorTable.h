@@ -1,5 +1,5 @@
-#ifndef GDT_H
-#define GDT_H
+#ifndef GLOBAL_DESCRIPTOR_TABLE_H
+#define GLOBAL_DESCRIPTOR_TABLE_H
 
 #include "stdint.h" // Inkluderer standard integer-typer for konsistens
 
@@ -23,4 +23,4 @@ struct gdt_ptr {
 // Setter opp og installerer GDT
 void gdt_install();
 
-#endif // GDT_H
+#endif // GLOBAL_DESCRIPTOR_TABLE_H

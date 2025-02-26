@@ -1,5 +1,5 @@
-#ifndef TERMINAL_H
-#define TERMINAL_H
+#ifndef MISC_FUNCS_H
+#define MISC_FUNCS_H
 
 #include <stdint.h> // Standard integer-typer for portabilitet
 
@@ -24,4 +24,4 @@ void terminal_write_char(char c);
 // Skriver ut en tekststreng med en spesifisert farge
 void terminal_write_color(const char* str, TerminalColor color);
 
-#endif // TERMINAL_H
+#endif // MISC_FUNCS_H

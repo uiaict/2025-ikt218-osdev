@@ -1,5 +1,5 @@
 #include <stdint.h>      // Inkluderer standard integer-typer som uint8_t og uint16_t
-#include "terminal.h"    // Inkluderer headerfilen med funksjonene vi definerer her
+#include "miscFuncs.h"    // Inkluderer headerfilen med funksjonene vi definerer her
 
 // Adressen til VGA-tekstbufferen i minnet (fast for tekstmodus)
 #define VGA_ADDRESS 0xB8000

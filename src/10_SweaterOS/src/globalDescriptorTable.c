@@ -1,4 +1,4 @@
-#include "gdt.h" // Inkluderer GDT-headeren for definisjoner
+#include "globalDescriptorTable.h" // Inkluderer GDT-headeren for definisjoner
 
 // GDT-tabellen, som inneholder tre entries: null-segment, kode-segment og data-segment
 struct gdt_entry gdt[3];

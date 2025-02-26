@@ -3,8 +3,8 @@
 #include "libc/stdbool.h"
 #include <multiboot2.h>
 
-#include "gdt.h"
-#include "terminal.h"
+#include "globalDescriptorTable.h"
+#include "miscFuncs.h"
 
 
 
