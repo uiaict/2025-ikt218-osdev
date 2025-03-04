@@ -1,45 +1,54 @@
-#include "globalDescriptorTable.h" // Inkluderer GDT-headeren for definisjoner
+#include "descriptorTables.h" // Inkluderer header for GDT-definisjoner
+#include "miscFuncs.h"      // For terminal_write functions
 
-// GDT-tabellen, som inneholder tre entries: null-segment, kode-segment og data-segment
-struct gdt_entry gdt[3];
+// GDT-tabellen med tre entries: null-segment, kode-segment og data-segment
+struct gdt_entries gdt[GDT_SIZE];
 
-// Struktur som peker til GDT-tabellen og lagrer størrelsen
-struct gdt_ptr gdt_pointer;
+// Struktur som peker til GDT-tabellen og lagrer størrelse
+struct gdt_pointer gdt_info;
 
-// Funksjon i assembly som laster GDT inn i CPU-en
-extern void gdt_flush(uint32_t);
+// Funksjon i assembly som kaster GDT inn i CPU
+extern void TOSS_GDT(uint32_t);
 
-/**
- * Setter opp én GDT-entry med riktig baseadresse, grense, tilgang og flagg.
- */
-static void gdt_set_entry(int num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran) {
-    // Setter base-adressen (adressen til segmentets start i minnet)
-    gdt[num].base_low = (base & 0xFFFF);        // De laveste 16 bitene av basen
-    gdt[num].base_middle = (base >> 16) & 0xFF; // De neste 8 bitene av basen
-    gdt[num].base_high = (base >> 24) & 0xFF;   // De øverste 8 bitene av basen
+// Setter opp en GDT-entry med baseadresse, størrelse, tilgangsrettigheter og flagg.
+static void gdt_add_entry(int index, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity) {
+    // Set base address (split into 3 parts)
+    gdt[index].segment_start_low = (base & 0xFFFF);
+    gdt[index].segment_start_middle = (base >> 16) & 0xFF;
+    gdt[index].segment_start_high = (base >> 24) & 0xFF;
 
-    // Setter segmentgrensen (størrelsen på segmentet)
-    gdt[num].limit_low = (limit & 0xFFFF);      // De laveste 16 bitene av grensen
-    gdt[num].granularity = (limit >> 16) & 0x0F; // De øverste 4 bitene av grensen
+    // Set segment limit (split into 2 parts)
+    gdt[index].segment_size_low = (limit & 0xFFFF);
+    gdt[index].size_and_flags = (limit >> 16) & 0x0F;
+    
+    // Set granularity flags in the upper 4 bits
+    gdt[index].size_and_flags |= (granularity & 0xF0);
 
-    // Setter flagg for granularitet (4K sider) og andre innstillinger
-    gdt[num].granularity |= (gran & 0xF0);
-    gdt[num].access = access; // Definerer rettigheter og type segment
+    // Set access flags (present, privilege level, type, etc.)
+    gdt[index].access_flags = access;
 }
 
-/**
- * Setter opp GDT-tabellen og laster den inn i CPU-en.
- */
-void gdt_install() {
-    // Setter opp GDT-peker med størrelse og baseadresse
-    gdt_pointer.limit = (sizeof(struct gdt_entry) * 3) - 1;
-    gdt_pointer.base = (uint32_t)&gdt;
+// Setter opp og installerer GDT.
+void initializer_GDT() 
+{
+    // Set up the GDT pointer
+    gdt_info.table_size = (sizeof(struct gdt_entries) * GDT_SIZE) - 1;
+    gdt_info.table_address = (uint32_t)&gdt;
 
-    // Definerer segmentene i GDT
-    gdt_set_entry(0, 0, 0, 0, 0);                // Null-segment (må være der)
-    gdt_set_entry(1, 0, 0xFFFFFFFF, 0x9A, 0xCF); // Kode-segment (for kjøring av program)
-    gdt_set_entry(2, 0, 0xFFFFFFFF, 0x92, 0xCF); // Data-segment (for lagring av data)
+    // Null segment (required by CPU)
+    // Base=0, Limit=0, Access=0, Granularity=0
+    gdt_add_entry(0, 0, 0, 0, 0);
 
-    // Laster GDT ved å kalle gdt_flush (som er definert i assembly)
-    gdt_flush((uint32_t)&gdt_pointer);
+    // Code segment: 
+    // Access=0x9A (Present=1, Ring=0, Type=1, Code=1, Conforming=0, Readable=1, Accessed=0)
+    // Granularity=0xCF (Granularity=1 [4KB], Size=1 [32-bit])
+    gdt_add_entry(1, 0, 0xFFFFF, 0x9A, 0xCF);
+    
+    // Data segment:
+    // Access=0x92 (Present=1, Ring=0, Type=1, Code=0, Writable=1, Accessed=0)
+    // Granularity=0xCF (Granularity=1 [4KB], Size=1 [32-bit])
+    gdt_add_entry(2, 0, 0xFFFFF, 0x92, 0xCF);
+    
+    // Load the GDT
+    TOSS_GDT((uint32_t)&gdt_info);
 }

@@ -61,12 +61,14 @@ add_executable(uiaos-kernel
 	src/multiboot2.asm # TODO: Add multiboot2 support
     src/kernel.c
 	src/globalDescriptorTable.c
-	src/globalDescriptorTable.asm
+	src/descriptorTables.asm
+	src/interruptDescriptorTable.c
 	src/miscFuncs.c
+	src/testFuncs.c
 )
 
 # Include directories for the kernel target
-target_include_directories(uiaos-kernel PUBLIC include include/libc)
+target_include_directories(uiaos-kernel PUBLIC include)
 
 
 # Specify compile options for C and C++
