@@ -60,7 +60,7 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 add_executable(uiaos-kernel 
 	src/multiboot2.asm
     src/kernel.c
-	src/gdt_flush.asm
+	src/arch/x86_64/gdt_flush.asm
 )
 set_source_files_properties(src/multiboot2.asm PROPERTIES LANGUAGE ASM_NASM)
 
