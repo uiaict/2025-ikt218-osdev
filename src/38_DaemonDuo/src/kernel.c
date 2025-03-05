@@ -17,7 +17,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     gdt_install();
     terminal_initialize();
-    terminal_writestring("Hello World\n");
+    writeline("Hello World\n");
 
     while(true)
     {
