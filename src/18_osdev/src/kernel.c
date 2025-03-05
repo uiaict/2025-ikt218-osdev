@@ -11,9 +11,21 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
+// note this example will always write to the top
+// line of the screen
+void write_string( int colour, const char *string )
+{
+    volatile char *video = (volatile char*)0xB8000;
+    while( *string != 0 )
+    {
+        *video++ = *string++;
+        *video++ = colour;
+    }
+}
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-
+    gdt_install();
+    write_string(15,"hello world");
     return 0;
 
 }
