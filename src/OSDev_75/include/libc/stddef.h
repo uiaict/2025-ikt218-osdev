@@ -1,3 +1,4 @@
-#pragma once
-
-#define NULL ((void*)0)
+#ifndef _SIZE_T_DEFINED
+#define _SIZE_T_DEFINED
+typedef unsigned int size_t;
+#endif

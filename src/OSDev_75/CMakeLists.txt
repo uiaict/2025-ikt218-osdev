@@ -57,13 +57,26 @@ set(CMAKE_ASM_NASM_COMPILE_OBJECT
 set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/linker.ld")
 
 # Add executable target for the kernel
-add_executable(uiaos-kernel 
-	# src/multiboot2.asm # TODO: Add multiboot2 support
+add_executable(uiaos-kernel
+	src/multiboot2.asm
+
+    # VGA text-mode driver
+    src/drivers/VGA/vga.c
+
+    # GDT: 32-bit i386
+    src/arch/i386/GDT/gdt_flush.asm
+    src/arch/i386/GDT/gdt.c       
+    include/libc/string.c
+    # Optional: your multiboot2.asm if you want to build that in, e.g.:
     src/kernel.c
 )
 
+
 # Include directories for the kernel target
-target_include_directories(uiaos-kernel PUBLIC include)
+target_include_directories(uiaos-kernel PUBLIC
+    "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/libc"
+)
 
 
 # Specify compile options for C and C++
@@ -76,18 +89,27 @@ target_compile_options(uiaos-kernel PRIVATE
 
 # Specify link options for C and C++
 target_link_options(uiaos-kernel PUBLIC
-    $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-ffreestanding -nostdlib -fno-builtin -static -pie -O0 -T${OS_KERNEL_LINKER} -g>
+    PUBLIC "-ffreestanding"
+    PUBLIC "-nostdlib"
+    PUBLIC "-static"
+    #PUBLIC "-pie" 
+    PUBLIC "-T${OS_KERNEL_LINKER}"
+    PUBLIC "-O0"
+    PUBLIC "-g"
 )
 
 
-target_link_options(
-	uiaos-kernel
-	PUBLIC "-ffreestanding"
-	PUBLIC "-nostdlib"
-	PUBLIC "-static"
-	PUBLIC "-pie"
-	PUBLIC "-T${OS_KERNEL_LINKER}"
-)
+
+
+
+# target_link_options(
+#   uiaos-kernel
+#   PUBLIC "-ffreestanding"
+#   PUBLIC "-nostdlib"
+#   PUBLIC "-static"
+#   PUBLIC "-pie"         
+#   PUBLIC "-T${OS_KERNEL_LINKER}"
+# )
 
 
 # Set properties for the kernel target
