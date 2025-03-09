@@ -1,6 +1,7 @@
 #include "drivers/terminal.h"
 #include "libc/stdint.h"
 #include "libc/stdarg.h"
+#include "libc/stdbool.h"
 
 int col = 0;
 int row = 0;
@@ -8,12 +9,47 @@ int row = 0;
 // https://wiki.osdev.org/Printing_To_Screen
 uint16_t *video = 0xB8000;
 
+void terminal_clear() {
+    row = 0;
+    col = 0;
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+            terminal_put(' ', WHITE, x, y);
+        }
+    }
+}
+
+void terminal_put(char c, int color, int x, int y) {
+    uint16_t entry = (color << 8) | (uint16_t)c;
+    video[y * WIDTH + x] = entry;
+}
+
 void terminal_write(int color, const char *str) {
-    
+    int i = 0;
+    while (str[i]) {
+        if (str[i] == '\n') {
+            col = 0;     
+            row++;
+        } else {
+            terminal_put(str[i], color, col, row);
+            col++;
+        }
+
+        if (col == WIDTH) {
+            col = 0;
+            row++;
+        }
+
+        if (row == HEIGHT) {
+            row = 0;
+        }
+
+        i++;
+    }
 }
 
 // https://www.geeksforgeeks.org/implement-itoa/
-void char *itoa(int num, char *str, int base) {
+char *itoa(int num, char *str, int base) {
     int i = 0;
     bool is_neg = false;
 

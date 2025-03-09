@@ -20,5 +20,7 @@
 #define YELLOW 14
 #define WHITE 15
 
+void terminal_clear();
+void terminal_put(char c, int color, int x, int y);
 void terminal_write(int color, const char *str);
-void char *itoa(int num, char *str, int base);
+char *itoa(int num, char *str, int base);
