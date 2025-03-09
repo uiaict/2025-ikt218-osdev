@@ -1,9 +1,9 @@
+#pragma once
 #include "libc/stdint.h"
 
 // http://www.osdever.net/bkerndev/Docs/gdt.htm 
 // https://wiki.osdev.org/Global_Descriptor_Table
-struct gdt_entry_struct
-{
+struct gdt_entry_struct {
     uint16_t limit;
     uint16_t base_low;
     uint8_t base_middle;
@@ -12,8 +12,7 @@ struct gdt_entry_struct
     uint8_t base_high;
 } __attribute__((packed));
 
-struct gdt_ptr_struct
-{
+struct gdt_ptr_struct {
     uint16_t limit;
     unsigned int base;
 } __attribute__((packed));

@@ -4,7 +4,7 @@
 #include "libc/stdio.h"
 #include <multiboot2.h>
 
-#include "gdt/gdt.h"
+#include "kernel/gdt.h"
 
 
 
