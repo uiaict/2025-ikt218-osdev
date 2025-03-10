@@ -4,35 +4,53 @@
 #include "libc/stddef.h"
 
 
-// Terminal output
+
+
+// Pointer to video memory at address 0xB8000 (used for text mode display)
 volatile uint16_t* video_memory = (uint16_t*)0xB8000;
+// Cursor position (keeps track of where the next character will be printed)
 int cursor_x = 0, cursor_y = 0;
 
 
 // Write a single character to the screen
 void terminal_putc(char c) {
+    // If the character is a newline, move to the next line
     if (c == '\n') {
-        cursor_x = 0;
-        cursor_y++;
+        cursor_x = 0; // Reset cursor to the start of the line
+        cursor_y++; // Move to the next row
     } else {
+        // Store the character in video memory at the current cursor position
+        // (0x0F << 8) sets the text color (white on black)
         video_memory[cursor_y * 80 + cursor_x] = (0x0F << 8) | c;
+
+        // Move the cursor to the right
         cursor_x++;
     }
 }
 
 // Write a string to the screen
 void terminal_write(const char* str) {
+    // Loop through each character in the string until we reach the end ('\0')
     for (size_t i = 0; str[i] != '\0'; i++) {
+        // Write the current character to the screen using the terminal_putc function
         terminal_putc(str[i]);
     }
 }
 
+// Function to check if the GDT is loaded correctly
 void check_gdt() {
-    uint16_t cs, ds;
+    uint16_t cs, ds; // Variables to store the values of the code segment (cs) and data segment (ds) registers
+
+    // Assembly instruction to move the value of the Code Segment (CS) register into the cs variable
     __asm__ __volatile__ ("mov %%cs, %0" : "=r"(cs));  
+
+    // Assembly instruction to move the value of the Data Segment (DS) register into the ds variable
     __asm__ __volatile__ ("mov %%ds, %0" : "=r"(ds)); 
 
+    // Print a message to the screen checking the GDT
     terminal_write("\nChecking GDT:\n");
+
+    // Check if the GDT is loaded correctly by comparing the values of the CS and DS registers
     if (cs == 0x08 && ds == 0x10) {
         terminal_write("GDT Loaded Successfully\n");
     } else {
@@ -44,7 +62,12 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     
     // Print "Hello World" to the screen
     terminal_write("Hello World\n");
-init_gdt();
-    check_gdt();
+    init_gdt(); // Initialize the Global Descriptor Table (GDT)
+    check_gdt(); // Check if the GDT is loaded correctly
+    init_idt();   // Initialize IDT
+    isr_install();  // Install ISRs
+    init_irq();   // Initialize IRQs
+    terminal_write("Interrupts are set up!\n");
+
     return 0;
 }

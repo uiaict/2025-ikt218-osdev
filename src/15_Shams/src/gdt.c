@@ -1,4 +1,4 @@
-#include <libc/gdt.h>  // Include the file that defines the Global Descriptor Table (GDT)
+#include <libc/gdt.h>
 
 // This function tells the processor where the GDT is located in memory
 extern void gdt_flush(uint32_t gdt_ptr);

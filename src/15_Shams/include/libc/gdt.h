@@ -1,4 +1,4 @@
-#ifndef GDT_H  // If GDT_H is not defined, define it now (this prevents including this file multiple times)
+#ifndef GDT_H
 #define GDT_H
 
 #include "libc/stdint.h"   // Include standard integer types like uint16_t, uint32_t
