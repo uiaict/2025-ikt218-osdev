@@ -17,9 +17,7 @@ struct multiboot_info {
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     gdt_init();
-    //terminal_init();
-    terminal_write(RED, "Hei\nHallo");
-
+    printf("Hei");
     return 0;
 
 }

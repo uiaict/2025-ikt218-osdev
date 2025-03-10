@@ -1,5 +1,7 @@
 #pragma once
 
+#include "libc/stdint.h"
+
 #define WIDTH 80
 #define HEIGHT 25
 
@@ -24,3 +26,7 @@ void terminal_clear();
 void terminal_put(char c, int color, int x, int y);
 void terminal_write(int color, const char *str);
 char *itoa(int num, char *str, int base);
+
+void enable_cursor(uint8_t cursor_start, uint8_t cursor_end);
+void disable_cursor();
+void update_cursor(int x, int y);
