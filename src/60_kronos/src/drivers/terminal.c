@@ -31,6 +31,11 @@ void terminal_write(int color, const char *str) {
         if (str[i] == '\n') {
             col = 0;     
             row++;
+
+            if (row == HEIGHT + 1) {
+                terminal_scroll_down();
+            }
+
         } else {
             terminal_put(str[i], color, col, row);
             col++;
@@ -39,6 +44,10 @@ void terminal_write(int color, const char *str) {
         if (col == WIDTH) {
             col = 0;
             row++;
+
+            if (row == HEIGHT + 1) {
+                terminal_scroll_down();
+            }
         }
 
         if (row == HEIGHT) {
@@ -50,6 +59,17 @@ void terminal_write(int color, const char *str) {
 
     update_cursor(col, row);
 
+}
+
+void terminal_scroll_down() {
+    for (int y = 1; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+            video[((y - 1) * WIDTH + x) * 2] = video[((y) * WIDTH + x) * 2];
+            video[((y - 1) * WIDTH + x) * 2 + 1] = video[((y) * WIDTH + x) * 2 + 1];
+        }
+    }
+
+    row--;
 }
 
 // https://www.geeksforgeeks.org/implement-itoa/
