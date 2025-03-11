@@ -63,6 +63,8 @@ add_executable(uiaos-kernel
 	src/system.c
     src/kernel.c
 	src/gdt.c
+	src/print.h
+	src/print.c
 )
 
 # Include directories for the kernel target

@@ -3,6 +3,7 @@
 #include "libc/stdint.h"
 #include <multiboot2.h>
 
+#include "print.h"
 #include "system.h"
 
 struct multiboot_info {
