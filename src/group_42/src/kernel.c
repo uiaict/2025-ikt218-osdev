@@ -13,7 +13,12 @@ struct multiboot_info {
 
 int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   cursor_disable();
-  print("Just booted. Hello!\nLigma");
+  print("Just booted. Hello!\n");
+  while (true) {
+    print("Test\n");
+    for (int i = 0; i < 1000000; i++)
+      io_wait();
+  }
 
   return 0;
 }

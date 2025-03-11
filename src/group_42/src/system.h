@@ -106,4 +106,6 @@ void cursor_enable(uint8_t cursor_start, uint8_t cursor_end);
  */
 void cursor_disable();
 
+void clear_line(int line);
+
 #endif
