@@ -30,6 +30,8 @@ typedef enum {
  */
 void print(const char *string);
 
+void printc(const char *string, VideoColour colour);
+
 void clear_line(int line);
 
 #endif

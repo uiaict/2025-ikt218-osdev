@@ -15,10 +15,16 @@ struct multiboot_info {
 int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   cursor_disable();
   print("Just booted. Hello!\n");
+
+  VideoColour colour = 1;
+
   while (true) {
-    print("Test\n");
+    printc("Test\n", colour);
     for (int i = 0; i < 1000000; i++)
       io_wait();
+    colour++;
+    if (colour >= VIDEO_WHITE)
+      colour = 1;
   }
 
   return 0;

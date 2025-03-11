@@ -18,7 +18,9 @@ void incrementCursorPosition_() {
   }
 }
 
-void print(const char *string) {
+void print(const char *string) { printc(string, VIDEO_WHITE); }
+
+void printc(const char *string, VideoColour colour) {
   volatile char *video = (volatile char *)0xB8000;
   int str_i = 0;
 
@@ -35,7 +37,7 @@ void print(const char *string) {
     video = cursorPosToAddress_(cursorPositionX_, cursorPositionY_);
     *video = string[str_i];
     video++;
-    *video = VIDEO_WHITE;
+    *video = colour;
 
     str_i++;
     incrementCursorPosition_();
