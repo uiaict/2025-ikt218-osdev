@@ -1,22 +1,19 @@
-#include "libc/stdint.h"
-#include "libc/stddef.h"
 #include "libc/stdbool.h"
+#include "libc/stddef.h"
+#include "libc/stdint.h"
 #include <multiboot2.h>
 
 #include "system.h"
 
-
-
 struct multiboot_info {
-    uint32_t size;
-    uint32_t reserved;
-    struct multiboot_tag *first;
+  uint32_t size;
+  uint32_t reserved;
+  struct multiboot_tag *first;
 };
 
+int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
+  cursor_disable();
+  print("Just booted. Hello!\nLigma");
 
-int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-    printscrn("Just booted. Hello!");
-
-    return 0;
-
+  return 0;
 }
