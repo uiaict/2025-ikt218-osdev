@@ -1,5 +1,11 @@
 #include "libc/stdint.h"      // Inkluderer standard integer-typer som uint8_t og uint16_t
 #include "miscFuncs.h"    // Inkluderer headerfilen med funksjonene vi definerer her
+#include "descriptorTables.h"
+#include "interruptHandler.h"
+
+// Multiboot2 magic number - dette er verdien multiboot2-kompatible bootloadere
+// vil sende som parameter til kernel_main()
+#define MULTIBOOT2_MAGIC 0x36d76289
 
 // Adressen til VGA-tekstbufferen i minnet (fast for tekstmodus)
 #define VGA_ADDRESS 0xB8000
@@ -22,10 +28,18 @@ static uint8_t terminal_color = COLOR_WHITE;
  * og sette standardfargen til hvit.
  */
 void terminal_initialize() {
+    // Sikre at terminal_buffer er korrekt
+    if (terminal_buffer == 0) {
+        terminal_buffer = (uint16_t*)VGA_ADDRESS;
+    }
+    
     // Gå gjennom hver rad og kolonne og fyll skjermen med mellomrom
     for (int y = 0; y < VGA_HEIGHT; y++) {
         for (int x = 0; x < VGA_WIDTH; x++) {
-            terminal_buffer[y * VGA_WIDTH + x] = (COLOR_WHITE << 8) | ' ';
+            const int index = y * VGA_WIDTH + x;
+            if (index >= 0 && index < (VGA_WIDTH * VGA_HEIGHT)) {
+                terminal_buffer[index] = (COLOR_WHITE << 8) | ' ';
+            }
         }
     }
 
@@ -36,6 +50,25 @@ void terminal_initialize() {
 }
 
 /**
+ * Scrolls the terminal one line up
+ * Flytter alt innhold en linje opp og tømmer nederste linje
+ */
+void terminal_scroll() {
+    // Flytt alle linjer en linje opp
+    for (int y = 0; y < VGA_HEIGHT - 1; y++) {
+        for (int x = 0; x < VGA_WIDTH; x++) {
+            // Kopier fra linjen under
+            terminal_buffer[y * VGA_WIDTH + x] = terminal_buffer[(y + 1) * VGA_WIDTH + x];
+        }
+    }
+    
+    // Tøm nederste linje
+    for (int x = 0; x < VGA_WIDTH; x++) {
+        terminal_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = (terminal_color << 8) | ' ';
+    }
+}
+
+/**
  * Skriver ett tegn til skjermen på gjeldende posisjon.
  * Hvis tegnet er '\n', går vi til neste linje.
  */
@@ -43,14 +76,28 @@ void terminal_write_char(char c) {
     if (c == '\n') { // Hvis vi får et linjeskift, flytt til neste linje
         terminal_row++;
         terminal_column = 0;
+        
+        // Sjekk om vi trenger å scrolle
+        if (terminal_row >= VGA_HEIGHT) {
+            terminal_scroll();
+            terminal_row = VGA_HEIGHT - 1;
+        }
         return;
+    }
+    
+    // Sørg for at vi er innenfor skjermstørrelsen
+    if (terminal_row >= VGA_HEIGHT || terminal_column >= VGA_WIDTH) {
+        return; // For sikkerhet - ikke skriv utenfor skjermområdet
     }
     
     // Beregn posisjonen i VGA-minnet
     const int index = terminal_row * VGA_WIDTH + terminal_column;
     
-    // Sett tegnet med gjeldende farge i VGA-minnet
-    terminal_buffer[index] = (terminal_color << 8) | c;
+    // Sjekk at indeksen er innenfor gyldig område
+    if (index >= 0 && index < (VGA_WIDTH * VGA_HEIGHT)) {
+        // Sett tegnet med gjeldende farge i VGA-minnet
+        terminal_buffer[index] = (terminal_color << 8) | c;
+    }
     
     // Gå til neste posisjon
     terminal_column++;
@@ -59,11 +106,12 @@ void terminal_write_char(char c) {
     if (terminal_column == VGA_WIDTH) {
         terminal_column = 0;
         terminal_row++;
-    }
-    
-    // Enkel scrolling hvis vi når bunnen av skjermen (ikke optimal implementasjon)
-    if (terminal_row == VGA_HEIGHT) {
-        terminal_row = VGA_HEIGHT - 1;
+        
+        // Sjekk om vi trenger å scrolle
+        if (terminal_row >= VGA_HEIGHT) {
+            terminal_scroll();
+            terminal_row = VGA_HEIGHT - 1;
+        }
     }
 }
 
@@ -77,14 +125,23 @@ void terminal_write(const char* str) {
 }
 
 /**
- * Skriver en streng med en spesifisert farge.
- * Lagrer den originale fargen, endrer til den ønskede, skriver strengen, og gjenoppretter fargen.
+ * Skriver ut en tekststreng med en spesifisert farge
+ * 
+ * str er tekststrengen som skal skrives ut
+ * color er fargen som skal brukes (definert i miscFuncs.h)
  */
-void terminal_write_color(const char* str, TerminalColor color) {
-    uint8_t originalColor = terminal_color;
+void terminal_write_color(const char* str, VGA_COLOR color) {
+    // Lagre den nåværende fargen
+    uint8_t original_color = terminal_color;
+    
+    // Sett ny farge
     terminal_color = color;
+    
+    // Skriv ut teksten med den nye fargen
     terminal_write(str);
-    terminal_color = originalColor;
+    
+    // Gjenopprett den opprinnelige fargen
+    terminal_color = original_color;
 }
 
 /**
@@ -104,12 +161,150 @@ void hexToString(uint32_t num, char* str) {
 }
 
 /**
- * Enkel forsinkelse som brukes for å gi tid mellom operasjoner.
- * Dette er ikke en nøyaktig tidsforsinkelse, men gir en relativ pause.
+ * En mer nøyaktig forsinkelsesrutine
+ * Bruker en enkel loop for å forsinke utførelsen av koden
+ * 
+ * ms er omtrentlig antall millisekunder å vente
+ * 
+ * Merk: Dette er ikke en nøyaktig timing, men er nyttig for debugging
  */
-void delay(int count) {
-    // Enkel busy-wait loop
-    for (volatile int i = 0; i < count * 1000000; i++) {
-        // Gjør ingenting, bare vent
+void delay(uint32_t ms) {
+    // Multipliser med en faktor for å gi ca. riktig forsinkelse
+    // Denne verdien må kanskje justeres basert på maskinvaren
+    volatile uint32_t large_number = ms * 100000;
+    
+    // Enkel telleloop
+    while (large_number--) {
+        // Gjør ingenting, bare tell ned
+        __asm__ volatile ("nop");
     }
+}
+
+/**
+ * Stopper CPU fullstendig - brukes i kritiske feilsituasjoner
+ */
+void halt() {
+    terminal_write_color("\n\nSYSTEM HALTED - CPU Stopped\n", COLOR_LIGHT_RED);
+    
+    // Deaktiver interrupts og halt CPU
+    __asm__ volatile("cli; hlt");
+    
+    // For sikkerhets skyld, hvis hlt ikke fungerer
+    while (1) {
+        __asm__ volatile("nop");
+    }
+}
+
+/**
+ * Verifiserer at magisk nummer fra bootloaderen er korrekt og viser resultat.
+ * Dette er en sikkerhetskontroll for å bekrefte at OS-en ble startet av en multiboot2-kompatibel bootloader.
+ */
+void verify_boot_magic(uint32_t magic) {
+    char magic_str[11];
+    hexToString(magic, magic_str);
+    
+    // Vis magic number og indiker om det er korrekt
+    terminal_write_color("Magic: ", COLOR_WHITE);
+    if (magic == MULTIBOOT2_MAGIC) {
+        terminal_write_color(magic_str, COLOR_GREEN);
+        terminal_write_color(" (Correct)", COLOR_GREEN);
+    } else {
+        terminal_write_color(magic_str, COLOR_RED);
+        terminal_write_color(" (Error - expected 0x36d76289)", COLOR_RED);
+    }
+    terminal_write_char('\n');
+}
+
+/**
+ * Initialiserer systemets grunnleggende komponenter som GDT og IDT.
+ * Dette setter opp segmentering og interrupt-håndtering, som er nødvendig for operativsystemet.
+ */
+void initialize_system() {
+    // Initialiser Global Descriptor Table (GDT)
+    // GDT definerer minneområder (segmenter) og deres rettigheter
+    terminal_write_color("Initializing GDT... ", COLOR_WHITE);
+    initializer_GDT();
+    terminal_write_color("DONE\n", COLOR_GREEN);
+    
+    // Initialize interrupt system (IDT, PIC, and enable interrupts)
+    terminal_write_color("Initializing interrupt system... ", COLOR_WHITE);
+    interrupt_initialize();
+    terminal_write_color("DONE\n", COLOR_GREEN);
+    
+    // Vis bekreftelse på at systeminitialisering er fullført
+    terminal_write_char('\n');
+    terminal_write_color("System initialization complete.\n", COLOR_LIGHT_CYAN);
+}
+
+/**
+ * Skriver ut et heksadesimalt tall til terminalen
+ * 
+ * num er tallet som skal skrives ut i heksadesimalt format
+ */
+void terminal_write_hex(uint32_t num) {
+    // Skriver ut '0x' prefiks
+    terminal_write_char('0');
+    terminal_write_char('x');
+    
+    // Sjekk om tallet er null
+    if (num == 0) {
+        terminal_write_char('0');
+        return;
+    }
+    
+    // Buffer for å lagre heksadesimale tegn
+    char hex_chars[16] = {'0', '1', '2', '3', '4', '5', '6', '7', 
+                          '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    
+    // Vi trenger å håndtere opptil 8 siffer (32-bit heksadesimalt)
+    char buffer[9]; // 8 siffer + null-terminator
+    buffer[8] = '\0';
+    
+    // Fyll bufferen bakfra
+    int i = 7;
+    while (num > 0 && i >= 0) {
+        buffer[i] = hex_chars[num & 0xF]; // Hent de 4 minst signifikante bit
+        num >>= 4; // Skift 4 bit til høyre
+        i--;
+    }
+    
+    // Skriv ut fra første gyldige tegn
+    terminal_write_string(&buffer[i + 1]);
+}
+
+/**
+ * Skriver ut et desimalt tall til terminalen
+ * 
+ * num er tallet som skal skrives ut i desimalt format
+ */
+void terminal_write_decimal(uint32_t num) {
+    // Sjekk om tallet er null
+    if (num == 0) {
+        terminal_write_char('0');
+        return;
+    }
+    
+    // Buffer for å lagre desimale tegn
+    char buffer[11]; // 32-bit tall kan ha opptil 10 siffer + null-terminator
+    buffer[10] = '\0';
+    
+    // Fyll bufferen bakfra
+    int i = 9;
+    while (num > 0 && i >= 0) {
+        buffer[i] = '0' + (num % 10); // Hent siste siffer
+        num /= 10; // Fjern siste siffer
+        i--;
+    }
+    
+    // Skriv ut fra første gyldige tegn
+    terminal_write_string(&buffer[i + 1]);
+}
+
+/**
+ * Skriver ut en tekststreng
+ * 
+ * str er tekststrengen som skal skrives ut med standard tekstfarge
+ */
+void terminal_write_string(const char* str) {
+    terminal_write(str);
 }

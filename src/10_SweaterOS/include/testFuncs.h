@@ -18,6 +18,12 @@ void test_idt(void);
 // Test keyboard interrupt handling
 void test_keyboard_interrupt(void);
 
+// Test software interrupts ved å manuelt utløse CPU exceptions
+void test_software_interrupt(void);
+
+// Test hardware interrupts (IRQs) - spesielt tastatur-input
+void test_hardware_interrupts(void);
+
 // Run all tests
 void run_all_tests(void);
 

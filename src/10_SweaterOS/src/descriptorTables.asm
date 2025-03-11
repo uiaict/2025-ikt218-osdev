@@ -33,28 +33,16 @@ print_char:
 
 ; Function to load the Global Descriptor Table
 TOSS_GDT:
-    ; Debug: print 'G' to indicate GDT is loading
-    mov al, 'G'
-    call print_char
-    
     ; Get the pointer to the GDT, passed as a parameter
     mov eax, [esp+4]
     
     ; Load the GDT
     lgdt [eax]
     
-    ; Debug: print 'g' to indicate GDT is loaded
-    mov al, 'g'
-    call print_char
-    
     ; Perform a far jump to update CS
     jmp 0x08:flush_cs
     
 flush_cs:
-    ; Debug: print 'F' to indicate flush_cs was reached
-    mov al, 'F'
-    call print_char
-    
     ; Update data segment registers
     mov ax, 0x10
     mov ds, ax
@@ -63,26 +51,15 @@ flush_cs:
     mov gs, ax
     mov ss, ax
     
-    ; Debug: print 'f' to indicate flush_cs completed
-    mov al, 'f'
-    call print_char
-    
     ; Return to C code
     ret
 
 ; Function to load the Interrupt Descriptor Table
 TOSS_IDT:
-    ; Debug: print 'I' to indicate IDT is loading
-    mov al, 'I'
-    call print_char
-    
     ; Load IDT - Parameter is a pointer to the IDT descriptor structure
     ; [esp+4] contains the pointer passed from C
     mov eax, [esp+4]
     lidt [eax]
     
-    ; Debug: print 'i' to indicate IDT is loaded
-    mov al, 'i'
-    call print_char
-    
+    ; Return to C code
     ret

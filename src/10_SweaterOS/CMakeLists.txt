@@ -65,6 +65,8 @@ add_executable(uiaos-kernel
 	src/interruptDescriptorTable.c
 	src/miscFuncs.c
 	src/testFuncs.c
+	src/interruptHandler.c
+	src/interruptServiceRoutines.asm
 )
 
 # Include directories for the kernel target
