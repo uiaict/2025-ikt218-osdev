@@ -1,6 +1,7 @@
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
+#include "gdt/gdt_function.h"
 #include <multiboot2.h>
 
 
@@ -14,6 +15,10 @@ struct multiboot_info {
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
+    gdt_init(); 
+    
+    // Loop indefinitely to prevent exiting
+    while (1) {}
     return 0;
 
 }
