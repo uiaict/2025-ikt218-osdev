@@ -17,6 +17,7 @@
         "memory.h": "c",
         "limits.h": "c"
     },
+    "editor.formatOnSave": true,
     "C_Cpp.default.compilerPath": "/usr/local/bin/i686-elf-gcc"
 
 }
