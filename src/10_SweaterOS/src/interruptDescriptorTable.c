@@ -28,7 +28,7 @@ struct idt_pointer idt_info;
 
 // Importerer funksjonen for å laste IDT inn i CPU-en
 // Denne er definert i assembly fordi vi trenger lidt-instruksjonen
-extern void TOSS_IDT(uint32_t);
+extern void idt_flush(uint32_t);
 
 /**
  * Ekstern referanse til ISR-handlere (Interrupt Service Routines)
@@ -74,11 +74,7 @@ extern void isr29(void); // Reserved - Reservert av Intel
 extern void isr30(void); // Reserved - Reservert av Intel
 extern void isr31(void); // Reserved - Reservert av Intel
 
-// Spesielle interrupt handlers
-extern void isr48(void);      // Spesiell handler for interrupt 48
-extern void isr_unknown(void); // Catch-all handler for ukjente interrupts
-
-// Hardware Interrupts (IRQs 0-15, mappet til interrupt 32-47)
+// Hardware Interrupts (IRQ 0-15)
 extern void irq0(void);  // Timer (PIT) - Programmable Interval Timer
 extern void irq1(void);  // Keyboard - PS/2 tastatur
 extern void irq2(void);  // Cascade for 8259A Slave controller - Kobling til slave PIC
@@ -107,56 +103,32 @@ extern void irq15(void); // Secondary ATA Hard Disk - Sekundær harddisk
  * - Segment selector (hvilket kodesegment handler-funksjonen ligger i)
  * - Type og attributter (f.eks. om det er en interrupt gate eller trap gate)
  * 
- * Funksjonen validerer også parametrene for å unngå korrupsjon av IDT-tabellen.
+ * Indeksen i IDT-tabellen (0-255)
+ * Adressen til handler-funksjonen
+ * Segment selector (vanligvis 0x08 for kernel code segment)
+ * Type og attributter (f.eks. 0x8E for interrupt gate)
  */
 static void idt_add_entry(int index, uint32_t base, uint16_t selector, uint8_t type_attr) 
 {
     // Valider parametrene for å unngå korrupsjon av IDT-tabellen
     if (index < 0 || index >= IDT_SIZE) {
-        terminal_write_color("ERROR: Attempted to add IDT entry with invalid index: ", COLOR_LIGHT_RED);
-        char idx_str[5];
-        int i = 0;
-        int temp = index;
-        do {
-            idx_str[i++] = (temp % 10) + '0';
-            temp /= 10;
-        } while (temp > 0);
-        idx_str[i] = '\0';
-        
-        // Reverser strengen
-        for (int j = 0; j < i / 2; j++) {
-            char tmp = idx_str[j];
-            idx_str[j] = idx_str[i - j - 1];
-            idx_str[i - j - 1] = tmp;
-        }
-        
-        terminal_write_color(idx_str, COLOR_YELLOW);
-        terminal_write_color("\n", COLOR_LIGHT_RED);
+        terminal_write_color("ERROR: Ugyldig IDT-indeks\n", COLOR_RED);
         return;
     }
     
-    if (base == 0) {
-        terminal_write_color("ERROR: Attempted to add IDT entry with NULL handler\n", COLOR_LIGHT_RED);
-        return;
-    }
-    
-    // Sett opp IDT entry
-    // Hver entry er 8 bytes og inneholder:
-    idt[index].isr_address_low = base & 0xFFFF;        // Nedre 16 bit av handler-adressen
-    idt[index].segment_selector = selector;            // Kodesegment (vanligvis 0x08 for kernel)
-    idt[index].zero = 0;                               // Alltid 0 (reservert)
-    idt[index].type_and_flags = type_attr;             // Type og attributter (f.eks. 0x8E for interrupt)
+    // Sett opp IDT-inngangen
+    idt[index].isr_address_low = base & 0xFFFF;          // Nedre 16 bit av handler-adressen
+    idt[index].segment_selector = selector;              // Segment selector (vanligvis 0x08)
+    idt[index].zero = 0;                                 // Alltid 0 (reservert felt)
+    idt[index].type_and_flags = type_attr;               // Type og attributter
     idt[index].isr_address_high = (base >> 16) & 0xFFFF; // Øvre 16 bit av handler-adressen
 }
 
 /**
- * Initialiserer IDT (Interrupt Descriptor Table)
+ * Initialiserer Interrupt Descriptor Table (IDT)
  * 
- * Denne funksjonen setter opp hele IDT-tabellen med alle interrupt handlers
- * og laster den inn i CPU-en ved hjelp av lidt-instruksjonen.
- * 
- * Prosessen involverer:
- * 1. Sette opp IDT-pekeren med adresse og størrelse
+ * Denne funksjonen setter opp hele IDT-tabellen ved å:
+ * 1. Sette opp IDT-pekeren
  * 2. Legge til alle CPU exception handlers (0-31)
  * 3. Legge til alle hardware interrupt handlers (32-47)
  * 4. Laste IDT-tabellen inn i CPU-en
@@ -169,7 +141,7 @@ void initializer_IDT()
     
     // Nullstill IDT-tabellen først
     for (int i = 0; i < IDT_SIZE; i++) {
-        idt_add_entry(i, (uint32_t)isr_unknown, 0x08, 0x8E);
+        idt_add_entry(i, 0, 0x08, 0x8E);
     }
     
     // Legg til CPU exception handlers (0-31)
@@ -230,14 +202,8 @@ void initializer_IDT()
     idt_add_entry(46, (uint32_t)irq14, 0x08, 0x8E);
     idt_add_entry(47, (uint32_t)irq15, 0x08, 0x8E);
     
-    // Spesiell handler for interrupt 48
-    idt_add_entry(48, (uint32_t)isr48, 0x08, 0x8E);
-    
     // Last IDT-tabellen inn i CPU-en
-    // Dette gjøres ved å laste adressen til idt_info inn i IDTR-registeret
-    TOSS_IDT((uint32_t)&idt_info);
+    idt_flush((uint32_t)&idt_info);
     
-    terminal_write_color("IDT initialized with ", COLOR_GREEN);
-    terminal_write_decimal(IDT_SIZE);
-    terminal_write_color(" entries\n", COLOR_GREEN);
+    terminal_write_color("IDT initialisert med 48 handlers\n", COLOR_GREEN);
 }

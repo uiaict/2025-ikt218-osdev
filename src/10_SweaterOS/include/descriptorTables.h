@@ -98,7 +98,7 @@ void initializer_IDT(); // Initialiserer Interrupt Descriptor Table
  * Disse funksjonene er definert i assembly fordi de bruker spesielle
  * instruksjoner (lgdt og lidt) som ikke er tilgjengelige i C.
  */
-extern void TOSS_GDT(uint32_t); // Laster GDT inn i GDTR-registeret
-extern void TOSS_IDT(uint32_t); // Laster IDT inn i IDTR-registeret
+extern void gdt_flush(uint32_t); // Laster GDT inn i GDTR-registeret
+extern void idt_flush(uint32_t); // Laster IDT inn i IDTR-registeret
 
 #endif // DESCRIPTOR_TABLES_H

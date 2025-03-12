@@ -64,57 +64,78 @@ struct stack_state {
 } __attribute__((packed));
 
 /**
- * Exception handler - håndterer CPU exceptions (interrupt 0-31)
+ * Skriver en byte til en I/O-port
  * 
- * @param cpu CPU-tilstand når exception oppsto
- * @param int_no Interrupt-nummer
- * @param stack Stack-tilstand når exception oppsto
+ * I/O-porten (0-65535)
+ * Verdien som skal skrives (0-255)
  */
-void exception_handler(struct cpu_state cpu, uint32_t int_no, struct stack_state stack);
+void outb(uint16_t port, uint8_t value);
 
 /**
- * IRQ handler - håndterer hardware interrupts (IRQ)
+ * Leser en byte fra en I/O-port
  * 
- * @param cpu CPU-tilstand når interrupt oppsto
- * @param int_no Interrupt-nummer
- * @param stack Stack-tilstand når interrupt oppsto
+ * I/O-porten (0-65535)
+ * Verdien som ble lest (0-255)
+ */
+uint8_t inb(uint16_t port);
+
+/**
+ * Gir en kort forsinkelse, brukes ofte etter I/O-operasjoner
+ */
+void io_wait(void);
+
+/**
+ * Exception handler - håndterer CPU exceptions (0-31)
+ * 
+ * CPU-tilstanden når exception oppstod
+ * Exception-nummeret (0-31)
+ * Stack-tilstanden når exception oppstod
+ */
+void isr_handler(struct cpu_state cpu, uint32_t int_no, struct stack_state stack);
+
+/**
+ * IRQ handler - håndterer hardware interrupts (32-47)
+ * 
+ * CPU-tilstanden når interrupt oppstod
+ * Interrupt-nummeret (32-47)
+ * Stack-tilstanden når interrupt oppstod
  */
 void irq_handler(struct cpu_state cpu, uint32_t int_no, struct stack_state stack);
 
 /**
  * Initialiserer PIC (Programmable Interrupt Controller)
- * Dette er nødvendig for å håndtere hardware-interrupts som keyboard-input
  */
 void pic_initialize(void);
 
 /**
  * Sender End-of-Interrupt (EOI) signal til PIC
- * Må kalles etter at en interrupt er håndtert for å signalisere at
- * vi er klare til å motta nye interrupts
+ * 
+ * IRQ-nummeret (0-15)
  */
 void pic_send_eoi(uint8_t irq);
 
 /**
- * Initialiserer alle interrupts (både CPU exceptions og hardware interrupts)
+ * Initialiserer interrupt-systemet
  */
 void interrupt_initialize(void);
 
 /**
- * Keyboard interrupt handler
- * Håndterer tastatur interrupts (IRQ1)
+ * Keyboard handler - håndterer tastatur-interrupts (IRQ 1)
  */
 void keyboard_handler(void);
 
 /**
- * Returnerer om en tast er trykket ned
- * Brukes for å sjekke om tastatur-input er tilgjengelig
+ * Sjekker om det er data tilgjengelig i tastatur-bufferen
+ * 
+ * Returnerer 1 hvis data er tilgjengelig, 0 ellers
  */
-int keyboard_is_key_pressed(void);
+int keyboard_data_available(void);
 
 /**
- * Leser et tegn fra tastaturet
- * Returnerer ASCII-verdien for tasten som ble trykket
+ * Leser et tegn fra tastatur-bufferen
+ * 
+ * Returnerer ASCII-tegnet, eller 0 hvis bufferen er tom
  */
-char keyboard_read_char(void);
+char keyboard_getchar(void);
 
 #endif /* INTERRUPT_HANDLER_H */ 

@@ -45,10 +45,8 @@
  * @param value Verdien vi vil skrive (0-255)
  */
 void outb(uint16_t port, uint8_t value) {
-    // "a" betyr at value skal plasseres i AL/AX/EAX registeret
-    // "Nd" betyr at port er en umiddelbar verdi som kan plasseres i DX registeret
-    // "volatile" forteller kompilatoren at denne instruksjonen har sideeffekter
-    // og ikke skal optimaliseres bort
+    // "a" betyr at input-verdien skal plasseres i AL/AX/EAX registeret
+    // "Nd" betyr at porten er en konstant i området 0-255 (N) eller plassert i DX (d)
     __asm__ volatile("outb %0, %1" : : "a"(value), "Nd"(port));
 }
 
@@ -145,48 +143,32 @@ extern void irq14(void); // Primary ATA Hard Disk - Primær harddisk
 extern void irq15(void); // Secondary ATA Hard Disk - Sekundær harddisk
 
 /**
- * Tastatur-relaterte konstanter og variabler
- * 
- * Tastaturet er en av de viktigste input-enhetene i et OS. Når en tast
- * trykkes eller slippes, sender tastaturet en scancode til CPU-en via
- * IRQ1. Vi må tolke disse scancodes og konvertere dem til ASCII-tegn.
+ * Tastatur-relaterte definisjoner
  */
-#define KEYBOARD_DATA_PORT 0x60       // I/O-porten hvor tastaturdata kan leses
-#define KEYBOARD_BUFFER_SIZE 32       // Størrelsen på vår tastatur-buffer
+#define KEYBOARD_DATA_PORT 0x60  // Porten hvor tastaturdata kan leses fra
 
-// Tastatur-buffer implementert som en sirkulær buffer
-// Dette lar oss lagre inntastede tegn selv om vi ikke
-// behandler dem umiddelbart
+// Størrelse på tastatur-buffer
+#define KEYBOARD_BUFFER_SIZE 32
+
+// Tastatur-buffer (sirkulær buffer)
 static char keyboard_buffer[KEYBOARD_BUFFER_SIZE];
-static int keyboard_buffer_head = 0;  // Peker til der vi skriver neste tegn
-static int keyboard_buffer_tail = 0;  // Peker til der vi leser neste tegn
+static int keyboard_buffer_head = 0;
+static int keyboard_buffer_tail = 0;
 
-/**
- * Enkelt US keyboard layout for ASCII-konvertering
- * 
- * Denne tabellen mapper scancodes fra tastaturet til ASCII-tegn.
- * Når tastaturet sender en scancode, bruker vi denne tabellen for
- * å konvertere den til et ASCII-tegn som kan vises på skjermen.
- * 
- * Merk: Dette er en forenklet tabell som bare håndterer grunnleggende
- * tegn og ikke spesialtegn, shift, caps lock, osv.
- */
+// Scancode til ASCII konverteringstabell
+// Dette er en forenklet tabell som kun støtter vanlige tegn
 static const char scancode_to_ascii[] = {
-    0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',
-    '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',
-    0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`',
-    0, '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0,
-    '*', 0, ' ', 0
+    0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 0, 0,
+    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n', 0,
+    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', 0, '\\',
+    'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, '*', 0, ' '
 };
 
 /**
  * Initialiserer PIC (Programmable Interrupt Controller)
  * 
- * I x86-arkitekturen bruker vi to 8259A PIC-er for å håndtere hardware
- * interrupts. Denne funksjonen konfigurerer dem for å fungere med vårt OS.
- * 
- * Hovedoppgavene er:
- * 1. Remappere IRQ-ene til å starte på interrupt 32 (0x20) for å unngå
+ * Denne funksjonen konfigurerer PIC-ene for å:
+ * 1. Remappere IRQ-ene til interrupt 32-47 i stedet for 0-15, for å unngå
  *    konflikt med CPU exceptions som bruker 0-31.
  * 2. Konfigurere master/slave-forholdet mellom de to PIC-ene.
  * 3. Sette masker for å aktivere bare de interrupts vi vil ha.
@@ -235,7 +217,7 @@ void pic_initialize()
     outb(PIC1_DATA, master_mask);
     outb(PIC2_DATA, slave_mask);
     
-    terminal_write_color("PIC initialized and remapped to interrupts 32-47\n", COLOR_GREEN);
+    terminal_write_color("PIC initialisert og remappet til interrupts 32-47\n", COLOR_GREEN);
 }
 
 /**
@@ -260,58 +242,23 @@ void pic_send_eoi(uint8_t irq)
 }
 
 /**
- * Exception handler - håndterer CPU exceptions (interrupt 0-31)
+ * Exception handler - handles CPU exceptions (0-31)
  * 
- * Denne funksjonen kalles fra vår assembly-kode når en CPU exception oppstår.
- * Den håndterer ulike typer exceptions, med spesiell håndtering for division by zero.
+ * This function is called from our assembly code when a CPU exception occurs.
+ * It displays information about which exception occurred and related details.
  * 
- * @param cpu CPU-tilstanden når exception oppstod (registre)
- * @param int_no Exception-nummeret (0-31)
- * @param stack Stack-tilstanden når exception oppstod (EIP, CS, EFLAGS)
+ * @param cpu CPU state when the exception occurred (registers)
+ * @param int_no Exception number (0-31)
+ * @param stack Stack state when the exception occurred (EIP, CS, EFLAGS)
  */
-void exception_handler(struct cpu_state cpu, uint32_t int_no, struct stack_state stack) 
+void isr_handler(struct cpu_state cpu, uint32_t int_no, struct stack_state stack) 
 {
-    // Teller for division by zero exceptions for å unngå uendelige løkker
-    static int div_zero_count = 0;
-    
-    // Special handling for division by zero to prevent infinite loops
-    if (int_no == 0) {
-        div_zero_count++;
-        
-        terminal_write_color("\nCPU EXCEPTION: Division By Zero\n", COLOR_LIGHT_RED);
-        
-        if (div_zero_count == 1) {
-            terminal_write_color("Dette er den første division by zero exception.\n", COLOR_YELLOW);
-            terminal_write_color("Instruksjonen som forårsaket feilen vil bli hoppet over.\n", COLOR_YELLOW);
-        } else {
-            terminal_write_color("Exception-teller: ", COLOR_YELLOW);
-            terminal_write_decimal(div_zero_count);
-            terminal_write("\n");
-        }
-        
-        // Hvis vi får for mange division by zero exceptions, er noe galt
-        // Dette kan indikere en uendelig løkke eller en alvorlig feil i koden
-        if (div_zero_count >= 3) {
-            terminal_write_color("\nFor mange division by zero exceptions. Stopper systemet.\n", COLOR_LIGHT_RED);
-            terminal_write_color("Dette kan indikere en uendelig løkke i koden.\n", COLOR_LIGHT_RED);
-            terminal_write_color("\nSYSTEM HALTED - CPU Stopped\n", COLOR_LIGHT_RED);
-            
-            // Stopp CPU-en ved å gå inn i en uendelig løkke
-            // cli = Clear Interrupt Flag (deaktiver interrupts)
-            // hlt = Halt (stopp CPU-en til neste interrupt)
-            __asm__ volatile("cli; hlt");
-        }
-        
-        // Merk: Vi returnerer her og lar assembly-koden hoppe over
-        // instruksjonen som forårsaket division by zero
-        return;
-    }
-    
-    // Handle other CPU exceptions
+    // Vis hvilken exception som oppstod
     terminal_write_color("\nCPU EXCEPTION: ", COLOR_LIGHT_RED);
     
-    // Vis hvilken exception som oppstod
+    // Vis den spesifikke exception-typen
     switch (int_no) {
+        case 0:  terminal_write_color("Division by Zero", COLOR_LIGHT_RED); break;
         case 1:  terminal_write_color("Debug Exception", COLOR_LIGHT_RED); break;
         case 2:  terminal_write_color("Non-maskable Interrupt", COLOR_LIGHT_RED); break;
         case 3:  terminal_write_color("Breakpoint", COLOR_LIGHT_RED); break;
@@ -336,19 +283,14 @@ void exception_handler(struct cpu_state cpu, uint32_t int_no, struct stack_state
     terminal_write_color("\n", COLOR_LIGHT_RED);
     
     // Vis mer informasjon om exception
-    terminal_write_color("Error Code: ", COLOR_YELLOW);
+    terminal_write_color("Error Code: 0x", COLOR_YELLOW);
     terminal_write_hex(stack.error_code);
-    terminal_write_color("\nEIP: ", COLOR_YELLOW);
+    terminal_write_color("\nEIP: 0x", COLOR_YELLOW);
     terminal_write_hex(stack.eip);
     terminal_write_color(" (Instruction Pointer)\n", COLOR_GRAY);
     
-    // For alvorlige exceptions, stopp systemet
-    if (int_no == 8 || int_no == 13 || int_no == 14) {
-        terminal_write_color("\nThis is a critical exception. System halted.\n", COLOR_LIGHT_RED);
-        __asm__ volatile("cli; hlt");
-    } else {
-        terminal_write_color("\nException handled. Continuing execution.\n", COLOR_GREEN);
-    }
+    // Vis avslutningsmelding
+    terminal_write_color("\nException handled. Continuing execution.\n", COLOR_GREEN);
 }
 
 /**
@@ -356,10 +298,9 @@ void exception_handler(struct cpu_state cpu, uint32_t int_no, struct stack_state
  * 
  * Denne funksjonen kalles fra vår assembly-kode når et hardware interrupt oppstår.
  * Den identifiserer hvilken type IRQ det er og kaller riktig handler-funksjon.
- * 
- * @param cpu CPU-tilstanden når interrupt oppstod (registre)
- * @param int_no Interrupt-nummeret (32-47 for IRQ 0-15)
- * @param stack Stack-tilstanden når interrupt oppstod (EIP, CS, EFLAGS)
+ * CPU-tilstanden når interrupt oppstod (registre)
+ * Interrupt-nummeret (32-47 for IRQ 0-15)
+ * Stack-tilstanden når interrupt oppstod (EIP, CS, EFLAGS)
  */
 void irq_handler(struct cpu_state cpu, uint32_t int_no, struct stack_state stack) 
 {
@@ -379,24 +320,21 @@ void irq_handler(struct cpu_state cpu, uint32_t int_no, struct stack_state stack
         // Andre IRQs kan legges til her etter behov
             
         default:
-            // For ukjente IRQs, bare vis en melding
-            terminal_write_color("Received IRQ: ", COLOR_YELLOW);
-            terminal_write_decimal(irq);
-            terminal_write_color("\n", COLOR_YELLOW);
+            // For andre IRQs gjør vi ingenting spesielt
             break;
     }
     
-    // Send End-of-Interrupt signal til PIC
-    // Dette er viktig for at PIC skal sende flere interrupts av samme type
+    // Send End-of-Interrupt (EOI) signal til PIC
+    // Dette forteller PIC at vi er ferdige med å håndtere interruptet
+    // og at den kan sende flere interrupts av samme type
     pic_send_eoi(irq);
 }
 
 /**
- * Tastatur-handler - håndterer tastatur-interrupts (IRQ 1)
- * 
+ * Keyboard handler - håndterer tastatur-interrupts (IRQ 1)
  * Denne funksjonen kalles når et tastatur-interrupt oppstår.
  * Den leser scancode fra tastaturet, konverterer det til ASCII,
- * og legger tegnet i tastatur-bufferen.
+ * og lagrer det i en buffer.
  */
 void keyboard_handler() 
 {
@@ -422,8 +360,8 @@ void keyboard_handler()
             keyboard_buffer_tail = (keyboard_buffer_tail + 1) % KEYBOARD_BUFFER_SIZE;
         }
         
-        // Vis tegnet på skjermen
-        terminal_putchar(ascii);
+        // Vis tegnet på skjermen direkte
+        terminal_write_char(ascii);
     }
 }
 
@@ -432,8 +370,7 @@ void keyboard_handler()
  * 
  * Denne funksjonen returnerer neste tegn fra tastatur-bufferen,
  * eller 0 hvis bufferen er tom.
- * 
- * @return Neste tegn fra tastatur-bufferen, eller 0 hvis tom
+ * Neste tegn fra tastatur-bufferen, eller 0 hvis tom
  */
 char keyboard_getchar() 
 {
@@ -451,8 +388,7 @@ char keyboard_getchar()
 
 /**
  * Sjekker om det er tegn tilgjengelig i tastatur-bufferen
- * 
- * @return 1 hvis det er tegn tilgjengelig, 0 ellers
+ * 1 hvis det er tegn tilgjengelig, 0 ellers
  */
 int keyboard_data_available() 
 {
@@ -460,10 +396,9 @@ int keyboard_data_available()
 }
 
 /**
- * Initialiserer interrupt-håndtering
+ * Initialiserer interrupt-systemet
  * 
  * Denne funksjonen setter opp PIC og aktiverer interrupts.
- * Dette er nødvendig for at hardware-interrupts skal fungere.
  */
 void interrupt_initialize() 
 {

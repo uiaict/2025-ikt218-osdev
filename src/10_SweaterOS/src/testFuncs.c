@@ -114,41 +114,33 @@ void test_idt() {
  * Testen bekrefter at både hardware-interrupt og tastatur-driveren virker.
  */
 void test_keyboard_interrupt() {
-    // Vis en overskrift for testen
-    terminal_write_color("\nKeyboard interrupt test:\n", COLOR_YELLOW);
+    terminal_write_color("\nTesting keyboard interrupt (IRQ1)...\n", COLOR_WHITE);
+    terminal_write_color("Press any key to test keyboard interrupt.\n", COLOR_YELLOW);
+    terminal_write_color("Press 'q' to exit the test.\n", COLOR_YELLOW);
     
-    // Aktiver CPU interrupts - dette lar IRQs (hardware interrupts) nå CPU-en
-    // "sti" er en x86 assembly-instruksjon som setter Interrupt Flag
+    // Make sure interrupts are enabled
     __asm__ volatile("sti");
     
-    // Informer brukeren om hva de skal gjøre
-    terminal_write_color("Type 5 characters to test keyboard input:\n", COLOR_WHITE);
-    
-    // Enkelt tastatur-ekko program som viser 5 tastetrykk
-    int count = 0;
-    while (count < 5) {
-        // Sjekk om det er data i tastatur-bufferet
-        if (keyboard_is_key_pressed()) {
-            // Les et tegn fra tastatur-bufferen
-            char c = keyboard_read_char();
-            if (c) {
-                // Vis tegnet som ble tastet inn og ASCII-verdien
-                terminal_write_color("Key pressed: '", COLOR_CYAN);
-                terminal_write_char(c);  // Vis selve tegnet
-                terminal_write_color("' (", COLOR_CYAN);
-                
-                // Konverter ASCII-verdien til heksadesimal for å vise koden
-                char hex[5];
-                hexToString(c, hex);
-                terminal_write_color(hex, COLOR_LIGHT_GREEN);
-                terminal_write_color(")\n", COLOR_CYAN);
-                
-                count++;  // Øk telleren for antall tegn vi har vist
+    // Simple loop to wait for keyboard input
+    int running = 1;
+    while (running) {
+        // Check if a key has been pressed
+        if (keyboard_data_available()) {
+            char c = keyboard_getchar();
+            
+            // Display the key that was pressed
+            terminal_write_color("Key pressed: '", COLOR_GREEN);
+            terminal_write_char(c);
+            terminal_write_color("'\n", COLOR_GREEN);
+            
+            // Exit if 'q' is pressed
+            if (c == 'q') {
+                running = 0;
             }
         }
     }
     
-    terminal_write_color("Keyboard test completed successfully!\n", COLOR_GREEN);
+    terminal_write_color("Keyboard interrupt test completed.\n", COLOR_GREEN);
 }
 
 /* 
@@ -159,50 +151,33 @@ void test_keyboard_interrupt() {
  * Når tastetrykk kommer, blir IRQ1 utløst, som kjører vår keyboard_handler.
  */
 void test_hardware_interrupts() {
-    terminal_write_color("\nTesting hardware interrupts:\n", COLOR_YELLOW);
-    terminal_write_color("Keyboard input test - press keys to see them displayed:\n", COLOR_WHITE);
-    terminal_write_color("(Press up to 10 keys or wait for timeout)\n", COLOR_GRAY);
+    terminal_write_color("\nTesting hardware interrupts...\n", COLOR_WHITE);
+    terminal_write_color("Press any key to test keyboard interrupt.\n", COLOR_YELLOW);
+    terminal_write_color("Press 'q' to exit the test.\n", COLOR_YELLOW);
     
-    // Aktiver hardware interrupts ved å sette interrupt flag
-    // "sti" er en x86 assembly instruksjon: Set Interrupt Flag
+    // Make sure interrupts are enabled
     __asm__ volatile("sti");
     
-    // Enkelt tastatur-ekko program - leser fra tastatur-bufferen og viser tegnene
-    int keyCount = 0;
-    uint32_t timeout = 10000000; // Approximately 10 seconds timeout
-    uint32_t counter = 0;
-    
-    while (keyCount < 10 && counter < timeout) { // Avslutt etter 10 tastetrykk eller timeout
-        // Sjekk om det er data i tastatur-bufferen
-        if (keyboard_is_key_pressed()) {
-            // Les et tegn fra tastatur-bufferen
-            char c = keyboard_read_char();
-            if (c) {
-                // Vis tegnet på skjermen
-                terminal_write_char(c);
-                keyCount++;
-                // Reset counter when a key is pressed
-                counter = 0;
+    // Simple loop to wait for keyboard input
+    int running = 1;
+    while (running) {
+        // Check if a key has been pressed
+        if (keyboard_data_available()) {
+            char c = keyboard_getchar();
+            
+            // Display the key that was pressed
+            terminal_write_color("Key pressed: '", COLOR_GREEN);
+            terminal_write_char(c);
+            terminal_write_color("'\n", COLOR_GREEN);
+            
+            // Exit if 'q' is pressed
+            if (c == 'q') {
+                running = 0;
             }
         }
-        counter++;
-        
-        // Show a spinner to indicate we're waiting
-        if (counter % 1000000 == 0) {
-            static int spinner = 0;
-            const char spinner_chars[] = {'|', '/', '-', '\\'};
-            terminal_write_char('\b');
-            terminal_write_char(spinner_chars[spinner]);
-            spinner = (spinner + 1) % 4;
-        }
     }
     
-    if (counter >= timeout) {
-        terminal_write_color("\nTimeout waiting for keyboard input.\n", COLOR_YELLOW);
-        terminal_write_color("Hardware interrupts may not be working correctly.\n", COLOR_YELLOW);
-    } else {
-        terminal_write_color("\nHardware interrupt test completed successfully!\n", COLOR_GREEN);
-    }
+    terminal_write_color("Hardware interrupts test completed.\n", COLOR_GREEN);
 }
 
 /* 

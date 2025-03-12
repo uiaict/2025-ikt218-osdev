@@ -1,0 +1,47 @@
+[
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/10_SweaterOS",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/10_SweaterOS/include -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o /workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/multiboot2.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/multiboot2.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/10_SweaterOS",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/10_SweaterOS/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/kernel.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/kernel.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/10_SweaterOS",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/10_SweaterOS/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/globalDescriptorTable.c.o -c /workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/globalDescriptorTable.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/globalDescriptorTable.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/10_SweaterOS",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/10_SweaterOS/include -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/descriptorTables.asm.o /workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/descriptorTables.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/descriptorTables.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/10_SweaterOS",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/10_SweaterOS/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/interruptDescriptorTable.c.o -c /workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/interruptDescriptorTable.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/interruptDescriptorTable.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/10_SweaterOS",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/10_SweaterOS/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/miscFuncs.c.o -c /workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/miscFuncs.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/miscFuncs.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/10_SweaterOS",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/10_SweaterOS/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/testFuncs.c.o -c /workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/testFuncs.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/testFuncs.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/10_SweaterOS",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/10_SweaterOS/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/interruptHandler.c.o -c /workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/interruptHandler.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/interruptHandler.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/10_SweaterOS",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/10_SweaterOS/include -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/interruptServiceRoutines.asm.o /workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/interruptServiceRoutines.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/10_SweaterOS/src/interruptServiceRoutines.asm"
+}
+]

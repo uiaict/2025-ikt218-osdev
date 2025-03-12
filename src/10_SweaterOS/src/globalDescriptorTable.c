@@ -8,7 +8,7 @@ struct gdt_entries gdt[GDT_SIZE];
 struct gdt_pointer gdt_info;
 
 // Funksjon i assembly som kaster GDT inn i CPU
-extern void TOSS_GDT(uint32_t);
+extern void gdt_flush(uint32_t);
 
 // Setter opp en GDT-entry med baseadresse, størrelse, tilgangsrettigheter og flagg.
 static void gdt_add_entry(int index, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity) {
@@ -64,7 +64,7 @@ void initializer_GDT()
     terminal_write_color("Loading GDT into CPU...\n", COLOR_WHITE);
     
     // Load the GDT
-    TOSS_GDT((uint32_t)&gdt_info);
+    gdt_flush((uint32_t)&gdt_info);
     
     terminal_write_color("GDT loaded successfully!\n", COLOR_LIGHT_GREEN);
     
