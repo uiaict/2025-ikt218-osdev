@@ -77,4 +77,25 @@ void cursor_enable(uint8_t cursor_start, uint8_t cursor_end);
  */
 void cursor_disable();
 
+/**
+ * @brief Moving the Cursor
+ *
+ * Keep in mind that you don't need to update the cursor's location every time a
+ * new character is displayed. It would be faster to instead only update it
+ * after printing an entire string.
+ *
+ * Taken from https://wiki.osdev.org/Text_Mode_Cursor
+ */
+void update_cursor(int x, int y);
+
+/**
+ * @brief Get Cursor Position
+ *
+ * With this code, you get: pos = y * VGA_WIDTH + x. To obtain the coordinates,
+ * just calculate: y = pos / VGA_WIDTH; x = pos % VGA_WIDTH;.
+ *
+ * Taken from https://wiki.osdev.org/Text_Mode_Cursor
+ */
+uint16_t get_cursor_position(void);
+
 #endif
