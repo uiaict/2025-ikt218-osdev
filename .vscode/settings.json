@@ -1,21 +1,21 @@
 {
-    "cmake.buildDirectory": "${workspaceFolder}/build/group_name",
-    "cmake.sourceDirectory": "${workspaceFolder}/src/group_name",
-    "cmake.useCMakePresets": "never",
-    "C_Cpp.errorSquiggles": "disabled",
-    "files.associations": {
-        "cstddef": "cpp",
-        "*.tcc": "cpp",
-        "*.ipp": "cpp",
-        "stdbool.h": "c",
-        "stddef.h": "c",
-        "stdio.h": "c",
-        "stdint.h": "c",
-        "system.h": "c",
-        "multiboot2.h": "c",
-        "interrupts.h": "c",
-        "memory.h": "c",
-        "limits.h": "c"
-    }
-
-}
+    "cmake.buildDirectory": "${workspaceFolder}/build/70_AI_Alcatraz",
+    "cmake.sourceDirectory": "${workspaceFolder}/src/70_AI_Alcatraz",
+     "cmake.useCMakePresets": "never",
+     "C_Cpp.errorSquiggles": "disabled",
+     "files.associations": {
+         "cstddef": "cpp",
+         "*.tcc": "cpp",
+         "*.ipp": "cpp",
+         "stdbool.h": "c",
+         "stddef.h": "c",
+         "stdio.h": "c",
+         "stdint.h": "c",
+         "system.h": "c",
+         "multiboot2.h": "c",
+         "interrupts.h": "c",
+         "memory.h": "c",
+         "limits.h": "c"
+     }
+ 
+ }
