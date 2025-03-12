@@ -2,6 +2,7 @@
 #include "libc/stdint.h"
 #include "libc/stdarg.h"
 #include "libc/stdbool.h"
+#include "libc/string.h"
 #include "sys/io.h"
 
 int col = 0;
@@ -50,15 +51,8 @@ void terminal_write(int color, const char *str) {
             }
         }
 
-        if (row == HEIGHT) {
-            row = 0;
-        }
-
         i++;
     }
-
-    update_cursor(col, row);
-
 }
 
 void terminal_scroll_down() {
@@ -72,15 +66,28 @@ void terminal_scroll_down() {
     row--;
 }
 
+
+void reverse(char *str, int len) {
+    int start = 0;
+    int end = len - 1;
+    while (start < end) {
+        char tmp = str[start];
+        str[start] = str[end];
+        str[end] = tmp;
+        end--;
+        start++;
+    }
+}
+
 // https://www.geeksforgeeks.org/implement-itoa/
-char *itoa(int num, char *str, int base) {
+void itoa(int num, char *str, int base) {
     int i = 0;
     bool is_neg = false;
 
     if (num == 0) {
         str[i++] = '0';
         str[i] = '\0';
-        return str;
+        return;
     }
 
     if (num < 0 && base == 10) {
@@ -100,18 +107,34 @@ char *itoa(int num, char *str, int base) {
 
     str[i] = '\0';
     
-    int start = 0;
-    int end = i - 1;
-    while (start < end) {
-        char tmp = str[start];
-        str[start] = str[end];
-        str[end] = tmp;
-        end--;
-        start++;
+    reverse(str, i);
+}
+
+// https://www.geeksforgeeks.org/convert-floating-point-number-string/?ref=ml_lbp
+void ftoa(float num, char *str, int afterpoint) {
+    int ipart = (int) num;
+    float fpart = num - (float) ipart;
+
+    itoa(ipart, str, 10);
+    
+    int i = strlen(str);
+
+    if (afterpoint != 0) {
+        str[i] = '.';
+        i++;
+        for (int j = 0; j < afterpoint; j++) {
+            fpart = fpart * 10;
+            int frac = (int)fpart;
+            str[i++] = frac + '0';
+            fpart -= frac;
+        }
     }
 
-    return str;
+    str[i] = '\0';
 }
+
+
+
 
 // https://wiki.osdev.org/Text_Mode_Cursor
 

@@ -65,6 +65,7 @@ add_executable(uiaos-kernel
 	src/drivers/terminal.c
 	src/sys/io.c
 	src/libc/stdio.c
+	src/libc/string.c
 )
 
 # Include directories for the kernel target

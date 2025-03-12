@@ -5,6 +5,8 @@
 #define WIDTH 80
 #define HEIGHT 25
 
+#define DEFAULT_COLOR 15
+
 #define BLACK 0
 #define BLUE 1
 #define GREEN 2
@@ -25,7 +27,8 @@
 void terminal_clear();
 void terminal_put(char c, int color, int x, int y);
 void terminal_write(int color, const char *str);
-char *itoa(int num, char *str, int base);
+void itoa(int num, char *str, int base);
+void ftoa(float num, char *str, int afterpoint);
 
 void enable_cursor(uint8_t cursor_start, uint8_t cursor_end);
 void disable_cursor();
