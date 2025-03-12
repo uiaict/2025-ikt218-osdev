@@ -15,7 +15,7 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
-// 🎨 Skriver til terminalen linje for linje
+// Skriver til terminalen 
 void write_line_to_terminal(const char* str, int line) {
     if (line >= VGA_HEIGHT) return; // Unngår å skrive utenfor skjermen
 
@@ -26,9 +26,10 @@ void write_line_to_terminal(const char* str, int line) {
     }
 }
 
-int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-    write_line_to_terminal("Hello", 1);  // Første linje
-    write_line_to_terminal("Summernerds!!!", 2);  // Andre linje
+
+int main(uint32_t magic, struct multiboot_info* mb_info_addr)
+{
+    write_line_to_terminal("Hello Summernerds!!!", 1);
 
     return 0;
 }
