@@ -19,3 +19,5 @@ src/group_name/src/kernel.c
 build/
 /build/
 build/*
+
+build/31_inefficientOS/kernel.bin
