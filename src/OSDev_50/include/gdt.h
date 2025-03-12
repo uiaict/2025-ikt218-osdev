@@ -21,6 +21,7 @@ struct gdt_entry_struct{
 }__attribute__((packed));
 
 void init_gdt(void);
+void init_gdt(void);
 
 #endif
 
