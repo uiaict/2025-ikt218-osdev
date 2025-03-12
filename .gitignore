@@ -21,3 +21,5 @@ build/
 build/*
 
 build/31_inefficientOS/kernel.bin
+build/31_inefficientOS/kernel.iso
+build/31_inefficientOS/disk.iso
