@@ -11,18 +11,15 @@ struct multiboot_info {
 };
 
 
-int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-    volatile uint16_t* vga_buffer = (uint16_t*)0xB8000;
 
-    const char* message = "Hello World";
-    uint8_t color = 0x07;
+void kernel_main() {
+    // Initialize the GDT
+    init_gdt();
 
-    for (int i = 0; message[i] != '\0'; i++) {
-        vga_buffer[i] = (uint16_t)message[i] | ((uint16_t)color << 8);
-    }
+    // Print "Hello World" to the terminal
+    terminal_write("Hello World\n");
+}
 
-    while (1) {
-    }
-
-    return 0;
+void init_gdt() {
+    load_gdt();
 }
