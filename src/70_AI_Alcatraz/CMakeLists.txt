@@ -58,7 +58,7 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 
 # Add executable target for the kernel
 add_executable(uiaos-kernel 
-	# src/multiboot2.asm # TODO: Add multiboot2 support
+	 src/multiboot2.asm # TODO: Add multiboot2 support
     src/kernel.c
 )
 
@@ -93,7 +93,7 @@ target_link_options(
 # Set properties for the kernel target
 set_target_properties(uiaos-kernel PROPERTIES
     OUTPUT_NAME "${OS_KERNEL_BINARY}"
-    #LINK_FLAGS "${OS_KERNEL_LINK_FLAGS}"
+    LINK_FLAGS "${OS_KERNEL_LINK_FLAGS}"
 )
 
 ########################################
@@ -131,7 +131,7 @@ add_custom_target(
 	 	-efi-boot-part --efi-boot-image --protective-msdos-label
 	 	${ISO_DIR} -o ${CMAKE_CURRENT_BINARY_DIR}/kernel.iso
 	COMMAND ${LIMINE_DIR}/limine bios-install ${CMAKE_CURRENT_BINARY_DIR}/kernel.iso
-	#COMMAND sudo rm -rf ${ISO_DIR}
+	COMMAND sudo rm -rf ${ISO_DIR}
 	DEPENDS create-fat32-disk uiaos-kernel
 	VERBATIM
 )
