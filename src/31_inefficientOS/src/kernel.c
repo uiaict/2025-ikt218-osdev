@@ -24,24 +24,24 @@ void uint_to_hex(uint32_t num, char* str) {
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialize terminal first for output
     terminal_initialize();
-    terminal_write_colored("Terminal initialized\n", VGA_COLOR_GREEN, VGA_COLOR_BLACK);
+    terminal_writestring("Terminal initialized\n");
     
     // Debug: Print the magic number we received
     char hex_str[9];
     uint_to_hex(magic, hex_str);
-    terminal_write_colored("Received magic number: 0x", VGA_COLOR_BLUE, VGA_COLOR_BLACK);
-    terminal_write_colored(hex_str, VGA_COLOR_CYAN, VGA_COLOR_BLACK);
+    terminal_writestring("Received magic number: 0x");
+    terminal_writestring(hex_str);
     terminal_writestring("\n");
    
     // Debug: Print the expected magic number
     uint_to_hex(MULTIBOOT2_BOOTLOADER_MAGIC, hex_str);
-    terminal_write_colored("Expected magic number: 0x", VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK);
-    terminal_write_colored(hex_str, VGA_COLOR_LIGHT_BROWN, VGA_COLOR_BLACK);
+    terminal_writestring("Expected magic number: 0x");
+    terminal_writestring(hex_str);
     terminal_writestring("\n");
     
     // Check multiboot magic number
     if (magic != MULTIBOOT2_BOOTLOADER_MAGIC) {
-        terminal_write_colored("Invalid multiboot2 magic number!\n", VGA_COLOR_RED, VGA_COLOR_BLACK);
+        terminal_writestring("Invalid multiboot2 magic number!\n");
         return -1;
     }
     
@@ -54,16 +54,16 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     terminal_write_colored("Is there anybody in there?\n", VGA_COLOR_GREEN, VGA_COLOR_BLACK);
     terminal_write_colored("Just nod if you can hear me\n", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
     terminal_write_colored("Is there anyone home?\n", VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK);
-    terminal_write_colored("Hello world\n", VGA_COLOR_BLACK, VGA_COLOR_WHITE);
+    terminal_writestring("Hello world\n");
 
 
 
     // Initialize GDT
-    terminal_write_colored("Initializing GDT...\n", VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK);
+    terminal_writestring("Initializing GDT...\n");
     gdt_init();
-    terminal_write_colored("GDT initialized successfully!\n", VGA_COLOR_BROWN, VGA_COLOR_BLACK);
+    terminal_writestring("GDT initialized successfully!\n");
    
-    terminal_write_colored("Kernel initialization complete!\n", VGA_COLOR_GREEN, VGA_COLOR_BLACK);
+    terminal_writestring("Kernel initialization complete!\n");
    
     while(1) {
         asm volatile("hlt");

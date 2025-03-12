@@ -1,4 +1,3 @@
-// src/arch/i386/gdt.c
 #include "gdt.h"
 
 #define GDT_ENTRIES 3  // Null, Kernel Code, Kernel Data
@@ -17,8 +16,12 @@ static struct gdt_ptr gdt_pointer;
 // GDT granularity flags
 #define GDT_GRANULARITY    0x80 // Use 4KB granularity
 #define GDT_32BIT          0x40 // 32-bit selector
-#define GDT_16BIT          0x00 // 16-bit selector
 
+// num is the index of the GDT entry to set
+// base is the base address of the segment
+// limit is the limit of the segment
+// access is the access byte
+// gran is the granularity byte
 static void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran) {
     gdt_entries[num].base_low = (base & 0xFFFF);
     gdt_entries[num].base_middle = (base >> 16) & 0xFF;
