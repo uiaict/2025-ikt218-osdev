@@ -108,6 +108,7 @@ add_custom_target(
     COMMAND mkfs.fat -F 32 ${DISK_IMAGE}
     VERBATIM
 )
+########################################
 
 ########################################
 # OS-Image Target
