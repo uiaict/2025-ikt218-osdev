@@ -1,37 +1,40 @@
 ENTRY(_start)
+OUTPUT_FORMAT(elf32-i386)
+OUTPUT_ARCH(i386)
 
-SECTIONS {
+SECTIONS
+{
+    /* Start at 1MB */
     . = 1M;
 
-    .boot :
+    /* Multiboot header must come first */
+    .multiboot BLOCK(4K) : ALIGN(4K)
     {
-        /* Ensure that the multiboot header is at the beginning! */
-        *(.multiboot_header)
+        *(.multiboot)
     }
 
-    . = ALIGN(4K);
-    .text :
+    /* Then the code */
+    .text BLOCK(4K) : ALIGN(4K)
     {
-        *(.text .text.*)
+        *(.text)
     }
 
-    . = ALIGN(4K);
-    .rodata :
+    /* Read-only data */
+    .rodata BLOCK(4K) : ALIGN(4K)
     {
-        *(.rodata .rodata.*)
+        *(.rodata)
     }
 
-    . = ALIGN(4K);
-    .data :
+    /* Read-write data (initialized) */
+    .data BLOCK(4K) : ALIGN(4K)
     {
-        *(.data .data.*)
+        *(.data)
     }
 
-    . = ALIGN(4K);
-    .bss :
+    /* Read-write data (uninitialized) and stack */
+    .bss BLOCK(4K) : ALIGN(4K)
     {
-        *(.bss .bss.*)
+        *(COMMON)
+        *(.bss)
     }
-
-	end = .; _end = .; __end = .;
 }

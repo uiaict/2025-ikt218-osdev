@@ -1,25 +1,15 @@
-#include "libc/stdint.h"
-#include "libc/stddef.h"
-#include "libc/stdbool.h"
-#include <multiboot2.h>
+#include "../include/gdt.h"
+#include "../include/terminal.h"
+#include "../include/libc/stdint.h"
+#include "../include/libc/stddef.h"
 
-
-struct multiboot_info {
-    uint32_t size;
-    uint32_t reserved;
-    struct multiboot_tag *first;
-};
-
-
-
-void kernel_main() {
-    // Initialize the GDT
+void kernel_main(void) {
+    // Initialize terminal first
+    terminal_initialize();
+    
+    // Initialize GDT
     init_gdt();
-
-    // Print "Hello World" to the terminal
-    terminal_write("Hello World\n");
-}
-
-void init_gdt() {
-    load_gdt();
+    
+    // Print Hello World
+    terminal_writestring("Hello World!\n");
 }
