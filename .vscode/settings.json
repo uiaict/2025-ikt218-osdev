@@ -16,7 +16,8 @@
         "interrupts.h": "c",
         "memory.h": "c",
         "limits.h": "c",
-        "clear.h": "c"
+        "clear.h": "c",
+        "cursor.h": "c"
     }
 
 }

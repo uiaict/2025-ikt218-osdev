@@ -1,5 +1,8 @@
-#include "libc/stdint.h"
+#include "terminal/print.h"
 #include "terminal/cursor.h"
+
+#include "libc/stddef.h"
+#include "libc/stdint.h"
 
 #define VGA_ADDRESS 0xB8000
 #define SCREEN_WIDTH 80
@@ -25,11 +28,49 @@ static void print_char(char c) {
     move_cursor(cursor_position);
 }
 
-// Printf function to print a string
-void printf(const char *str) {
+// Print function to print a string
+static void print_string(const char *str) {
     int i = 0;
     while (str[i] != '\0') {
         print_char(str[i]);
         i++;
     }
+}
+
+
+// Print function to print a formatted string
+void printf(const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+
+    int i = 0;
+    while (format[i] != '\0') {
+
+        if (format[i] == '%' && format[i+1] != '\0') {
+            switch (format[++i])
+            {
+            case 's': {
+                char *str = va_arg(args, char*);
+                if (str != NULL) {
+                    print_string(str);
+                }
+                else {
+                    print_string("(null)");
+                }
+                break;
+            }
+                
+            default:
+                print_string("(unknown format descriptor)");
+                va_arg(args, void*);
+                break;
+            }
+        }
+        else {
+            print_char(format[i]);
+        }
+        i++;
+    }
+
+    va_end(args);
 }
