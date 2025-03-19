@@ -1,5 +1,7 @@
 #pragma once
 
+typedef unsigned int size_t;  
+
 int putchar(int ic);
-bool print(const char* data, size_t length);
+void print(const char* text);
 int printf(const char* __restrict__ format, ...);

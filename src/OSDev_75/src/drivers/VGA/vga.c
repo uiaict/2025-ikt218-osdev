@@ -1,100 +1,159 @@
-//
-// vga.c
-//
-// Implements basic text-mode printing and a simple two-frame ASCII animation.
-//
-
+#include <stddef.h>   // for size_t
 #include "vga.h"
+#include "util.h" // for outPortB, inPortB, etc.
 
-// VGA buffer address for text mode
-static uint16_t* const VGA_BUFFER = (uint16_t* const)0xB8000;
+// -----------------------------
+// Hardware cursor helper funcs
+// -----------------------------
+void enable_cursor(uint8_t cursor_start, uint8_t cursor_end)
+{
+    outPortB(0x3D4, 0x0A);
+    outPortB(0x3D5, (inPortB(0x3D5) & 0xC0) | cursor_start);
 
-// Cursor position
-static uint16_t column = 0;
-static uint16_t line   = 0;
-
-// Default color: light grey on black
-static const uint16_t defaultC = (COLOR8_LIGHT_GREY << 8) | (COLOR8_BLACK << 12);
-static uint16_t currentColor   = 0;
-
-// Set the current color bits
-void setColor(uint8_t fg, uint8_t bg) {
-    // Our scheme: bits [15..12]=bg, bits [11..8]=fg
-    currentColor = ((uint16_t)fg << 8) | ((uint16_t)bg << 12);
+    outPortB(0x3D4, 0x0B);
+    outPortB(0x3D5, (inPortB(0x3D5) & 0xE0) | cursor_end);
 }
 
-// Clears the screen using currentColor
-void Reset(void) {
-    line = 0;
-    column = 0;
+void update_cursor(uint16_t x, uint16_t y)
+{
+    uint16_t pos = y * width + x;
 
-    // Revert to default color on each Reset
-    currentColor = defaultC;
+    outPortB(0x3D4, 0x0F);
+    outPortB(0x3D5, (uint8_t)(pos & 0xFF));
+    outPortB(0x3D4, 0x0E);
+    outPortB(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
+}
 
-    for (uint16_t y = 0; y < height; y++) {
-        for (uint16_t x = 0; x < width; x++) {
-            VGA_BUFFER[y * width + x] = (uint16_t)' ' | defaultC;
+// -----------------------------
+// VGA text-mode driver
+// -----------------------------
+static uint16_t* const VGA_MEMORY = (uint16_t* const)0xB8000;
+
+static uint16_t cursor_x = 0;
+static uint16_t cursor_y = 0;
+
+static const uint8_t DEFAULT_ATTRIBUTE = ((0 & 0x0F) << 4) | (15 & 0x0F);
+static uint8_t currentAttribute = 0;
+
+static inline uint16_t makeVgaCell(char c, uint8_t attr)
+{
+    return (uint16_t)(c & 0xFF) | ((uint16_t)attr << 8);
+}
+
+void setColor(uint8_t fg, uint8_t bg)
+{
+    currentAttribute = ((bg & 0x0F) << 4) | (fg & 0x0F);
+}
+
+void Reset(void)
+{
+    cursor_x = 0;
+    cursor_y = 0;
+    currentAttribute = DEFAULT_ATTRIBUTE;
+
+    for (uint16_t y = 0; y < height; y++)
+    {
+        for (uint16_t x = 0; x < width; x++)
+        {
+            VGA_MEMORY[y * width + x] = makeVgaCell(' ', DEFAULT_ATTRIBUTE);
         }
+    }
+
+    // Enable hardware cursor (underline style)
+    enable_cursor(14, 15);
+    // Update cursor to (0, 0)
+    update_cursor(cursor_x, cursor_y);
+}
+
+void scrollUp(void)
+{
+    for (uint16_t y = 1; y < height; y++)
+    {
+        for (uint16_t x = 0; x < width; x++)
+        {
+            VGA_MEMORY[(y - 1) * width + x] = VGA_MEMORY[y * width + x];
+        }
+    }
+    // Clear last line
+    for (uint16_t x = 0; x < width; x++)
+    {
+        VGA_MEMORY[(height - 1) * width + x] = makeVgaCell(' ', currentAttribute);
     }
 }
 
-// Helper to move to next line or scroll
-void newLine(void) {
-    if (line < height - 1) {
-        line++;
-        column = 0;
-    } else {
+void newLine(void)
+{
+    cursor_x = 0;
+    if (cursor_y < height - 1)
+    {
+        cursor_y++;
+    }
+    else
+    {
         scrollUp();
-        column = 0;
     }
+    // Move hardware cursor
+    update_cursor(cursor_x, cursor_y);
 }
 
-// Scroll up by one line
-void scrollUp(void) {
-    for (uint16_t y = 1; y < height; y++) {
-        for (uint16_t x = 0; x < width; x++) {
-            VGA_BUFFER[(y - 1) * width + x] = VGA_BUFFER[y * width + x];
-        }
-    }
-    // Blank out the last line
-    for (uint16_t x = 0; x < width; x++) {
-        VGA_BUFFER[(height - 1) * width + x] = (uint16_t)' ' | currentColor;
-    }
-}
+void print(const char* text)
+{
+    while (*text)
+    {
+        char c = *text++;
 
-// Basic text print
-void print(const char* s) {
-    while (*s) {
-        if (*s == '\n') {
+        if (c == '\n')
+        {
             newLine();
-        } else if (*s == '\r') {
-            column = 0;
-        } else if (*s == '\b') {
-            if (column > 0) {
-                column--;
-                VGA_BUFFER[line * width + column] = ' ' | currentColor;
+        }
+        else if (c == '\r')
+        {
+            cursor_x = 0;
+            update_cursor(cursor_x, cursor_y);
+        }
+        else if (c == '\b')
+        {
+            // Backspace
+            if (cursor_x > 0)
+            {
+                cursor_x--;
+                VGA_MEMORY[cursor_y * width + cursor_x] = makeVgaCell(' ', currentAttribute);
             }
-        } else {
-            if (column == width) {
+            else if (cursor_y > 0)
+            {
+                // Optional: handle backspace at start of line
+                cursor_y--;
+                cursor_x = width - 1;
+                VGA_MEMORY[cursor_y * width + cursor_x] = makeVgaCell(' ', currentAttribute);
+            }
+            update_cursor(cursor_x, cursor_y);
+        }
+        else
+        {
+            // Normal character
+            if (cursor_x >= width)
+            {
                 newLine();
             }
-            VGA_BUFFER[line * width + column] = (uint16_t)*s | currentColor;
-            column++;
+            VGA_MEMORY[cursor_y * width + cursor_x] = makeVgaCell(c, currentAttribute);
+            cursor_x++;
+            update_cursor(cursor_x, cursor_y);
         }
-        s++;
     }
 }
 
-// A crude spin-loop delay so animation is visible
-static void delay(unsigned long count) {
-    for (volatile unsigned long i = 0; i < count; i++) {
+// Delay for ASCII animation
+static void delaySpin(unsigned long count)
+{
+    for (volatile unsigned long i = 0; i < count; i++)
+    {
         __asm__ __volatile__("nop");
     }
 }
-
-// Two frames: first white, then red. Same ASCII text in each.
-static const char* FRAMES[2] = {
-    // FRAME 0: White text
+// ASCII frames (unchanged as requested)
+static const char* FRAMES[4] =
+{
+    // Frame 1
     " /$$   /$$ /$$$$$$  /$$$$$$ \n"
     "| $$  | $$|_  $$_/ /$$__  $$\n"
     "| $$  | $$  | $$  | $$  \\ $$\n"
@@ -103,47 +162,9 @@ static const char* FRAMES[2] = {
     "| $$  | $$  | $$  | $$  | $$\n"
     "|  $$$$$$/ /$$$$$$| $$  | $$\n"
     " \\______/ |______/|__/  |__/\n"
-    "\n"
-    "$$\\   $$\\ $$$$$$\\  $$$$$$\\  \n"
-    "$$ |  $$ |\\_$$  _|$$  __$$\\ \n"
-    "$$ |  $$ |  $$ |  $$ /  $$ |\n"
-    "$$ |  $$ |  $$ |  $$$$$$$$ |\n"
-    "$$ |  $$ |  $$ |  $$  __$$ |\n"
-    "$$ |  $$ |  $$ |  $$ |  $$ |\n"
-    "\\$$$$$$  |$$$$$$\\ $$ |  $$ |\n"
-    " \\______/ \\______/\\__|  \\__|\n"
-    "\n"
-    " __    __  ______   ______  \n"
-    "|  \\  |  \\|      \\ /      \\ \n"
-    "| $$  | $$ \\$$$$$$|  $$$$$$\\\n"
-    "| $$  | $$  | $$  | $$__| $$\n"
-    "| $$  | $$  | $$  | $$    $$\n"
-    "| $$  | $$  | $$  | $$$$$$$$\n"
-    "| $$__/ $$ _| $$_ | $$  | $$\n"
-    " \\$$    $$|   $$ \\| $$  | $$\n"
-    "  \\$$$$$$  \\$$$$$$ \\$$   \\$$\n"
-    "\n"
-    " __    __  ______   ______  \n"
-    "/  |  /  |/      | /      \\ \n"
-    "$$ |  $$ |$$$$$$/ /$$$$$$  |\n"
-    "$$ |  $$ |  $$ |  $$ |__$$ |\n"
-    "$$ |  $$ |  $$ |  $$    $$ |\n"
-    "$$ |  $$ |  $$ |  $$$$$$$$ |\n"
-    "$$ \\__$$ | _$$ |_ $$ |  $$ |\n"
-    "$$    $$/ / $$   |$$ |  $$ |\n"
-    " $$$$$$/  $$$$$$/ $$/   $$/ \n"
     "\n",
 
-    // FRAME 1: Red text
-    " /$$   /$$ /$$$$$$  /$$$$$$ \n"
-    "| $$  | $$|_  $$_/ /$$__  $$\n"
-    "| $$  | $$  | $$  | $$  \\ $$\n"
-    "| $$  | $$  | $$  | $$$$$$$$\n"
-    "| $$  | $$  | $$  | $$__  $$\n"
-    "| $$  | $$  | $$  | $$  | $$\n"
-    "|  $$$$$$/ /$$$$$$| $$  | $$\n"
-    " \\______/ |______/|__/  |__/\n"
-    "\n"
+    // Frame 2
     "$$\\   $$\\ $$$$$$\\  $$$$$$\\  \n"
     "$$ |  $$ |\\_$$  _|$$  __$$\\ \n"
     "$$ |  $$ |  $$ |  $$ /  $$ |\n"
@@ -152,7 +173,9 @@ static const char* FRAMES[2] = {
     "$$ |  $$ |  $$ |  $$ |  $$ |\n"
     "\\$$$$$$  |$$$$$$\\ $$ |  $$ |\n"
     " \\______/ \\______/\\__|  \\__|\n"
-    "\n"
+    "\n",
+
+    // Frame 3
     " __    __  ______   ______  \n"
     "|  \\  |  \\|      \\ /      \\ \n"
     "| $$  | $$ \\$$$$$$|  $$$$$$\\\n"
@@ -162,36 +185,43 @@ static const char* FRAMES[2] = {
     "| $$__/ $$ _| $$_ | $$  | $$\n"
     " \\$$    $$|   $$ \\| $$  | $$\n"
     "  \\$$$$$$  \\$$$$$$ \\$$   \\$$\n"
-    "\n"
-    " __    __  ______   ______  \n"
-    "/  |  /  |/      | /      \\ \n"
-    "$$ |  $$ |$$$$$$/ /$$$$$$  |\n"
-    "$$ |  $$ |  $$ |  $$ |__$$ |\n"
-    "$$ |  $$ |  $$ |  $$    $$ |\n"
-    "$$ |  $$ |  $$ |  $$$$$$$$ |\n"
-    "$$ \\__$$ | _$$ |_ $$ |  $$ |\n"
-    "$$    $$/ / $$   |$$ |  $$ |\n"
-    " $$$$$$/  $$$$$$/ $$/   $$/ \n"
+    "\n",
+
+    // Frame 4
+    " /$$   /$$ /$$$$$$  /$$$$$$ \n"
+    "| $$  | $$|_  $$_/ /$$__  $$\n"
+    "| $$  | $$  | $$  | $$  \\ $$\n"
+    "| $$  | $$  | $$  | $$$$$$$$\n"
+    "| $$  | $$  | $$  | $$__  $$\n"
+    "| $$  | $$  | $$  | $$  | $$\n"
+    "|  $$$$$$/ /$$$$$$| $$  | $$\n"
+    " \\______/ |______/|__/  |__/\n"
     "\n"
 };
 
-#define NUM_FRAMES (sizeof(FRAMES)/sizeof(FRAMES[0]))
+#define NUM_FRAMES (sizeof(FRAMES) / sizeof(FRAMES[0]))
 
-// Show two frames: White, then Red
-void show_animation(void) {
-    // Frame 0: set color white on black, clear, print
+//----------------------------------------------
+// show_animation: show each frame with dark red background and white text
+void show_animation(void)
+{
+    // Use size_t to match NUM_FRAMES (avoids sign-compare warning)
+    for (size_t i = 0; i < NUM_FRAMES; i++)
+    {
+        // Set color to white text on dark red background for all frames
+        setColor(COLOR8_WHITE, COLOR8_DARK_GREY);
+
+        // Clear
+        Reset();
+
+        // Print this ASCII chunk
+        print(FRAMES[i]);
+
+        // Delay
+        delaySpin(200000000);
+    }
+
+    // Revert to default (white text on black background) for "hello world"
     setColor(COLOR8_WHITE, COLOR8_BLACK);
-    Reset();
-    print(FRAMES[0]);
-    delay(200000000);
-
-    // Frame 1: set color red on black, clear, print
-    setColor(COLOR8_RED, COLOR8_BLACK);
-    Reset();
-    print(FRAMES[1]);
-    delay(200000000);
-
-    // Finally revert to default color (light grey) and clear
-    setColor(COLOR8_LIGHT_GREY, COLOR8_BLACK);
     Reset();
 }

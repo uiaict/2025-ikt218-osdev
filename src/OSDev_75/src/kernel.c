@@ -3,35 +3,52 @@
 #include "libc/stdbool.h"
 #include <multiboot2.h>
 
-// GDT initialization (defined elsewhere):
+// Include GDT and IDT headers
 #include "arch/i386/GDT/gdt.h"
+#include "arch/i386/interrupts/idt.h"
 
-// VGA driver / animation:
-#include "drivers/VGA/vga.h" 
+// VGA driver
+#include "drivers/VGA/vga.h"
 
-// If your bootloader provides a multiboot structure:
+// Keyboard header
+#include "arch/i386/interrupts/keyboard.h"
+
+// Example multiboot info struct (if needed)
 struct multiboot_info {
     uint32_t size;
     uint32_t reserved;
     struct multiboot_tag *first;
 };
 
-// Entry point
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-    // Initialize GDT if you have one
+    // Initialize GDT and IDT
     initGdt();
+    initIdt();
 
-    // Clear screen to default color (light grey)
+    // Initialize the keyboard handler
+    initKeyboard();
+
+    // Clear screen and show animation
     Reset();
-
-    // Show our two-frame ASCII animation
     show_animation();
+    print("OSDev_75 Booted Successfully!\r\n");
 
-    // Print a final message
-    print("hello world\r\n");
+    // Test ISR examples
+    print("Triggering ISR1 (Debug)...\n");
+    asm("int $0x1");  // Should print "ISR: Debug"
 
-    // Never return from main in a bare-metal OS
+    print("Triggering ISR2 (NMI)...\n");
+    asm("int $0x2");  // Should print "ISR: Non Maskable Interrupt"
+
+    print("Triggering ISR3 (Breakpoint)...\n");
+    asm("int $0x3");  // Should print "ISR: Breakpoint"
+
+    print("Triggering ISR128 (Syscall)...\n");
+    asm("int $0x80");  // Should print "ISR: System Call (int 0x80)"
+
+    // Main loop: keep the OS running
     for (;;) {
         __asm__ __volatile__("hlt");
     }
+    return 0;
 }
