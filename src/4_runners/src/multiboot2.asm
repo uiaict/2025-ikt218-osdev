@@ -26,6 +26,21 @@ align 8
     dw 8	; size
 header_end:
 
+section .data 
+ 
+struc mystruct
+    .a resb 1
+    .b resb 1
+    .c resb 1
+    .d resb 1
+    .e resb 6
+endstruc 
+
+
+%define MYSTRUCT_SIZE 10
+
+mystruct_instance resb MYSTRUCT_SIZE
+
 section .text
 bits 32
 
@@ -33,10 +48,22 @@ _start:
     cli
 
     mov esp, stack_top
-
+    mov eax, mystruct_instance
+    mov byte [ecx], 33
+    mov byte [ecx + 1], 44
+    mov byte [ecx + 2], 55
+    mov byte [ecx + 3], 66
+    mov byte [ecx + 4], 1 
+    mov byte [ecx + 5], 2
+    mov byte [ecx + 6], 3
+    mov byte [ecx + 7], 4
+    mov byte [ecx + 8], 5
+    mov byte [ecx + 9], 6
+      
+ 
 	push ebx
 	push eax
-
+    push ecx
     call main ; Jump main function
 
 section .bss
