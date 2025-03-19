@@ -1,4 +1,4 @@
-```c
+
 
 // Array to hold information about registered interrupt handlers
 struct int_handler int_handlers[IDT_ENTRIES];
@@ -49,11 +49,8 @@ void init_idt() {
   // Load the IDT
   idt_load(&idt_ptr);
 }
-```
 
-```c
 void idt_load(struct idt_ptr *idt_ptr) {
   // Load the IDT using the LIDT instruction
   asm volatile("lidt %0" : : "m" (*idt_ptr));
 }
-```
