@@ -3,8 +3,7 @@
 #include "libc/stdbool.h"
 #include "libc/string.h"
 #include <multiboot2.h>
-
-
+#include "arch/i386/gdt/gdt.h"
 
 struct multiboot_info {
     uint32_t size;
@@ -12,8 +11,10 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
-
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
+    
+    //Initialize gdt from gdt.h
+    init_gdt();
 
     char* hello_world = "Hello, World!";
     size_t len = strlen(hello_world);
