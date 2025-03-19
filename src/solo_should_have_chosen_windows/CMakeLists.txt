@@ -61,7 +61,7 @@ add_executable(uiaos-kernel
 	src/multiboot2.asm # TODO: Add multiboot2 support
     src/kernel.c
 	src/gdt_function/gdt.c
-	src/terminal_functions/clearTerminal.c
+	src/terminal_function/clearTerminal.c
 )
 
 # Include directories for the kernel target
