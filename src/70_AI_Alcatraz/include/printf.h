@@ -1,11 +1,18 @@
 #ifndef PRINTF_H
 #define PRINTF_H
 
+#include "libc/stdint.h"
+
 // Definerer VGA-tekstmodus bufferadresse og skjermstørrelse
 #define VGA_ADDRESS 0xB8000
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 #define WHITE_ON_BLACK 0x0F
+
+// Declare outb function first
+static inline void outb(uint16_t port, uint8_t val) {
+    asm volatile ( "outb %%al, %%dx" : : "a"(val), "d"(port) );
+}
 
 // Globale variabler for terminalbuffer og markørposisjon
 static unsigned short* terminal_buffer = (unsigned short*) VGA_ADDRESS;
@@ -16,10 +23,10 @@ static void move_cursor() {
     unsigned short pos = cursor_y * VGA_WIDTH + cursor_x;
 
     // Porter for VGA markør
-    asm volatile ("outb %1, %0" : : "dN" (0x3D4), "a" (0x0F));
-    asm volatile ("outb %1, %0" : : "dN" (0x3D5), "a" (pos & 0xFF));
-    asm volatile ("outb %1, %0" : : "dN" (0x3D4), "a" (0x0E));
-    asm volatile ("outb %1, %0" : : "dN" (0x3D5), "a" ((pos >> 8) & 0xFF));
+    outb(0x3D4, 0x0F);
+    outb(0x3D5, pos & 0xFF);
+    outb(0x3D4, 0x0E);
+    outb(0x3D5, (pos >> 8) & 0xFF);
 }
 
 // Tømmer skjermen

@@ -17,6 +17,6 @@ struct gdt_ptr {
     unsigned int base;     // Baseadresse til GDT-tabellen
 } __attribute__((packed));
 
-void gdt_init(); // Funksjon for å initialisere GDT
+void gdt_init(void); // Funksjon for å initialisere GDT
 
 #endif // GDT_H
