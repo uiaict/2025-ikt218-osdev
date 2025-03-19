@@ -1,5 +1,6 @@
 #include "gdt/gdt_structs.h"
 #include "gdt/gdt_function.h"
+#include "terminal/clear.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 
@@ -58,9 +59,7 @@ void gdt_load(struct gdt_ptr* gp) {
 // Function to initialize the GDT
 void gdt_init() {
     // Clear screen (first few lines)
-    for (int i = 0; i < 80*5; i++) {
-        write_char(i % 80, i / 80, ' ', 0x07);
-    }
+    clearTerminal();
 
     // Display initial message
     write_string(0, 0, "Setting up GDT...", 0x0F); // White text on black
@@ -87,4 +86,6 @@ void gdt_init() {
     
     // If execution reaches here, GDT loading was successful
     write_string(0, 4, "GDT loaded successfully!", 0x0A); // Green text for success
+
+    clearTerminal();
 }
