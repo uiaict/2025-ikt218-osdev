@@ -19,15 +19,11 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialiser GDT
     gdt_init();
 
-    // Rydd skjermen
     clear_screen();
-
-    // Skriv "Hello World" til skjermen
-    printf("Hello World!\n");
-
-    // Skriv litt debug-informasjon fra Multiboot (valgfritt)
-    printf("Multiboot Magic: 0x%x\n", magic);
-    printf("Multiboot Info Address: 0x%x\n", (uint32_t)mb_info_addr);
+    printf("Hello, Kernel!\n");
+    printf("Number: %d\n", 42);
+    printf("Character: %c\n", 'A');
+    printf("String: %s\n", "Operating System");
 
     
 

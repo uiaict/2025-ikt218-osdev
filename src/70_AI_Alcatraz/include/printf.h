@@ -1,24 +1,29 @@
-#include <stdarg.h>
-#include <stdint.h>
+#ifndef PRINTF_H
+#define PRINTF_H
 
+// Definerer VGA-tekstmodus bufferadresse og skjermstørrelse
 #define VGA_ADDRESS 0xB8000
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 #define WHITE_ON_BLACK 0x0F
 
-static uint16_t* terminal_buffer = (uint16_t*) VGA_ADDRESS;
+// Globale variabler for terminalbuffer og markørposisjon
+static unsigned short* terminal_buffer = (unsigned short*) VGA_ADDRESS;
 static int cursor_x = 0, cursor_y = 0;
 
-void move_cursor() {
-    uint16_t pos = cursor_y * VGA_WIDTH + cursor_x;
-    
-    outb(0x3D4, 0x0F);
-    outb(0x3D5, (uint8_t)(pos & 0xFF));
-    outb(0x3D4, 0x0E);
-    outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
+// Flytter markøren i VGA-tekstbufferet
+static void move_cursor() {
+    unsigned short pos = cursor_y * VGA_WIDTH + cursor_x;
+
+    // Porter for VGA markør
+    asm volatile ("outb %1, %0" : : "dN" (0x3D4), "a" (0x0F));
+    asm volatile ("outb %1, %0" : : "dN" (0x3D5), "a" (pos & 0xFF));
+    asm volatile ("outb %1, %0" : : "dN" (0x3D4), "a" (0x0E));
+    asm volatile ("outb %1, %0" : : "dN" (0x3D5), "a" ((pos >> 8) & 0xFF));
 }
 
-void clear_screen() {
+// Tømmer skjermen
+static void clear_screen() {
     for (int y = 0; y < VGA_HEIGHT; y++) {
         for (int x = 0; x < VGA_WIDTH; x++) {
             terminal_buffer[y * VGA_WIDTH + x] = (WHITE_ON_BLACK << 8) | ' ';
@@ -29,7 +34,8 @@ void clear_screen() {
     move_cursor();
 }
 
-void putchar(char c) {
+// Skriver et tegn til skjermen
+static void putchar(char c) {
     if (c == '\n') {
         cursor_x = 0;
         cursor_y++;
@@ -38,11 +44,13 @@ void putchar(char c) {
         cursor_x++;
     }
 
+    // Gå til neste linje om nødvendig
     if (cursor_x >= VGA_WIDTH) {
         cursor_x = 0;
         cursor_y++;
     }
-    
+
+    // Rens skjermen hvis vi når slutten
     if (cursor_y >= VGA_HEIGHT) {
         clear_screen();
     }
@@ -50,13 +58,15 @@ void putchar(char c) {
     move_cursor();
 }
 
-void print(const char* str) {
+// Skriver en streng til skjermen
+static void print(const char* str) {
     while (*str) {
         putchar(*str++);
     }
 }
 
-void print_int(int num) {
+// Skriver et heltall til skjermen
+static void print_int(int num) {
     if (num < 0) {
         putchar('-');
         num = -num;
@@ -67,28 +77,32 @@ void print_int(int num) {
         buffer[i++] = (num % 10) + '0';
         num /= 10;
     } while (num);
-    
+
     while (i--) {
         putchar(buffer[i]);
     }
 }
 
-void printf(const char* format, ...) {
-    va_list args;
-    va_start(args, format);
-    
+// En enkel printf-funksjon med %s, %d, %c, %%
+static void printf(const char* format, ...) {
+    char** arg_ptr = (char**) &format;
+    arg_ptr++;
+
     while (*format) {
         if (*format == '%') {
             format++;
             switch (*format) {
                 case 'c':
-                    putchar((char)va_arg(args, int));
+                    putchar(*(char*)arg_ptr);
+                    arg_ptr++;
                     break;
                 case 's':
-                    print(va_arg(args, char*));
+                    print(*(char**)arg_ptr);
+                    arg_ptr++;
                     break;
                 case 'd':
-                    print_int(va_arg(args, int));
+                    print_int(*(int*)arg_ptr);
+                    arg_ptr++;
                     break;
                 case '%':
                     putchar('%');
@@ -101,6 +115,6 @@ void printf(const char* format, ...) {
         }
         format++;
     }
-    
-    va_end(args);
 }
+
+#endif // PRINTF_H
