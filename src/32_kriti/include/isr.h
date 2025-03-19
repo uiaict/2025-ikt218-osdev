@@ -1,4 +1,3 @@
-
 extern exception_handler
 isr_no_err_stub 0
 isr_no_err_stub 1

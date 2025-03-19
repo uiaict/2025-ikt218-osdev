@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include <libc/stdint.h>
 
 #define VIDEO_MEMORY 0xB8000
 #define VGA_WIDTH 80
@@ -17,4 +17,17 @@ void kprint(const char *str) {
         }
         str++;
     }
+}
+
+// Add to kprint.c
+void kprint_hex(uint32_t num) {
+    const char hex_chars[] = "0123456789ABCDEF";
+    char buffer[11] = "0x00000000";
+    
+    for (int i = 9; i >= 2; i--) {
+        buffer[i] = hex_chars[num & 0xF];
+        num >>= 4;
+    }
+    
+    kprint(buffer);
 }

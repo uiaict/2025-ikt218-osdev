@@ -3,7 +3,6 @@
 #include "kprint.h"
 
 __attribute__((noreturn))
-void exception_handler(void);
 void exception_handler(uint8_t int_no) {
     kprint("Exception occurred! Interrupt: ");
     kprint_hex(int_no);  // Print interrupt number
