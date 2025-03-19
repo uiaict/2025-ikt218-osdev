@@ -62,6 +62,7 @@ add_executable(uiaos-kernel
     src/kernel.c
 	src/gdt_function/gdt.c
 	src/terminal_function/clearTerminal.c
+	src/terminal_function/printf.c
 )
 
 # Include directories for the kernel target
