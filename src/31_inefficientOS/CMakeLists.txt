@@ -42,12 +42,12 @@ endif()
 set(KERNEL_SOURCES
     src/kernel.c
     src/terminal.c
-    src/arch/i386/gdt.c
+    src/gdt.c
 )
 
 set(ASM_SOURCES
     src/multiboot2.asm
-    src/arch/i386/gdt_flush.asm
+    src/gdt_flush.asm
 )
 
 set(CMAKE_ASM_NASM_COMPILE_OBJECT 
@@ -63,8 +63,16 @@ add_executable(uiaos-kernel
     src/multiboot2.asm
     src/kernel.c
     src/terminal.c 
-    src/arch/i386/gdt.c
-    src/arch/i386/gdt_flush.asm 
+    src/gdt.c
+    src/gdt_flush.asm 
+    src/idt.c
+    src/idt_flush.asm
+    src/isr.c
+    src/isr_asm.asm
+    src/irq.c
+    src/common.c
+    src/isrs.c
+    src/keyboard.c
 )
 
 # Include directories

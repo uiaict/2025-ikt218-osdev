@@ -1,7 +1,5 @@
-// src/arch/i386/gdt.h
-#ifndef ARCH_I386_GDT_H
-#define ARCH_I386_GDT_H
-
+#ifndef GDT_H
+#define GDT_H
 #include "libc/stdint.h"
 
 // GDT entry structure

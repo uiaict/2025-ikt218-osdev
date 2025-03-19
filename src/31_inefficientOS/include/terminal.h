@@ -1,5 +1,5 @@
-#ifndef _TERMINAL_H
-#define _TERMINAL_H
+#ifndef TERMINAL_H
+#define TERMINAL_H
 
 #include "libc/stdint.h"
 #include "libc/stddef.h"
@@ -7,10 +7,7 @@
 
 #define VGA_BLINK 0x80
 
-
-
-
-// Move enum definition to header so it's visible to other files
+// VGA color enum
 enum vga_color {
     VGA_COLOR_BLACK = 0,
     VGA_COLOR_BLUE = 1,
@@ -30,13 +27,23 @@ enum vga_color {
     VGA_COLOR_WHITE = 15,
 };
 
-// Add color-related function declarations
-uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg);
-void terminal_set_color(uint8_t color);
-void terminal_write_colored(const char* data, enum vga_color fg, enum vga_color bg);
-// Original function declarations
+// Terminal state variables
+extern size_t terminal_row;
+extern size_t terminal_column;
+extern uint8_t terminal_color;
+extern uint16_t* terminal_buffer;
+
+// Terminal functions
 void terminal_initialize(void);
-void terminal_putchar(char c);
+void terminal_set_color(uint8_t color);
 void terminal_write(const char* data, size_t size);
 void terminal_writestring(const char* data);
-#endif
+void terminal_write_colored(const char* data, enum vga_color fg, enum vga_color bg);
+void terminal_putchar(char c);
+void update_cursor(int row, int col);
+
+// Helper functions
+uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg);
+uint16_t vga_entry(unsigned char uc, uint8_t color);
+
+#endif /* TERMINAL_H */

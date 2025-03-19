@@ -1,6 +1,6 @@
 #include "gdt.h"
 
-#define GDT_ENTRIES 3  // Null, Kernel Code, Kernel Data
+#define GDT_ENTRIES 5  // Null, Kernel Code, Kernel Data
 
 // GDT entry array and pointer
 static struct gdt_entry gdt_entries[GDT_ENTRIES];

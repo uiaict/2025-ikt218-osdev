@@ -1,4 +1,3 @@
-; src/arch/i386/gdt_flush.asm
 global gdt_flush    ; Make the function accessible from C code
 
 section .text
