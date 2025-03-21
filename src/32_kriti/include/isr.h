@@ -1,33 +1,19 @@
-extern exception_handler
-isr_no_err_stub 0
-isr_no_err_stub 1
-isr_no_err_stub 2
-isr_no_err_stub 3
-isr_no_err_stub 4
-isr_no_err_stub 5
-isr_no_err_stub 6
-isr_no_err_stub 7
-isr_err_stub    8
-isr_no_err_stub 9
-isr_err_stub    10
-isr_err_stub    11
-isr_err_stub    12
-isr_err_stub    13
-isr_err_stub    14
-isr_no_err_stub 15
-isr_no_err_stub 16
-isr_err_stub    17
-isr_no_err_stub 18
-isr_no_err_stub 19
-isr_no_err_stub 20
-isr_no_err_stub 21
-isr_no_err_stub 22
-isr_no_err_stub 23
-isr_no_err_stub 24
-isr_no_err_stub 25
-isr_no_err_stub 26
-isr_no_err_stub 27
-isr_no_err_stub 28
-isr_no_err_stub 29
-isr_err_stub    30
-isr_no_err_stub 31
+#ifndef ISR_H
+#define ISR_H
+
+#include <libc/stdint.h>
+
+// Exception handler declaration with noreturn attribute
+__attribute__((noreturn))
+void exception_handler(uint8_t int_no);
+
+// ISR handler function declarations
+void isr_divide_by_zero(void);
+void isr_invalid_opcode(void);
+void isr_keyboard(void);
+
+// I/O port functions
+void outb(uint16_t port, uint8_t data);
+uint8_t inb(uint16_t port);
+
+#endif /* ISR_H */

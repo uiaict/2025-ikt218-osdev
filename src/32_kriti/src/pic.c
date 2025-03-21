@@ -1,16 +1,7 @@
 #include "pic.h"
 #include <libc/stdint.h>
 
-// Helper functions for port I/O
-void outb(uint16_t port, uint8_t val) {
-    __asm__ volatile ("outb %0, %1" : : "a"(val), "Nd"(port));
-}
-
-uint8_t inb(uint16_t port) {
-    uint8_t ret;
-    __asm__ volatile ("inb %1, %0" : "=a"(ret) : "Nd"(port));
-    return ret;
-}
+// Helper functions for port I/O are now defined as static inline in the header file
 
 void pic_init() {
     // Save masks

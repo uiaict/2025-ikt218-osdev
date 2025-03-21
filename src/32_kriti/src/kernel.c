@@ -25,6 +25,15 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     kprint("Loading GDT...\n");
     init_gdt();
     kprint("GDT loaded\n");
+
+  // Initialize IDT
+  kprint("Initializing IDT...\n");
+  idt_init();
+  kprint("IDT initialized\n");
+
+
+
+
     return 0;
 
 }

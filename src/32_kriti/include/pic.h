@@ -10,26 +10,33 @@
 #define PIC2_DATA       0xA1
 
 // PIC commands
-#define PIC_EOI         0x20    // End of Interrupt
+#define PIC_EOI         0x20
 
-// Initialization Command Words
-#define ICW1_INIT       0x10    // Initialization
-#define ICW1_ICW4       0x01    // ICW4 needed
-#define ICW4_8086       0x01    // 8086/88 mode
+// PIC initialization
+#define ICW1_INIT       0x10
+#define ICW1_ICW4       0x01
+#define ICW4_8086       0x01
 
-// Offsets for remapping
-#define PIC1_OFFSET     0x20    // IRQ 0-7: int 0x20-0x27
-#define PIC2_OFFSET     0x28    // IRQ 8-15: int 0x28-0x2F
+// PIC vector offsets
+#define PIC1_OFFSET     0x20
+#define PIC2_OFFSET     0x28
 
-// I/O port functions
-void outb(uint16_t port, uint8_t val);
-uint8_t inb(uint16_t port);
+// Helper functions for port I/O
+static inline void outb(uint16_t port, uint8_t value) {
+    __asm__ volatile ("outb %0, %1" : : "a"(value), "Nd"(port));
+}
 
-// PIC functions
-void pic_init(void);                // Initialize and remap PIC
-void pic_send_eoi(uint8_t irq);     // Send End-of-Interrupt
-void pic_set_mask(uint8_t irq);     // Disable specific IRQ
-void pic_clear_mask(uint8_t irq);   // Enable specific IRQ
-void pic_disable(void);             // Disable PIC (useful when using APIC)
+static inline uint8_t inb(uint16_t port) {
+    uint8_t ret;
+    __asm__ volatile ("inb %1, %0" : "=a"(ret) : "Nd"(port));
+    return ret;
+}
 
-#endif /* PIC_H */
+// Function prototypes
+void pic_init(void);
+void pic_send_eoi(uint8_t irq);
+void pic_set_mask(uint8_t irq);
+void pic_clear_mask(uint8_t irq);
+void pic_disable(void);
+
+#endif // PIC_H
