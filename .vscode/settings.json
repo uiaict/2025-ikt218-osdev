@@ -1,6 +1,6 @@
 {
     "cmake.buildDirectory": "${workspaceFolder}/build/28_aquila",
-    "cmake.sourceDirectory": "/workspaces/2025-ikt218-osdev/src/28_aquila",
+    "cmake.sourceDirectory": "${workspaceFolder}/src/28_aquila",
     "cmake.useCMakePresets": "never",
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
