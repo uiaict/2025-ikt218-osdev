@@ -1,7 +1,6 @@
 {
-    "cmake.buildDirectory": "${workspaceFolder}/build/group_name",
-    "cmake.sourceDirectory": "${workspaceFolder}/src/group_name",
-    "cmake.useCMakePresets": "never",
+    "cmake.buildDirectory": "${workspaceFolder}/build/34_SHODAN",
+    "cmake.sourceDirectory": "${workspaceFolder}/src/34_SHODAN",
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
         "cstddef": "cpp",
