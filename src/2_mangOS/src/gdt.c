@@ -22,13 +22,20 @@ struct gdt_entry create_gdt_entry(uint32_t base, uint32_t limit, uint8_t access,
 {
     struct gdt_entry entry;
 
+    // Bits 0-15
     entry.base_low = base & 0xFFFF;
+    // Bits 16-23
     entry.base_middle = (base >> 16) & 0xFF;
+    // Bits 24-31
     entry.base_high = (base >> 24) & 0xFF;
+    // Lowest 16 bits
     entry.limit_low = limit & 0xFFFF;
 
+    // Upper 4 bits = granularity flags
+    // Lower 4 bits = high bits of the segment limit
     entry.granularity = ((limit >> 16) & 0x0F) | (granularity & 0xF0);
 
+    // This byte contains several bits (present bit, read/write, executable bit, ...)
     entry.access = access;
     return entry;
 }
