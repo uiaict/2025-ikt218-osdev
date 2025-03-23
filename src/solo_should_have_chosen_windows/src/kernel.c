@@ -19,8 +19,13 @@ struct multiboot_info {
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     gdt_init();
-    char* str = "Adam";
-    printf("Hello, %d! We have printed a string, %s :)\n", str, str);
+    char* name = "Adam";
+    int test = 2;
+    int hex = 255;
+    printf("Hello, %s! You have implemented the string and signed int descriptors. That is  %d :)\n", name, test);
+    printf("Hexidecial %x\n", hex);
+    printf("The address for the test variable is %p\n", &test);
+    printf("And to use the %% character, you just need to type %%%%, like this.\n");
     
     // Loop indefinitely to prevent exiting
     while (1) {}

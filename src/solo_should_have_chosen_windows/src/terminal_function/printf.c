@@ -1,5 +1,6 @@
 #include "terminal/print.h"
 #include "terminal/cursor.h"
+#include "libc/stdlib.h"
 
 #include "libc/stddef.h"
 #include "libc/stdint.h"
@@ -59,7 +60,52 @@ void printf(const char *format, ...) {
                 print_char(c);
                 break;
             }
-                
+            case 'd': {
+                int value = va_arg(args, int);
+                char str[12];
+                itoa(value, str);
+                print_string(str);
+                break;
+            } 
+            case 'x': {
+                unsigned int value = va_arg(args, unsigned int);
+                char str[12];
+                itoa_base(value, str, 16);
+                print_string("0x");
+                print_string(str);
+                break;
+            }
+            case 'u': {
+                unsigned int value = va_arg(args, unsigned int);
+                char str[12];
+                itoa_base(value, str, 10);
+                print_string(str);
+                break;
+            }
+            case 'p': {
+                void* ptr = va_arg(args, void*);
+                uintptr_t addr = (uintptr_t)ptr;
+            
+                char str[9];  // 8 hex digits max for 32-bit + null
+                itoa_base(addr, str, 16);
+            
+                // Print prefix
+                print_string("0x");
+            
+                // Pad with leading zeros (8 - actual length)
+                int len = 0;
+                while (str[len] != '\0') len++;
+            
+                for (int j = 0; j < 8 - len; j++) {
+                    print_char('0');
+                }
+            
+                print_string(str);
+                break;
+            }
+            case '%':
+                print_char('%');
+                break;
             default:
                 print_string("(unknown format descriptor)");
                 va_arg(args, void*);
