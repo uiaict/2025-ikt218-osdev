@@ -51,12 +51,12 @@ void printf(const char *format, ...) {
             {
             case 's': {
                 char *str = va_arg(args, char*);
-                if (str != NULL) {
-                    print_string(str);
-                }
-                else {
-                    print_string("(null)");
-                }
+                print_string(str ? str : "(null)");
+                break;
+            }
+            case 'c': {
+                char c = (char) va_arg(args, int);
+                print_char(c);
                 break;
             }
                 
