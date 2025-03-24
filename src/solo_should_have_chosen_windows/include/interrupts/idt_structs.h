@@ -16,4 +16,7 @@ struct idt_ptr {
     uint32_t base;          // Base address of the IDT table
 } __attribute__((packed));
 
+typedef struct idt_entry idt_entry_t;
+typedef struct idt_ptr idt_ptr_t;
+
 #endif // IDT_STRUCTS_H 
