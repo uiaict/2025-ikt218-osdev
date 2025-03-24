@@ -3,6 +3,10 @@
 #include "libc/stdbool.h"
 #include <multiboot2.h>
 
+#include "gdt/gdt.h"
+#include "io/printf.h"
+#include "idt/idt.h"
+
 
 
 struct multiboot_info {
@@ -13,7 +17,11 @@ struct multiboot_info {
 
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-
+    initGdt();
+    initIdt();
+    //asm("int $0x0");
+    mafiaPrint("Yeeeee drugga\n");
+    while (1){}
     return 0;
 
 }
