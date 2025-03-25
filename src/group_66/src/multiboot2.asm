@@ -38,7 +38,7 @@ _start:
 	push eax
 
     call main ; Jump main function
-
+    hlt
 section .bss
 stack_bottom:
     resb 4096 * 16
