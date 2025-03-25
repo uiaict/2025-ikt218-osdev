@@ -66,6 +66,8 @@ add_executable(uiaos-kernel
 	src/libc/stdlib.c
 	src/interrupts/idt.c
 	src/interrupts/pic.c
+	src/interrupts/isr.c
+	src/interrupts/isr_stubs.asm
 )
 
 # Include directories for the kernel target
