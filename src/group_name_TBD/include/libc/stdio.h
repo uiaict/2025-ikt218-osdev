@@ -4,22 +4,22 @@
 #include "stdbool.h"
 
 enum vga_color {
-	BLACK = 0,
-	BLUE = 1,
-	GREEN = 2,
-	CYAN = 3,
-	RED = 4,
-	MAGENTA = 5,
-	BROWN = 6,
-	LIGHT_GREY = 7,
-	DARK_GREY = 8,
-	LIGHT_BLUE = 9,
-	LIGHT_GREEN = 10,
-	LIGHT_CYAN = 11,
-	LIGHT_RED = 12,
-	LIGHT_MAGENTA = 13,
-	LIGHT_BROWN = 14,
-	WHITE = 15,
+	VGA_BLACK = 0,
+	VGA_BLUE = 1,
+	VGA_GREEN = 2,
+	VGA_CYAN = 3,
+	VGA_RED = 4,
+	VGA_MAGENTA = 5,
+	VGA_BROWN = 6,
+	VGA_LIGHT_GREY = 7,
+	VGA_DARK_GREY = 8,
+	VGA_LIGHT_BLUE = 9,
+	VGA_LIGHT_GREEN = 10,
+	VGA_LIGHT_CYAN = 11,
+	VGA_LIGHT_RED = 12,
+	VGA_LIGHT_MAGENTA = 13,
+	VGA_LIGHT_BROWN = 14,
+	VGA_WHITE = 15,
 };
 
 void putchar_at(const char*, size_t, size_t);

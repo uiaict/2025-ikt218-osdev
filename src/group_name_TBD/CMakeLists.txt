@@ -62,6 +62,8 @@ add_executable(uiaos-kernel
     src/kernel.c
 	include/libc/string.c
 	include/libc/stdio.c
+    src/gdt.asm
+    include/gdt.c
 )
 
 # Include directories for the kernel target
