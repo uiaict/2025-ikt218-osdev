@@ -65,6 +65,7 @@ add_executable(uiaos-kernel
 	src/terminal_function/printf.c
 	src/libc/stdlib.c
 	src/interrupts/idt.c
+	src/interrupts/pic.c
 )
 
 # Include directories for the kernel target

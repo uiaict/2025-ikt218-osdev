@@ -1,3 +1,4 @@
+#include "interrupts/pic.h"
 #include "interrupts/idt_structs.h"
 #include "interrupts/idt_function.h"
 #include "terminal/print.h"
@@ -38,6 +39,9 @@ void idt_init() {
     // Define the IDT by using the pointer
     idt_ptr.limit = (sizeof(idt_entry_t) * IDT_ENTRIES) - 1;
     idt_ptr.base = (uint32_t)&idt;
+
+    // Remap the PIC
+    pic_remap(0x20, 0x28);
 
     for (int i = 0; i < 256; ++i) {
         set_idt_entry(i, (uint32_t)isr_stub, 0x08, 0x8E);
