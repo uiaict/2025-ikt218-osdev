@@ -24,7 +24,12 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     printf("idt now loaded\n");
 
+    __asm__ volatile("int $0x20");
     __asm__ volatile("int $0x21");
+    __asm__ volatile("int $0x22");
+    __asm__ volatile("int $0x23");
+    __asm__ volatile("int $0xFF");
+    __asm__ volatile("int $0x00");
     
     // Loop indefinitely to prevent exiting
     while (1) {}
