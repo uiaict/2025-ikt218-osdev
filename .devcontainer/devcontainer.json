@@ -31,12 +31,14 @@
 	////////////////////////////////////
 	// Windows Setup (WSL2)
 	////////////////////////////////////
-	"mounts": [
+    "mounts": [
 		"source=/mnt/wslg,target=/mnt/wslg,type=bind,consistency=cached"
-	],
+    ],
 	"containerEnv": {
 		"PULSE_SERVER": "/mnt/wslg/PulseServer"
 	},
+
+
 	////////////////////////////////////
 	// MacOS Setup (X11)
 	// You need to install XQuartz and pulseaudio
