@@ -56,19 +56,20 @@ set(CMAKE_ASM_NASM_COMPILE_OBJECT
 ########################################
 set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/linker.ld")
 
-enable_language(ASM)  #  Fortell CMake at vi bruker Assembly
-add_library(gdt_asm OBJECT src/arch/i386/gdt.s)
-set_target_properties(gdt_asm PROPERTIES LANGUAGE ASM_NASM)  # 📌 Sett språk til Assembly
+#enable_language(ASM)  #  Fortell CMake at vi bruker Assembly
+#add_library(gdt_asm OBJECT src/arch/i386/gdt.s)
+#set_target_properties(gdt_asm PROPERTIES LANGUAGE ASM_NASM)  # 📌 Sett språk til Assembly
 
 # Legg til eksekverbar kernel, men IKKE gdt.s her!
 add_executable(uiaos-kernel 
 	src/multiboot2.asm
     src/kernel.c
-	src/arch/i386/gdt.c
+	#src/arch/i386/gdt.asm
+	#src/arch/i386/gdt.c
 )
 
 # Link gdt_asm med uiaos-kernel
-target_link_libraries(uiaos-kernel gdt_asm)
+#target_link_libraries(uiaos-kernel gdt_asm)
 
 
 # Include directories for the kernel target

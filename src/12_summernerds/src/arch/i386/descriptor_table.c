@@ -18,9 +18,6 @@ struct idt_ptr {
     uint32_t base; //Memory adress of IDT
 } __attribute__((packed));
 
-// Define the GDT entry structure
-///////////////////////////////////////////////////////////////////////////ikke ferdig
-// Define the IDT entry structure
 
 struct idt_entry idt[IDT_ENTRIES]; 
 struct idt_ptr idt_descriptor; 
