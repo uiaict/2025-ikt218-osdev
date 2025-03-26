@@ -6,7 +6,6 @@
 /* In plain English: 
     Hey PICs, reset yourselves. Here’s your new range of interrupt numbers. Master, your slave is on IRQ2. Both of you: use the standard PC mode. Now go back to how you were blocking IRQs.
 */
-
 void pic_remap(uint8_t offset1, uint8_t offset2) {
     uint8_t a1, a2;
 

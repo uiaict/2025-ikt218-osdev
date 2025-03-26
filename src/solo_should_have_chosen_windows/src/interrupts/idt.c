@@ -19,10 +19,6 @@ void set_idt_entry(int index, uint32_t isr_function, uint16_t selector, uint8_t 
     idt[index].offset_high = (isr_function >> 16) & 0xFFFF;
 }
 
-// Generic ISR function
-void isr_stub() {
-    printf("An undefined ISR was fired\n");
-}
 
 void idt_init() {
 
@@ -36,10 +32,8 @@ void idt_init() {
     pic_remap(0x20, 0x28);
 
     for (int i = 0; i < 256; ++i) {
-        set_idt_entry(i, (uint32_t)isr_stub, 0x08, 0x8E);
+        set_idt_entry(i, (uint32_t)isr_stubs[i], 0x08, 0x8E);
     }
-
-    set_idt_entry(0x20, (uint32_t)irq0_stub, 0x08, 0x8E);
 
     // Load the IDT
     __asm__ volatile ("lidt %0" : : "m" (idt_ptr));

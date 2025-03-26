@@ -4,6 +4,7 @@
 // IRQ hander dispatcher
 void irq_handler(int irq);
 
-extern void irq0_stub();
+extern void* isr_stubs[256];
+
 
 #endif // ISR_H
