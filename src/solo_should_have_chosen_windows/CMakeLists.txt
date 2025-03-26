@@ -37,6 +37,7 @@ set(OS_KERNEL_IMAGE "kernel.iso")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 99)
 
+
 ########################################
 # Assembly Configuration
 ########################################
@@ -68,6 +69,7 @@ add_executable(uiaos-kernel
 	src/interrupts/pic.c
 	src/interrupts/isr.c
 	src/interrupts/isr_stubs.asm
+	src/libc/string.c
 )
 
 # Include directories for the kernel target

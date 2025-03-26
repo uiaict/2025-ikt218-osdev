@@ -26,9 +26,10 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     __asm__ volatile ("sti"); // Enable interrupts 
     
+    __asm__ volatile ("int $0x20"); // Trigger a breakpoint exception
        // Keep the CPU running forever
     while (1) {
-        __asm__ volatile ("hlt");
+        // __asm__ volatile ("hlt");
     }
     
     return 0;

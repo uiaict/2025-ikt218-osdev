@@ -3,6 +3,7 @@
 #include "interrupts/idt_structs.h"
 #include "interrupts/idt_function.h"
 #include "terminal/print.h"
+#include "libc/string.h"
 
 #define IDT_ENTRIES 256
 
@@ -24,6 +25,9 @@ void isr_stub() {
 }
 
 void idt_init() {
+
+    memset(&idt, 0, sizeof(idt)); // Clear IDT memory
+
     // Define the IDT by using the pointer
     idt_ptr.limit = (sizeof(idt_entry_t) * IDT_ENTRIES) - 1;
     idt_ptr.base = (uint32_t)&idt;

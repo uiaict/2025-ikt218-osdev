@@ -1,6 +1,7 @@
 #include "gdt/gdt_structs.h"
 #include "gdt/gdt_function.h"
 #include "terminal/clear.h"
+#include "libc/string.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 
@@ -58,6 +59,9 @@ void gdt_load(struct gdt_ptr* gp) {
 
 // Function to initialize the GDT
 void gdt_init() {
+
+    memset(&gdt, 0, sizeof(gdt)); // Clear GDT memory
+
     // Clear screen (first few lines)
     clearTerminal();
 
