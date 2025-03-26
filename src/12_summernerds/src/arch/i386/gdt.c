@@ -1,6 +1,10 @@
 #include "gdt.h"
+#include <stdint.h>
 #include "libc/stdint.h"
 
+
+
+//////////////////////////////////100%gp  fra nå...
 //gdt.c
 
 extern void gdt_flush(uint32_t);
@@ -16,6 +20,42 @@ GDTPointer  gdt_ptr;           // A pointer to the completed GDT that will be lo
 
 GDTEntry idt_entries[256];  // An array with 256 IDT enteries(det er en tabell med 256 oppføringer), one for each interrupt handler, (er en datastruktur i x86-arkitektur, som brukes til å definere hvordan maskinvaren håndterer avbrudd og unntak).
 GDTPointer idt_ptr;           // A pointer to the IDT tabell
+
+//////////////////////////////////... til nå
+
+
+
+
+
+// GDT-pointer-struktur
+struct gdt_ptr {
+    uint16_t limit;
+    uint32_t base;
+} __attribute__((packed));
+
+// Eksempel på en global GDT-ptr (du må sette denne opp selv)
+extern struct gdt_ptr gdt_descriptor;
+
+void flush_gdt() {
+    __asm__ volatile (
+        "lgdt (%0)\n"        // Last GDT fra gdt_descriptor
+        "mov %%cr0, %%eax\n" // Hent CR0 til EAX
+        "or $1, %%eax\n"     // Sett PE-bit (bit 0)
+        "mov %%eax, %%cr0\n" // Skriv tilbake for å aktivere protected mode
+        :
+        : "r" (&gdt_descriptor)
+        : "eax"
+    );
+}
+
+
+
+
+
+
+
+
+
 
 void init_desc_tables() 
 {
