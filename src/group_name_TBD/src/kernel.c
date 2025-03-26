@@ -4,7 +4,7 @@
 #include "libc/string.h"
 #include "libc/stdio.h"
 #include <multiboot2.h>
-#include "gdt.h"
+#include "descriptor_tables.h"
 
 
 
@@ -18,6 +18,7 @@ struct multiboot_info {
 int main(uint32_t my_struct, uint32_t magic, struct multiboot_info *mb_info_addr) {
     
     init_gdt();
+    init_idt();
 
     typedef struct{
         uint8_t a;
@@ -37,6 +38,8 @@ int main(uint32_t my_struct, uint32_t magic, struct multiboot_info *mb_info_addr
     set_vga_color(VGA_WHITE, VGA_BLACK);
     putchar_at(&t, 10, 10);
     
+    asm volatile ("int $0x3");
+    asm volatile ("int $0x4"); 
 
     return 0;
 
