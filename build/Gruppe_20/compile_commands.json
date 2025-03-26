@@ -1,0 +1,37 @@
+[
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Gruppe_20",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Gruppe_20/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2025-ikt218-osdev/src/Gruppe_20/src/kernel.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Gruppe_20/src/kernel.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Gruppe_20",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Gruppe_20/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/Descriptor_tables/gdt.c.o -c /workspaces/2025-ikt218-osdev/src/Gruppe_20/src/Descriptor_tables/gdt.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Gruppe_20/src/Descriptor_tables/gdt.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Gruppe_20",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Gruppe_20/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/Descriptor_tables/idt.c.o -c /workspaces/2025-ikt218-osdev/src/Gruppe_20/src/Descriptor_tables/idt.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Gruppe_20/src/Descriptor_tables/idt.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Gruppe_20",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/Gruppe_20/include -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/Descriptor_tables/gdt_idt.asm.o /workspaces/2025-ikt218-osdev/src/Gruppe_20/src/Descriptor_tables/gdt_idt.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/Gruppe_20/src/Descriptor_tables/gdt_idt.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Gruppe_20",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Gruppe_20/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/Descriptor_tables/isr.c.o -c /workspaces/2025-ikt218-osdev/src/Gruppe_20/src/Descriptor_tables/isr.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Gruppe_20/src/Descriptor_tables/isr.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Gruppe_20",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Gruppe_20/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/Descriptor_tables/common.c.o -c /workspaces/2025-ikt218-osdev/src/Gruppe_20/src/Descriptor_tables/common.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Gruppe_20/src/Descriptor_tables/common.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Gruppe_20",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Gruppe_20/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/Descriptor_tables/print.c.o -c /workspaces/2025-ikt218-osdev/src/Gruppe_20/src/Descriptor_tables/print.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Gruppe_20/src/Descriptor_tables/print.c"
+}
+]
