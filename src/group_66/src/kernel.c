@@ -15,6 +15,7 @@ struct multiboot_info {
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     initGdt();
-    printf("hello, %c, %s, %i, %f", 'G', "yay bro",15,15.555555555555);
+    reset();
+    print("hello world!\nfuuck\n%c\n%s\n%d\n%f",'F',"check this string out babyyyy",15,15.555555555);
     return 0;
 }
