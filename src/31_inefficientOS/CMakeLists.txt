@@ -73,6 +73,8 @@ add_executable(uiaos-kernel
     src/common.c
     src/isrs.c
     src/keyboard.c
+    src/memory.c
+    src/pit.c
 )
 
 # Include directories

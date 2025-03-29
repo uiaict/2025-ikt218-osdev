@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/simonsn/2025-ikt218-osdev/src/31_inefficientOS
+CMAKE_SOURCE_DIR = /home/simonsn/2025-ikt218-osdev-6/src/31_inefficientOS
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/simonsn/2025-ikt218-osdev/build/31_inefficientOS
+CMAKE_BINARY_DIR = /home/simonsn/2025-ikt218-osdev-6/build/31_inefficientOS
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/simonsn/2025-ikt218-osdev/build/31_inefficientOS/CMakeFiles /home/simonsn/2025-ikt218-osdev/build/31_inefficientOS//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/simonsn/2025-ikt218-osdev-6/build/31_inefficientOS/CMakeFiles /home/simonsn/2025-ikt218-osdev-6/build/31_inefficientOS//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/simonsn/2025-ikt218-osdev/build/31_inefficientOS/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/simonsn/2025-ikt218-osdev-6/build/31_inefficientOS/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -155,6 +155,174 @@ uiaos-create-image/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-create-image.dir/build.make CMakeFiles/uiaos-create-image.dir/build
 .PHONY : uiaos-create-image/fast
 
+src/common.o: src/common.c.o
+.PHONY : src/common.o
+
+# target to build an object file
+src/common.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/common.c.o
+.PHONY : src/common.c.o
+
+src/common.i: src/common.c.i
+.PHONY : src/common.i
+
+# target to preprocess a source file
+src/common.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/common.c.i
+.PHONY : src/common.c.i
+
+src/common.s: src/common.c.s
+.PHONY : src/common.s
+
+# target to generate assembly for a file
+src/common.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/common.c.s
+.PHONY : src/common.c.s
+
+src/gdt.o: src/gdt.c.o
+.PHONY : src/gdt.o
+
+# target to build an object file
+src/gdt.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/gdt.c.o
+.PHONY : src/gdt.c.o
+
+src/gdt.i: src/gdt.c.i
+.PHONY : src/gdt.i
+
+# target to preprocess a source file
+src/gdt.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/gdt.c.i
+.PHONY : src/gdt.c.i
+
+src/gdt.s: src/gdt.c.s
+.PHONY : src/gdt.s
+
+# target to generate assembly for a file
+src/gdt.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/gdt.c.s
+.PHONY : src/gdt.c.s
+
+src/gdt_flush.o: src/gdt_flush.asm.o
+.PHONY : src/gdt_flush.o
+
+# target to build an object file
+src/gdt_flush.asm.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/gdt_flush.asm.o
+.PHONY : src/gdt_flush.asm.o
+
+src/idt.o: src/idt.c.o
+.PHONY : src/idt.o
+
+# target to build an object file
+src/idt.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/idt.c.o
+.PHONY : src/idt.c.o
+
+src/idt.i: src/idt.c.i
+.PHONY : src/idt.i
+
+# target to preprocess a source file
+src/idt.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/idt.c.i
+.PHONY : src/idt.c.i
+
+src/idt.s: src/idt.c.s
+.PHONY : src/idt.s
+
+# target to generate assembly for a file
+src/idt.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/idt.c.s
+.PHONY : src/idt.c.s
+
+src/idt_flush.o: src/idt_flush.asm.o
+.PHONY : src/idt_flush.o
+
+# target to build an object file
+src/idt_flush.asm.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/idt_flush.asm.o
+.PHONY : src/idt_flush.asm.o
+
+src/irq.o: src/irq.c.o
+.PHONY : src/irq.o
+
+# target to build an object file
+src/irq.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/irq.c.o
+.PHONY : src/irq.c.o
+
+src/irq.i: src/irq.c.i
+.PHONY : src/irq.i
+
+# target to preprocess a source file
+src/irq.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/irq.c.i
+.PHONY : src/irq.c.i
+
+src/irq.s: src/irq.c.s
+.PHONY : src/irq.s
+
+# target to generate assembly for a file
+src/irq.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/irq.c.s
+.PHONY : src/irq.c.s
+
+src/isr.o: src/isr.c.o
+.PHONY : src/isr.o
+
+# target to build an object file
+src/isr.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/isr.c.o
+.PHONY : src/isr.c.o
+
+src/isr.i: src/isr.c.i
+.PHONY : src/isr.i
+
+# target to preprocess a source file
+src/isr.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/isr.c.i
+.PHONY : src/isr.c.i
+
+src/isr.s: src/isr.c.s
+.PHONY : src/isr.s
+
+# target to generate assembly for a file
+src/isr.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/isr.c.s
+.PHONY : src/isr.c.s
+
+src/isr_asm.o: src/isr_asm.asm.o
+.PHONY : src/isr_asm.o
+
+# target to build an object file
+src/isr_asm.asm.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/isr_asm.asm.o
+.PHONY : src/isr_asm.asm.o
+
+src/isrs.o: src/isrs.c.o
+.PHONY : src/isrs.o
+
+# target to build an object file
+src/isrs.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/isrs.c.o
+.PHONY : src/isrs.c.o
+
+src/isrs.i: src/isrs.c.i
+.PHONY : src/isrs.i
+
+# target to preprocess a source file
+src/isrs.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/isrs.c.i
+.PHONY : src/isrs.c.i
+
+src/isrs.s: src/isrs.c.s
+.PHONY : src/isrs.s
+
+# target to generate assembly for a file
+src/isrs.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/isrs.c.s
+.PHONY : src/isrs.c.s
+
 src/kernel.o: src/kernel.c.o
 .PHONY : src/kernel.o
 
@@ -179,6 +347,110 @@ src/kernel.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/kernel.c.s
 .PHONY : src/kernel.c.s
 
+src/keyboard.o: src/keyboard.c.o
+.PHONY : src/keyboard.o
+
+# target to build an object file
+src/keyboard.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/keyboard.c.o
+.PHONY : src/keyboard.c.o
+
+src/keyboard.i: src/keyboard.c.i
+.PHONY : src/keyboard.i
+
+# target to preprocess a source file
+src/keyboard.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/keyboard.c.i
+.PHONY : src/keyboard.c.i
+
+src/keyboard.s: src/keyboard.c.s
+.PHONY : src/keyboard.s
+
+# target to generate assembly for a file
+src/keyboard.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/keyboard.c.s
+.PHONY : src/keyboard.c.s
+
+src/memory.o: src/memory.c.o
+.PHONY : src/memory.o
+
+# target to build an object file
+src/memory.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/memory.c.o
+.PHONY : src/memory.c.o
+
+src/memory.i: src/memory.c.i
+.PHONY : src/memory.i
+
+# target to preprocess a source file
+src/memory.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/memory.c.i
+.PHONY : src/memory.c.i
+
+src/memory.s: src/memory.c.s
+.PHONY : src/memory.s
+
+# target to generate assembly for a file
+src/memory.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/memory.c.s
+.PHONY : src/memory.c.s
+
+src/multiboot2.o: src/multiboot2.asm.o
+.PHONY : src/multiboot2.o
+
+# target to build an object file
+src/multiboot2.asm.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o
+.PHONY : src/multiboot2.asm.o
+
+src/pit.o: src/pit.c.o
+.PHONY : src/pit.o
+
+# target to build an object file
+src/pit.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/pit.c.o
+.PHONY : src/pit.c.o
+
+src/pit.i: src/pit.c.i
+.PHONY : src/pit.i
+
+# target to preprocess a source file
+src/pit.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/pit.c.i
+.PHONY : src/pit.c.i
+
+src/pit.s: src/pit.c.s
+.PHONY : src/pit.s
+
+# target to generate assembly for a file
+src/pit.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/pit.c.s
+.PHONY : src/pit.c.s
+
+src/terminal.o: src/terminal.c.o
+.PHONY : src/terminal.o
+
+# target to build an object file
+src/terminal.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/terminal.c.o
+.PHONY : src/terminal.c.o
+
+src/terminal.i: src/terminal.c.i
+.PHONY : src/terminal.i
+
+# target to preprocess a source file
+src/terminal.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/terminal.c.i
+.PHONY : src/terminal.c.i
+
+src/terminal.s: src/terminal.c.s
+.PHONY : src/terminal.s
+
+# target to generate assembly for a file
+src/terminal.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/terminal.c.s
+.PHONY : src/terminal.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -190,9 +462,43 @@ help:
 	@echo "... create-fat32-disk"
 	@echo "... uiaos-create-image"
 	@echo "... uiaos-kernel"
+	@echo "... src/common.o"
+	@echo "... src/common.i"
+	@echo "... src/common.s"
+	@echo "... src/gdt.o"
+	@echo "... src/gdt.i"
+	@echo "... src/gdt.s"
+	@echo "... src/gdt_flush.o"
+	@echo "... src/idt.o"
+	@echo "... src/idt.i"
+	@echo "... src/idt.s"
+	@echo "... src/idt_flush.o"
+	@echo "... src/irq.o"
+	@echo "... src/irq.i"
+	@echo "... src/irq.s"
+	@echo "... src/isr.o"
+	@echo "... src/isr.i"
+	@echo "... src/isr.s"
+	@echo "... src/isr_asm.o"
+	@echo "... src/isrs.o"
+	@echo "... src/isrs.i"
+	@echo "... src/isrs.s"
 	@echo "... src/kernel.o"
 	@echo "... src/kernel.i"
 	@echo "... src/kernel.s"
+	@echo "... src/keyboard.o"
+	@echo "... src/keyboard.i"
+	@echo "... src/keyboard.s"
+	@echo "... src/memory.o"
+	@echo "... src/memory.i"
+	@echo "... src/memory.s"
+	@echo "... src/multiboot2.o"
+	@echo "... src/pit.o"
+	@echo "... src/pit.i"
+	@echo "... src/pit.s"
+	@echo "... src/terminal.o"
+	@echo "... src/terminal.i"
+	@echo "... src/terminal.s"
 .PHONY : help
 
 
