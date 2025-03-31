@@ -1,4 +1,4 @@
-```c
+
 
 // Array to hold information about registered interrupt handlers
 struct int_handler int_handlers[IDT_ENTRIES];
@@ -14,8 +14,7 @@ void register_int_handler(int num, void (*handler)(void *data), void *data) {
 
 // The default interrupt handler
 void default_int_handler(void *data) {
-  // Handle the interrupt
-  // ...
+  write_to_terminal("Default interrupt handler triggered",8)
 }
 
 // The main interrupt handler
@@ -49,11 +48,30 @@ void init_idt() {
   // Load the IDT
   idt_load(&idt_ptr);
 }
-```
 
-```c
+
+
 void idt_load(struct idt_ptr *idt_ptr) {
   // Load the IDT using the LIDT instruction
   asm volatile("lidt %0" : : "m" (*idt_ptr));
 }
-```
+
+void *IRQ_routines[16] = {
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, //these are the 16 routines that are associated with our interrupt request
+}
+
+
+void IRQ_handler_install (int irq, void (*handler)(struct interruptRegister *r )) {   //den bruker (interrupt register) <-(må lages) som en argument
+  IRQ_routines[irq] = handlers:
+}
+
+void IRQ_hanlder_uninstall(int irq){
+  IRQ_routines[irq] = 0
+}
+
+void IRQ_handler(struct InterruptRegister* register){                 //lag en struct interruptRegister
+  void (*handler)(struct InterruptRegister* register):
+
+  handler = IRQ_routines[register->int_no - 32]
+
+} 

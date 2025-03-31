@@ -1,5 +1,5 @@
-#ifndef GDT_H  // Sjekker om GDT_H er definert
-#define GDT_H  // Definerer GDT_H for å unngå dobbel inkludering
+//#ifndef GDT_H  // Sjekker om GDT_H er definert
+//#define GDT_H  // Definerer GDT_H for å unngå dobbel inkludering
 
 #include "libc/stdint.h"
 
@@ -28,4 +28,4 @@ void init_gdt();
 void set_gdt_gate(uint32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity);
 extern void gdt_flush(uint32_t); // Ekstern ASM-funksjon
 
-#endif /* GDT_H */ //sikrer at filen kun inkluderes én gang.
+//#endif /* GDT_H */ //sikrer at filen kun inkluderes én gang.

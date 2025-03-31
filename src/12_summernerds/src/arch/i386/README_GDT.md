@@ -26,23 +26,36 @@ base_low, base_middle og base_high
 
 GDTPointer:
 - Holder adressen til GDT og størrelsen på tabellen
-- gdt_flush((uint32_t)&gdt_ptr); som ligger i static void init_gdt() i gdt.c. filen, henger sammen med pi\onmitrern i gdt.h filen, GDTPointer bruker funksjonen flush() for å laste opp GDT tabellen i CPU-en.
+- gdt_flush((uint32_t)&gdt_ptr); som ligger i static void init_gdt() i gdt.c. filen, henger sammen med pointeren i gdt.h filen, GDTPointer bruker funksjonen flush() for å laste opp GDT tabellen i CPU-en.
 
-9A = 1001 1010
+9A = 1001 1010  (i gdt.c filen i void initGDT filen) er access permission
 
-1 = 
-0 =
-0 =
-
-1 =
-0 =
-1 = 
-0 =
+bare ta med gdt filene i assignment 2 
 
 
-Bruker IDT for feilhåndteringer
-{
-    -
-}
+GDT init .c
+
+1 = the top bit is the present bit, iit defines a valid segment, and has to be set to 1. 
+0 = DPL er begge nullenen -> og disisse definrerer permission to accessing this particular segment of memory, 0 er den høyste privilegen som er kernelen, så det er kernel code
+0 = DPL er begge nullenen
+1 = descriptor, if it set to it is either code or data segment. But if clear defines a system segment. den er sett to 1 so its a code or data seg,ent
+
+1 = executable bit. If 0 defines a data segment. If set  to 1 defines a code segment and can be executed. 
+0 =  Direction bit, if set to 0 the segment grows. if set to 1, segment grows down. The offset has to be greater than the limit. We want to grow up in memmory, derfot er sen på 0.
+1 = Readable bit/ writeable bit
+    - For code segment (Readable bit):
+        - if set to 1: Read access allowed. Write access is not allowed : 
+        - if set to 0: Read access is not allowed.
+    
+    For data segment (Writeable bit):
+        - if set to 0: write access is not allowed
+        - if set to 1: write access is allowed. 
+        - Read access is always allowed for data segments.
+0 = Accessed bit: 
+
+1001  definerer 9
+
+
+vi må koble IRQene til IDT via assembly stubber
 
  

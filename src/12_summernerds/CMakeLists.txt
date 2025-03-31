@@ -58,7 +58,7 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 
 enable_language(ASM)  #  Fortell CMake at vi bruker Assembly
 add_library(gdt_asm OBJECT src/arch/i386/gdt.s)
-set_target_properties(gdt_asm PROPERTIES LANGUAGE ASM_NASM)  # 📌 Sett språk til Assembly
+set_target_properties(gdt_asm PROPERTIES LANGUAGE ASM_NASM)  #  Sett språk til Assembly
 
 # Legg til eksekverbar kernel, men IKKE gdt.s her!
 add_executable(uiaos-kernel 
