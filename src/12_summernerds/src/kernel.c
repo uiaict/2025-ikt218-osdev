@@ -3,6 +3,7 @@
 #include "libc/stdbool.h"
 #include <multiboot2.h>
 #include "screen.h"
+#include "Keyboard.c"
 
 struct multiboot_info {
     uint32_t size; 

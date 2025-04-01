@@ -68,6 +68,7 @@ add_executable(uiaos-kernel
 	src/screen.h
 	#src/arch/i386/gdt.asm
 	#src/arch/i386/gdt.c
+	src/arch/i386/Keyboard.c
 )
 
 # Link gdt_asm med uiaos-kernel
