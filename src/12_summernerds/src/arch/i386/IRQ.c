@@ -16,15 +16,17 @@
 #define IRQ15 47 // 	Secondary Hard Disk Controller. PIC type: Slave PIC
 #define IRQ_COUNT 16 // Just a counter 
 
-// Here we store the IRQ handlers in an array.
+// Here we store the IRQ handlers in an array
 void (*irq_handlers[IRQ_COUNT])(void);
 
-// Initialization of irq handlers
+// Initialization of irq handlers happens here
 void init_irq() {for (int i = 0; i < IRQ_COUNT; i++) {irq_handlers[i] = NULL;}}
 
 // Here we register new irq handleler
 void register_irq_handler(int irq, void (*handler)(void)){irq_handlers[irq] = handler;}
 
+
+// Here we define the function that gets called when an IRQ occurs
 void irq_handler(int irq) {
   if (irq_handlers[irq] != NULL){irq_handlers[irq]();}
   if (irq >= 8){outb(0xA0, 0x20);}outb(0x20, 0x20);}struct idt_entry

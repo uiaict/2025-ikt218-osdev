@@ -64,11 +64,14 @@ set_target_properties(gdt_asm PROPERTIES LANGUAGE ASM_NASM)  #  Sett språk til 
 add_executable(uiaos-kernel 
 	src/multiboot2.asm
     src/kernel.c
-	src/arch/i386/gdt.c
+	src/screen.c
+	src/screen.h
+	#src/arch/i386/gdt.asm
+	#src/arch/i386/gdt.c
 )
 
 # Link gdt_asm med uiaos-kernel
-target_link_libraries(uiaos-kernel gdt_asm)
+#target_link_libraries(uiaos-kernel gdt_asm)
 
 
 # Include directories for the kernel target
