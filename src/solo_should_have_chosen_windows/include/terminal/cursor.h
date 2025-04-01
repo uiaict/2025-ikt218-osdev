@@ -2,6 +2,10 @@
 #define CURSOR_H
 
 #include "libc/io.h"
+#include "libc/stdbool.h"
+
+// External boolean to indicate if old logs should be printed
+extern bool old_logs;
 
 // Function to move the cursor to a new position
 static inline void move_cursor(uint16_t position) {

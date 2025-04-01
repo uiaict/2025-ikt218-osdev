@@ -4,6 +4,8 @@
 
 #include "libc/stddef.h"
 #include "libc/stdint.h"
+#include "libc/stdbool.h"
+#include "libc/string.h"
 
 #define VGA_ADDRESS 0xB8000
 #define SCREEN_WIDTH 80
@@ -12,11 +14,41 @@
 
 // Used to store the current cursor position
 static uint16_t cursor_position = 0;
+bool old_logs = false;
+
+static void scroll_or_reset() {
+    cursor_position = 0;
+    move_cursor(cursor_position);
+    old_logs = true;  
+}
 
 // Function to print a single character at the current cursor position
 static void print_char(char c) {
-    // Points to the start of video memory text buffer
+    // Check if the cursor position is at the end of the screen
+    if (cursor_position >= SCREEN_WIDTH * SCREEN_HEIGHT)
+        scroll_or_reset();
+    
+        // Points to the start of video memory text buffer
     uint16_t *video_memory = (uint16_t*) VGA_ADDRESS;
+
+    if (cursor_position % SCREEN_WIDTH == 0 && old_logs) {
+        int temp_pos = cursor_position;
+        // Clear two lines
+        for (int i = 0; i < SCREEN_WIDTH * 2; i++) {
+            video_memory[temp_pos + i] = (GREEN_ON_BLACK << 8) | ' ';
+        }
+
+        temp_pos += SCREEN_WIDTH * 2;
+        const char *old_marker = "---- OLD LOGS BELOW ----";
+        size_t old_marker_len = strlen(old_marker);
+        for (size_t i = 0; i < SCREEN_WIDTH; i++) {
+            if (i < old_marker_len) {
+                video_memory[temp_pos + i] = (GREEN_ON_BLACK << 8) | old_marker[i];
+            } else {
+                video_memory[temp_pos + i] = (GREEN_ON_BLACK << 8) | ' ';
+            }
+        }
+    }
 
     // Handle newline manually
     if (c == '\n') {
@@ -120,3 +152,4 @@ void printf(const char *format, ...) {
 
     va_end(args);
 }
+

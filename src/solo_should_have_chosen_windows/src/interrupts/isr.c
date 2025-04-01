@@ -9,7 +9,7 @@ void irq_handler(int irq) {
         printf("Exception: Interupt (%d) - %x\n", irq, irq);
     }
     else if (irq >= 0x20 && irq <= 0x2F) {
-        if (counter % 50 == 0)
+        if (counter % 10 == 0)
             printf("IRQ %d (mapped to vector %d): Interrupt - %x\n", irq - 0x20, irq, irq);
         counter++;
     }
