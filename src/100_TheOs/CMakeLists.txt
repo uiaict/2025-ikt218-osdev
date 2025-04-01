@@ -57,9 +57,10 @@ set(CMAKE_ASM_NASM_COMPILE_OBJECT
 set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/linker.ld")
 
 # Add executable target for the kernel
-add_executable(uiaos-kernel 
+add_executable(uiaos-kernel
 	src/multiboot2.asm
     src/kernel.c
+	src/gdt.c      
 	src/arch/x86_64/gdt_flush.asm
 )
 set_source_files_properties(src/multiboot2.asm PROPERTIES LANGUAGE ASM_NASM)
@@ -77,18 +78,17 @@ target_compile_options(uiaos-kernel PRIVATE
 
 
 # Specify link options for C and C++
-target_link_options(uiaos-kernel PUBLIC
-    $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-ffreestanding -nostdlib -fno-builtin -static -pie -O0 -T${OS_KERNEL_LINKER} -g>
-)
-
 
 target_link_options(
-	uiaos-kernel
-	PUBLIC "-ffreestanding"
-	PUBLIC "-nostdlib"
-	PUBLIC "-static"
-	PUBLIC "-pie"
-	PUBLIC "-T${OS_KERNEL_LINKER}"
+    uiaos-kernel
+    PUBLIC
+    -m32
+    -ffreestanding
+    -nostdlib
+    -fno-builtin
+    -static
+    -no-pie
+    -Wl,-T${OS_KERNEL_LINKER}
 )
 
 
