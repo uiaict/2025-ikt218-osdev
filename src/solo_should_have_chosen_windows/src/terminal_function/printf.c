@@ -61,7 +61,7 @@ static void print_char(char c) {
             }
         break;
             
-        case '\t': // Tab (move to next tab stop, assuming 8 spaces per tab)
+        case '\t': 
             {
                 int spaces = 8 - ((cursor_position % SCREEN_WIDTH) % 8);
                 for (int i = 0; i < spaces; i++) {
