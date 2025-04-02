@@ -50,12 +50,43 @@ static void print_char(char c) {
         }
     }
 
-    // Handle newline manually
-    if (c == '\n') {
-        cursor_position += SCREEN_WIDTH - (cursor_position % SCREEN_WIDTH);
-    } else {
-        video_memory[cursor_position] = (GREEN_ON_BLACK << 8) | c;
-        cursor_position++;
+    switch (c) {
+        case '\r':
+        case '\n': // Newline (line feed)
+            if ((cursor_position / SCREEN_WIDTH) < SCREEN_HEIGHT - 1) {
+                cursor_position += SCREEN_WIDTH - (cursor_position % SCREEN_WIDTH);
+            }
+            else { 
+                scroll_or_reset();
+            }
+        break;
+            
+        case '\t': // Tab (move to next tab stop, assuming 8 spaces per tab)
+            {
+                int spaces = 8 - ((cursor_position % SCREEN_WIDTH) % 8);
+                for (int i = 0; i < spaces; i++) {
+                    if (cursor_position < SCREEN_WIDTH * SCREEN_HEIGHT) {
+                        video_memory[cursor_position] = (GREEN_ON_BLACK << 8) | ' ';
+                        cursor_position++;
+                    } else {
+                        scroll_or_reset();
+                        break;
+                    }
+                }
+            }
+            break;
+            
+        case '\b': // Backspace
+            if (cursor_position > 0) {
+                cursor_position--;
+                video_memory[cursor_position] = (GREEN_ON_BLACK << 8) | ' ';
+            }
+            break;
+            
+        default: // Regular character
+            video_memory[cursor_position] = (GREEN_ON_BLACK << 8) | c;
+            cursor_position++;
+            break;
     }
     
     move_cursor(cursor_position);

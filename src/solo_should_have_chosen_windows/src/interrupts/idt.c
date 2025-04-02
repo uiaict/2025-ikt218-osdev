@@ -37,4 +37,7 @@ void idt_init() {
 
     // Load the IDT
     __asm__ volatile ("lidt %0" : : "m" (idt_ptr));
+
+    // Enable IRQ1
+    pic_clear_mask(1);
 }

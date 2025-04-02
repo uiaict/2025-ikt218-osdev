@@ -33,3 +33,12 @@ void pic_remap(uint8_t offset1, uint8_t offset2) {
     outb(0x21, a1);
     outb(0xA1, a2);
 }
+
+// Enable a specific IRQ line
+void pic_clear_mask(uint8_t irq_line) {
+    uint16_t port = (irq_line < 8) ? 0x21 : 0xA1;
+    if (irq_line >= 8) irq_line -= 8;
+
+    uint8_t value = inb(port) & ~(1 << irq_line);
+    outb(port, value);
+}
