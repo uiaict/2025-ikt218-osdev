@@ -2,6 +2,9 @@
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 #include "libc/string.h"
+#include "idt.h"
+#include "gdt.h"
+#include "irq.h"
 #include <multiboot2.h>
 
 
@@ -35,29 +38,73 @@ typedef struct {
 } myStruct;
 
 void terminal_write(const char* str) {
-    char* video_memory = (char*)0xb8000;
+    static int row = 0;                     // Keep track of the current row
+    const int col = 0;                      // Always start from first column
+    volatile char* video_memory = (char*)0xb8000;
+
     size_t len = strlen(str);
+    int offset = (row * 80 + col) * 2;      // 80 chars per row, 2 bytes per char
 
     for (size_t i = 0; i < len; i++) {
-        video_memory[i * 2] = str[i];
-        video_memory[i * 2 + 1] = 0x07; // Light gray on black
+        video_memory[offset + i * 2] = str[i];
+        video_memory[offset + i * 2 + 1] = 0x07; // Light gray on black
+    }
+
+    row++; // Move to next line for future calls
+}
+
+void terminal_put_char(char c) {
+    static int row = 0;
+    static int col = 0;
+    volatile char* video_memory = (char*)0xb8000;
+
+    if (c == '\n') {
+        row++;
+        col = 0;
+        return;
+    }
+
+    int offset = (row * 80 + col) * 2;
+    video_memory[offset] = c;
+    video_memory[offset + 1] = 0x07;
+
+    col++;
+    if (col >= 80) {
+        col = 0;
+        row++;
     }
 }
 
+
 int main(uint32_t structAddr, uint32_t magic, struct multiboot_info* mb_info_addr) {
-    // Initialize the Global Descriptor Table (GDT)
-    gdt_init();
+      // Initialize the Global Descriptor Table (GDT)
+      gdt_init();
 
-    // Write "Hello, World!" to the terminal
-    terminal_write("Hello, World!");
+      // Initialize the Interrupt Descriptor Table (IDT)
+      idt_init();
 
-    // Example usage of a struct
-    myStruct* myStructPtr = (myStruct*) structAddr;
+      irq_init(); // Initialize IRQs after IDT
 
-    // Example computation
-    int noop = 0;
-    int res = compute(1, 2);
+  
+      // Write "Hello, World!" to the terminal
+      terminal_write("Hello, World!");
+  
+      // Example usage of a struct
+      myStruct* myStructPtr = (myStruct*) structAddr;
+  
+      // Example computation
+      int noop = 0;
+      int res = compute(1, 2);
+  
+      // 🔥 Trigger some test interrupts
+      asm volatile ("int $0");
+      asm volatile ("int $1");
+      asm volatile ("int $2");
 
-    // Enter the kernel main loop
-    return kernel_main();
+      asm volatile ("sti");
+
+  
+      // Enter the kernel main loop
+      return kernel_main();
+  
 }
