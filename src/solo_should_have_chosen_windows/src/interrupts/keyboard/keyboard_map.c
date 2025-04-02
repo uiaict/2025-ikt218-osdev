@@ -1,7 +1,7 @@
 #include "interrupts/keyboard/keyboard_map.h"
 
 // Normal key mapping
-const unsigned char keyboard_normal[128] = {
+const unsigned char keyboard_normal[KEYBOARD_SIZE] = {
     0,    '\x1B', '1',  '2',  '3',  '4',  '5',  '6',
     '7',  '8',    '9',  '0',  '+',  '\'', '\b', '\t',
     'q',  'w',    'e',  'r',  't',  'y',  'u',  'i',
@@ -21,7 +21,7 @@ const unsigned char keyboard_normal[128] = {
 };
 
 // Shift key mapping
-const unsigned char keyboard_shift[128] = {
+const unsigned char keyboard_shift[KEYBOARD_SIZE] = {
     0,    '\x1B', '!',  '"',  '#',  '$',  '%',  '&',
     '/',  '(',    ')',  '=',  '?',  '`',  '\b', '\t',
     'Q',  'W',    'E',  'R',  'T',  'Y',  'U',  'I',
@@ -41,7 +41,7 @@ const unsigned char keyboard_shift[128] = {
 };
 
 // AltGr key mapping
-const unsigned char keyboard_altgr[128] = {
+const unsigned char keyboard_altgr[KEYBOARD_SIZE] = {
     0,    0,    0,    '@',  '#',  '$',  0,    0,
     '{',  '[',  ']',  '}',  '\\', 0,    0,    0,
     0,    0,    'E',  0,    0,    0,    0,    0,
