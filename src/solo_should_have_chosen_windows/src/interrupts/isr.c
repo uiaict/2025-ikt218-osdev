@@ -3,6 +3,7 @@
 #include "libc/io.h"
 
 #define DEBUG_INTERRUPTS 0
+#define KEYBOARD_ENABLED 1 
 
 void irq_handler(int irq) {
 #if DEBUG_INTERRUPTS
@@ -19,6 +20,13 @@ void irq_handler(int irq) {
     else {
         printf("Other interrupt (%d) - %x\n", irq, irq);
     }  
+#endif
+
+#if KEYBOARD_ENABLED
+    if (irq == 0x21) {
+        uint8_t scancode = inb(0x60);
+        printf("Scancode: %x\n", scancode);
+    }
 #endif
 
     // Acknowledge the PIC (IRQ0–IRQ15)
