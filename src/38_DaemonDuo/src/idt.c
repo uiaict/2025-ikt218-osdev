@@ -11,6 +11,18 @@
 #define ICW1_ICW4    0x01
 #define ICW4_8086    0x01
 
+// Scancode set 1 (standard XT keyboard) to ASCII lookup table
+unsigned char scancode_to_ascii[128] = {
+    0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',
+    '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',
+    0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`',
+    0, '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0,
+    '*', 0, ' ', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
 // Define the IDT with 256 entries (maximum possible interrupts)
 struct idt_entry idt[256];
 struct idt_ptr idtp;
@@ -167,119 +179,31 @@ void isr_handler(struct regs *r) {
 }
 
 // C handler for hardware interrupts (IRQs 0-15, mapped to 32-47)
-// C handler for hardware interrupts (IRQs 0-15, mapped to 32-47)
 void irq_handler(struct regs *r) {
-    writeline("IRQ handler: interrupt=");
-
-    // Convert integer to string manually
-    char buffer[16];
-    int num = r->int_no;
-    int i = 0;
-    int temp[10]; // To store digits in reverse order
-    int count = 0;
-
-    // Handle special case of zero
-    if (num == 0) {
-        buffer[i++] = '0';
-    } else {
-        // Handle negative numbers
-        if (num < 0) {
-            buffer[i++] = '-';
-            num = -num;
-        }
-
-        // Extract digits in reverse order
-        while (num > 0) {
-            temp[count++] = num % 10;
-            num /= 10;
-        }
-
-        // Place digits in correct order
-        while (count > 0) {
-            buffer[i++] = '0' + temp[--count];
-        }
-    }
-
-    buffer[i++] = '\n';
-    buffer[i] = '\0';
-    writeline(buffer);
+    // Convert from IDT number to IRQ number
+    uint8_t irq = r->int_no - 32;
     
-    // Convert from IDT number to IRQ number (using decimal)
-    uint8_t irq = r->int_no - 32; // Changed from 0x20 to 32
-    uint8_t scancode;
-    char digit_buffer[16]; // Made larger to accommodate debug output
-    
-    // Debug output to see what interrupt number we're getting
-    writeline("IRQ handler called with interrupt number: ");
-    digit_buffer[0] = '0' + (r->int_no / 100);
-    digit_buffer[1] = '0' + ((r->int_no / 10) % 10);
-    digit_buffer[2] = '0' + (r->int_no % 10);
-    digit_buffer[3] = '\n';
-    digit_buffer[4] = '\0';
-    writeline(digit_buffer);
-
-    // Handle different IRQs (using decimal values)
+    // Handle different IRQs
     switch (r->int_no) {
-        case 32: // IRQ0: Timer (was 0x20)
-            writeline("Timer interrupt triggered!\n");
+        case 32: // IRQ0: Timer
+            // Timer handler (can be empty for now)
             break;
-        case 33: // IRQ1: Keyboard (was 0x21)
-            scancode = inb(0x60); // Using pre-declared scancode variable
-            writeline("Keyboard interrupt triggered! Scancode: ");
+        case 33: // IRQ1: Keyboard
+            // Read scancode from keyboard port
+            uint8_t scancode = inb(0x60);
             
-            // Convert scancode to string using pre-declared buffer
-            digit_buffer[0] = '0' + (scancode / 100);
-            digit_buffer[1] = '0' + ((scancode / 10) % 10);
-            digit_buffer[2] = '0' + (scancode % 10);
-            digit_buffer[3] = '\n';
-            digit_buffer[4] = '\0';
-            writeline(digit_buffer);
+            // Check if this is a key press event (not a key release)
+            if (!(scancode & 0x80)) {
+                // Convert scancode to ASCII character
+                char ascii = scancode_to_ascii[scancode];
+                
+                // If it's a valid character, print it to screen
+                if (ascii != 0) {
+                    terminal_putchar(ascii);
+                }
+            }
             break;
-        case 34: // IRQ2: Cascade (was 0x22)
-            writeline("Cascade interrupt triggered!\n");
-            break;
-        case 35: // IRQ3: COM2 (was 0x23)
-            writeline("COM2 interrupt triggered!\n");
-            break;
-        case 36: // IRQ4: COM1 (was 0x24)
-            writeline("COM1 interrupt triggered!\n");
-            break;
-        case 37: // IRQ5: LPT2 (was 0x25)
-            writeline("LPT2 interrupt triggered!\n");
-            break;
-        case 38: // IRQ6: Floppy Disk (was 0x26)
-            writeline("Floppy Disk interrupt triggered!\n");
-            break;
-        case 39: // IRQ7: LPT1 (was 0x27)
-            writeline("LPT1 interrupt triggered!\n");
-            break;
-        case 40: // IRQ8: RTC (was 0x28)
-            writeline("RTC interrupt triggered!\n");
-            break;
-        case 41: // IRQ9: ACPI (was 0x29)
-            writeline("ACPI interrupt triggered!\n");
-            break;
-        case 42: // IRQ10: General Use (was 0x2A)
-            writeline("IRQ10 interrupt triggered!\n");
-            break;
-        case 43: // IRQ11: General Use (was 0x2B)
-            writeline("IRQ11 interrupt triggered!\n");
-            break;
-        case 44: // IRQ12: PS/2 Mouse (was 0x2C)
-            writeline("PS/2 Mouse interrupt triggered!\n");
-            break;
-        case 45: // IRQ13: FPU (was 0x2D)
-            writeline("FPU interrupt triggered!\n");
-            break;
-        case 46: // IRQ14: Primary ATA (was 0x2E)
-            writeline("Primary ATA interrupt triggered!\n");
-            break;
-        case 47: // IRQ15: Secondary ATA (was 0x2F)
-            writeline("Secondary ATA interrupt triggered!\n");
-            break;
-        default:
-            writeline("Unknown IRQ triggered!\n");
-            break;
+        // ...existing code for other IRQs...
     }
 
     // Send End of Interrupt (EOI) signal to the PIC

@@ -1,0 +1,16 @@
+Hei Krister!
+
+Tenk på datamaskinen som et hus med mange dører.
+
+Når noen banker på en dør (som når du trykker på tastaturet), 
+må datamaskinen vite hvem som skal åpne døren.
+
+IDT er som en liste som forteller datamaskinen hvilken person 
+som skal åpne hvilken dør.
+
+Når vi setter opp IDT, er det som om vi gir beskjed til alle i huset:
+"Du åpner denne døren, og du åpner den andre døren."
+
+Slik vet datamaskinen alltid hva den skal gjøre når noe skjer!
+
+Ha det gøy med datamaskinen din!
