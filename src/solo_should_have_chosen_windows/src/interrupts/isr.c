@@ -2,7 +2,10 @@
 #include "interrupts/isr.h"
 #include "libc/io.h"
 
+#define DEBUG_INTERRUPTS 0
+
 void irq_handler(int irq) {
+#if DEBUG_INTERRUPTS
     static int counter = 0;
 
     if (irq < 32) {
@@ -15,8 +18,8 @@ void irq_handler(int irq) {
     }
     else {
         printf("Other interrupt (%d) - %x\n", irq, irq);
-    }
-    
+    }  
+#endif
 
     // Acknowledge the PIC (IRQ0–IRQ15)
     if (irq >= 0x20 && irq <= 0x2F) {
