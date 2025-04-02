@@ -176,11 +176,7 @@ void keyboard_handler(registers_t* regs) {
             break;
     }
     
-    // Print debug info
-    printf("Key: %c (scancode: 0x%x)\n", 
-           (scancode < sizeof(scancode_to_ascii_low) && scancode_to_ascii_low[scancode]) ? 
-           scancode_to_ascii_low[scancode] : '?', 
-           scancode);
+    // Remove debug info printout - we only want the actual key characters displayed
 }
 
 // Send EOI (End of Interrupt) signal to PICs
