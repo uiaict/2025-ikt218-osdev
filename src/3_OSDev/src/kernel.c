@@ -4,12 +4,9 @@
 
 #include <multiboot2.h>
 
-#include <gdt.h>
-
-#define VGA_MEMORY 0xB8000
-#define screen_width 80
-int x = 0;
-int y = 0;
+#include "vga.h"
+#include "descriptor_table.h"
+#include "interrupts.h"
 
 struct multiboot_info {
     uint32_t size;
@@ -19,25 +16,38 @@ struct multiboot_info {
 
 // Sources: http://www.brokenthorn.com/Resources/OSDev10.html
 //          https://wiki.osdev.org/Printing_To_Screen
-void terminal_write( int colour, const char *string ) {
-    int memory_location;                                                // Declares an integer var   
-    memory_location = VGA_MEMORY + (x + (y * screen_width) * 2);        // Calculates the memory location (based of source) 
-                                                                            // Multiplication by 2 is because each character is 2 bytes
-    volatile char *video = (volatile char*)memory_location;             // Declares a volatile char pointer and assigns the memory location to it
-    while (*string != 0) {                                              
-        *video++ = *string++;                                           // Writes the string to the video memory
-        *video++ = colour;                                              // Writes the colour to the video memory              
-    }   
-    y++;                                                                // Increments the y value           
+
+
+void display_ascii_logo(void) {
+    print("   ____   _____ _____             ____  \n", 0x0B);
+    print("  / __ \\ / ____|  __ \\           |___ \\ \n", 0x0B);
+    print(" | |  | | (___ | |  | | _____   ____) | \n", 0x0B);
+    print(" | |  | |\\___ \\| |  | |/ _ \\ \\ / /__ < \n", 0x0B);
+    print(" | |__| |____) | |__| |  __/\\ V /___) | \n", 0x0B);
+    print("  \\____/|_____/|_____/ \\___| \\_/|____/ \n", 0x0B);
+    print("                                       \n", 0x0B);
+    print("      Operating System Development     \n", 0x0F);
+    print("     UiA IKT218 Course Project Team 3  \n", 0x07);
+    print("=======================================\n", 0x07);
+    print("\n", 0x0F);
 }
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
-    // Initialize GDT
+    // Display Introduction
+    Reset();
+    
+    // Debug message before logo
+    display_ascii_logo();
+    
+    // Initialize GDT, IDT, and IRQ handlers
     init_gdt();
+    init_idt();
     
     // Print "Hello World!" to screen
-    terminal_write(0x0F, "Hello World!");
+    print("Hello World!\n", 0x0F);
+
+    while (1) {}
     return 0;
 
 }
