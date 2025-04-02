@@ -82,7 +82,7 @@ The keyboard logger builds on the IRQ system to capture, interpret, and display 
 - Created two scancode-to-ASCII lookup tables:
   - One for regular (unshifted) keys
   - One for shifted keys (capital letters and symbols)
-- Added support for special keys (Shift, Caps Lock)
+- Added support for special keys (Shift, Caps Lock, Backspace)
 
 ### Key State Tracking
 - Implemented key state tracking to handle modifier keys:
@@ -96,11 +96,20 @@ The keyboard logger builds on the IRQ system to capture, interpret, and display 
   - `add_to_buffer()`: Adds characters to the buffer and handles overflow
   - `get_keyboard_buffer()`: Returns the current buffer for external access
   - `clear_keyboard_buffer()`: Resets the buffer
+  - `handle_backspace()`: Removes the last character from the buffer and screen
+
+### Text Editing Features
+- Implemented backspace functionality that:
+  - Moves the cursor back one position
+  - Erases the character at that position in the video buffer
+  - Updates the internal keyboard buffer to match the display
+  - Handles edge cases, like wrapping to the previous line when at the start of a line
+  - Provides a smooth editing experience for user input
 
 ### Visual Feedback
 - Added code to display typed characters on the screen in real-time
-- Implemented debug output showing scancodes and their ASCII representations
-- Created helper functions to check key states (e.g., `is_key_pressed()`)
+- Implemented proper cursor management for text insertion and deletion
+- Created a seamless visual editing experience with immediate feedback
 
 ## Key Design Decisions
 
@@ -119,13 +128,21 @@ The keyboard logger builds on the IRQ system to capture, interpret, and display 
 - Implemented clear error messages for debugging
 - Created a system that can gracefully recover from certain types of interrupts
 
+### User Experience
+- Provided a familiar text editing experience with backspace functionality
+- Ensured visual feedback matches internal state for consistent user interaction
+- Designed keyboard input to be intuitive and behave as expected in a text environment
+
 ### Extensibility
 - Designed the keyboard system to be easily extended to support more keys or layouts
 - Created a buffer system that can be used by higher-level components
 - Made all key components accessible through well-defined interfaces
+- Built a foundation for more complex text editing with support for basic editing operations
 
 ## Conclusion
 
 This implementation provides a solid foundation for keyboard input in an operating system. The combination of IDT, ISRs, IRQs, and the keyboard logger enables user interaction with the system and forms the basis for more complex features like a command-line interface or a text editor. The design is modular and extensible, allowing for future enhancements.
+
+The addition of backspace functionality makes the interface much more user-friendly, enabling basic text editing capabilities directly in the kernel. This seemingly simple feature dramatically improves usability, allowing users to correct typing mistakes and providing the foundation for more sophisticated text manipulation.
 
 The most challenging aspects involved ensuring proper interaction between assembly and C code, managing the complex state required for keyboard input processing, and handling the subtleties of the x86 interrupt architecture. Despite these challenges, the implementation successfully provides a working keyboard input system for the operating system.

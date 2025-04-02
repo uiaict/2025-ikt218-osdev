@@ -125,6 +125,29 @@ void add_to_buffer(char c) {
     }
 }
 
+// Function to handle backspace
+void handle_backspace() {
+    if (buffer_position > 0) {
+        // Move cursor back
+        if (cursor_x > 0) {
+            cursor_x--;
+        } else if (cursor_y > 0) {
+            cursor_y--;
+            cursor_x = VGA_WIDTH - 1;
+        }
+        
+        // Clear character at cursor position
+        terminal_buffer[cursor_y * VGA_WIDTH + cursor_x] = (WHITE_ON_BLACK << 8) | ' ';
+        
+        // Update buffer
+        buffer_position--;
+        keyboard_buffer[buffer_position] = '\0';
+        
+        // Update cursor
+        move_cursor();
+    }
+}
+
 // Handler for keyboard interrupt (IRQ1)
 void keyboard_handler(registers_t* regs) {
     // Read scancode from keyboard data port
@@ -152,6 +175,10 @@ void keyboard_handler(registers_t* regs) {
             
         case SCANCODE_CAPS_LOCK:
             caps_lock_on = !caps_lock_on; // Toggle caps lock
+            break;
+        
+        case 0x0E: // Backspace scancode
+            handle_backspace();
             break;
             
         default:

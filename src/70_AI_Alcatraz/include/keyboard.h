@@ -8,6 +8,7 @@
 char* get_keyboard_buffer();
 void clear_keyboard_buffer();
 bool is_key_pressed(uint8_t scancode);
+void handle_backspace();
 
 // Special key scancodes
 #define KEY_ESC         0x01
@@ -19,5 +20,6 @@ bool is_key_pressed(uint8_t scancode);
 #define KEY_ALT         0x38
 #define KEY_SPACE       0x39
 #define KEY_CAPS_LOCK   0x3A
+#define KEY_BACKSPACE   0x0E
 
 #endif // KEYBOARD_H
