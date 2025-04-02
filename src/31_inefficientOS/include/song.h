@@ -25,55 +25,134 @@ typedef struct {
 SongPlayer* create_song_player();
 void play_song_impl(Song *song);
 
-// Pink Floyd - Another Brick in the Wall (Part 2) - with correct rhythm
-static Note another_brick_notes[] = {
-    // Intro - iconic bass line in D minor
-    {D3, 600}, {A3, 600}, {D3, 600}, {A3, 600},
-    {D3, 600}, {A3, 600}, {D3, 600}, {A3, 600},
+static Note music_1_notes[] = {
+    {E5, 250}, {R, 125}, {E5, 125}, {R, 125}, {E5, 125}, {R, 125},
+    {C5, 125}, {E5, 125}, {G5, 125}, {R, 125}, {G4, 125}, {R, 250},
+
+    {C5, 125}, {R, 250}, {G4, 125}, {R, 125}, {E4, 125}, {R, 125},
+    {A4, 125}, {B4, 125}, {R, 125}, {A_SHARP4, 125}, {A4, 125}, {R, 125},
+    {G4, 125}, {E5, 125}, {G5, 125}, {A5, 125}, {F5, 125}, {G5, 125},
+    {R, 125}, {E5, 125}, {C5, 125}, {D5, 125}, {B4, 125}, {R, 125},
+
+    {C5, 125}, {R, 250}, {G4, 125}, {R, 125}, {E4, 125}, {R, 125},
+    {A4, 125}, {B4, 125}, {R, 125}, {A_SHARP4, 125}, {A4, 125}, {R, 125},
+    {G4, 125}, {E5, 125}, {G5, 125}, {A5, 125}, {F5, 125}, {G5, 125},
+    {R, 125}, {E5, 125}, {C5, 125}, {D5, 125}, {B4, 125}, {R, 125},
+};
+
+static Note starwars_theme_notes[] = {
+    // Opening phrase
+    {A4, 500}, {A4, 500}, {A4, 500}, 
+    {F4, 375}, {C5, 125}, 
+    {A4, 500}, {F4, 375}, {C5, 125}, {A4, 1000}, 
+    {E5, 500}, {E5, 500}, {E5, 500}, 
+    {F5, 375}, {C5, 125},
     
-    // "We don't need no education" - main vocal line
-    {D4, 500}, {D4, 500}, {C4, 400}, {D4, 600},
-    {F4, 600}, {D4, 800},
-    
-    {C4, 500}, {As3, 500}, {C4, 400}, {D4, 600},
-    {C4, 800}, {R, 200},
-    
-    // "We don't need no thought control"
-    {D4, 500}, {D4, 500}, {C4, 400}, {D4, 600},
-    {F4, 600}, {D4, 800},
-    
-    {C4, 500}, {As3, 500}, {A3, 400}, {G3, 400},
-    {F3, 400}, {G3, 800}, {R, 200},
-    
-    // "No dark sarcasm in the classroom"
-    {D4, 400}, {D4, 500}, {C4, 400}, {D4, 600},
-    {F4, 600}, {D4, 800},
-    
-    {C4, 500}, {As3, 500}, {C4, 400}, {D4, 600},
-    {C4, 800}, {R, 200},
-    
-    // "Teacher, leave them kids alone"
-    {D4, 500}, {F4, 500}, {G4, 700},
-    {F4, 500}, {E4, 500}, {D4, 1000},
-    {R, 400},
-    
-    // "Hey, teacher, leave those kids alone!"
-    {D4, 400}, {F4, 400}, {G4, 800},
-    {F4, 400}, {E4, 400}, {F4, 400}, {E4, 400}, {D4, 800},
-    {R, 400},
-    
-    // Guitar solo part after chorus
-    {D5, 600}, {C5, 600}, {G4, 800},
-    {D5, 600}, {C5, 600}, {G4, 800},
-    {D5, 600}, {C5, 600}, {G4, 1000},
-    {R, 400}
+    // Next phrase
+    {G4, 500}, {F4, 375}, {C5, 125}, {A4, 1000}, 
+    {A5, 500}, {A4, 375}, {A4, 125}, 
+    {A5, 500}, {G5, 375}, {F5, 125}, {E5, 125}, {D5, 125}, 
+    {C5, 250}, {B4, 250}, {A4, 500},
+
+    // End note
+    {R, 500}
 };
 
 
+static Note battlefield_1942_theme_notes[] = {
+    // Attempt at the opening part of the Battlefield 1942 theme
+    {E4, 500}, {G4, 500}, {B4, 300}, {E5, 200}, 
+    {D5, 200}, {B4, 300}, {G4, 500}, {B4, 300}, 
+    {E5, 200}, {D5, 200}, {B4, 300}, {G4, 500}, 
+    {B4, 300}, {E5, 200}, {G5, 200}, {E5, 300}, 
+
+    // Continue with the next part of the melody
+    {D5, 200}, {B4, 300}, {G4, 500}, {E4, 500}, 
+    {G4, 500}, {B4, 300}, {E5, 200}, {D5, 200}, 
+    {B4, 300}, {G4, 500}, {B4, 300}, {E5, 200}, 
+    {D5, 200}, {B4, 300}, {G4, 500}, {B4, 300}, 
+    {E5, 200}, {G5, 200}, {E5, 300}, {D5, 200}, 
+    {B4, 300}, {G4, 500}, 
+
+    // Repeat or modify as needed
+    // ...
+
+    // End note
+    {R, 500}
+};
+
+
+static Note music_2_notes[] = {
+    {A4, 200}, {E5, 200}, {A5, 200}, {R, 100}, {A5, 200}, {A5, 200}, {Gs5, 200}, {A5, 200},
+    {R, 100}, {E5, 200}, {R, 100}, {E5, 200}, {R, 100}, {E5, 200}, {R, 100}, {E5, 200},
+    {A4, 200}, {E5, 200}, {A5, 200}, {R, 100}, {A5, 200}, {A5, 200}, {Gs5, 200}, {A5, 200},
+    {R, 100}, {E5, 200}, {R, 100}, {E5, 200}, {R, 100}, {E5, 200}, {R, 100}, {E5, 200},
+    {A4, 200}, {E5, 200}, {A5, 200}, {R, 100}, {A5, 200}, {A5, 200}, {Gs5, 200}, {A5, 200},
+    {R, 100}, {E5, 200}, {R, 100}, {E5, 200}, {R, 100}, {E5, 200}, {R, 100}, {E5, 200}
+};
+
+static Note music_3_notes[] = {
+    {E4, 200}, {E4, 200}, {F4, 200}, {G4, 200}, {G4, 200}, {F4, 200}, {E4, 200}, {D4, 200},
+    {C4, 200}, {C4, 200}, {D4, 200}, {E4, 200}, {E4, 400}, {R, 200},
+    {D4, 200}, {D4, 200}, {E4, 200}, {F4, 200}, {F4, 200}, {E4, 200}, {D4, 200}, {C4, 200},
+    {A4, 200}, {A4, 200}, {A4, 200}, {G4, 400}
+};
+
+static Note music_4_notes[] = {
+    {C4, 500}, {D4, 500}, {E4, 500}, {C4, 500},
+    {C4, 500}, {D4, 500}, {E4, 500}, {C4, 500},
+    {E4, 500}, {F4, 500}, {G4, 1000},
+    {E4, 500}, {F4, 500}, {G4, 1000},
+    {G4, 250}, {A4, 250}, {G4, 250}, {F4, 250}, {E4, 500}, {C4, 500},
+    {G4, 250}, {A4, 250}, {G4, 250}, {F4, 250}, {E4, 500}, {C4, 500},
+    {C4, 500}, {G3, 500}, {C4, 1000},
+    {C4, 500}, {G3, 500}, {C4, 1000}
+};
+
+static Note music_5_notes[] = {
+    {E4, 375}, {C4, 375}, {D4, 375}, {A3, 375}, {B3, 375}, {D4, 375}, {C4, 375}, {A3, 375},
+    {E4, 375}, {C4, 375}, {D4, 375}, {A3, 375}, {B3, 375}, {D4, 375}, {C4, 375}, {A3, 375},
+};
+
+static Note music_6_notes[] = {
+    {F4, 250}, {F4, 250}, {F4, 250}, {C5, 250}, {A_SHARP4, 250}, {G_SHARP4, 250}, {F4, 500},
+    {F4, 250}, {F4, 250}, {F4, 250}, {C5, 250}, {A_SHARP4, 250}, {G_SHARP4, 250}, {F4, 500},
+    {A_SHARP4, 250}, {A_SHARP4, 250}, {A_SHARP4, 250}, {F5, 250}, {D5, 250}, {C5, 250}, {A_SHARP4, 500},
+    {A_SHARP4, 250}, {A_SHARP4, 250}, {A_SHARP4, 250}, {F5, 250}, {D5, 250}, {C5, 250}, {A_SHARP4, 500},
+};
+
 // Define a song structure for Another Brick in the Wall
-static Song another_brick = {
-    another_brick_notes,
-    sizeof(another_brick_notes) / sizeof(Note)
+static Song music_1 = {
+    music_1_notes,
+    sizeof(music_1_notes) / sizeof(Note)
+};
+static Song starwars_theme = {
+    starwars_theme_notes,
+    sizeof(starwars_theme_notes) / sizeof(Note)
+};
+static Song battlefield_1942_theme = {
+    battlefield_1942_theme_notes,
+    sizeof(battlefield_1942_theme_notes) / sizeof(Note)
+};
+static Song music_2 = {
+    music_2_notes,
+    sizeof(music_2_notes) / sizeof(Note)
+};
+static Song music_3 = {
+    music_3_notes,
+    sizeof(music_3_notes) / sizeof(Note)
+};
+static Song music_4 = {
+    music_4_notes,
+    sizeof(music_4_notes) / sizeof(Note)
+};
+static Song music_5 = {
+    music_5_notes,
+    sizeof(music_5_notes) / sizeof(Note)
+};
+static Song music_6 = {
+    music_6_notes,
+    sizeof(music_6_notes) / sizeof(Note)
 };
 
 #endif // SONG_H

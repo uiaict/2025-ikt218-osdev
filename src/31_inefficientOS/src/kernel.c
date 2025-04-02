@@ -156,18 +156,33 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_pit();
     
 // ASSIGNMENT 5: Music player
-terminal_write_colored("\n=== ANOTHER BRICK IN THE WALL ===\n", VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK);
+terminal_write_colored("\n=== PER ARNE SINE SANGÅ ===\n", VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK);
     
 // Create song player
 SongPlayer* player = create_song_player();
 if (player) {
     // Get song structure
-    extern Song another_brick;
+    extern Song music_1;
+    extern Song starwars_theme;
+    extern Song battlefield_1942_theme;
+    extern Song music_2;
+    extern Song music_3;
+    extern Song music_4;
+    extern Song music_5;
+    extern Song music_6;
     
     // Play the song
-    terminal_write_colored("Playing Another Brick in the Wall...\n", VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
-    player->play_song(another_brick);
-    terminal_writestring("Song finished.\n");
+    terminal_write_colored("Playing all songs...\n", VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
+    player->play_song(music_1);
+    player->play_song(battlefield_1942_theme);
+    player->play_song(music_2);
+    player->play_song(music_3);
+    player->play_song(music_4);
+    player->play_song(music_5);
+    player->play_song(music_6);
+    player->play_song(starwars_theme);
+
+    terminal_writestring("Playlist finished.\n");
     
     // Clean up
     free(player);

@@ -122,6 +122,9 @@
 #define A9 14080
 #define As9 14917  // A-sharp (same as B-flat)
 #define B9 15804
+
+#define A_SHARP4 466
+#define G_SHARP4 415
 #define R 0  // Rest (no sound)
 
 #endif // NOTES_H
