@@ -19,9 +19,11 @@ struct multiboot_info {
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     initGdt();
     initIdt();
-    //asm("int $0x0");
+    
+    mafiaPrint("12345678901234567890123456789012345678901234567890123456789012345678901234567890");
     mafiaPrint("Yeeeee drugga\n");
-    while (1){}
+    asm("int $0x0");
+    //while (1){}
     return 0;
 
 }

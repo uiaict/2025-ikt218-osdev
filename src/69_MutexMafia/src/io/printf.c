@@ -19,8 +19,13 @@ void terminal_write(const char str) {
 }
 */
 void putc(char c) {
-    video_memory[cursor++] = c;   
-    video_memory[cursor++] = 0x07;  
+    if (c == '\n'){
+        cursor = (cursor / 80 + 1) * 80; 
+    }else{
+        video_memory[cursor++] = c;   
+        video_memory[cursor++] = 0x07;  
+        }
+    
 }
 
 void int_to_string(int num, char *str, int base)

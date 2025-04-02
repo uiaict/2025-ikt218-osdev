@@ -33,6 +33,10 @@ void initIdt(){
     outPortB(0xA1, 0x00); // Unmask alle IRQ-er på slave
 
     setIdtGate( 0, (uint32_t)isr0 , 0x08, 0x8E);
+
+    //mafiaPrint("IDT Entry 0: base_low = 0x%X, base_high = 0x%X\n", idt_entries[0].base_low, idt_entries[0].base_high);
+
+
     setIdtGate( 1, (uint32_t)isr1 , 0x08, 0x8E);
     setIdtGate( 2, (uint32_t)isr2 , 0x08, 0x8E);
     setIdtGate( 3, (uint32_t)isr3 , 0x08, 0x8E);
@@ -85,6 +89,9 @@ void initIdt(){
 
     setIdtGate(128, (uint32_t)isr128, 0x08, 0x8E); //for systemkall
     setIdtGate(177, (uint32_t)isr177, 0x08, 0x8E); //for systemkall
+
+    idt_flush((uint32_t)&idt_ptr); // Load IDT
+
 }
 
 void setIdtGate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags){
@@ -134,8 +141,8 @@ const char *exception_message[] = {
 
 void isr_handler(struct InterruptRegisters* regs){
     if (regs->int_no < 32){
-        mafiaPrint("Exception %d triggered! Error code: %d", regs->int_no, regs->err_code);
-        mafiaPrint(exception_message[regs->int_no]);
+        mafiaPrint("Exception %d triggered! Error code: %d\n", regs->int_no, regs->err_code);
+        mafiaPrint("%s\n", exception_message[regs->int_no]);
         __asm__ volatile("cli; hlt");
     }
 }
