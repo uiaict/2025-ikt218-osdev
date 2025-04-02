@@ -3,9 +3,13 @@
 #include "libc/io.h"
 #include "interrupts/keyboard/keyboard_map.h"
 
+#include "libc/stdbool.h"
+
 #define DEBUG_INTERRUPTS 0
 #define KEYBOARD_ENABLED 1 
 
+static bool shift_pressed = false;
+static bool altgr_pressed = false;
 
 void irq_handler(int irq) {
 #if DEBUG_INTERRUPTS
@@ -27,11 +31,32 @@ void irq_handler(int irq) {
 #if KEYBOARD_ENABLED
     if (irq == 0x21) {
         uint8_t scancode = inb(0x60);
-        if (!(scancode & 0x80) && scancode < 128) {
-            char key = keyboard_normal[scancode];
-            if (key) {
-                // Print the key pressed
-                printf("Key pressed: %c\n", key);
+        
+        if (scancode & 0x80) {
+            uint8_t released = scancode & 0x7F;
+            if (released == KEYBOARD_LSHIFT || released == KEYBOARD_RSHIFT) {
+                shift_pressed = false;
+            } else if (released == KEYBOARD_ALT_GR) {
+                altgr_pressed = false;
+            }
+        } 
+        else {
+            if (scancode == KEYBOARD_LSHIFT || scancode == KEYBOARD_RSHIFT) {
+                shift_pressed = true;
+            } else if (scancode == KEYBOARD_ALT_GR) {
+                altgr_pressed = true;
+            } else {
+                char key = keyboard_normal[scancode];
+                if (shift_pressed) {
+                    key = keyboard_shift[scancode];
+                }
+                if (altgr_pressed) {
+                    key = keyboard_altgr[scancode];
+                }
+                
+                if (key != 0) {
+                    printf("%c", key);
+                }
             }
         }
     }
