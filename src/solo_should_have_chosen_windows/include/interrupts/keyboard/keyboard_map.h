@@ -9,10 +9,12 @@
 #define KEYBOARD_LSHIFT 0x2A
 #define KEYBOARD_RSHIFT 0x36
 #define KEYBOARD_ALT_GR 0x38
+#define KEYBOARD_SIZE 128
+
 
 // Lookup tables for Norwegian QWERTY
-extern const char keyboard_normal[128];
-extern const char keyboard_shift[128];
-extern const char keyboard_altgr[128];
+extern const unsigned char keyboard_normal[KEYBOARD_SIZE];
+extern const unsigned char keyboard_shift[KEYBOARD_SIZE];
+extern const unsigned char keyboard_altgr[KEYBOARD_SIZE];
 
 #endif

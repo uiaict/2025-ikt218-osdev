@@ -70,6 +70,7 @@ add_executable(uiaos-kernel
 	src/interrupts/isr.c
 	src/interrupts/isr_stubs.asm
 	src/libc/string.c
+	src/interrupts/keyboard/keyboard_map.c
 )
 
 # Include directories for the kernel target
