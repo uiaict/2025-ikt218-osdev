@@ -1,5 +1,6 @@
 #include "pic.h"
 #include <libc/stdint.h>
+#include "keyboard.h"
 
 // Helper functions for port I/O are now defined as static inline in the header file
 

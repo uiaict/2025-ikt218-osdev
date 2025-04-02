@@ -66,6 +66,9 @@ add_executable(uiaos-kernel
 	src/interrupts.c 
 	src/kprint.c 
 	src/pic.c 
+	src/keyboard.c
+	src/irq_stubs.c
+	src/irq.c
 	
 
 )

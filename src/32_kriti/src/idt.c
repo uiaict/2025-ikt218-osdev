@@ -31,7 +31,7 @@ void isr_handler(uint8_t interrupt);
 
 // Simple placeholder handler functions
 void default_handler() {
-    // Default handler that does nothing
+    kprint("default handler triggered!");
 }
 
 // Set an IDT descriptor
@@ -66,4 +66,9 @@ void idt_init(void) {
 // Register a specific interrupt handler
 void idt_register_handler(uint8_t vector, void* handler) {
     idt_set_descriptor(vector, handler, 0x8E);
+}
+// In idt.c
+void idt_set_interrupt_gate(uint8_t vector, void* isr_handler) {
+    // Assuming you have a standard segment selector and flags for interrupt gates
+    idt_set_descriptor(vector, isr_handler, 0x8E);
 }

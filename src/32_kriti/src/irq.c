@@ -18,6 +18,7 @@ void irq_common_handler(uint32_t irq_num) {
     if (irq_handlers[irq] != 0) {
         irq_handlers[irq]();
     }
+
 }
 
 // Register a handler for a specific IRQ
@@ -51,8 +52,10 @@ void irq_init(void) {
         // Your exact implementation will depend on your IDT setup function
         // This assumes you have a function like:
         // idt_set_gate(interrupt_num, handler_address, selector, flags)
-        extern void* irq_handlers_table[16];
-        idt_set_gate(interrupt_num, (uint32_t)irq_handlers_table[i], 0x08, 0x8E);
+        //extern void* irq_handlers_table[16];
+        //void idt_set_interrupt_gate(uint8_t vector, void* isr_handler);
+        extern void* irq_handler_table[16]; // Declare the table of ISR handler addresses
+        idt_set_interrupt_gate(interrupt_num, irq_handlers[i]); // Use 'i' as the index
     }
     
     // Initially mask all interrupts except for what we explicitly need
