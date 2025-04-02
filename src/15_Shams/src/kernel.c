@@ -3,11 +3,17 @@
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "libc/memory.h"
+#include "song/song.h"
+#include "song/music.h"
+#include "libc/song_player.h"
 
 // Pointer to video memory at address 0xB8000 (used for text mode display)
 volatile uint16_t *video_memory = (uint16_t *)0xB8000;
 // Cursor position (keeps track of where the next character will be printed)
 int cursor_x = 0, cursor_y = 0;
+
+extern Song song1, song2, song3, song4, song5, song6;
+extern void play_song_impl(Song *song);
 
 // Write a single character to the screen
 void terminal_putc(char c)
@@ -82,6 +88,16 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
     extern uint32_t end;
     init_kernel_memory(&end);
     print_memory_layout();
+
+    terminal_write("Press 1–6 to play a song.\n");
+
+    terminal_write("Playing all songs...\n");
+    play_song_impl(&song1);
+    play_song_impl(&song2);
+    play_song_impl(&song3);
+    play_song_impl(&song4);
+    play_song_impl(&song5);
+    play_song_impl(&song6);
 
     int counter = 0;
     while (1)
