@@ -28,7 +28,7 @@ void init_gdt() {
     //Loads GDT pointer into CPU register
     gdt_load(&gdt_ptr);
 
-    // Calls an external function in assembly(gdt.s), to flush and update CPU GDT register
+    // Calls an external function in assembly(gdt.asm), to flush and update CPU GDT register
     gdt_flush((uint32_t)&gdt_ptr);
 }
 
