@@ -2,12 +2,19 @@
 #include "libc/stdint.h"
 #include "common.h"
 #include "terminal.h"
+#include "keyboard.h"
 
 // Keyboard buffer
 #define KB_BUFFER_SIZE 256
 static char kb_buffer[KB_BUFFER_SIZE];
 static uint32_t kb_buffer_head = 0;
 static uint32_t kb_buffer_tail = 0;
+
+// Scancode buffer (for raw scancodes)
+#define SC_BUFFER_SIZE 32
+static uint8_t sc_buffer[SC_BUFFER_SIZE];
+static uint32_t sc_buffer_head = 0;
+static uint32_t sc_buffer_tail = 0;
 
 // US QWERTY keyboard layout scancode to ASCII mapping
 static char keyboard_map[128] = {
@@ -27,6 +34,13 @@ static int shift_pressed = 0;
 void keyboard_handler(registers_t* regs, void* data) {
     // Read the scancode
     uint8_t scancode = inb(0x60);
+    
+    // Store the raw scancode in the scancode buffer
+    // Only store press events (not releases) to simplify menu navigation
+    if (!(scancode & 0x80)) {
+        sc_buffer[sc_buffer_head] = scancode;
+        sc_buffer_head = (sc_buffer_head + 1) % SC_BUFFER_SIZE;
+    }
     
     // Handle shift key press/release
     if (scancode == 0x2A || scancode == 0x36) {         // Shift key pressed
@@ -163,4 +177,24 @@ char keyboard_getchar() {
     char c = kb_buffer[kb_buffer_tail];
     kb_buffer_tail = (kb_buffer_tail + 1) % KB_BUFFER_SIZE;
     return c;
+}
+
+// Get a scancode from the keyboard (non-blocking)
+// Returns 0 if no scancode is available
+uint8_t keyboard_get_scancode() {
+    if (sc_buffer_head == sc_buffer_tail) {
+        return 0;  // Buffer is empty
+    }
+    
+    uint8_t scancode = sc_buffer[sc_buffer_tail];
+    sc_buffer_tail = (sc_buffer_tail + 1) % SC_BUFFER_SIZE;
+    return scancode;
+}
+
+// Convert a scancode to an ASCII character
+char keyboard_scancode_to_ascii(uint8_t scancode) {
+    if (scancode < 128) {
+        return keyboard_map[scancode];
+    }
+    return 0;
 }

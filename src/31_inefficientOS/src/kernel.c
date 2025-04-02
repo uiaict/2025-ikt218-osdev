@@ -9,6 +9,7 @@
 #include "interrupts.h"
 #include "memory.h"
 #include "pit.h"
+#include "song.h"
 
 extern void custom_isrs_init();
 extern void keyboard_init();
@@ -153,6 +154,27 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // ASSIGNMENT 4 PART 2: PIT
     terminal_writestring("Initializing PIT...\n");
     init_pit();
+    
+// ASSIGNMENT 5: Music player
+terminal_write_colored("\n=== ANOTHER BRICK IN THE WALL ===\n", VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK);
+    
+// Create song player
+SongPlayer* player = create_song_player();
+if (player) {
+    // Get song structure
+    extern Song another_brick;
+    
+    // Play the song
+    terminal_write_colored("Playing Another Brick in the Wall...\n", VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
+    player->play_song(another_brick);
+    terminal_writestring("Song finished.\n");
+    
+    // Clean up
+    free(player);
+    terminal_write_colored("Music playback complete!\n", VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK);
+} else {
+    terminal_writestring("Failed to create song player.\n");
+}
     
     // Test sleep functions
     uint32_t counter = 0;
