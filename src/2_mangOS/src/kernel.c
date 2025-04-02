@@ -14,8 +14,9 @@ struct multiboot_info
 
 int main(uint32_t magic, struct multiboot_info *mb_info_addr)
 {
+    terminal_initialize();
 
-    printf("Hello World!");
+    printf("Hello %s!", "Aryan");
 
     return 0;
 }
