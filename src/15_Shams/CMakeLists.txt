@@ -66,6 +66,8 @@ add_executable(uiaos-kernel
 	src/idt.c 
 	src/irq.c
 	src/isr.c
+	src/pit.c
+	src/memory.c
     src/multiboot2.asm
     src/kernel.c
 )
