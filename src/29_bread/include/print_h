@@ -3,6 +3,7 @@
 
 #include <libc/stdint.h>
 #include "putchar.h"
+#include "libc/stdarg.h"
 
 int print_string(const char* str) {
     int i = 0;
@@ -47,36 +48,37 @@ int print_int(int num) {
     return print_string(str);
 }
 
-int printf(const char* str, const char* arg_s, int arg_d) {
+// 
+int printf(const char* format, ...) {
     int i = 0;
-    int str_index = 0;
-    int int_index = 0;
+    va_list args;
+    va_start(args, format);
     
-    while (str[i] != '\0') {
-        if (str[i] == '%') {
+    while (format[i] != '\0') {
+        if (format[i] == '%') {
             i++;
-            if (str[i] == 's') {
-                print_string(arg_s);  // Print string argument
-                str_index++;
+            if (format[i] == 's') {  // string specifier
+                const char* str_arg = va_arg(args, const char*);
+                print_string(str_arg);
             }
-            else if (str[i] == 'd') {
-                print_int(arg_d);  // Print integer argument
-                int_index++;
+            else if (format[i] == 'd') {  // integer specifier
+                int int_arg = va_arg(args, int);
+                print_int(int_arg);
             }
-            else if (str[i] == '\n')
-            {
+            else if (format[i] == '\n') {  // newline
                 putchar('\n');
             }
-            
-            else {
-                putchar(str[i]);
+            else {  // H
+                putchar(format[i]);
             }
         }
-        else {
-            putchar(str[i]);
+        else {  // no format specifier
+            putchar(format[i]);
         }
         i++;
     }
+
+    va_end(args);
     return i;
 }
 
