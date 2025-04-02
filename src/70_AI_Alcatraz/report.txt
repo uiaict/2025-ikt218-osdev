@@ -1,0 +1,131 @@
+# Operating System Development Project Report
+
+## Project Overview
+This project focused on implementing several crucial components of an operating system's low-level interaction with hardware: the Interrupt Descriptor Table (IDT), Interrupt Service Routines (ISRs), Interrupt Requests (IRQs), and a keyboard logger. These components form the foundation of how an operating system responds to both hardware and software events.
+
+## Task 1: Interrupt Descriptor Table (IDT)
+
+The IDT is a fundamental data structure that maps interrupt numbers to their corresponding handler functions. I implemented the following:
+
+### IDT Structure Definition
+- Created a structured definition of an IDT entry in `IDT.h` with fields for:
+  - Base address (handler function address) split into low and high portions
+  - Segment selector
+  - Flags for access rights and gate type
+  - A zero field as required by the architecture
+
+### IDT Pointer
+- Implemented the IDT pointer structure which contains:
+  - Limit (size of the IDT - 1)
+  - Base address of the IDT
+
+### IDT Setup
+- Created a function `idt_init()` that:
+  - Allocates memory for the IDT entries (256 total)
+  - Sets up the IDT pointer
+  - Populates the IDT with entries for all CPU exceptions (0-31)
+  - Calls an assembly function to load the IDT using `lidt`
+
+### Assembly Integration
+- Implemented `idt_flush()` in assembly that receives the IDT pointer and loads it with the `lidt` instruction
+- Created the assembly side of the ISR framework with proper stack management and C language integration
+
+## Task 2: Interrupt Service Routines (ISRs)
+
+ISRs are the functions that get called when an interrupt occurs. I implemented a robust framework for handling various types of interrupts:
+
+### ISR Handler Framework
+- Created macros for defining ISRs with and without error codes
+- Implemented all 32 processor exception handlers (0-31)
+- Developed a common stub that saves processor state before calling C handlers
+
+### Specialized Handlers
+- Implemented three specialized ISR handlers:
+  1. **Divide by Zero Handler**: Handles interrupt 0, triggered when division by zero occurs
+  2. **Breakpoint Handler**: Handles interrupt 3, triggered by debugging breakpoints
+  3. **General Protection Fault Handler**: Handles interrupt 13, triggered by protection violations
+
+### C Handler Registration
+- Created a registration system that allows C functions to be associated with specific interrupt numbers
+- Implemented a common interrupt handler that routes interrupts to the appropriate registered handlers
+
+### Testing
+- Added test functions in the kernel that explicitly trigger each type of interrupt:
+  - Division by zero test using inline assembly
+  - Breakpoint test using the `int $0x3` instruction
+  - General protection fault test using the `int $0x0D` instruction
+
+## Task 3: Interrupt Requests (IRQs)
+
+IRQs are hardware-generated interrupts that come from external devices. I implemented support for all standard PC IRQs:
+
+### PIC Programming
+- Implemented functions to communicate with the Programmable Interrupt Controller
+- Created a PIC remapping function that shifts IRQs 0-15 to interrupts 32-47 to avoid conflicts with CPU exceptions
+- Implemented proper End-of-Interrupt (EOI) signaling for both master and slave PICs
+
+### IRQ Handlers
+- Added assembly-level IRQ handlers for all 16 standard IRQs (0-15)
+- Created a common C-level IRQ handler that handles EOI signals and routes to specific handlers
+- Implemented the timer interrupt handler (IRQ0) that maintains a system tick counter
+
+### Interrupt Enabling
+- Added code to enable hardware interrupts using the `sti` instruction
+- Ensured proper interrupt acknowledgment to allow for nested interrupts
+
+## Task 4: Keyboard Logger
+
+The keyboard logger builds on the IRQ system to capture, interpret, and display keyboard input:
+
+### Scancode Processing
+- Implemented an IRQ1 handler to process PS/2 keyboard scancodes
+- Created two scancode-to-ASCII lookup tables:
+  - One for regular (unshifted) keys
+  - One for shifted keys (capital letters and symbols)
+- Added support for special keys (Shift, Caps Lock)
+
+### Key State Tracking
+- Implemented key state tracking to handle modifier keys:
+  - Maintained state variables for Shift and Caps Lock
+  - Added logic to detect key presses vs. key releases
+  - Created a system that correctly applies capitalization based on Shift and Caps Lock states
+
+### Keyboard Buffer
+- Created a 64-byte circular buffer to store typed characters
+- Implemented buffer management functions:
+  - `add_to_buffer()`: Adds characters to the buffer and handles overflow
+  - `get_keyboard_buffer()`: Returns the current buffer for external access
+  - `clear_keyboard_buffer()`: Resets the buffer
+
+### Visual Feedback
+- Added code to display typed characters on the screen in real-time
+- Implemented debug output showing scancodes and their ASCII representations
+- Created helper functions to check key states (e.g., `is_key_pressed()`)
+
+## Key Design Decisions
+
+### Modular Architecture
+- Separated concerns between different components (IDT, IRQs, keyboard)
+- Created clean interfaces between assembly and C code
+- Used function pointers to allow for dynamic handler registration
+
+### Memory Efficiency
+- Used bit-packed structures to minimize memory usage in the IDT
+- Implemented lookup tables for efficient scancode translation
+- Utilized proper attribute tags to ensure compiler alignment
+
+### Error Handling
+- Added robust interrupt handling for critical system errors
+- Implemented clear error messages for debugging
+- Created a system that can gracefully recover from certain types of interrupts
+
+### Extensibility
+- Designed the keyboard system to be easily extended to support more keys or layouts
+- Created a buffer system that can be used by higher-level components
+- Made all key components accessible through well-defined interfaces
+
+## Conclusion
+
+This implementation provides a solid foundation for keyboard input in an operating system. The combination of IDT, ISRs, IRQs, and the keyboard logger enables user interaction with the system and forms the basis for more complex features like a command-line interface or a text editor. The design is modular and extensible, allowing for future enhancements.
+
+The most challenging aspects involved ensuring proper interaction between assembly and C code, managing the complex state required for keyboard input processing, and handling the subtleties of the x86 interrupt architecture. Despite these challenges, the implementation successfully provides a working keyboard input system for the operating system.
