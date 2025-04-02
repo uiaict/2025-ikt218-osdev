@@ -17,7 +17,8 @@
         "memory.h": "c",
         "limits.h": "c",
         "clear.h": "c",
-        "cursor.h": "c"
+        "cursor.h": "c",
+        "keyboard_map.h": "c"
     }
 
 }

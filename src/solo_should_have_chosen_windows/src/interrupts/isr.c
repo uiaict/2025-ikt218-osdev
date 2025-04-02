@@ -1,9 +1,11 @@
 #include "terminal/print.h"
 #include "interrupts/isr.h"
 #include "libc/io.h"
+#include "interrupts/keyboard/keyboard_map.h"
 
 #define DEBUG_INTERRUPTS 0
 #define KEYBOARD_ENABLED 1 
+
 
 void irq_handler(int irq) {
 #if DEBUG_INTERRUPTS
@@ -25,7 +27,13 @@ void irq_handler(int irq) {
 #if KEYBOARD_ENABLED
     if (irq == 0x21) {
         uint8_t scancode = inb(0x60);
-        printf("Scancode: %x\n", scancode);
+        if (!(scancode & 0x80) && scancode < 128) {
+            char key = keyboard_normal[scancode];
+            if (key) {
+                // Print the key pressed
+                printf("Key pressed: %c\n", key);
+            }
+        }
     }
 #endif
 
