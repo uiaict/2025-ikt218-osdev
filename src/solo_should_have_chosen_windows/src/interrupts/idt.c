@@ -39,3 +39,7 @@ void idt_init() {
     __asm__ volatile ("lidt %0" : : "m" (idt_ptr));
 
 }
+
+void enable_interrupts() {
+    __asm__ volatile ("sti");
+}

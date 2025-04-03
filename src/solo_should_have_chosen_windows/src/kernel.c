@@ -20,11 +20,13 @@ struct multiboot_info {
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     gdt_init();
+    printf("gdt now loaded\n");
+
     idt_init();
-
     printf("idt now loaded\n");
-
-    __asm__ volatile ("sti"); // Enable interrupts 
+    
+    enable_interrupts();
+    printf("interrupts enabled\n");
     
        // Keep the CPU running forever
     while (1) {
