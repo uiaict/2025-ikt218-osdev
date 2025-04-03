@@ -8,7 +8,7 @@
 
 #include <multiboot2.h>
 
-
+extern uint32_t end;
 
 struct multiboot_info {
     uint32_t size;
@@ -24,9 +24,11 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     idt_init();
     printf("idt now loaded\n");
-    
+
     enable_interrupts();
     printf("interrupts enabled\n");
+
+    printf("Kernel ends at: %x\n", &end);
     
        // Keep the CPU running forever
     while (1) {
