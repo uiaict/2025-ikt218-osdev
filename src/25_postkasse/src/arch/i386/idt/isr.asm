@@ -1,23 +1,25 @@
-[bits 32]
+%macro isr_err_stub 1
+global isr_stub_%+%1:
+isr_stub_%+%1:
+    call exception_handler
+    ;push dword %1                ;pass interrupt number to C
+    ;call isr_common_handler
+    ;add esp, 4                  ;clean up the stack after call
+    iret 
+%endmacro
 
-global isr0
-global isr1
-global isr2
+%macro isr_no_err_stub 1
+global isr_stub_%+%1:
+isr_stub_%+%1:
+    call exception_handler
+    ;push dword %1                ;pass interrupt number to C
+    ;call isr_common_handler
+    ;add esp, 4                  ; clean up the stack after call
+    iret
+%endmacro
 
-isr0:
-    cli
-    pushad
-    popad
-    iretd
 
-isr1:
-    cli
-    pushad
-    popad
-    iretd
-
-isr2:
-    cli
-    pushad
-    popad
-    iretd
+extern exception_handler
+isr_no_err_stub 0
+isr_no_err_stub 1
+isr_no_err_stub 2

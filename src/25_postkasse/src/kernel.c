@@ -19,6 +19,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     //Initialize idt from idt.h
     init_idt();
 
+    //asm("int $0x0");
+
     char* hello_world = "Hello, World!";
     size_t len = strlen(hello_world);
 
