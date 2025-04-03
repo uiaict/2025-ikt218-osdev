@@ -3,29 +3,23 @@
 #include "irq.h"
 
 #define KEYBOARD_DATA_PORT 0x60
+#define KEYBOARD_BUFFER_SIZE 256
 #define PIC1_COMMAND 0x20
 
-
 // External IRQ stubs from irq_stubs.asm
-extern void irq0_stub(void);
 extern void irq1_stub(void);
-extern void irq2_stub(void);
-extern void irq3_stub(void);
-extern void irq4_stub(void);
-extern void irq5_stub(void);
-extern void irq6_stub(void);
-extern void irq7_stub(void);
-extern void irq8_stub(void);
-extern void irq9_stub(void);
-extern void irq10_stub(void);
-extern void irq11_stub(void);
-extern void irq12_stub(void);
-extern void irq13_stub(void);
-extern void irq14_stub(void);
-extern void irq15_stub(void);
 
 void terminal_write(const char* str);
 void terminal_put_char(char c);
+
+static struct {
+    char buffer[KEYBOARD_BUFFER_SIZE];
+    int write_pos;
+    int read_pos;
+} keyboard_buffer = {
+    .write_pos = 0,
+    .read_pos = 0
+};
 
 // I/O port functions
 static inline void outb(uint16_t port, uint8_t value) {
@@ -49,7 +43,25 @@ static char scancode_to_ascii[128] = {
     // Rest are zero or extended keys
 };
 
-// IRQ1 handler for keyboard input
+void initkeyboard() {
+    uint8_t status;
+
+    // Reset the keyboard controller
+    while (inb(0x64) & 0x1) {
+        inb(0x60);    // Clear keyboard buffer
+    }
+
+    // Enable keyboard interrupts
+    outb(0x64, 0x20);    // Read command byte
+    status = inb(0x60);
+    status |= 1;         // Enable IRQ1
+    outb(0x64, 0x60);    // Write command byte
+    outb(0x60, status);
+
+    // Unmask keyboard IRQ
+    outb(0x21, inb(0x21) & ~0x02);
+}
+
 void irq1_handler(void) {
     uint8_t scancode = inb(KEYBOARD_DATA_PORT);
 
@@ -63,6 +75,11 @@ void irq1_handler(void) {
     if (scancode < sizeof(scancode_to_ascii)) {
         char ascii = scancode_to_ascii[scancode];
         if (ascii) {
+            // Store in buffer
+            keyboard_buffer.buffer[keyboard_buffer.write_pos] = ascii;
+            keyboard_buffer.write_pos = (keyboard_buffer.write_pos + 1) % KEYBOARD_BUFFER_SIZE;
+
+            // Display the character
             terminal_put_char(ascii);
         }
     }
@@ -71,8 +88,16 @@ void irq1_handler(void) {
     outb(PIC1_COMMAND, 0x20);
 }
 
+char keyboard_getchar(void) {
+    if (keyboard_buffer.read_pos == keyboard_buffer.write_pos) {
+        return 0; // Buffer is empty
+    }
+    
+    char c = keyboard_buffer.buffer[keyboard_buffer.read_pos];
+    keyboard_buffer.read_pos = (keyboard_buffer.read_pos + 1) % KEYBOARD_BUFFER_SIZE;
+    return c;
+}
 
-// Remap the PIC
 void pic_remap() {
     outb(0x20, 0x11); // Master command
     outb(0xA0, 0x11); // Slave command
@@ -84,30 +109,14 @@ void pic_remap() {
     outb(0xA1, 0x02); // Tell Slave its cascade ID
 
     outb(0x21, 0x01); // 8086 mode
-    outb(0xA1, 0x01);
+    outb(0xA1, 0x01); // 8086 mode
 
-    outb(0x21, 0x00); // Unmask master
-    outb(0xA1, 0x00); // Unmask slave
+    // Unmask IRQ1 (keyboard) only
+    outb(0x21, 0xFD); // Mask all except IRQ1
+    outb(0xA1, 0xFF); // Mask all on slave
 }
 
-// Initialize IRQs and assign stubs to IDT
 void irq_init(void) {
     pic_remap();
-
-    set_idt_entry(32, (uint32_t)irq0_stub, 0x08, 0x8E);
     set_idt_entry(33, (uint32_t)irq1_stub, 0x08, 0x8E);
-    set_idt_entry(34, (uint32_t)irq2_stub, 0x08, 0x8E);
-    set_idt_entry(35, (uint32_t)irq3_stub, 0x08, 0x8E);
-    set_idt_entry(36, (uint32_t)irq4_stub, 0x08, 0x8E);
-    set_idt_entry(37, (uint32_t)irq5_stub, 0x08, 0x8E);
-    set_idt_entry(38, (uint32_t)irq6_stub, 0x08, 0x8E);
-    set_idt_entry(39, (uint32_t)irq7_stub, 0x08, 0x8E);
-    set_idt_entry(40, (uint32_t)irq8_stub, 0x08, 0x8E);
-    set_idt_entry(41, (uint32_t)irq9_stub, 0x08, 0x8E);
-    set_idt_entry(42, (uint32_t)irq10_stub, 0x08, 0x8E);
-    set_idt_entry(43, (uint32_t)irq11_stub, 0x08, 0x8E);
-    set_idt_entry(44, (uint32_t)irq12_stub, 0x08, 0x8E);
-    set_idt_entry(45, (uint32_t)irq13_stub, 0x08, 0x8E);
-    set_idt_entry(46, (uint32_t)irq14_stub, 0x08, 0x8E);
-    set_idt_entry(47, (uint32_t)irq15_stub, 0x08, 0x8E);
 }

@@ -73,6 +73,10 @@ add_executable(uiaos-kernel
 	src/irq_stubs.asm
 	src/irq.c
 
+	src/terminal.c
+	src/io.c
+	
+
 )
 
 # Include directories for the kernel target

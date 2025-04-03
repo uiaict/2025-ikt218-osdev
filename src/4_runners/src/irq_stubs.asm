@@ -26,6 +26,7 @@ irq0_stub:
 
 irq1_stub:
     pusha                  ; Save all general-purpose registers
+    cld
     call irq1_handler      ; Call the C handler for IRQ1 (keyboard)
     popa                   ; Restore all registers
     iretd                  ; Return from interrupt

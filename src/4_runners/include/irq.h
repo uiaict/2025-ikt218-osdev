@@ -2,6 +2,8 @@
 
 void irq_init(void);
 void irq_handler(int irq);
+char keyboard_getchar(void);
+
 
 // Declare all IRQ stubs
 void irq0_stub(void);
