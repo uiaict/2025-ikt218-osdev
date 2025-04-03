@@ -1,7 +1,7 @@
 #include "isr.h"
 #include "libc/string.h"
 #include "libc/stdio.h"
-#include "string.h"
+
 
 void terminal_write(const char* str); // Forward declaration
 
