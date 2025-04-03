@@ -2,6 +2,8 @@
 #define SCRN_H
 
 #include "libc/stdint.h"
+#define VGA_WIDTH 80
+#define VGA_HEIGHT 25
 
 // Fargekoder for tekst og bakgrunn
 #define VGA_COLOR(fg, bg) ((bg << 4) | (fg))
@@ -12,8 +14,7 @@
 
 
 void terminal_write(const char* str, uint8_t color);
-void printf(const char* str);
-
+void printf(const char* format, ...);
 
 
 

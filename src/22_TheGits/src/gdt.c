@@ -1,3 +1,4 @@
+
 #include "libc/gdt.h"
 
 struct gdt_entry gdt[3]; // Null, Code, Data
