@@ -2,13 +2,11 @@
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 #include <multiboot2.h>
-#include <kprint.h>
-#include <gdt.h>
-#include <pic.h>
-#include <idt.h>
-#include <keyboard.h>
-#include <isr.h>
-#include <irq.h>
+#include "kprint.h"
+#include "gdt.h"
+#include "idt.h"
+#include "isr.h"
+#include "keyboard.h"
 
 struct multiboot_info {
     uint32_t size;
@@ -16,55 +14,55 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
-
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
+    // Write "Hello World" directly to video memory (VGA text mode)
     const char *str = "Hello World";
     char *video_memory = (char*) 0xb8000;
     for (int i = 0; str[i] != '\0'; i++) {
-        video_memory[i*2] = str[i];
-        video_memory[i*2 + 1] = 0x07;
+        video_memory[i * 2]     = str[i];
+        video_memory[i * 2 + 1] = 0x07;  // White on black
     }
-
 
     kprint("Loading GDT...\n");
     init_gdt();
     kprint("GDT loaded\n");
 
+    kprint("Initializing IDT...\n");
+    idt_init();
+    kprint("IDT initialized\n");
+
+    kprint("Initializing ISR...\n");
+    isr_init();
+    kprint("ISR initialized\n");
+
+    kprint("Initializing PIC...\n");
     pic_init();
+    kprint("PIC initialized\n");
 
-  // Initialize IDT
-  kprint("Initializing IDT...\n");
-  idt_init();
-  kprint("IDT initialized\n");
-
-  kprint("Initializing IRQ...\n");
-    irq_init();
-
-  kprint("Initializing Keyboard Logger...\n");
     keyboard_init();
-    kprint("Keyboard Logger initialized\n");
 
-   
-__asm__ volatile("sti");
+    // Enable interrupts after all initialization
+    kprint("Enabling interrupts...\n");
+    __asm__ volatile ("sti");
+    kprint("Interrupts enabled\n");
 
-kprint("Press key to see input\n");
-while (1) {
-
-    // Check for data directly (polling method)
-   /* if (inb(0x64) & 1) {
-        uint8_t scancode = inb(0x60);
-        kprint("Polled scancode: ");
-        kprint_hex(scancode);
-        kprint("\n");
-    }
+    // Test interrupts
+    kprint("Testing NMI interrupt (int 0x2)...\n");
+    __asm__ volatile ("int $0x2");
     
-    // Also process any characters that might have been added by the interrupt handler
-    process_keyboard_input();*/
-}
+    kprint("Testing breakpoint interrupt (int 0x3)...\n");
+    __asm__ volatile ("int $0x3");
 
+    kprint("System initialized successfully!\n");
+    kprint("Press any key to see keyboard input...\n");
 
+    // Unmask keyboard interrupt (IRQ1)
+    outb(PIC1_DATA, 0xFD);  // 1111 1101 - enable IRQ1 (keyboard)
 
+    // Main loop - use hlt to save power while waiting for interrupts
+    while (1) {
+        __asm__ volatile ("hlt");
+    }
 
     return 0;
-
 }
