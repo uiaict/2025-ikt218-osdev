@@ -33,5 +33,10 @@
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
   "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/isr_handlers.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/isr_handlers.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/isr_handlers.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/irq.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/irq.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/irq.c"
 }
 ]

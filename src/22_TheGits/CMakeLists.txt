@@ -65,6 +65,7 @@ src/scrn.c
 src/idt.c
 src/isr.asm
 src/isr_handlers.c
+src/irq.c
 )
 
 # Include directories for the kernel target

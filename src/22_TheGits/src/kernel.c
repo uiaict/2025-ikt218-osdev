@@ -6,6 +6,8 @@
 #include "libc/gdt.h" 
 #include "libc/scrn.h"
 #include "libc/idt.h"
+#include "libc/isr_handlers.h"
+#include "libc/irq.h"
 
 
 
@@ -21,11 +23,11 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("Hello, World!\n");
     remap_pic();
     init_idt();
+    init_irq();
 
     // Aktiver interrupts
     __asm__ volatile ("sti");
-
-
+    __asm__ volatile ("int $0x80");
 
     while (1) {
         __asm__ volatile ("hlt");

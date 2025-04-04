@@ -2,7 +2,7 @@
 #include "libc/isr_handlers.h"
 
 void handle_timer_interrupt() {
-    //printf("Timer interrupt triggered!\n");
+   // printf("Timer interrupt triggered!\n");
     send_eoi(0);
 }
 
