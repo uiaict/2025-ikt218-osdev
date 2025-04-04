@@ -21,16 +21,31 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     //asm("int $0x0");
 
-    char* hello_world = "Hello, World!";
-    size_t len = strlen(hello_world);
+    char* before = "Before!";
+    size_t len = strlen(before);
 
     //Write to video memory
     char* video_memory = (char*) 0xb8000;
 
-    //Write hello_world to video memory
+    //Write Before to video memory
     for (size_t i = 0; i < len; i++) {
-        video_memory[i * 2] = hello_world[i];
+        video_memory[i * 2] = before[i];
         video_memory[i * 2 + 1] = 0x07;
+    }
+
+
+    asm("int $0x0");
+
+    char* after = "After!";
+    size_t len1 = strlen(after);
+
+    //Write to video memory
+    char* video_memory1 = (char*) 0xb8000;
+
+    //Write after to video memory
+    for (size_t i = 0; i < len1; i++) {
+        video_memory1[i * 2] = after[i];
+        video_memory1[i * 2 + 1] = 0x07;
     }
 
     int noop = 0;

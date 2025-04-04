@@ -18,7 +18,6 @@ typedef struct {
 
 static idtr_t idtr;                      //Creates a variable using the IDTR structure from above
 
-void init_idt();
-void idt_set_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags);
+void init_idt();						 //Declares the function to initialize the IDT
+void idt_set_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags); //Declares the function to set an IDT gate
 
-extern idt_entry_t idt_entries[256];
