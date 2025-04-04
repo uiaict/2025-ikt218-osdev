@@ -34,11 +34,11 @@ void init_idt(){
     }
 
 
-    //Set the IDT entries for interrupts 0, 1 and 2
-    //Each entry includes: the interrupt number, the address of the ISR, 0x08 points to the kernel code segment in gdt, tells the cpu how to handle the interrupt
-    idt_set_gate(0, (uint32_t)isr_stub_0, 0x08, 0x8E);
-    idt_set_gate(1, (uint32_t)isr_stub_1, 0x08, 0x8E);
-    idt_set_gate(2, (uint32_t)isr_stub_2, 0x08, 0x8E); 
+    extern void* isr_stub_table[];
+
+    for (uint8_t vector = 0; vector <= 2; vector++) {
+        idt_set_gate(vector, (uint32_t)isr_stub_table[vector], 0x08, 0x8E);
+    }
 
     //Load the IDT into the CPU and flushing it
     idt_flush((uint32_t)&idtr);

@@ -4,6 +4,7 @@
 #include "libc/string.h"
 #include <multiboot2.h>
 #include "arch/i386/gdt/gdt.h"
+#include "arch/i386/idt/idt.h"
 
 struct multiboot_info {
     uint32_t size;
@@ -19,36 +20,27 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     //Initialize idt from idt.h
     init_idt();
 
-    //asm("int $0x0");
 
+    //Test before interrupt
     char* before = "Before!";
     size_t len = strlen(before);
-
-    //Write to video memory
     char* video_memory = (char*) 0xb8000;
-
-    //Write Before to video memory
     for (size_t i = 0; i < len; i++) {
         video_memory[i * 2] = before[i];
         video_memory[i * 2 + 1] = 0x07;
     }
 
+    //Call interrupt 0x0
+    //asm("int $0x0");
 
-    asm("int $0x0");
-
+    //Test after interrupt
     char* after = "After!";
     size_t len1 = strlen(after);
-
-    //Write to video memory
     char* video_memory1 = (char*) 0xb8000;
-
-    //Write after to video memory
     for (size_t i = 0; i < len1; i++) {
         video_memory1[i * 2] = after[i];
         video_memory1[i * 2 + 1] = 0x07;
     }
-
-    int noop = 0;
     return 0;
 
 }
