@@ -1,31 +1,30 @@
 #include "libc/scrn.h"
 #include "libc/stdarg.h"
 
-// Funksjon for å skrive tekst til skjermen
 void terminal_write(const char* str, uint8_t color) {
-    static size_t row = 0; // Nåværende rad
-    static size_t col = 0; // Nåværende kolonne
+    static size_t row = 0; 
+    static size_t col = 0; 
     uint16_t* vga_buffer = VGA_MEMORY;
 
     for (size_t i = 0; str[i] != '\0'; i++) {
         if (str[i] == '\n') {
-            // Flytt til neste linje
+            // Next line
             row++;
             col = 0;
         } else {
-            // Skriv tegnet til VGA-buffret
+            // Writ to VGA-buffer
             size_t index = row * VGA_WIDTH + col;
             vga_buffer[index] = VGA_ENTRY(str[i], color);
             col++;
 
-            // Hvis vi når slutten av linjen, flytt til neste linje
+            // If reaching end of line, move to next line
             if (col >= VGA_WIDTH) {
                 row++;
                 col = 0;
             }
         }
 
-        // Hvis vi når slutten av skjermen, rull opp
+        // If reaching end of screen, start from start.
         if (row >= VGA_HEIGHT) {
             // Rull skjermen opp
             for (size_t y = 1; y < VGA_HEIGHT; y++) {
@@ -34,7 +33,7 @@ void terminal_write(const char* str, uint8_t color) {
                 }
             }
 
-            // Tøm siste linje
+            // Empty last line
             for (size_t x = 0; x < VGA_WIDTH; x++) {
                 vga_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = VGA_ENTRY(' ', color);
             }

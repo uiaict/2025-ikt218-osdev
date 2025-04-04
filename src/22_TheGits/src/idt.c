@@ -26,9 +26,9 @@ void init_idt() {
     idt_descriptor.limit = (sizeof(struct idt_entry) * IDT_SIZE) - 1;
     idt_descriptor.base = (uint32_t)&idt;
 
-    // Nullstill IDT-tabellen
+    // Sett alle oppføringer til default handler
     for (int i = 0; i < IDT_SIZE; i++) {
-        set_idt_entry(i, 0, 0x08, 0x8E);
+        set_idt_entry(i, (uint32_t)default_int_handler, 0x08, 0x8E);
     }
 
     // Sett opp ISR-er
@@ -39,6 +39,7 @@ void init_idt() {
     // Last IDT
     __asm__ volatile ("lidt (%0)" : : "r"(&idt_descriptor));
 }
+
 
 void remap_pic() {
     outb(0x20, 0x11); // Init master PIC
@@ -58,6 +59,13 @@ void send_eoi(uint8_t irq) {
         outb(0xA0, 0x20); // EOI til slave PIC
     }
     outb(0x20, 0x20); // EOI til master PIC
+}
+
+void default_int_handler() {
+    printf("Unhandled interrupt triggered!\n");
+    while (1) {
+        __asm__ volatile ("hlt"); // Stopp systemet
+    }
 }
 
 

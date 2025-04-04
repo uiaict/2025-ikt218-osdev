@@ -25,5 +25,6 @@ struct idt_ptr {
 // Funksjonsprototyper
 void init_idt();
 void set_idt_entry(int index, uint32_t isr, uint16_t selector, uint8_t type_attr);
+void default_int_handler();
 
 #endif // IDT_H

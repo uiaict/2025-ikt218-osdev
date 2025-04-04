@@ -26,6 +26,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     __asm__ volatile ("sti");
 
 
+
     while (1) {
         __asm__ volatile ("hlt");
     }
