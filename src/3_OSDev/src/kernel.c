@@ -16,20 +16,20 @@ struct multiboot_info {
 
 // Sources: http://www.brokenthorn.com/Resources/OSDev10.html
 //          https://wiki.osdev.org/Printing_To_Screen
-
+//          https://www.youtube.com/watch?v=dQqLT4qGiqI&list=PL2EF13wm-hWAglI8rRbdsCPq_wRpYvQQy&index=3
 
 void display_ascii_logo(void) {
-    print("   ____   _____ _____             ____  \n", 0x0B);
-    print("  / __ \\ / ____|  __ \\           |___ \\ \n", 0x0B);
-    print(" | |  | | (___ | |  | | _____   ____) | \n", 0x0B);
-    print(" | |  | |\\___ \\| |  | |/ _ \\ \\ / /__ < \n", 0x0B);
-    print(" | |__| |____) | |__| |  __/\\ V /___) | \n", 0x0B);
-    print("  \\____/|_____/|_____/ \\___| \\_/|____/ \n", 0x0B);
-    print("                                       \n", 0x0B);
-    print("      Operating System Development     \n", 0x0F);
-    print("     UiA IKT218 Course Project Team 3  \n", 0x07);
-    print("=======================================\n", 0x07);
-    print("\n", 0x0F);
+    print(0x0B, "   ____   _____ _____             ____  \n");
+    print(0x0B, "  / __ \\ / ____|  __ \\           |___ \\ \n");
+    print(0x0B, " | |  | | (___ | |  | | _____   ____) | \n");
+    print(0x0B, " | |  | |\\___ \\| |  | |/ _ \\ \\ / /__ < \n");
+    print(0x0B, " | |__| |____) | |__| |  __/\\ V /___) | \n");
+    print(0x0B, "  \\____/|_____/|_____/ \\___| \\_/|____/ \n");
+    print(0x0B, "                                       \n");
+    print(0x0F, "      Operating System Development     \n");
+    print(0x07, "     UiA IKT218 Course Project Team 3  \n");
+    print(0x07, "=======================================\n");
+    print(0x0F, "\n");
 }
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
@@ -43,9 +43,12 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialize GDT, IDT, and IRQ handlers
     init_gdt();
     init_idt();
+    init_irq();
+    init_irq_handlers();
+    enable_interrupts();
     
     // Print "Hello World!" to screen
-    print("Hello World!\n", 0x0F);
+    print(0x0F, "Hello World!\n");
 
     while (1) {}
     return 0;

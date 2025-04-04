@@ -7,7 +7,7 @@
 #define width 80
 #define height 25
 
-void print(const char* s, int colour);
+void print(int colour, const char* s, ...);
 void scrollup();
 void newLine();
 void Reset();

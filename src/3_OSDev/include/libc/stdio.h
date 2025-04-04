@@ -1,3 +1,4 @@
+#include <libc/stdbool.h>
 #pragma once
 
 int putchar(int ic);
