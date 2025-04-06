@@ -1,6 +1,7 @@
 ; === Egne ISRs for spesifikke interrupttyper ===
 
 extern handle_syscall
+extern handle_div_zero
 global isr_syscall
 
 section .text
@@ -56,6 +57,16 @@ default_isr:
     cli
     pusha
     call default_int_handler
+    popa
+    sti
+    iret
+
+
+global isr_div_zero
+isr_div_zero:
+    cli
+    pusha
+    call handle_div_zero
     popa
     sti
     iret

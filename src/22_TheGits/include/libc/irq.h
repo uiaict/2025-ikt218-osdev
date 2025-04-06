@@ -14,5 +14,6 @@ void unregister_irq_handler(int irq);
 
 
 void irq_handler(int irq);
+void send_eoi(uint8_t irq);
 
 void init_irq();

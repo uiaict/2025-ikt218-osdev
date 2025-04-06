@@ -1,10 +1,26 @@
 #include "libc/scrn.h"
 #include "libc/isr_handlers.h"
 
+static int timer_ticks = 0;
+
 void handle_timer_interrupt() {
-   // printf("Timer interrupt triggered!\n");
+    timer_ticks++;
+
+    if (timer_ticks % 500 == 0) {
+        printf("Five second has passed\n");
+    }
+
     send_eoi(0);
 }
+
+    void timer_phase(int hz) {
+        int divisor = 1193180 / hz;       // 1.193180 MHz basefrekvens
+        outb(0x43, 0x36);                 // Kommando: kanal 0, LSB+MSB, mode 3 (square wave)
+        outb(0x40, divisor & 0xFF);       // Lav byte
+        outb(0x40, divisor >> 8);         // Høy byte
+    }
+
+
 
 bool shift_pressed = false;
 
@@ -43,9 +59,26 @@ void handle_keyboard_interrupt() {
     send_eoi(1);
 }
 
+void handle_div_zero() {
+    printf("Divide by zero error triggered!\n");
+}
+
+void test_div_zero(){
+    int a = 1;
+    int b = 0;
+    int c = a / b; // Dette vil utløse en divisjon med null-feil
+    printf("Result: %d\n", c); // Denne linjen vil ikke bli nådd
+}
 
 void handle_syscall() {
     printf("System call triggered!\n");
+}
+
+void default_int_handler() {
+    printf("Unhandled interrupt triggered!\n");
+    while (1) {
+        __asm__ volatile ("hlt"); // Stopp systemet
+    }
 }
 
 char scancode_to_ascii[128] = {

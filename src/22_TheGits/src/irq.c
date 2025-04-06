@@ -2,7 +2,6 @@
 #include"libc/isr_handlers.h"
 
 
-
 void register_irq_handler(int irq, void (*handler)(void)) {
     if (irq >= 0 && irq < IRQ_COUNT) {
         irq_handlers[irq] = handler;
@@ -29,8 +28,13 @@ void irq_handler(int irq) {
 
 
 void init_irq() {
-    remap_pic(); 
     register_irq_handler(1, handle_keyboard_interrupt); 
     register_irq_handler(0, handle_timer_interrupt);
-    //register_irq_handler(2, handle_syscall);
+}
+
+void send_eoi(uint8_t irq) {
+    if (irq >= 8) {
+        outb(0xA0, 0x20); // EOI til slave PIC
+    }
+    outb(0x20, 0x20); // EOI til master PIC
 }

@@ -20,14 +20,15 @@ struct multiboot_info {
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_gdt();
+    timer_phase(100);
     printf("Hello, World!\n");
     remap_pic();
     init_idt();
     init_irq();
+    //test_div_zero();
 
     // Aktiver interrupts
     __asm__ volatile ("sti");
-    __asm__ volatile ("int $0x80");
 
     while (1) {
         __asm__ volatile ("hlt");

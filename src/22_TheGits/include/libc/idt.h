@@ -3,6 +3,7 @@
 
 #include "libc/stdint.h"
 #include "libc/io.h"
+#define IDT_SIZE 256
 
 void send_eoi(uint8_t irq);
 void remap_pic();

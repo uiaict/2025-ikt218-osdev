@@ -18,7 +18,7 @@ extern void isr_irq12();
 extern void isr_irq13();
 extern void isr_irq14();
 extern void isr_irq15();
-#define IDT_SIZE 256
+
 
 // IDT-tabellen og IDT-peker
 struct idt_entry idt[IDT_SIZE];
@@ -33,10 +33,10 @@ void set_idt_entry(int index, uint32_t isr, uint16_t selector, uint8_t type_attr
     idt[index].offset_high = (isr >> 16) & 0xFFFF;
 }
 
-extern void isr_timer();
-extern void isr_keyboard();
 extern void isr_syscall();
+extern void isr_div_zero();
 extern void default_isr();
+
 
 void init_idt() {
     idt_descriptor.limit = (sizeof(struct idt_entry) * IDT_SIZE) - 1;
@@ -48,6 +48,7 @@ void init_idt() {
     }
 
     // 2. Sett opp faktiske ISR-er (IRQ0–IRQ15)
+    set_idt_entry(0x00, (uint32_t)isr_div_zero, 0x08, 0x8E);
     set_idt_entry(0x20, (uint32_t)isr_irq0,  0x08, 0x8E);
     set_idt_entry(0x21, (uint32_t)isr_irq1,  0x08, 0x8E);
     set_idt_entry(0x22, (uint32_t)isr_irq2,  0x08, 0x8E);
@@ -92,18 +93,8 @@ void remap_pic() {
     outb(0xA1, 0x0);  // Enable all IRQs on slave
 }
 
-void send_eoi(uint8_t irq) {
-    if (irq >= 8) {
-        outb(0xA0, 0x20); // EOI til slave PIC
-    }
-    outb(0x20, 0x20); // EOI til master PIC
-}
 
-void default_int_handler() {
-    printf("Unhandled interrupt triggered!\n");
-    while (1) {
-        __asm__ volatile ("hlt"); // Stopp systemet
-    }
-}
+
+
 
 
