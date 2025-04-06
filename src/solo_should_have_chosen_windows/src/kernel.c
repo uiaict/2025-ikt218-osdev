@@ -2,6 +2,7 @@
 #include "terminal/print.h"
 #include "interrupts/idt_function.h"
 #include "memory/heap.h"
+#include "memory/paging.h"
 
 #include "libc/stdint.h"
 #include "libc/stddef.h"
@@ -23,31 +24,20 @@ struct multiboot_info {
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     gdt_init();
-    // printf("gdt now loaded\n");
-
     idt_init();
-    // printf("idt now loaded\n");
-
     enable_interrupts();
-    // printf("interrupts enabled\n");
+    printf("GDT, IDT and interrupts initialized.\n");
 
-    printf("Kernel ends at: %x\nInitialising heap...\n", &end);
+    printf("Initialising heap...\n");
     heap_init((void*)&end, HEAP_SIZE);
+
+    paging_init();
+    printf("Paging initialized.\n\n");
     
     print_heap();
 
-    char* string = malloc(6 * sizeof(char));
-    if (string) {
-        string[0] = 'H';
-        string[1] = 'e';
-        string[2] = 'l';
-        string[3] = 'l';
-        string[4] = 'o';
-        string[5] = '\0'; // Null-terminate the string
-    }
-    printf("Allocated string: %s\n", string);
-    print_heap();
 
+    
     /* void* a = malloc(100);
     printf("Allocated 100 bytes at %p\n", a);
     print_heap();
