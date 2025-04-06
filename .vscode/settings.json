@@ -18,7 +18,8 @@
         "limits.h": "c",
         "clear.h": "c",
         "cursor.h": "c",
-        "keyboard_map.h": "c"
+        "keyboard_map.h": "c",
+        "gdt_function.h": "c"
     }
 
 }

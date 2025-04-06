@@ -1,4 +1,5 @@
 #include "memory/heap.h"
+#include "terminal/print.h"
 
 #include "libc/stdint.h"
 #include "libc/stddef.h"
@@ -47,7 +48,7 @@ void* malloc (size_t size) {
             }
 
             current->free = 0;
-            
+
             // Return the pointer to the memory after the header
             return (void*)(current + 1); 
         }
@@ -55,4 +56,43 @@ void* malloc (size_t size) {
         current = current->next;
     }
     return NULL; // No suitable block found
+}
+
+void free (void* ptr) {
+    if (!ptr) return;
+
+    heap_block_header_t* block = (heap_block_header_t*)ptr - 1; // Get the header
+    block->free = 1;
+
+    // Coalesce with next blocks
+    if (block->next && block->next->free == 1) {
+        block->size += sizeof(heap_block_header_t) + block->next->size;
+        block->next = block->next->next;
+    }
+
+    // Coalesce with previous blocks
+    heap_block_header_t* current = heap_start;
+    while (current && current->next) {
+        if (current->next == block && current->free == 1) {
+            current->size += sizeof(heap_block_header_t) + block->size;
+            current->next = block->next;
+            break;
+        }
+        current = current->next;
+    }
+}
+
+void print_heap() {
+    heap_block_header_t* current = heap_start;
+    int i = 0;
+    if (current->next == NULL) {
+        printf("Heap is empty. Available space: %u bytes\n\n", (unsigned int)current->size);
+        return;
+    }
+    while (current) {
+        printf("Block %d: Block at %p: size=%u bytes, free=%d\n", i, current, (unsigned int)current->size, current->free);
+        current = current->next;
+        i++;
+    }
+    printf("\n");
 }
