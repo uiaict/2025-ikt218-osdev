@@ -36,7 +36,19 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     
     print_heap();
 
-    void* a = malloc(100);
+    char* string = malloc(6 * sizeof(char));
+    if (string) {
+        string[0] = 'H';
+        string[1] = 'e';
+        string[2] = 'l';
+        string[3] = 'l';
+        string[4] = 'o';
+        string[5] = '\0'; // Null-terminate the string
+    }
+    printf("Allocated string: %s\n", string);
+    print_heap();
+
+    /* void* a = malloc(100);
     printf("Allocated 100 bytes at %p\n", a);
     print_heap();
 
@@ -48,7 +60,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("Allocated 300 bytes at %p\n", c);
     print_heap();
 
-    /* free(b);
+    free(b);
     printf("Freed 200-byte block.\n");
     print_heap();
 
