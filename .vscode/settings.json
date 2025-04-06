@@ -1,6 +1,6 @@
 {
-    "cmake.buildDirectory": "${workspaceFolder}/build/the_byte_of_33",
-    "cmake.sourceDirectory": "${workspaceFolder}/src/the_byte_of_33",
+    "cmake.buildDirectory": "${workspaceFolder}/build/group_name",
+    "cmake.sourceDirectory": "${workspaceFolder}/src/group_name",
     "cmake.useCMakePresets": "never",
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
