@@ -1,62 +1,36 @@
 #include "gdt.h"
 #include "libc/stdint.h"
 
-// Descriptor Privilege Level (DPL) flags.
-#define GDT_CODE_EXEC_READ 0x9A // Binary: 10011010
+// Assembly function to flush/load the GDT
+extern void gdt_flush(uint32_t gdt_ptr);
 
-// Readable and writable data segment, not accessed, with Ring 0 privilege.
-#define GDT_DATA_READ_WRITE 0x92 // Binary: 10010010
-
-// Descriptor Privilege Level (DPL) flags.
-#define GDT_FLAG_RING0 0x00 // Ring 0: Highest level of privilege.
-#define GDT_FLAG_RING3 0x60 // Ring 3: Lowest level, used for user-space applications.
-
-// Granularity and operation size flags.
-#define GDT_GRANULARITY_4K 0x80 // Granularity: 1 = 4KB, 0 = 1 byte.
-#define GDT_32_BIT_MODE 0x40    // 32-bit opcode size
-
-struct gdt_entry gdt_entries[5];
-struct gdt_ptr gdt_ptr;
-
-struct gdt_entry create_gdt_entry(uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity)
-{
-    struct gdt_entry entry;
-
-    // Bits 0-15
-    entry.base_low = base & 0xFFFF;
-    // Bits 16-23
-    entry.base_middle = (base >> 16) & 0xFF;
-    // Bits 24-31
-    entry.base_high = (base >> 24) & 0xFF;
-    // Lowest 16 bits
-    entry.limit_low = limit & 0xFFFF;
-
-    // Upper 4 bits = granularity flags
-    // Lower 4 bits = high bits of the segment limit
-    entry.granularity = ((limit >> 16) & 0x0F) | (granularity & 0xF0);
-
-    // This byte contains several bits (present bit, read/write, executable bit, ...)
-    entry.access = access;
-    return entry;
-}
+static struct gdt_entry_t gdt[GDT_ENTRIES];
+static struct gdt_ptr_t gdt_ptr;
 
 void init_gdt()
 {
-    gdt_entries[0] = create_gdt_entry(0, 0, 0, 0);
+    gdt_ptr.limit = sizeof(struct gdt_entry_t) * GDT_ENTRIES - 1;
+    gdt_ptr.base = (uint32_t)&gdt;
 
-    gdt_entries[1] = create_gdt_entry(0, 0xFFFFFFFF, GDT_CODE_EXEC_READ, GDT_FLAG_RING0 | GDT_GRANULARITY_4K | GDT_32_BIT_MODE);
+    gdt_set_gate(0, 0, 0, 0, 0); // Null segment
 
-    // Entry 2: Kernel mode data segment (Ring 0, readable/writable)
-    gdt_entries[2] = create_gdt_entry(0, 0xFFFFFFFF, GDT_DATA_READ_WRITE, GDT_FLAG_RING0 | GDT_GRANULARITY_4K | GDT_32_BIT_MODE);
+    gdt_set_gate(1, 0, 0xFFFFFFFF, GDT_ACCESS_CODE_EXEC_READ, GDT_FLAG_USE_FLAT_MODEL);  // Kernel code
+    gdt_set_gate(2, 0, 0xFFFFFFFF, GDT_ACCESS_DATA_READ_WRITE, GDT_FLAG_USE_FLAT_MODEL); // Kernel data
 
-    // Entry 3: User mode code segment (Ring 3, executable, readable)
-    gdt_entries[3] = create_gdt_entry(0, 0xFFFFFFFF, GDT_CODE_EXEC_READ, GDT_FLAG_RING3 | GDT_GRANULARITY_4K | GDT_32_BIT_MODE);
+    gdt_set_gate(3, 0, 0xFFFFFFFF, GDT_ACCESS_USER_CODE_EXEC_READ, GDT_FLAG_USE_FLAT_MODEL);  // User code
+    gdt_set_gate(4, 0, 0xFFFFFFFF, GDT_ACCESS_USER_DATA_READ_WRITE, GDT_FLAG_USE_FLAT_MODEL); // User data
 
-    // Entry 4: User mode data segment (Ring 3, readable/writable)
-    gdt_entries[4] = create_gdt_entry(0, 0xFFFFFFFF, GDT_DATA_READ_WRITE, GDT_FLAG_RING3 | GDT_GRANULARITY_4K | GDT_32_BIT_MODE);
+    gdt_flush((uint32_t)&gdt_ptr);
+}
 
-    gdt_ptr.limit = sizeof(gdt_entries) - 1;
-    gdt_ptr.base = (uint32_t)&gdt_entries;
+void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran)
+{
+    gdt[num].base_low = (base & 0xFFFF);
+    gdt[num].base_middle = (base >> 16) & 0xFF;
+    gdt[num].base_high = (base >> 24) & 0xFF;
 
-    load_gdt();
+    gdt[num].limit_low = (limit & 0xFFFF);
+    gdt[num].granularity = ((limit >> 16) & 0x0F) | (gran & 0xF0);
+
+    gdt[num].access = access;
 }

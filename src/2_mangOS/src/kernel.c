@@ -4,6 +4,7 @@
 #include "libc/stddef.h"
 #include "libc/string.h"
 #include "libc/stdio.h"
+#include "gdt.h"
 
 struct multiboot_info
 {
@@ -15,6 +16,7 @@ struct multiboot_info
 int main(uint32_t magic, struct multiboot_info *mb_info_addr)
 {
     terminal_initialize();
+    init_gdt();
 
     printf("Hello %s!", "Aryan");
 
