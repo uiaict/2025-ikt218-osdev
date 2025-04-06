@@ -72,6 +72,7 @@ add_executable(uiaos-kernel
 	src/libc/string.c
 	src/interrupts/keyboard/keyboard_map.c
 	src/memory/heap.c
+	src/memory/paging.c
 )
 
 # Include directories for the kernel target
