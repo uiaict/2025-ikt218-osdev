@@ -39,7 +39,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     print_heap();
 
     printf("Going to sleep for 10 seconds...\n");
-    sleep_interrupt(10 * 1000); // Sleep for 10 seconds
+    sleep_busy(10 * 1000); // Sleep for 10 seconds
     printf("Woke up from sleep.\n");
 
     

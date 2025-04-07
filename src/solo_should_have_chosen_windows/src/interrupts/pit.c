@@ -3,6 +3,8 @@
 #include "libc/io.h"
 #include "libc/stdint.h"
 
+#define MAX_2_32 0xFFFFFFFF
+
 static volatile uint32_t pit_ticks = 0;
 
 void pit_tick() {
@@ -23,5 +25,13 @@ void sleep_interrupt(uint32_t milliseconds) {
 
     while (pit_ticks < target_ticks) {
         __asm__ volatile ("hlt");
+    }
+}
+
+void sleep_busy(uint32_t milliseconds) {
+    uint32_t target_ticks = pit_ticks + milliseconds;
+
+    while (pit_ticks < target_ticks) {
+        // Busy wait
     }
 }
