@@ -64,11 +64,15 @@ add_executable(uiaos-kernel
 	src/multiboot2.asm # TODO: Add multiboot2 support
     src/kernel.c
 	src/string.c
+	src/io.c
 	src/arch/i386/gdt/gdt.c
 	src/arch/i386/gdt/gdt.asm
 	src/arch/i386/idt/idt.c
 	src/arch/i386/idt/idt.asm
 	src/arch/i386/idt/isr.asm
+	src/arch/i386/idt/isr.c
+
+
 
 )
 

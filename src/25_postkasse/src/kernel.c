@@ -31,7 +31,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     }
 
     //Call interrupt 0x0
-    //asm("int $0x0");
+    asm("int $0x0");
 
     //Test after interrupt
     char* after = "After!";
