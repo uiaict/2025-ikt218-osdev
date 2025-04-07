@@ -1,3 +1,5 @@
+#include "music_player/frequencies.h"
+#include "interrupts/speaker.h"
 #include "gdt/gdt_function.h"
 #include "terminal/print.h"
 #include "interrupts/idt_function.h"
@@ -23,10 +25,49 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
+void fur_elise() {
+    printf("Playing Fur Elise...\n");
+    
+    speaker_beep(E5, 150);
+    sleep_busy(20);
+    speaker_beep(Ds5, 150);
+    sleep_busy(20);
+    speaker_beep(E5, 150);
+    sleep_busy(20);
+    speaker_beep(Ds5, 150);
+    sleep_busy(20);
+    speaker_beep(E5, 150);
+    sleep_busy(20);
+    speaker_beep(B4, 150);
+    sleep_busy(20);
+    speaker_beep(D5, 150);
+    sleep_busy(20);
+    speaker_beep(C5, 150);
+    sleep_busy(20);
+    speaker_beep(A4, 150);
+    sleep_busy(20); 
+    speaker_beep(C4, 150);
+    sleep_busy(20); 
+    speaker_beep(E4, 150);
+    sleep_busy(20); 
+    speaker_beep(A4, 150);
+    sleep_busy(20);
+    speaker_beep(B4, 200);
+    sleep_busy(20);
+    speaker_beep(E4, 150);
+    sleep_busy(20); 
+    speaker_beep(A4, 150);
+    sleep_busy(20);
+    speaker_beep(B4, 150);
+    sleep_busy(20); 
+    speaker_beep(C5, 500);
+    sleep_busy(20);   
+    printf("Ended music...\n");
+}
 
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-
+    
     gdt_init();
     idt_init();
     enable_interrupts();
@@ -39,11 +80,9 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     paging_init();
     printf("Paging initialized.\n\n");
     
-    print_heap();
+    print_heap(); 
 
-  
-
-    
+    fur_elise();
     /* void* a = malloc(100);
     printf("Allocated 100 bytes at %p\n", a);
     print_heap();

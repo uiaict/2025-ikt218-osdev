@@ -3,8 +3,6 @@
 #include "libc/io.h"
 #include "libc/stdint.h"
 
-#define MAX_2_32 0xFFFFFFFF
-
 static volatile uint32_t pit_ticks = 0;
 
 void pit_tick() {

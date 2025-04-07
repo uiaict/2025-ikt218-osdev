@@ -9,7 +9,7 @@
 #define HZ_LOWER_LIMIT 20
 
 void speaker_play_frequency(uint32_t frequency) {
-    if (frequency = 0 || frequency < HZ_LOWER_LIMIT) return;
+    if ((frequency == 0) || (frequency < HZ_LOWER_LIMIT)) return;
 
     uint16_t divisor = PIT_BASE_FREQUENCY / frequency;
 
