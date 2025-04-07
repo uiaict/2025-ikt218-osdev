@@ -33,25 +33,24 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     idt_init();
     enable_interrupts();
     pit_init();
-    printf("GDT, IDT and interrupts initialized. PIT configured.\n");
+    // printf("GDT, IDT and interrupts initialized. PIT configured.\n");
 
-    printf("Initialising heap...\n");
+    // printf("Initialising heap...\n");
     heap_init((void*)&end, HEAP_SIZE);
 
     paging_init();
-    printf("Paging initialized.\n\n");
-    
+    // printf("Paging initialized.\n\n");
+    printf("Heap initialized.\n");
     print_heap(); 
 
-    SongPlayer *player = create_song_player();
-    if (player == NULL) {
-        printf("Failed to create song player\n");
-    }
-    else {
-        printf("Song player created successfully\nPlaying song...\n");
-        player->play_song(&fur_elise_song);
-        printf("Song played successfully\n");
-    }
+    init_song_library();
+    printf("Heap after song library initialization:\n");
+    print_heap();
+    playAllSongs(songList, numOfSongs);
+    destroy_song_library();
+
+    printf("Heap after player destruction:\n");
+    print_heap();
 
 
        // Keep the CPU running forever
