@@ -19,7 +19,8 @@
         "clear.h": "c",
         "cursor.h": "c",
         "keyboard_map.h": "c",
-        "gdt_function.h": "c"
+        "gdt_function.h": "c",
+        "song_player.h": "c"
     }
 
 }

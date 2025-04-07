@@ -76,6 +76,8 @@ add_executable(uiaos-kernel
 	src/memory/paging_stubs.asm
 	src/interrupts/pit.c
 	src/interrupts/speaker.c
+	src/music_player/song_player.c
+	src/music_player/song_library.c
 )
 
 # Include directories for the kernel target
