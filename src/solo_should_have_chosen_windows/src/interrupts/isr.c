@@ -5,11 +5,13 @@
 
 #include "libc/stdbool.h"
 
-#define DEBUG_INTERRUPTS 1
+#define DEBUG_INTERRUPTS 0
 #define KEYBOARD_ENABLED 1 
 
 static bool shift_pressed = false;
 static bool altgr_pressed = false;
+
+extern void pit_tick();
 
 void irq_handler(int irq) {
 #if DEBUG_INTERRUPTS
@@ -28,6 +30,11 @@ void irq_handler(int irq) {
     }  
 #endif
 
+    // Handle the PIT interrupt (IRQ0)
+    if (irq == 0x20) {
+        pit_tick();
+    }
+    
 #if KEYBOARD_ENABLED
     if (irq == 0x21) {
         uint8_t scancode = inb(0x60);
