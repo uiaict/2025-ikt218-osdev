@@ -67,8 +67,17 @@ add_executable(uiaos-kernel
 	src/screen.c
 	src/screen.h
 	#src/arch/i386/gdt.asm
-	#src/arch/i386/gdt.c
+	#src/arch/i386/gdt.c     #vi trnegte ikke å legge til gdt.c / .s fordi??
 	src/arch/i386/Keyboard.c
+	src/arch/i386/io.c
+	src/arch/i386/IRQ.c
+	src/arch/i386/IRQ.h
+	src/arch/i386/ISR.c
+	src/arch/i386/print.c
+	src/arch/i386/ISR.asm
+	
+
+
 )
 
 # Link gdt_asm med uiaos-kernel

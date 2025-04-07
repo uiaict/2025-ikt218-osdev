@@ -5,6 +5,9 @@ struct int_handler int_handlers[IDT_ENTRIES];
 struct idt_entry idt[IDT_ENTRIES];
 struct idt_ptr idt_ptr;
 
+extern void isr_stub_33();
+set_idt_entry(33, (__uint32_t)isr_stub, 0x08, 0x8E);
+
 // Function to register an interrupt handler
 void register_int_handler(int num, void (*handler)(void *data), void *data) {
   int_handlers[num].num = num;
@@ -53,3 +56,7 @@ void idt_load(struct idt_ptr *idt_ptr) {
   // Load the IDT using the LIDT instruction
   asm volatile("lidt %0" : : "m" (*idt_ptr));
 }
+
+asm volatile ("sti");
+
+

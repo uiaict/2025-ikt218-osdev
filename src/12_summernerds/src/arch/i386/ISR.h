@@ -1,5 +1,7 @@
 #pragma once //Gjør at denne filen blir ikke behandlet før programmet compiler for at den skal inkluderes bare en gang.
-#include <stdint.h>
+#include <libc/stdint.h>
+#include "../src/arch/i386/print.h"
+
 
 #define MAX_INTERRUPTS 256 //Antall interrups x86 processoren  vil kunne støtte i IDT-en.
 #define MAX_LISTENERS_PER_ISR 4 //begrenser antall funksjoner (listener4s) som kan respondere til et interupt til 4.

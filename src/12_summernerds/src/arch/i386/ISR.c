@@ -1,6 +1,15 @@
 #include "ISR.h"
-#include "../drivers/screen.h" // //må huske å korrigere til rett fil referanse 
-#include "../kernel/util.h"   // her også
+#include "../src/screen.h" // //må huske å korrigere til rett fil referanse 
+#include <libc/stddef.h>
+#include <libc/stdio.h>
+#include "print.h"
+
+
+//#include "../kernel/util.h"   // her også
+
+extern void irq_handler (int irq){
+    irq_handler(irq);
+}  // hvis det ikke funker ternger ikke det som er på inndsiden av bracketsene [ irq_handler(irq); ]
 
 //array for å holde funksjon til hver interrupt (maks 256 som vi definerte til header filen) 
 static interrupt_listener_t listeners[MAX_INTERRUPTS][MAX_LISTENERS_PER_ISR];
@@ -14,7 +23,8 @@ void isr_init() {
     {for (int j = 0; j < MAX_LISTENERS_PER_ISR; j++) {listeners[i][j] = NULL;}}
     
     for (int i = 0; i < MAX_LISTENERS_PER_ISR; i++)
-    {global_listeners[i] = NULL; // Bruk NULL for å indikere NULL listener}
+    {global_listeners[i] = NULL; // Bruk NULL for å indikere NULL listener
+        }
 }
 
 // Registrerer en interrupt listener til ein interrupt (spesifikt)
@@ -26,11 +36,11 @@ void subscribe_interrupt(uint8_t interrupt_number, interrupt_listener_t handler)
     }
 
     // Skriver feilmelding for dersom den ikke finner en ledig plass for listeneren i for-løkka over.
-    kprint("ISR-ERROR: There are too many listeners for interrupt. ");
+    printf("ISR-ERROR: There are too many listeners for interrupt. ");
     char s[4];
-    int_to_ascii(interrupt_number, s);
-    kprint(s);
-    kprint("\n");
+    printf("ISR %d: %s\n", interrupt_number, s);
+    printf(s);
+    printf("\n");
 }
 
 // Registrerer en global interrupt listeneur
@@ -41,7 +51,7 @@ void subscribe_global(interrupt_listener_t handler) {
     {if(global_listeners[i] == NULL) {global_listeners[i] = handler;return;}}
 
     // feilmelding for ikke-funnet listener
-    kprint("ISR ERROR: Too many global listeners\n");}
+    printf("ISR ERROR: Too many global listeners\n");}
 
 // Utfører alle registrerte lyttere for en gitt interrupt
 void isr_dispatch(registers_t* regs) {

@@ -1,3 +1,9 @@
+#include "libc/stddef.h" // For NULL
+#include "io.h"
+#include "../src/screen.h"
+#include "ISR.h"
+#include "print.h"
+
 #define IRQ0 32 // system timer. PIC type: Master PIC. PIC = (Programmable Interrupt Controller)
 #define IRQ1 33 // keyboard. PIC type: Master PIC
 #define IRQ2 34 // Cascaded to Slave PIC (Bridge). PIC type: Master PIC
@@ -28,8 +34,14 @@ void register_irq_handler(int irq, void (*handler)(void)){irq_handlers[irq] = ha
 
 // Here we define the function that gets called when an IRQ occurs
 void irq_handler(int irq) {
-  if (irq_handlers[irq] != NULL){irq_handlers[irq]();}
-  if (irq >= 8){outb(0xA0, 0x20);}outb(0x20, 0x20);}struct idt_entry
+  if (irq_handlers[irq] != NULL){
+    irq_handlers[irq]();
+  }
+  if (irq >= 8) {
+    outb(0xA0, 0x20);
+  }
+  outb(0x20, 0x20);
+}
 
 
 
