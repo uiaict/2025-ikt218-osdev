@@ -34,7 +34,12 @@ void destroy_song_player(SongPlayer *player) {
     }
 }
 
-void playAllSongs(Song *songs, size_t song_count) {
+void playAllSongs() {
+    init_song_library();
+    if (songList == NULL || numOfSongs == 0) {
+        printf("No songs to play\n");
+        return;
+    }
     SongPlayer *player = create_song_player();
     if (player == NULL) {
         printf("Failed to create song player\n");
@@ -44,17 +49,31 @@ void playAllSongs(Song *songs, size_t song_count) {
     printf("Heap after player creation:\n");
     print_heap();
     
-    for (size_t i = 0; i < song_count; i++) {
-            printf("Playing song %u: %s by %s\n", (unsigned int) i + 1, songs[i].title, songs[i].artist);
-            player->play_song(&songs[i]);
+    for (size_t i = 0; i < numOfSongs; i++) {
+            printf("Playing song %u: %s by %s\n", (unsigned int) i + 1, songList[i].title, songList[i].artist);
+            player->play_song(&songList[i]);
             sleep_busy(1000);
-            if (i < song_count - 1) {
+            if (i < numOfSongs - 1) {
                 printf("Next song...\n");
             }
             else {
                 printf("End of playlist.\n");
             }
     }
+
+    destroy_song_player(player);
+    destroy_song_library();
+}
+
+void playSong(Song song) {
+    SongPlayer *player = create_song_player();
+    if (player == NULL) {
+        printf("Failed to create song player\n");
+        return;
+    }
+
+    printf("Playing song: %s by %s\n", song.title, song.artist);
+    player->play_song(&song);
 
     destroy_song_player(player);
 }

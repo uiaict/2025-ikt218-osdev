@@ -20,7 +20,7 @@ typedef struct {
 
 SongPlayer *create_song_player();
 
-void playAllSongs(Song* songs, size_t song_count);
-void playSong(Song *song);
+void playAllSongs();
+void playSong(Song song);
 
 void destroy_song_player(SongPlayer *player);
