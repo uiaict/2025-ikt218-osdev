@@ -2,6 +2,7 @@
 
 #define GDT_ENTRIES 5
 
+
 struct gdt_entry{
     // 1 entry is 8 Bytes
     uint16_t limit_low;
@@ -26,6 +27,14 @@ extern void gdt_flush(uint32_t*);
 //========================================= IDT =========================================
 
 #define IDT_ENTRIES 256
+
+#define M_PIC 0x20  // IO base address for master PIC
+#define M_PIC_COMMAND M_PIC
+#define M_PIC_DATA (M_PIC+1)
+
+#define S_PIC 0xA0  // IO base address for slave PIC
+#define S_PIC_COMMAND S_PIC
+#define S_PIC_DATA (S_PIC+1)
 
 struct idt_entry {
     uint16_t base_low;  // lower 16bit of adress to jump to if interrupt
@@ -78,3 +87,20 @@ extern void isr28();
 extern void isr29();
 extern void isr30();
 extern void isr31();
+
+extern void irq0(); //isr32
+extern void irq1(); //isr33
+extern void irq2(); //etc
+extern void irq3();
+extern void irq4();
+extern void irq5();
+extern void irq6();
+extern void irq7();
+extern void irq8();
+extern void irq9();
+extern void irq10();
+extern void irq11();
+extern void irq12();
+extern void irq13();
+extern void irq14();
+extern void irq15(); //isr47

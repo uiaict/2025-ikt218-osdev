@@ -38,8 +38,10 @@ int main(uint32_t my_struct, uint32_t magic, struct multiboot_info *mb_info_addr
     set_vga_color(VGA_WHITE, VGA_BLACK);
     putchar_at(&t, 10, 10);
     
-    asm volatile ("int $0x3");
-    asm volatile ("int $0x4"); 
+    // asm volatile ("int $0x1E");
+    // asm volatile ("int $0x1F"); 
+    // asm volatile ("int $0x20");
+    // asm volatile ("int $0x21"); 
 
     return 0;
 

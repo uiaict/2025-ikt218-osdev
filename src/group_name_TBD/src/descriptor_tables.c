@@ -1,6 +1,7 @@
 #include "libc/stdint.h"
 #include "descriptor_tables.h"
 #include "isr.h"
+#include "io.h"
 
 struct gdt_entry gdt[GDT_ENTRIES];
 struct gdt_ptr gdt_ptr;
@@ -53,12 +54,40 @@ void init_idt() {
     idt_ptr.limit = sizeof(struct idt_entry) * IDT_ENTRIES - 1;
     idt_ptr.base = (uint32_t) &idt;
     
+    
+// Remap the irq table.
+// ICW: Initialization Command Words
+// Arbitrary numbers meaning specific things to the pic
+
+    // Gives command to master and slave PIC
+    outb(M_PIC_COMMAND, 0x10 | 0x01);
+    outb(S_PIC_COMMAND, 0x10 | 0x01);
+    
+    // Sends data to master and slave PIC
+    outb(M_PIC_DATA, 0x20);     // Offset to shift IRQ0
+    outb(S_PIC_DATA, 0x28);     //  from ISR0 to ISR32
+    
+    outb(M_PIC_DATA, 0x04);     // Tell Master PIC that there is a slave PIC at IRQ2 (0000 0100)
+    outb(S_PIC_DATA, 0x02);     // Tell Slave PIC its cascade identity (0000 0010)
+    
+    outb(M_PIC_DATA, 0x01);     // Makes PIC use 8086 mode
+    outb(S_PIC_DATA, 0x01);     //  instead of 8080 mode
+    
+    // Unmask both PICs.
+    outb(M_PIC_DATA, 0x0);
+    outb(S_PIC_DATA, 0x0);
+// IRQs 0..15 correspond to ISRs 32..47 (31 being the last CPU-used ISR)
+    
+    
+    
+    
     // All IDT entries must be set for the CPU to not crash and burn.
     // memset(&idt, 0, sizeof(struct idt_entry) * 256); 
     for (size_t i = 0; i < IDT_ENTRIES; i++){
         idt_set_gate(0, 0x00000000, 0x08, 0x8E); // Set all 256 entries as default
     }
 
+    // ISR used by CPU
     idt_set_gate(0, (uint32_t)isr0, 0x08, 0x8E);
     idt_set_gate(1, (uint32_t)isr1, 0x08, 0x8E);
     idt_set_gate(2, (uint32_t)isr2, 0x08, 0x8E);
@@ -92,6 +121,25 @@ void init_idt() {
     idt_set_gate(30, (uint32_t)isr30, 0x08, 0x8E);
     idt_set_gate(31, (uint32_t)isr31, 0x08, 0x8E);
   
+    // ISR used by IRQ
+    idt_set_gate(32, (uint32_t)irq0, 0x08, 0x8E); //isr32
+    idt_set_gate(33, (uint32_t)irq1, 0x08, 0x8E); //isr33
+    idt_set_gate(34, (uint32_t)irq2, 0x08, 0x8E); //isr34
+    idt_set_gate(35, (uint32_t)irq3, 0x08, 0x8E); //etc
+    idt_set_gate(36, (uint32_t)irq4, 0x08, 0x8E);
+    idt_set_gate(37, (uint32_t)irq5, 0x08, 0x8E);
+    idt_set_gate(38, (uint32_t)irq6, 0x08, 0x8E);
+    idt_set_gate(39, (uint32_t)irq7, 0x08, 0x8E); //isr39
+    idt_set_gate(40, (uint32_t)irq8, 0x08, 0x8E); //isr40
+    idt_set_gate(41, (uint32_t)irq9, 0x08, 0x8E);
+    idt_set_gate(42, (uint32_t)irq10, 0x08, 0x8E);
+    idt_set_gate(43, (uint32_t)irq11, 0x08, 0x8E);
+    idt_set_gate(44, (uint32_t)irq12, 0x08, 0x8E);
+    idt_set_gate(45, (uint32_t)irq13, 0x08, 0x8E);
+    idt_set_gate(46, (uint32_t)irq14, 0x08, 0x8E);
+    idt_set_gate(47, (uint32_t)irq15, 0x08, 0x8E); //isr47
+    
+    
     // Load the IDT
     idt_flush((uint32_t)&idt_ptr);
   }
@@ -104,6 +152,5 @@ void idt_set_gate(int32_t num, uint32_t base, uint32_t selector, uint8_t flags){
     idt[num].selector = 0x08;                   // base of code segment in GDT
     idt[num].zero = 0x00;                       // Always 0
     idt[num].flags = flags;                     // 8E = 10001110, se doc for flag meaning
-    
 }
 
