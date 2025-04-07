@@ -5,7 +5,7 @@
 
 #include "libc/stdbool.h"
 
-#define DEBUG_INTERRUPTS 0
+#define DEBUG_INTERRUPTS 1
 #define KEYBOARD_ENABLED 1 
 
 static bool shift_pressed = false;
@@ -18,8 +18,8 @@ void irq_handler(int irq) {
     if (irq < 32) {
         printf("Exception: Interupt (%d) - %x\n", irq, irq);
     }
-    else if (irq >= 0x20 && irq <= 0x2F) {
-        if (counter % 10 == 0)
+    else if (irq == 0x20) {
+        if (counter % 1000 == 0)
             printf("IRQ %d (mapped to vector %d): Interrupt - %x\n", irq - 0x20, irq, irq);
         counter++;
     }

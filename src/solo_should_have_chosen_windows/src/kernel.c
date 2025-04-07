@@ -3,6 +3,7 @@
 #include "interrupts/idt_function.h"
 #include "memory/heap.h"
 #include "memory/paging.h"
+#include "interrupts/pit.h"
 
 #include "libc/stdint.h"
 #include "libc/stddef.h"
@@ -26,7 +27,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     gdt_init();
     idt_init();
     enable_interrupts();
-    printf("GDT, IDT and interrupts initialized.\n");
+    pit_init();
+    printf("GDT, IDT and interrupts initialized. PIT configured.\n");
 
     printf("Initialising heap...\n");
     heap_init((void*)&end, HEAP_SIZE);
