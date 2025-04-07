@@ -5,6 +5,7 @@
 #include "memory/paging.h"
 #include "interrupts/pit.h"
 
+#include "libc/io.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
@@ -13,6 +14,7 @@
 
 #define HEAP_SIZE 64 * 1024 // 64 KB
 
+
 extern uint32_t end;
 
 struct multiboot_info {
@@ -20,6 +22,7 @@ struct multiboot_info {
     uint32_t reserved;
     struct multiboot_tag *first;
 };
+
 
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
@@ -38,9 +41,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     
     print_heap();
 
-    printf("Going to sleep for 10 seconds...\n");
-    sleep_busy(10 * 1000); // Sleep for 10 seconds
-    printf("Woke up from sleep.\n");
+  
 
     
     /* void* a = malloc(100);
