@@ -72,6 +72,8 @@ add_executable(uiaos-kernel
 	src/idt/idt.asm
 
 	src/keyboard/keyboard.c
+
+	src/PIT/timer.c
 )
 
 # Include directories for the kernel target

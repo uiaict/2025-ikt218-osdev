@@ -11,6 +11,8 @@ void memset(void* dest, char val, uint32_t count);
 void outPortB(uint16_t port, uint8_t value);
 char inPortB(uint16_t port);
 
+#ifndef UTIL_H
+#define UTIL_H
 struct InterruptRegisters{
     uint32_t cr2;
     uint32_t ds;
@@ -18,3 +20,4 @@ struct InterruptRegisters{
     uint32_t int_no, err_code;
     uint32_t rip,cs, rflags, userrsp, ss; // eip,cs, rflags, userrsp, ss if shit goes wrong with this maybe try these instead. I dunno
 };
+#endif
