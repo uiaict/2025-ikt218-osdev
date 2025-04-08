@@ -6,6 +6,7 @@ typedef enum {
     INFO_SCREEN,
     MUSIC_PLAYER,
     SONG_PLAYING,
+    ASCII_ART_BOARD_MENU,
     WHOLE_KEYBOARD,
     NOT_USED
 } SystemState;

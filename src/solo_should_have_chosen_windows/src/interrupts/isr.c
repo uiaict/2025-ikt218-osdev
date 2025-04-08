@@ -15,6 +15,8 @@ static bool altgr_pressed = false;
 extern void pit_tick();
 
 void irq_handler(int irq) {
+
+
 #if DEBUG_INTERRUPTS
     static int counter = 0;
 
@@ -37,41 +39,72 @@ void irq_handler(int irq) {
     }
     
 #if KEYBOARD_ENABLED
-    if (irq == 0x21 && get_current_state() == WHOLE_KEYBOARD) {
+    if (irq == 0x21) {
         uint8_t scancode = inb(0x60);
-        
-        if (scancode & 0x80) {
-            uint8_t released = scancode & 0x7F;
-            if (released == KEYBOARD_LSHIFT || released == KEYBOARD_RSHIFT) {
-                shift_pressed = false;
-            } else if (released == KEYBOARD_ALT_GR) {
-                altgr_pressed = false;
-            }
-        } 
-        else {
-            if (scancode == KEYBOARD_LSHIFT || scancode == KEYBOARD_RSHIFT) {
-                shift_pressed = true;
-            } else if (scancode == KEYBOARD_ALT_GR) {
-                altgr_pressed = true;
-            } else {
-                char key = keyboard_normal[scancode];
-                if (shift_pressed) {
-                    key = keyboard_shift[scancode];
+        SystemState c_state = get_current_state();
+
+        if(c_state == WHOLE_KEYBOARD) {
+            if (scancode & 0x80) {
+                uint8_t released = scancode & 0x7F;
+                if (released == KEYBOARD_LSHIFT || released == KEYBOARD_RSHIFT) {
+                    shift_pressed = false;
+                } else if (released == KEYBOARD_ALT_GR) {
+                    altgr_pressed = false;
                 }
-                if (altgr_pressed) {
-                    key = keyboard_altgr[scancode];
-                }
-                
-                if (key != 0) {
-                    printf("%c", key);
+            } 
+            else {
+                if (scancode == KEYBOARD_LSHIFT || scancode == KEYBOARD_RSHIFT) {
+                    shift_pressed = true;
+                } else if (scancode == KEYBOARD_ALT_GR) {
+                    altgr_pressed = true;
+                } else {
+                    char key = keyboard_normal[scancode];
+                    if (shift_pressed) {
+                        key = keyboard_shift[scancode];
+                    }
+                    if (altgr_pressed) {
+                        key = keyboard_altgr[scancode];
+                    }
+                    
+                    if (key != 0) {
+                        printf("%c", key);
+                    }
                 }
             }
         }
-    }
-
-    if (irq == 0x21 && get_current_state() == START_SCREEN) {
-        change_state(MENU);
-    }
+        else if (c_state == START_SCREEN) {
+            change_state(MENU);
+        }
+        else if (c_state == MENU) {
+            char key = keyboard_normal[scancode];
+    
+            if (key != 0) {
+                switch (key)
+                {
+                case '1':
+                    change_state(INFO_SCREEN);
+                    break;
+                case '2':
+                    change_state(MUSIC_PLAYER);
+                    break;
+                case '3':
+                    change_state(ASCII_ART_BOARD_MENU);
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+        else if (c_state == INFO_SCREEN || c_state == MUSIC_PLAYER || c_state == ASCII_ART_BOARD_MENU) {
+            char key = keyboard_normal[scancode];
+    
+            if (key != 0) {
+                if (key == '\x1B') {
+                    change_state(MENU);
+                }
+            }
+        }
+    } 
 #endif
 
     // Acknowledge the PIC (IRQ0–IRQ15)

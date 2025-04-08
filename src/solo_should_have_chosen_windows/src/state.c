@@ -1,12 +1,13 @@
 #include "state.h"
 #include "main_menu/main_menu.h"
+#include "about_screen/about_screen.h"
 
 #include "start_screen/start_screen.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 
 
-static volatile SystemState current_state = START_SCREEN;
+static volatile SystemState current_state = NOT_USED;
 static volatile SystemState previous_state = NOT_USED;
 
 static bool same_state_check(void) {
@@ -41,6 +42,15 @@ void update_state(void) {
         }
         previous_state = current_state;
         print_main_menu();
+        break;
+    }
+
+    case INFO_SCREEN: {
+        if (same_state_check()) {
+            break;
+        }
+        previous_state = current_state;
+        print_about_screen();
         break;
     }
     

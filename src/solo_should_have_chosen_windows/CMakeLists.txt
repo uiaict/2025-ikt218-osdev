@@ -81,6 +81,7 @@ add_executable(uiaos-kernel
 	src/start_screen/start_screen.c
 	src/state.c
 	src/main_menu/main_menu.c
+	src/about_screen/about_screen.c
 )
 
 # Include directories for the kernel target

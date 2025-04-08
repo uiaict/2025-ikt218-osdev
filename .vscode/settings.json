@@ -22,7 +22,10 @@
         "gdt_function.h": "c",
         "song_player.h": "c",
         "paging.h": "c",
-        "song_library.h": "c"
+        "song_library.h": "c",
+        "about_screen.h": "c",
+        "main_menu.h": "c",
+        "start_screen.h": "c"
     }
 
 }
