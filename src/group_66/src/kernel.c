@@ -5,7 +5,8 @@
 #include "gdt/gdt.h"
 #include <libc/stdarg.h>
 #include "vga/vga.h"
-#include "util/util.h"
+#include "idt/idt.h"
+#include "keyboard/keyboard.h"
 
 struct multiboot_info {
     uint32_t size;
@@ -16,6 +17,20 @@ struct multiboot_info {
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     initGdt();
     reset();
-    print("hello world!\nfuuck\n%c\n%s\n%d\n%f",'F',"check this string out babyyyy",15,15.555555555);
+    initIdt();
+    initKeyboard();
+    enable_cursor(0,15);
+    printf("=======================================================\n");
+    printf("      .___                                             \n");
+    printf("    __| _/____   ____   _____       ____  ______       \n");
+    printf("   / __ |/  _ \\ /  _ \\ /     \\     /  _ \\/  ___/   \n");
+    printf("  / /_/ (  <_> |  <_> )  Y Y  \\   (  <_> )___ \\      \n");
+    printf("  \\____ |\\____/ \\____/|__|_|  /____\\____/____  >   \n");
+    printf("       \\/                   \\/_____/         \\/     \n");
+    printf("    Developed by a bunch of retards for IKT218         \n");
+    printf("                 Welcome to hell!                      \n");
+    printf("               Aris, Marcus, Albert                    \n");
+    printf("=======================================================\n");
+    
     return 0;
 }
