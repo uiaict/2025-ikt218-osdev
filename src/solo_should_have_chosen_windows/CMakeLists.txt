@@ -78,6 +78,7 @@ add_executable(uiaos-kernel
 	src/interrupts/speaker.c
 	src/music_player/song_player.c
 	src/music_player/song_library.c
+	src/start_screen/start_screen.c
 )
 
 # Include directories for the kernel target

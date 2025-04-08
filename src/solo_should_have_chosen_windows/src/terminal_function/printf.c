@@ -184,3 +184,7 @@ void printf(const char *format, ...) {
     va_end(args);
 }
 
+void reset_cursor() {
+    cursor_position = 0;
+    move_cursor(cursor_position);
+}

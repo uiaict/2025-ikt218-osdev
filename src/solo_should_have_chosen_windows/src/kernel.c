@@ -1,3 +1,5 @@
+#include "start_screen/start_screen.h"
+
 #include "music_player/song_player.h"
 #include "music_player/song_library.h"
 
@@ -43,7 +45,9 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     paging_init();
     printf("Paging initialized.\n\n");
     
-    playAllSongs();
+    sleep_busy(2000);
+
+    show_start_screen();
     
        // Keep the CPU running forever
     while (1) {
