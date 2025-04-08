@@ -5,6 +5,7 @@
 #include "libc/stdio.h"
 #include <multiboot2.h>
 #include "descriptor_tables.h"
+#include "keyboard.h"
 
 
 
@@ -19,6 +20,7 @@ int main(uint32_t my_struct, uint32_t magic, struct multiboot_info *mb_info_addr
     
     init_gdt();
     init_idt();
+    init_keyboard();
 
     typedef struct{
         uint8_t a;
@@ -30,19 +32,25 @@ int main(uint32_t my_struct, uint32_t magic, struct multiboot_info *mb_info_addr
 
     MyStruct *abc = (MyStruct*)my_struct;
     
-    const char *string = "xxx\rabc\ndef\r\nxyz\r\n";
-    set_vga_color(VGA_RED, VGA_BLUE);
-    printf(string);
-    printf("dddd");
-    char t = 'T';
-    set_vga_color(VGA_WHITE, VGA_BLACK);
-    putchar_at(&t, 10, 10);
+    // const char *string = "xxx\rabc\ndef\r\nxyz\r\n";
+    // set_vga_color(VGA_RED, VGA_BLUE);
+    // printf(string);
+    // printf("dddd");
+    // char t = 'T';
+    // set_vga_color(VGA_WHITE, VGA_BLACK);
+    // putchar_at(&t, 10, 10);
+    // printf("1");
     
-    // asm volatile ("int $0x1E");
+    // asm volatile ("int $0x01");
     // asm volatile ("int $0x1F"); 
     // asm volatile ("int $0x20");
     // asm volatile ("int $0x21"); 
 
+
+
+
+    
+    
     return 0;
 
 }

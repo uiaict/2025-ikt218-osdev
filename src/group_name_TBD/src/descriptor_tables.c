@@ -73,9 +73,10 @@ void init_idt() {
     outb(M_PIC_DATA, 0x01);     // Makes PIC use 8086 mode
     outb(S_PIC_DATA, 0x01);     //  instead of 8080 mode
     
-    // Unmask both PICs.
-    outb(M_PIC_DATA, 0x0);
-    outb(S_PIC_DATA, 0x0);
+    outb(M_PIC_DATA, 0xFD);     // Only unmansk IRQ1 for keyboard interrupts
+    outb(S_PIC_DATA, 0xFF);     //  for now. IRQ0 continuasly causes interrupts
+    
+    asm volatile("sti");        // Enables hardware interrupts. Probably a better place for it.
 // IRQs 0..15 correspond to ISRs 32..47 (31 being the last CPU-used ISR)
     
     
