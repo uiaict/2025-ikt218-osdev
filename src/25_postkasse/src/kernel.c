@@ -27,8 +27,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     //Enable interrupts
     __asm__ volatile ("sti");
 
-    //Interupt 1 test 
-    asm("int $0x1");
+    //Interupt 0 test 
+    asm("int $0x0");
     
     //infinite loop to keep the kernel running
     while (1) {

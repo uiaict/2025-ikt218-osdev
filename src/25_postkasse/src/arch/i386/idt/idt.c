@@ -113,3 +113,5 @@ void exception_handler(void);
 void exception_handler() {
     __asm__ volatile ("cli; hlt");  // "cli" disables interrupt, "hlt" stops the CPU
 }
+
+//Print to screen when an interrupt occurs
