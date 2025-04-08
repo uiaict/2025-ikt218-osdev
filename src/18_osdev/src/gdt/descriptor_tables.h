@@ -1,3 +1,5 @@
+#ifndef DESCRIPTOR_TABLES_H
+#define DESCRIPTOR_TABLES_H
 // struct for gdt entry
 struct gdt_entry_struct
 {
@@ -10,17 +12,7 @@ struct gdt_entry_struct
 } __attribute__((packed));
 typedef struct gdt_entry_struct gdt_entry_t;
 
-// pointer to tell processor where to find the gdt
-struct gdt_ptr_struct
-{
-   uint16_t limit;               // The upper 16 bits of all selector limits.
-   uint32_t base;                // The address of the first gdt_entry_t struct.
-}
- __attribute__((packed));
-typedef struct gdt_ptr_struct gdt_ptr_t;
-
-// struct for idt
-
+// struct for idt entry
 struct idt_entry_struct
 {
    uint16_t base_lo;             // The lower 16 bits of the address to jump to when this interrupt fires.
@@ -31,8 +23,16 @@ struct idt_entry_struct
 } __attribute__((packed));
 typedef struct idt_entry_struct idt_entry_t;
 
-// A struct describing a pointer to an array of interrupt handlers.
-// This is in a format suitable for giving to 'lidt'.
+// pointer to tell processor where to find the gdt
+struct gdt_ptr_struct
+{
+   uint16_t limit;               // The upper 16 bits of all selector limits.
+   uint32_t base;                // The address of the first gdt_entry_t struct.
+}
+ __attribute__((packed));
+typedef struct gdt_ptr_struct gdt_ptr_t;
+
+// pointer to tell processor where to find the idt
 struct idt_ptr_struct
 {
    uint16_t limit;
@@ -40,7 +40,7 @@ struct idt_ptr_struct
 } __attribute__((packed));
 typedef struct idt_ptr_struct idt_ptr_t;
 
-// These extern directives let us access the addresses of our ASM ISR handlers.
+// extern directives that lets us access the addresses of the ASM ISR handlers.
 extern void isr0();
 extern void isr1();
 extern void isr2();
@@ -74,5 +74,24 @@ extern void isr29();
 extern void isr30();
 extern void isr31();
 
+// IRQs
+extern void irq0 (); 
+extern void irq1 (); 
+extern void irq2 (); 
+extern void irq3 (); 
+extern void irq4 (); 
+extern void irq5 (); 
+extern void irq6 (); 
+extern void irq7 (); 
+extern void irq8 (); 
+extern void irq9 (); 
+extern void irq10 ();
+extern void irq11 ();   
+extern void irq12 ();
+extern void irq13 ();
+extern void irq14 ();
+extern void irq15 ();
 
 void init_descriptor_tables();
+
+#endif
