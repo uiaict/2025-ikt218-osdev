@@ -1,7 +1,7 @@
 #include "libc/stdint.h"
 #include "idt.h"
 #include "libc/io.h"
-
+#include "libc/monitor.h"
 
 //Declate ISR stubs for interrupts 0, 1 and 2.
 //These are functions from another file
@@ -10,6 +10,7 @@ extern void isr_stub_0(void);
 extern void isr_stub_1(void);
 extern void isr_stub_2(void);
 
+//Declare IRQ for interrupts 32 to 47
 extern void irq0();
 extern void irq1();
 extern void irq2();
@@ -55,8 +56,9 @@ void init_idt(){
     //Declare th function as extern
     extern void* isr_stub_table[];
 
-    outb(0x20, 0x11);
-    outb(0xA0, 0x11);
+    //PIC initialization
+    outb(0x20, 0x11); //Start initialization sequence (master PIC)
+    outb(0xA0, 0x11); //Start initialization sequence (slave PIC)
     outb(0x21, 0x20);
     outb(0xA1, 0x28);
     outb(0x21, 0x04);
@@ -71,6 +73,7 @@ void init_idt(){
         idt_set_gate(vector, (uint32_t)isr_stub_table[vector], 0x08, 0x8E);
     }
 
+    //Set up the IDT entries for IRQs 0 to 15
     idt_set_gate(32, (uint32_t)irq0, 0x08, 0x8E);
     idt_set_gate(33, (uint32_t)irq1, 0x08, 0x8E);
     idt_set_gate(34, (uint32_t)irq2, 0x08, 0x8E);
@@ -110,24 +113,3 @@ void exception_handler(void);
 void exception_handler() {
     __asm__ volatile ("cli; hlt");  // "cli" disables interrupt, "hlt" stops the CPU
 }
-
-
-/*
-//Debug function to print the interrupt number to verify it works
-void isr_common_handler(int interrupt_number) {
-    switch (interrupt_number) {
-        case 0:
-            print("Interrupt 0\n");
-            break;
-        case 1:
-            print("Interrupt 1\n");
-            break;
-        case 2:
-            print("Interrupt 2\n");
-            break;
-        default:
-            printf("Unknown interrupt");
-    }
-}
-*/
-

@@ -1,9 +1,8 @@
 #include "libc/stdint.h"
 
-
 // Define IRQs for interrupt vectors 32 to 47
 #define IRQ0  32
-#define IRQ1  33
+#define IRQ1  33 // Keyboard interrupt
 #define IRQ2  34
 #define IRQ3  35
 #define IRQ4  36
@@ -19,17 +18,17 @@
 #define IRQ14 46
 #define IRQ15 47
 
-
-typedef struct registers
-  {
-      uint32_t ds;                  // Data segment selector
-      uint32_t edi, esi, ebp, useless_value, ebx, edx, ecx, eax; // Pushed by pusha.
-      uint32_t int_no, err_code;    // Interrupt number and error code (if applicable)
-      uint32_t eip, cs, eflags, esp, ss; // Pushed by the processor automatically.
+// Structure to store CPU registers during an interrupt
+typedef struct registers {
+      uint32_t ds;                                               // Data segment selector
+      uint32_t edi, esi, ebp, useless_value, ebx, edx, ecx, eax; // Pushed by pusha
+      uint32_t int_no, err_code;                                 // Interrupt number and error code
+      uint32_t eip, cs, eflags, esp, ss;                         // Pushed by the processor automatically
   } registers_t;
 
-// Enables registration of callbacks for interrupts or IRQs.
-// For IRQs, to ease confusion, use the #defines above as the
-// first parameter.
+// Define a type for interrupt service routines
 typedef void (*isr_t)(registers_t);
+
+//Function to register an interrupt handler
+//n is the interrupt number, and handler is the function to handle it
 void register_interrupt_handler(uint8_t n, isr_t handler);

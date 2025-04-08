@@ -2,6 +2,7 @@
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 #include "libc/string.h"
+#include "libc/monitor.h"
 #include <multiboot2.h>
 #include "arch/i386/gdt/gdt.h"
 #include "arch/i386/idt/idt.h"
@@ -20,27 +21,20 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     //Initialize idt from idt.h
     init_idt();
 
+    //Initialize the keyboard
+    init_keyboard();
 
-    //Test before interrupt
-    char* before = "Before!";
-    size_t len = strlen(before);
-    char* video_memory = (char*) 0xb8000;
-    for (size_t i = 0; i < len; i++) {
-        video_memory[i * 2] = before[i];
-        video_memory[i * 2 + 1] = 0x07;
+    //Enable interrupts
+    __asm__ volatile ("sti");
+
+    //Interupt 1 test 
+    asm("int $0x1");
+    
+    //infinite loop to keep the kernel running
+    while (1) {
+        __asm__ volatile ("hlt");
     }
 
-    //Call interrupt 0x0
-    asm("int $0x0");
-
-    //Test after interrupt
-    char* after = "After!";
-    size_t len1 = strlen(after);
-    char* video_memory1 = (char*) 0xb8000;
-    for (size_t i = 0; i < len1; i++) {
-        video_memory1[i * 2] = after[i];
-        video_memory1[i * 2 + 1] = 0x07;
-    }
     return 0;
 
 }

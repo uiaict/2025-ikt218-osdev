@@ -2,10 +2,10 @@
 %macro isr_err_stub 1
 global isr_stub_%+%1:           ;Make isr_stub_<n> visible to C code
 isr_stub_%+%1:                  ;Define the label where the CPU will jump when the interrupt occurs
-    call exception_handler      ;Call the exception handler from idt.c
-    ;push dword %1              ;pass interrupt number as parameter for isr_common_handler
-    ;call isr_common_handler    ;Print the interupt number function
-    ;add esp, 4                 ;clean up the stack after call
+    cli
+    push dword %1               ;pass interrupt number as parameter for isr_common_handler
+    call isr_common_stub     ;Print the interupt number function
+    add esp, 4                  ;clean up the stack after call
     iret                        ;Return from the interrupt
 %endmacro
 
@@ -13,13 +13,17 @@ isr_stub_%+%1:                  ;Define the label where the CPU will jump when t
 %macro isr_no_err_stub 1
 global isr_stub_%+%1:           ;Make isr_stub_<n> visible to C code
 isr_stub_%+%1:                  ;Define the label where the CPU will jump when the interrupt occurs
-    call exception_handler      ;Call the exception handler from idt.c
-    ;push dword %1              ;pass interrupt number as parameter for isr_common_handler
-    ;call isr_common_handler    ;Print the interupt number function
-    ;add esp, 4                 ;clean up the stack after call
+    cli
+    push dword %1               ;pass interrupt number as parameter for isr_common_handler
+    call isr_common_stub     ;Print the interupt number function
+    add esp, 4                  ;clean up the stack after call
     iret                        ;Return from the interrupt
 %endmacro
 
+; Macro that generates a stub for an IRQ
+; Two parameters are passed to the macro
+; 1. The IRQ number
+; 2. ISR number it is remapped to
 %macro IRQ 2
   global irq%1
   irq%1:
@@ -28,7 +32,6 @@ isr_stub_%+%1:                  ;Define the label where the CPU will jump when t
     push byte %2
     jmp irq_common_stub
 %endmacro
-
 
 extern exception_handler        ;Decleare the exception_handler function from idt.c
 
@@ -85,15 +88,46 @@ IRQ 14, 46
 IRQ 15, 47
 
 
-[EXTERN irq_handler]
+;Declare the function from isr.c as external
+extern isr_handler
+isr_common_stub:
+    pusha                    ; Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
 
+    mov ax, ds               ; Lower 16-bits of eax = ds.
+    push eax                 ; save the data segment descriptor
+
+    mov ax, 0x10  ; load the kernel data segment descriptor
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    call isr_handler
+
+    pop ebx        ; reload the original data segment descriptor
+    mov ds, bx
+    mov es, bx
+    mov fs, bx
+    mov gs, bx
+
+    popa                     ; Pops edi,esi,ebp...
+    add esp, 8     ; Cleans up the pushed error code and pushed ISR number
+    sti
+    iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
+
+
+;Declare the function from isr.c as external
+extern irq_handler
+; Common stub for all IRQ's
+; saves processor state, sets up for the kernel mode segments,
+; calls the c-level fault handler and restores the stack
 irq_common_stub:
-   pusha                    ; Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
+   pusha                    ;Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
 
-   mov ax, ds               ; Lower 16-bits of eax = ds.
+   mov ax, ds               ;Lower 16-bits of eax = ds.
    push eax                 ; save the data segment descriptor
 
-   mov ax, 0x10  ; load the kernel data segment descriptor
+   mov ax, 0x10             ; load the kernel data segment descriptor
    mov ds, ax
    mov es, ax
    mov fs, ax
@@ -101,16 +135,16 @@ irq_common_stub:
 
    call irq_handler
 
-   pop ebx        ; reload the original data segment descriptor
+   pop ebx                  ; reload the original data segment descriptor
    mov ds, bx
    mov es, bx
    mov fs, bx
    mov gs, bx
 
    popa                     ; Pops edi,esi,ebp...
-   add esp, 8     ; Cleans up the pushed error code and pushed ISR number
+   add esp, 8               ; Cleans up the pushed error code and pushed ISR number
    sti
-   iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
+   iret                     ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
 
 
 

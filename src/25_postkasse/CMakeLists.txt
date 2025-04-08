@@ -65,6 +65,8 @@ add_executable(uiaos-kernel
     src/kernel.c
 	src/string.c
 	src/io.c
+	src/keyboard.c
+	src/monitor.c
 	src/arch/i386/gdt/gdt.c
 	src/arch/i386/gdt/gdt.asm
 	src/arch/i386/idt/idt.c
