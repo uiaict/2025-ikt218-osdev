@@ -1,3 +1,3 @@
 #pragma once
 
-void show_start_screen();
+void start_screen_reveal();

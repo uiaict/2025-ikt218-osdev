@@ -1,4 +1,4 @@
-#include "start_screen/start_screen.h"
+#include "state.h"
 
 #include "music_player/song_player.h"
 #include "music_player/song_library.h"
@@ -46,12 +46,10 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("Paging initialized.\n\n");
     
     sleep_busy(2000);
-
-    show_start_screen();
     
        // Keep the CPU running forever
     while (1) {
-        __asm__ volatile ("hlt");
+       update_state();
     }
     
     return 0;

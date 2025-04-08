@@ -20,7 +20,9 @@
         "cursor.h": "c",
         "keyboard_map.h": "c",
         "gdt_function.h": "c",
-        "song_player.h": "c"
+        "song_player.h": "c",
+        "paging.h": "c",
+        "song_library.h": "c"
     }
 
 }

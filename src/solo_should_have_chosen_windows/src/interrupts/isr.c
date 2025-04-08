@@ -1,3 +1,4 @@
+#include "state.h"
 #include "terminal/print.h"
 #include "interrupts/isr.h"
 #include "libc/io.h"
@@ -36,7 +37,7 @@ void irq_handler(int irq) {
     }
     
 #if KEYBOARD_ENABLED
-    if (irq == 0x21) {
+    if (irq == 0x21 && get_current_state() == WHOLE_KEYBOARD) {
         uint8_t scancode = inb(0x60);
         
         if (scancode & 0x80) {
@@ -66,6 +67,10 @@ void irq_handler(int irq) {
                 }
             }
         }
+    }
+
+    if (irq == 0x21 && get_current_state() == START_SCREEN) {
+        change_state(MENU);
     }
 #endif
 
