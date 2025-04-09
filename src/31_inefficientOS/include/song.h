@@ -25,6 +25,8 @@ typedef struct {
 SongPlayer* create_song_player();
 void play_song_impl(Song *song);
 
+// Keep the original note arrays, just use the better names in the song structures at the end
+
 static Note music_1_notes[] = {
     {E5, 250}, {R, 125}, {E5, 125}, {R, 125}, {E5, 125}, {R, 125},
     {C5, 125}, {E5, 125}, {G5, 125}, {R, 125}, {G4, 125}, {R, 250},
@@ -114,14 +116,27 @@ static Note music_5_notes[] = {
     {E4, 375}, {C4, 375}, {D4, 375}, {A3, 375}, {B3, 375}, {D4, 375}, {C4, 375}, {A3, 375},
 };
 
-static Note music_6_notes[] = {
-    {F4, 250}, {F4, 250}, {F4, 250}, {C5, 250}, {A_SHARP4, 250}, {G_SHARP4, 250}, {F4, 500},
-    {F4, 250}, {F4, 250}, {F4, 250}, {C5, 250}, {A_SHARP4, 250}, {G_SHARP4, 250}, {F4, 500},
-    {A_SHARP4, 250}, {A_SHARP4, 250}, {A_SHARP4, 250}, {F5, 250}, {D5, 250}, {C5, 250}, {A_SHARP4, 500},
-    {A_SHARP4, 250}, {A_SHARP4, 250}, {A_SHARP4, 250}, {F5, 250}, {D5, 250}, {C5, 250}, {A_SHARP4, 500},
+// Imperial March
+static Note imperial_march_notes[] = {
+    // Main motif
+    {G4, 350}, {R, 50}, {G4, 350}, {R, 50}, {G4, 350}, {R, 50},
+    {Eb4, 250}, {Bb4, 100}, {G4, 350}, {R, 50},
+    {Eb4, 250}, {Bb4, 100}, {G4, 650}, {R, 150},
+    
+    // Second part
+    {D5, 350}, {R, 50}, {D5, 350}, {R, 50}, {D5, 350}, {R, 50},
+    {Eb5, 250}, {Bb4, 100}, 
+    {Gb4, 350}, {Eb4, 250}, {Bb4, 100}, {G4, 650}, {R, 150},
+    
+    // Repeat main motif
+    {G5, 350}, {R, 50}, {G4, 250}, {G4, 100}, 
+    {G5, 350}, {Fs5, 250}, {F5, 100}, 
+    {E5, 100}, {Ds5, 100}, {E5, 100}, {Gs4, 350}, {R, 50},
+    {Cs5, 350}, {C5, 250}, {B4, 100}, {Bb4, 350}, {A4, 250}, {Bb4, 100},
+    {Eb4, 250}, {Bb4, 100}, {G4, 650}, {R, 150}
 };
 
-// Define a song structure for Another Brick in the Wall
+// Define song structures with appropriate names for the menu
 static Song music_1 = {
     music_1_notes,
     sizeof(music_1_notes) / sizeof(Note)
@@ -138,11 +153,11 @@ static Song music_2 = {
     music_2_notes,
     sizeof(music_2_notes) / sizeof(Note)
 };
-static Song music_3 = {
+static Song ode_to_joy = {
     music_3_notes,
     sizeof(music_3_notes) / sizeof(Note)
 };
-static Song music_4 = {
+static Song twinkle = {
     music_4_notes,
     sizeof(music_4_notes) / sizeof(Note)
 };
@@ -150,9 +165,9 @@ static Song music_5 = {
     music_5_notes,
     sizeof(music_5_notes) / sizeof(Note)
 };
-static Song music_6 = {
-    music_6_notes,
-    sizeof(music_6_notes) / sizeof(Note)
+static Song imperial_march = {
+    imperial_march_notes,
+    sizeof(imperial_march_notes) / sizeof(Note)
 };
 
 #endif // SONG_H

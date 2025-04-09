@@ -10,6 +10,8 @@
 #include "memory.h"
 #include "pit.h"
 #include "song.h"
+#include "keyboard.h"  // Add this to fix keyboard_get_scancode warning
+#include "menu.h"
 
 extern void custom_isrs_init();
 extern void keyboard_init();
@@ -91,15 +93,11 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
         return -1;
     }
    
-    // Hello world with colors
-    terminal_write_colored("Hello?\n", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
-    terminal_write_colored("Hello\n", VGA_COLOR_RED, VGA_COLOR_BLACK);
-    terminal_write_colored("Hello\n", VGA_COLOR_BROWN, VGA_COLOR_BLACK);
-    terminal_write_colored("Hello...\n", VGA_COLOR_LIGHT_BROWN, VGA_COLOR_BLACK);
-    terminal_write_colored("Is there anybody in there?\n", VGA_COLOR_GREEN, VGA_COLOR_BLACK);
-    terminal_write_colored("Just nod if you can hear me\n", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
-    terminal_write_colored("Is there anyone home?\n", VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK);
-    terminal_writestring("Hello world\n");
+    // Show boot splash
+    terminal_write_colored("=================================\n", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
+    terminal_write_colored("   Welcome to 31_inefficientOS   \n", VGA_COLOR_WHITE, VGA_COLOR_BLACK);
+    terminal_write_colored("=================================\n", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
+    terminal_writestring("\n");
    
     // Initialize GDT
     terminal_writestring("Initializing GDT...\n");
@@ -124,111 +122,50 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     terminal_writestring("Initializing keyboard...\n");
     keyboard_init();
     
-    // ASSIGNMENT 4 PART 1: Memory Management
+    // Initialize memory management
     terminal_writestring("Initializing kernel memory...\n");
     init_kernel_memory(&end);
     
     terminal_writestring("Initializing paging...\n");
     init_paging();
     
-    terminal_writestring("Memory layout:\n");
-    print_memory_layout();
-    
-    // Test memory allocation
-    terminal_writestring("Testing memory allocation...\n");
-    void* memory1 = malloc(12345);
-    void* memory2 = malloc(54321);
-    void* memory3 = malloc(13331);
-    
-    terminal_writestring("Memory allocated at: ");
-    uint_to_hex((uint32_t)memory1, hex_str);
-    terminal_writestring(hex_str);
-    terminal_writestring(", ");
-    uint_to_hex((uint32_t)memory2, hex_str);
-    terminal_writestring(hex_str);
-    terminal_writestring(", ");
-    uint_to_hex((uint32_t)memory3, hex_str);
-    terminal_writestring(hex_str);
-    terminal_writestring("\n");
-    
-    // ASSIGNMENT 4 PART 2: PIT
+    // Initialize PIT
     terminal_writestring("Initializing PIT...\n");
     init_pit();
     
-// ASSIGNMENT 5: Music player
-terminal_write_colored("\n=== PER ARNE SINE SANGÅ ===\n", VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK);
+    // Initialize menu system
+    terminal_writestring("Initializing menu system...\n");
+    menu_init();
     
-// Create song player
-SongPlayer* player = create_song_player();
-if (player) {
-    // Get song structure
-    extern Song music_1;
-    extern Song starwars_theme;
-    extern Song battlefield_1942_theme;
-    extern Song music_2;
-    extern Song music_3;
-    extern Song music_4;
-    extern Song music_5;
-    extern Song music_6;
+    terminal_write_colored("\nAll systems initialized!\n", VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK);
+    terminal_writestring("Starting menu system in 3 seconds...\n");
     
-    // Play the song
-    terminal_write_colored("Playing all songs...\n", VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
-    player->play_song(music_1);
-    player->play_song(battlefield_1942_theme);
-    player->play_song(music_2);
-    player->play_song(music_3);
-    player->play_song(music_4);
-    player->play_song(music_5);
-    player->play_song(music_6);
-    player->play_song(starwars_theme);
-
-    terminal_writestring("Playlist finished.\n");
+    // Wait a moment before showing the menu
+    sleep_interrupt(3000);
     
-    // Clean up
-    free(player);
-    terminal_write_colored("Music playback complete!\n", VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK);
-} else {
-    terminal_writestring("Failed to create song player.\n");
-}
+    // Run the main menu
+    main_menu_run();
     
-    // Test sleep functions
-    uint32_t counter = 0;
-    char counter_str[10];
+    // If we get here, the menu has been exited (ESC on the main menu)
+    terminal_initialize();
+    terminal_write_colored("\n31_inefficientOS is now running in direct mode.\n", 
+                          VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK);
+    terminal_writestring("Press any key to restart the menu system.\n\n");
     
-    // Print header once
-    terminal_writestring("\n=== SLEEP TEST ===\n");
-    terminal_writestring("Comparing busy-wait (HIGH CPU) vs interrupt (LOW CPU) sleep methods\n");
-    terminal_writestring("Each cycle: 1 second busy-wait followed by 1 second interrupt-based\n\n");
-    
-    // Main loop
+    // Main loop that allows returning to the menu
     while(1) {
-        // Update counter
-        int_to_str(counter, counter_str);
-        
-        // Start of test cycle
-        terminal_writestring("Cycle [");
-        terminal_writestring(counter_str);
-        terminal_writestring("]: ");
-        
-        // Busy wait sleep
-        terminal_write_colored("BUSY", VGA_COLOR_LIGHT_BROWN, VGA_COLOR_BLACK);
-        sleep_busy(1000);
-        terminal_write_colored(" -> ", VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
-        
-        // Interrupt sleep
-        terminal_write_colored("INT", VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK);
-        sleep_interrupt(1000);
-        terminal_writestring(" Complete\n");
-        
-        // Increment counter
-        counter++;
-        
-        // Periodically reallocate memory to test free()
-        if (counter % 5 == 0) {
-            terminal_writestring("  [Memory test: freeing and reallocating...]\n");
-            free(memory2);
-            memory2 = malloc(1000);
+        uint8_t scancode = keyboard_get_scancode();
+        if (scancode != 0) {
+            main_menu_run();
+            
+            terminal_initialize();
+            terminal_write_colored("\n31_inefficientOS is now running in direct mode.\n", 
+                                  VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK);
+            terminal_writestring("Press any key to restart the menu system.\n\n");
         }
+        
+        // Small delay to prevent CPU hogging
+        sleep_busy(10);
     }
     
     return 0;
