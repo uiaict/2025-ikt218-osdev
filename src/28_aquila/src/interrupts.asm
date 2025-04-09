@@ -1,32 +1,79 @@
+%macro ISR_NOERRCODE 1
+  global isr%1
+  isr%1:
+    push byte 0         
+    push %1             
+    jmp isr_common_stub
+%endmacro
 
-[bits 32]
+%macro IRQ 2
+  global irq%1
+  irq%1:
+    push byte 0         
+    push byte %2        
+    jmp irq_common_stub
+%endmacro
 
-global isr0
-global isr1
-global isr2
+extern isr_handler
+extern irq_handler
 
-extern isr_handler  
+ISR_NOERRCODE 0        
+ISR_NOERRCODE 1       
+ISR_NOERRCODE 14       
 
-isr0:
+IRQ 0, 32              
+IRQ 1, 33              
+
+isr_common_stub:
     cli
-    pusha
+    pusha                  
+    push ds
+    push es
+    push fs
+    push gs
+
+    mov ax, 0x10           
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    push esp               
     call isr_handler
+    add esp, 4             
+
+    pop gs
+    pop fs
+    pop es
+    pop ds
     popa
+    add esp, 8             
     sti
     iret
 
-isr1:
+irq_common_stub:
     cli
     pusha
-    call isr_handler
-    popa
-    sti
-    iret
+    push ds
+    push es
+    push fs
+    push gs
 
-isr2:
-    cli
-    pusha
-    call isr_handler
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    push esp               
+    call irq_handler
+    add esp, 4
+
+    pop gs
+    pop fs
+    pop es
+    pop ds
     popa
+    add esp, 8             
     sti
     iret
