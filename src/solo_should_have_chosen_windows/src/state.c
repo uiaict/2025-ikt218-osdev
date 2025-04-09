@@ -56,6 +56,17 @@ void update_state(void) {
                 if (c != '\x1B') {
                     printf("%c", c);
                 }
+                else {
+                    if (keyboard_has_char()) {
+                        char d = keyboard_get_char();
+                        if (d == 'D') {
+                            move_cursor_left();
+                        }
+                        else if (d == 'C') {
+                            move_cursor_right();
+                        }
+                    }
+                }
             }
             break;
         }

@@ -12,8 +12,14 @@ static uint8_t kb_tail = 0;
 
 static bool shift_pressed = false;
 static bool altgr_pressed = false;
+static bool is_extended = false;
 
 void keyboard_handle_scancode(uint8_t scancode) {
+    if (scancode == 0xE0) {
+        is_extended = true;
+        return;
+    }
+
     if (scancode & 0x80) {
         uint8_t released = scancode & 0x7F;
         if (released == KEYBOARD_LSHIFT || released == KEYBOARD_RSHIFT) {
@@ -22,6 +28,22 @@ void keyboard_handle_scancode(uint8_t scancode) {
             altgr_pressed = false;
         }
     } else {
+        if (is_extended) {
+            is_extended = false;
+            
+            if (scancode == 0x4B) {  // Left arrow
+                kb_buffer[kb_head] = '\x1B';  // ESC
+                kb_head = (kb_head + 1) % KEYBOARD_BUFFER_SIZE;
+                kb_buffer[kb_head] = 'D';     // 'D' means Left in escape codes
+                kb_head = (kb_head + 1) % KEYBOARD_BUFFER_SIZE;
+            } else if (scancode == 0x4D) { // Right arrow
+                kb_buffer[kb_head] = '\x1B';
+                kb_head = (kb_head + 1) % KEYBOARD_BUFFER_SIZE;
+                kb_buffer[kb_head] = 'C';     // 'C' means Right in escape codes
+                kb_head = (kb_head + 1) % KEYBOARD_BUFFER_SIZE;
+            }
+            return;
+        }
         if (scancode == KEYBOARD_LSHIFT || scancode == KEYBOARD_RSHIFT) {
             shift_pressed = true;
         } else if (scancode == KEYBOARD_ALT_GR) {

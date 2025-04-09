@@ -25,3 +25,13 @@ void clearTerminal(void) {
     move_cursor(cursor_position);
 }
 
+void move_cursor_right(void) {
+    cursor_position = (cursor_position + 1) % (SCREEN_WIDTH * SCREEN_HEIGHT);
+    move_cursor(cursor_position);
+}
+
+void move_cursor_left(void) {
+    cursor_position = (cursor_position - 1 + (SCREEN_WIDTH * SCREEN_HEIGHT)) % (SCREEN_WIDTH * SCREEN_HEIGHT);
+    move_cursor(cursor_position);
+}
+
