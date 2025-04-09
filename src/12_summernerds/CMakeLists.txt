@@ -62,13 +62,17 @@ set_target_properties(gdt_asm PROPERTIES LANGUAGE ASM_NASM)  #  Sett språk til 
 
 # Legg til eksekverbar kernel, men IKKE gdt.s her!
 add_executable(uiaos-kernel 
-	src/multiboot2.asm
     src/kernel.c
 	src/screen.c
-	src/screen.h
+	src/song.cpp
 	#src/arch/i386/gdt.asm
 	#src/arch/i386/gdt.c
 	src/arch/i386/Keyboard.c
+	src/memory/malloc.c
+	src/memory/memory.c
+	src/memory/memutils.c
+
+	
 )
 
 # Link gdt_asm med uiaos-kernel

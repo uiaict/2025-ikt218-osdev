@@ -15,7 +15,7 @@
 // IRQ0 related macros
 #define PIC1_CMD_PORT 0x20
 #define PIC1_DATA_PORT 0x20
-#define PIC_EOI		0x20		/* End-of-interrupt command code */
+#define PIC_EOI	0x20        /* End-of-interrupt command code */
  
 
 // Custom sleep function constants
