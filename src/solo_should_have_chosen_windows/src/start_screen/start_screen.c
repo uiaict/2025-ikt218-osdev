@@ -16,5 +16,5 @@ void start_screen_reveal() {
     printf("             -----------------------------------------------------\n\n");
     printf("                          Should Have Chosen Windows\n\n");
     printf("                           A Tiny OS by Adam Hazel\n\n");
-    printf("                          Press any key to continue...\n");
+    printf("                          Press any enter to continue...\n");
 }

@@ -45,28 +45,37 @@ void update_state(void) {
             break;
         }
         previous_state = current_state;
-        // start_screen_reveal();
-        printf("START_SCREEN\n");
+        start_screen_reveal();
         break;
     }
 
     case MENU: {
         if (same_state_check()) {
+            if (keyboard_has_char()) {
+                char c = keyboard_get_char();
+                if (c == '1') {
+                    change_state(INFO_SCREEN);
+                }
+            }
             break;
         }
         previous_state = current_state;
-        // print_main_menu();
-        printf("MENU\n");
+        print_main_menu();
         break;
     }
 
     case INFO_SCREEN: {
         if (same_state_check()) {
+            if (keyboard_has_char()) {
+                char c = keyboard_get_char();
+                if (c == '\x1B') {
+                    change_state(MENU);
+                }
+            }
             break;
         }
         previous_state = current_state;
-        // print_about_screen();
-        printf("INFO_SCREEN\n");
+        print_about_screen();
         break;
     }
     
