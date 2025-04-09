@@ -2,15 +2,15 @@
 
 // keyboard.c
 
-#include "libc/stdint.h"
-#include "libc/stddef.h"
-#include "ISR.h"
-#include "IRQ.h"
-#include "keyboard.h"     
-#include "libc/stdbool.h"
-#include "io.h"
+//#include "libc/stdint.h"
+//#include "libc/stddef.h"
+#include "../src/arch/i386/ISR.h"
+#include "../src/arch/i386/IRQ.h"
+#include "../src/arch/i386/keyboard.h"     
+//#include "libc/stdbool.h"
+#include "../src/arch/i386/io.h"
 #include "../src/screen.h"
-#include "print.h"
+#include "../src/arch/i386/print.h"
 
 
 
@@ -134,7 +134,7 @@ char scanCodeToASCII(unsigned char* scanCode)
 
 
 
-
+/*
 // 3. Keyboard handler
 void keyBoard_handler() {
     unsigned char ScanCode = inPortB(0x60) & 0x7F;     //leser scancoden
@@ -155,13 +155,31 @@ void keyBoard_handler() {
    
     //printf("scan code: %d, press: %d\r\n", ScanCode, Press);   /////og dennne siden det står press her også
 }
+*/
 
-// 4. Init-funksjon
+void keyboard_handler() {
+    uint8_t scancode = inb(0x60);
+    write_to_terminal("Tast trykket!\n", 4);
+}
+
+
+
+void init_keyboard() {
+    write_to_terminal("Init keyboard...\n", 3);
+    
+    register_irq_handler(1, keyboard_handler);
+
+    // Unmask IRQ1 på master PIC
+    uint8_t mask = inb(0x21);
+    mask &= ~(1 << 1); // Fjern bit 1 (IRQ1)
+    outb(0x21, mask);
+}
+
+
+/*4. Init-funksjon
 void init_keyboard() {
 
 
     register_irq_handler(1, keyBoard_handler);
-}
-
-
+}*/
 

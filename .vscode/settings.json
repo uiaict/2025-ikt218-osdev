@@ -4,6 +4,7 @@
     "cmake.useCMakePresets": "never",
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
+        "*.asm": "wat",
         "cstddef": "cpp",
         "*.tcc": "cpp",
         "*.ipp": "cpp",
@@ -15,7 +16,15 @@
         "multiboot2.h": "c",
         "interrupts.h": "c",
         "memory.h": "c",
-        "limits.h": "c"
+        "limits.h": "c",
+        "screen.h": "c",
+        "print.h": "c",
+        "isr.h": "c",
+        "io.h": "c",
+        "keyboard.h": "c",
+        "irq.h": "c",
+        "string.h": "c",
+        "gdt.h": "c"
     }
 
 }

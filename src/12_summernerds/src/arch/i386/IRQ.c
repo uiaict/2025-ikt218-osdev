@@ -1,8 +1,9 @@
 #include "libc/stddef.h" // For NULL
-#include "io.h"
-#include "../src/screen.h"
-#include "ISR.h"
-#include "print.h"
+#include "../src/arch/i386/io.h"
+//#include "../src/screen.h"
+//#include "ISR.h"
+#include "../src/arch/i386/print.h"
+#include "../src/arch/i386/IRQ.h"
 
 #define IRQ0 32 // system timer. PIC type: Master PIC. PIC = (Programmable Interrupt Controller)
 #define IRQ1 33 // keyboard. PIC type: Master PIC

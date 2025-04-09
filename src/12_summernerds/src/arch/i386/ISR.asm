@@ -28,7 +28,7 @@ global isr_stub_45
 global isr_stub_46
 global isr_stub_47
 
-; C-funksjonen som skal håndtere interrupten i C-kode
+; C-funksjonen som skal håndtere interrupten i C-kode (her er irq irq_handler)
 extern irq_handler
 
 ; Én makro som lager en stub – slipper du skrive samme kode 16 ganger

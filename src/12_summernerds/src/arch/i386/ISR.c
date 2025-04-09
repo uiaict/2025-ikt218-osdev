@@ -1,15 +1,18 @@
-#include "ISR.h"
-#include "../src/screen.h" // //må huske å korrigere til rett fil referanse 
+#include "../src/arch/i386/ISR.h"
+//#include "../src/screen.h" // //må huske å korrigere til rett fil referanse 
 #include <libc/stddef.h>
-#include <libc/stdio.h>
-#include "print.h"
+//#include <libc/stdio.h>
+//#include "print.h"
 
 
 //#include "../kernel/util.h"   // her også
 
-extern void irq_handler (int irq){
-    irq_handler(irq);
-}  // hvis det ikke funker ternger ikke det som er på inndsiden av bracketsene [ irq_handler(irq); ]
+extern void irq_handler (int irq);
+
+// hvis det ikke funker ternger ikke det som er på inndsiden av bracketsene [ irq_handler(irq); ]
+//byttet fra irq_handler_33() til irq_handler()
+
+
 
 //array for å holde funksjon til hver interrupt (maks 256 som vi definerte til header filen) 
 static interrupt_listener_t listeners[MAX_INTERRUPTS][MAX_LISTENERS_PER_ISR];
@@ -36,11 +39,8 @@ void subscribe_interrupt(uint8_t interrupt_number, interrupt_listener_t handler)
     }
 
     // Skriver feilmelding for dersom den ikke finner en ledig plass for listeneren i for-løkka over.
-    printf("ISR-ERROR: There are too many listeners for interrupt. ");
-    char s[4];
-    printf("ISR %d: %s\n", interrupt_number, s);
-    printf(s);
-    printf("\n");
+    printf("ISR-ERROR: Too many listeners for interrupt %d\n", interrupt_number);
+
 }
 
 // Registrerer en global interrupt listeneur

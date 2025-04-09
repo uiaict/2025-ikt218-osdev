@@ -2,6 +2,7 @@
 #include "print.h"
 #include "libc/stdint.h"
 #include "libc/stdarg.h"
+//#include "libc/system.h"
 
 static const int VGA_WIDTH = 80;
 static const int VGA_HEIGHT= 25;
