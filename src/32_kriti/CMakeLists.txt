@@ -69,6 +69,8 @@ add_executable(uiaos-kernel
 	src/keyboard.c
 	#src/irq_stubs.c
 	#src/irq.c
+	src/memory.c
+	src/pit.c
 	
 
 )

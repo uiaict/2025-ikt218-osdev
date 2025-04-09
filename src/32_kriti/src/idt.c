@@ -65,7 +65,7 @@ void pic_init(void) {
     outb(PIC2_DATA, 0x01);
     
     // Mask all interrupts (except IRQ2 for cascade)
-    outb(PIC1_DATA, 0xFB);    // 1111 1011 - enable IRQ2
+    outb(PIC1_DATA, 0xF8);    // 1111 1000 - enable IRQ0, IRQ1, and IRQ2
     outb(PIC2_DATA, 0xFF);    // 1111 1111 - disable all
     
     kprint("PIC initialized\n");

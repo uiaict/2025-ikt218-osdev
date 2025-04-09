@@ -1,4 +1,5 @@
 #include <libc/stdint.h>
+#include "kprint.h"
 
 #define VIDEO_MEMORY 0xB8000
 #define VGA_WIDTH 80
@@ -35,6 +36,12 @@ void kprint(const char *str) {
         if (*str == '\n') {
             // Move to the start of the next line
             cursor_pos = (cursor_pos / VGA_WIDTH + 1) * VGA_WIDTH;
+        } else if (*str == '\b') {
+            // Handle backspace
+            if (cursor_pos > 0) {
+                cursor_pos--;
+                video[cursor_pos * 2] = ' ';
+            }
         } else {
             // Write character
             video[cursor_pos * 2] = *str;       // Character
@@ -51,11 +58,11 @@ void kprint(const char *str) {
     }
 }
 
-void kprint_hex(uint32_t num) {
+void kprint_hex(unsigned long num) {
     const char hex_chars[] = "0123456789ABCDEF";
-    char buffer[11] = "0x00000000";
+    char buffer[19] = "0x0000000000000000";
     
-    for (int i = 9; i >= 2; i--) {
+    for (int i = 17; i >= 2; i--) {
         buffer[i] = hex_chars[num & 0xF];
         num >>= 4;
     }
@@ -64,8 +71,8 @@ void kprint_hex(uint32_t num) {
 }
 
 // Function to print a decimal number
-void kprint_dec(uint32_t num) {
-    char buffer[12]; // Enough for 32-bit unsigned integer plus null terminator
+void kprint_dec(unsigned long num) {
+    char buffer[21]; // Enough for 64-bit unsigned integer plus null terminator
     int i = 0;
     
     // Handle the case when num is 0

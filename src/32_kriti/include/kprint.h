@@ -1,7 +1,12 @@
 #ifndef KPRINT_H
 #define KPRINT_H
 
-void kprint(const char *str);
-void kprint_hex(uint32_t num);
+#include <libc/stdint.h>
 
-#endif
+void kprint(const char *str);
+void kprint_hex(unsigned long num);  // Changed to unsigned long instead of uint64_t
+void kprint_dec(unsigned long num);  // Changed to unsigned long instead of uint64_t
+void kprint_clear(void);
+void kprint_set_position(int x, int y);
+
+#endif /* KPRINT_H */
