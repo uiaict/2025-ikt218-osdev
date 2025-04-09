@@ -307,6 +307,30 @@ src/kernel.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/kernel.c.s
 .PHONY : src/kernel.c.s
 
+src/keyboard.o: src/keyboard.c.o
+.PHONY : src/keyboard.o
+
+# target to build an object file
+src/keyboard.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/keyboard.c.o
+.PHONY : src/keyboard.c.o
+
+src/keyboard.i: src/keyboard.c.i
+.PHONY : src/keyboard.i
+
+# target to preprocess a source file
+src/keyboard.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/keyboard.c.i
+.PHONY : src/keyboard.c.i
+
+src/keyboard.s: src/keyboard.c.s
+.PHONY : src/keyboard.s
+
+# target to generate assembly for a file
+src/keyboard.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/keyboard.c.s
+.PHONY : src/keyboard.c.s
+
 src/memory.o: src/memory.c.o
 .PHONY : src/memory.o
 
@@ -339,6 +363,30 @@ src/multiboot2.asm.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o
 .PHONY : src/multiboot2.asm.o
 
+src/music.o: src/music.c.o
+.PHONY : src/music.o
+
+# target to build an object file
+src/music.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/music.c.o
+.PHONY : src/music.c.o
+
+src/music.i: src/music.c.i
+.PHONY : src/music.i
+
+# target to preprocess a source file
+src/music.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/music.c.i
+.PHONY : src/music.c.i
+
+src/music.s: src/music.c.s
+.PHONY : src/music.s
+
+# target to generate assembly for a file
+src/music.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/music.c.s
+.PHONY : src/music.c.s
+
 src/pit.o: src/pit.c.o
 .PHONY : src/pit.o
 
@@ -362,6 +410,54 @@ src/pit.s: src/pit.c.s
 src/pit.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/pit.c.s
 .PHONY : src/pit.c.s
+
+src/song_player.o: src/song_player.c.o
+.PHONY : src/song_player.o
+
+# target to build an object file
+src/song_player.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/song_player.c.o
+.PHONY : src/song_player.c.o
+
+src/song_player.i: src/song_player.c.i
+.PHONY : src/song_player.i
+
+# target to preprocess a source file
+src/song_player.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/song_player.c.i
+.PHONY : src/song_player.c.i
+
+src/song_player.s: src/song_player.c.s
+.PHONY : src/song_player.s
+
+# target to generate assembly for a file
+src/song_player.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/song_player.c.s
+.PHONY : src/song_player.c.s
+
+src/terminal.o: src/terminal.c.o
+.PHONY : src/terminal.o
+
+# target to build an object file
+src/terminal.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/terminal.c.o
+.PHONY : src/terminal.c.o
+
+src/terminal.i: src/terminal.c.i
+.PHONY : src/terminal.i
+
+# target to preprocess a source file
+src/terminal.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/terminal.c.i
+.PHONY : src/terminal.c.i
+
+src/terminal.s: src/terminal.c.s
+.PHONY : src/terminal.s
+
+# target to generate assembly for a file
+src/terminal.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/terminal.c.s
+.PHONY : src/terminal.c.s
 
 # Help Target
 help:
@@ -393,13 +489,25 @@ help:
 	@echo "... src/kernel.o"
 	@echo "... src/kernel.i"
 	@echo "... src/kernel.s"
+	@echo "... src/keyboard.o"
+	@echo "... src/keyboard.i"
+	@echo "... src/keyboard.s"
 	@echo "... src/memory.o"
 	@echo "... src/memory.i"
 	@echo "... src/memory.s"
 	@echo "... src/multiboot2.o"
+	@echo "... src/music.o"
+	@echo "... src/music.i"
+	@echo "... src/music.s"
 	@echo "... src/pit.o"
 	@echo "... src/pit.i"
 	@echo "... src/pit.s"
+	@echo "... src/song_player.o"
+	@echo "... src/song_player.i"
+	@echo "... src/song_player.s"
+	@echo "... src/terminal.o"
+	@echo "... src/terminal.i"
+	@echo "... src/terminal.s"
 .PHONY : help
 
 

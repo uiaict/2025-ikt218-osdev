@@ -71,6 +71,8 @@ add_executable(uiaos-kernel
 	src/music.c
 	src/memory.c
     src/multiboot2.asm
+	src/keyboard.c
+	src/terminal.c
     src/kernel.c
 )
 

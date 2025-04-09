@@ -1,13 +1,14 @@
 #ifndef TERMINAL_H
 #define TERMINAL_H
 
-#include "libc/stdint.h"   // Include standard integer types like uint16_t, uint32_t
+#include <libc/stdint.h>
+#include <libc/stddef.h> // for size_t
 
+extern int cursor_x;
+extern int cursor_y;
 
-// Funksjon for å skrive én karakter til skjermen
 void terminal_putc(char c);
+void terminal_write(const char *str);
+void move_cursor();
 
-// Funksjon for å skrive en hel streng til skjermen
-void terminal_write(const char* str);
-
-#endif /* TERMINAL_H */
+#endif

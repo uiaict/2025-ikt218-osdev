@@ -48,8 +48,3 @@ void init_irq()
     idt_set_gate(33, (uint32_t)irq1, 0x08, 0x8E);
     idt_set_gate(34, (uint32_t)irq2, 0x08, 0x8E);
 }
-
-void keyboard_handler()
-{
-    terminal_write("Keyboard interrupt triggered!\n");
-}
