@@ -16,7 +16,8 @@
         "interrupts.h": "c",
         "memory.h": "c",
         "limits.h": "c",
-        "scrn.h": "c"
+        "scrn.h": "c",
+        "stdarg.h": "c"
     }
 
 }

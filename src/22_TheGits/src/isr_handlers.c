@@ -7,7 +7,7 @@ void handle_timer_interrupt() {
     timer_ticks++;
 
     if (timer_ticks % 500 == 0) {
-        printf("Five second has passed\n");
+       // printf("Five second has passed\n");
     }
 
     send_eoi(0);

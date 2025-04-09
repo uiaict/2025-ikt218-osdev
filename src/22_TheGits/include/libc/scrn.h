@@ -16,7 +16,6 @@
 void terminal_write(const char* str, uint8_t color);
 void printf(const char* format, ...);
 
-
-
+void panic(const char* message);
 
 #endif // SCRN_H

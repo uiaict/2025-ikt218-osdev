@@ -8,6 +8,7 @@
 #include "libc/idt.h"
 #include "libc/isr_handlers.h"
 #include "libc/irq.h"
+#include "libc/memory.h"
 
 
 
@@ -17,6 +18,7 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
+extern uint32_t end; // End of kernel memory
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_gdt();
@@ -26,6 +28,12 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_idt();
     init_irq();
     //test_div_zero();
+
+    init_kernel_memory(&end);
+    init_paging();
+
+    void* test = malloc(100);
+        printf("Malloc adresse: 0x%x\n", (uint32_t)test);
 
     // Aktiver interrupts
     __asm__ volatile ("sti");

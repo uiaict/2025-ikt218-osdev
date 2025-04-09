@@ -75,7 +75,7 @@ void itoa(int num, char* str, int base) {
 }
 
 
-void printf(const char* format, ...) {
+/*void printf(const char* format, ...) {
     va_list args;
     va_start(args, format);
 
@@ -92,4 +92,59 @@ void printf(const char* format, ...) {
     }
 
     va_end(args);
+}*/
+
+void printf(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+
+    for (const char* ptr = format; *ptr != '\0'; ptr++) {
+        if (*ptr == '%' && *(ptr + 1) != '\0') {
+            ptr++;
+            switch (*ptr) {
+                case 'c': {
+                    char c = (char)va_arg(args, int);
+                    terminal_write(&c, VGA_COLOR(15, 0));
+                    break;
+                }
+                case 'd': {
+                    int val = va_arg(args, int);
+                    char buf[32];
+                    itoa(val, buf, 10);
+                    terminal_write(buf, VGA_COLOR(15, 0));
+                    break;
+                }
+                case 'x': {
+                    int val = va_arg(args, int);
+                    char buf[32];
+                    itoa(val, buf, 16);
+                    terminal_write(buf, VGA_COLOR(15, 0));
+                    break;
+                }
+                case 's': {
+                    char* str = va_arg(args, char*);
+                    terminal_write(str, VGA_COLOR(15, 0));
+                    break;
+                }
+                default: {
+                    terminal_write("%", VGA_COLOR(15, 0));
+                    terminal_write(ptr, VGA_COLOR(15, 0));
+                    break;
+                }
+            }
+        } else {
+            char ch = *ptr;
+            terminal_write(&ch, VGA_COLOR(15, 0));
+        }
+    }
+
+    va_end(args);
+}
+
+
+void panic(const char* message) {
+    printf("KERNEL PANIC: %s\n", message);
+    while (1) {
+        __asm__ volatile ("cli; hlt");
+    }
 }

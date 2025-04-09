@@ -66,6 +66,9 @@ src/idt.c
 src/isr.asm
 src/isr_handlers.c
 src/irq.c
+src/memory/malloc.c
+src/memory/memory.c
+src/memory/memutils.c
 )
 
 # Include directories for the kernel target
