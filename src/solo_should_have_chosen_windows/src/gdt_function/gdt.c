@@ -1,6 +1,6 @@
 #include "gdt/gdt_structs.h"
 #include "gdt/gdt_function.h"
-#include "terminal/clear.h"
+#include "terminal/cursor.h"
 #include "libc/string.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"

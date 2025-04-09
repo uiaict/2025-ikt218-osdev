@@ -1,5 +1,5 @@
 #include "terminal/print.h"
-#include "terminal/clear.h"
+#include "terminal/cursor.h"
 
 void start_screen_reveal() {
     clearTerminal();

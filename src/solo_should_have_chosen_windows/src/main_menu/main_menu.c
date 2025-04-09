@@ -1,5 +1,5 @@
 #include "terminal/print.h"
-#include "terminal/clear.h"
+#include "terminal/cursor.h"
 
 static const char* main_menu =
     "---- MAIN MENU ----\n"

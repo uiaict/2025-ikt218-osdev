@@ -5,6 +5,7 @@
 
 #include "start_screen/start_screen.h"
 #include "terminal/print.h"
+#include "terminal/cursor.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 
@@ -39,7 +40,7 @@ void update_state(void) {
             if (keyboard_has_char()) {
                 char c = keyboard_get_char();
                 if (c == '\r') {
-                    change_state(MENU);
+                    change_state(SHELL);
                 }
             }
             break;
@@ -48,7 +49,21 @@ void update_state(void) {
         start_screen_reveal();
         break;
     }
-
+    case SHELL: {
+        if (same_state_check()) {
+            if (keyboard_has_char()) {
+                char c = keyboard_get_char();
+                if (c != '\x1B') {
+                    printf("%c", c);
+                }
+            }
+            break;
+        }
+        previous_state = current_state;
+        clearTerminal();
+        printf("Welcome to the shell!\n");
+        break;
+    }
     case MENU: {
         if (same_state_check()) {
             if (keyboard_has_char()) {

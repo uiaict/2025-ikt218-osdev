@@ -3,6 +3,7 @@
 typedef enum {
     START_SCREEN,
     MENU,
+    SHELL,
     INFO_SCREEN,
     MUSIC_PLAYER,
     SONG_PLAYING,

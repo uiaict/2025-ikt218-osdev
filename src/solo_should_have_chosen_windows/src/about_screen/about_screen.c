@@ -1,6 +1,6 @@
 #include "about_screen/about_screen.h"
 #include "terminal/print.h"
-#include "terminal/clear.h"
+#include "terminal/cursor.h"
 #include "libc/stdint.h"
 #include "libc/string.h"
 

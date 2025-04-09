@@ -17,4 +17,6 @@ static inline void move_cursor(uint16_t position) {
     outb(0x3D5, (uint8_t)((position >> 8) & 0xFF)); // Write high byte
 }
 
+void clearTerminal(void);
+
 #endif // CURSOR_H
