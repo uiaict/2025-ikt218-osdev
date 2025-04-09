@@ -5,21 +5,19 @@
 #include "timer.h"
 
 float ticker;
-uint32_t divisor = 1;
-uint16_t counter = 1;
+uint16_t count = 1193;
+uint16_t counter = 1000;
 
 void onIrq0(struct InterruptRegisters *regs) {
-    ticker += 0.0054;
+    ticker += 1;
     if(ticker >= counter) {
-        printf("HELLO");
+        printf("<Tick>");
         ticker = 0;
     }
 }
 
 void initTimer() {
     ticker = 0;
-
-    uint32_t count = (FREQ) / divisor;
 
     irq_install_handler(0,&onIrq0);
 
@@ -28,6 +26,6 @@ void initTimer() {
     outPortB(0x40,(count >> 8) & 0xFF);
 }
 
-void setTimerFreq(float newCounter) {
-    counter = newCounter;
+void setTimerFreq(float milliseconds) {
+    counter = milliseconds;
 }
