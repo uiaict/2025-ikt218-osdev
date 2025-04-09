@@ -72,6 +72,7 @@ add_executable(uiaos-kernel
 	src/interrupts/isr_stubs.asm
 	src/libc/string.c
 	src/interrupts/keyboard/keyboard_map.c
+	src/interrupts/keyboard/keyboard.c
 	src/memory/heap.c
 	src/memory/paging.c
 	src/memory/paging_stubs.asm

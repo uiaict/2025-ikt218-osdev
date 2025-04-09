@@ -1,8 +1,10 @@
 #include "state.h"
+#include "interrupts/keyboard/keyboard.h"
 #include "main_menu/main_menu.h"
 #include "about_screen/about_screen.h"
 
 #include "start_screen/start_screen.h"
+#include "terminal/print.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 
@@ -27,12 +29,24 @@ void change_state(SystemState new_state) {
 void update_state(void) {
     switch (current_state)
     {
+    case NOT_USED: {
+        change_state(START_SCREEN);
+        break;
+    }
+
     case START_SCREEN: {
         if (same_state_check()) {
+            if (keyboard_has_char()) {
+                char c = keyboard_get_char();
+                if (c == '\r') {
+                    change_state(MENU);
+                }
+            }
             break;
         }
         previous_state = current_state;
-        start_screen_reveal();
+        // start_screen_reveal();
+        printf("START_SCREEN\n");
         break;
     }
 
@@ -41,7 +55,8 @@ void update_state(void) {
             break;
         }
         previous_state = current_state;
-        print_main_menu();
+        // print_main_menu();
+        printf("MENU\n");
         break;
     }
 
@@ -50,7 +65,8 @@ void update_state(void) {
             break;
         }
         previous_state = current_state;
-        print_about_screen();
+        // print_about_screen();
+        printf("INFO_SCREEN\n");
         break;
     }
     
