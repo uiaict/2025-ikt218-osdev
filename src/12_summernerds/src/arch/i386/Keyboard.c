@@ -1,9 +1,22 @@
-// keyboard.c
-#include "libc/stdint.h"
-#include "libc/stddef.h"
-#include "IRQ.h"          // For register_irq_handler()
-#include "keyboard.h"     // Headerfil med init_keyboard()
 
+
+// keyboard.c
+
+//#include "libc/stdint.h"
+//#include "libc/stddef.h"
+#include "../src/arch/i386/ISR.h"
+#include "../src/arch/i386/IRQ.h"
+#include "../src/arch/i386/keyboard.h"     
+//#include "libc/stdbool.h"
+#include "../src/arch/i386/io.h"
+#include "../src/screen.h"
+#include "../src/arch/i386/print.h"
+
+
+
+
+void print(const char* fmt, ...);
+void write_line_to_terminal(const char* str, int line);
 
 
 bool shiftPressed = false;
@@ -34,37 +47,10 @@ char large_scancode_ascii[128] =
 char key_buffer[256];
 int key_index = 0;
 
-// 3. Keyboard handler
-void keyBoard_handler() {
-    char ScanCode = inPortB(0x60) & 0x7F;     //leser scancoden
-    char Press = inPortB(0x60) & 0x80;     //hvis koden kræsjer kan det vaære pga. press ///kommenter den vekk
-    char ascii = scanCodeToASCII(&ScanCode);   //sender scancoden til funksjonen og få tilbake bokstav
-
-    if (ascii == 0)
-    return;
-
-    key_buffer[key_index++] = ascii;
-    key_buffer[key_index] = '\0';
-
-    char str[2] = {ascii, '\0'};
-
-    write_line_to_terminal(str, 15);
-    write_line_to_terminal(key_buffer, 16);
-
-   
-    print("scan code: %d, press: %d\r\n", ScanCode, Press);   /////og dennne siden det står press her også
-}
-
-// 4. Init-funksjon
-void init_keyboard() {
-
-
-    register_irq_handler(1, keyboard_handler);
-}
-
 
 // switch Casene
-char scanCodeToASCII(unsigned char* scanCode){
+char scanCodeToASCII(unsigned char* scanCode)
+{
     unsigned char word = *scanCode;
     switch (word)                            ///////hvilke flere caser trenger jeg? tab pressed(0x0F)???? og released(0x8F)??????
     {
@@ -145,3 +131,55 @@ char scanCodeToASCII(unsigned char* scanCode){
         return 0;
     }
 }
+
+
+
+/*
+// 3. Keyboard handler
+void keyBoard_handler() {
+    unsigned char ScanCode = inPortB(0x60) & 0x7F;     //leser scancoden
+    char Press = inPortB(0x60) & 0x80;     //hvis koden kræsjer kan det vaære pga. press ///kommenter den vekk
+    char ascii = scanCodeToASCII(&ScanCode);   //sender scancoden til funksjonen og få tilbake bokstav
+
+    if (ascii == 0)
+    return;
+
+    key_buffer[key_index++] = ascii;
+    key_buffer[key_index] = '\0';
+
+    char str[2] = {ascii, '\0'};
+
+    write_to_terminal(str, 15);
+    write_to_terminal(key_buffer, 16);
+
+   
+    //printf("scan code: %d, press: %d\r\n", ScanCode, Press);   /////og dennne siden det står press her også
+}
+*/
+
+void keyboard_handler() {
+    uint8_t scancode = inb(0x60);
+    write_to_terminal("Tast trykket!\n", 4);
+}
+
+
+
+void init_keyboard() {
+    write_to_terminal("Init keyboard...\n", 3);
+    
+    register_irq_handler(1, keyboard_handler);
+
+    // Unmask IRQ1 på master PIC
+    uint8_t mask = inb(0x21);
+    mask &= ~(1 << 1); // Fjern bit 1 (IRQ1)
+    outb(0x21, mask);
+}
+
+
+/*4. Init-funksjon
+void init_keyboard() {
+
+
+    register_irq_handler(1, keyBoard_handler);
+}*/
+

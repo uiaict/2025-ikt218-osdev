@@ -17,3 +17,5 @@ build.ninja
 src/group_name/src/kernel.c
 *.iso
 *.bin
+
+OBJS = kernel.o keyboard.o memory.o memutils.o ...
