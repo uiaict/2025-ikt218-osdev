@@ -60,13 +60,17 @@ enable_language(ASM)  #  Fortell CMake at vi bruker Assembly
 
 # Legg til eksekverbar kernel, men IKKE gdt.s her!
 add_executable(uiaos-kernel 
-	src/multiboot2.asm
     src/kernel.c
 	src/screen.c
-	#src/screen.h
-	#src/arch/i386/gdt.asm #kaksje ikke ta med
-	src/arch/i386/gdt.c   #kanskje ikke ta med
+	src/song.cpp
+	#src/arch/i386/gdt.asm
+	#src/arch/i386/gdt.c
 	src/arch/i386/Keyboard.c
+	src/memory/malloc.c
+	src/memory/memory.c
+	src/memory/memutils.c
+
+	
 	src/arch/i386/io.c
 	src/arch/i386/IRQ.c
 	src/arch/i386/IDT.c
