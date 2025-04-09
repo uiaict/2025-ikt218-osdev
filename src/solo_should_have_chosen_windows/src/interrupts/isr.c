@@ -1,4 +1,3 @@
-#include "state.h"
 #include "interrupts/keyboard/keyboard.h"
 
 #include "terminal/print.h"

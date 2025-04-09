@@ -80,7 +80,8 @@ add_executable(uiaos-kernel
 	src/music_player/song_player.c
 	src/music_player/song_library.c
 	src/start_screen/start_screen.c
-	src/state.c
+	src/state/state.c
+	src/state/shell_command.c
 	src/main_menu/main_menu.c
 	src/about_screen/about_screen.c
 )

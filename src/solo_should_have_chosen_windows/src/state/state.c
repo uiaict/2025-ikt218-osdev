@@ -1,4 +1,5 @@
-#include "state.h"
+#include "state/state.h"
+#include "state/shell_command.h"
 #include "interrupts/keyboard/keyboard.h"
 #include "main_menu/main_menu.h"
 #include "about_screen/about_screen.h"
@@ -55,6 +56,9 @@ void update_state(void) {
                 char c = keyboard_get_char();
                 if (c != '\x1B') {
                     printf("%c", c);
+                    if(c == '\r') {
+                        get_last_line();
+                    }
                 }
                 else {
                     if (keyboard_has_char()) {
