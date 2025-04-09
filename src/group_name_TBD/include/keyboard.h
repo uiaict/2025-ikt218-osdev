@@ -1,17 +1,87 @@
 #include "libc/stdint.h"
 #include "isr.h"
+#include "libc/stdbool.h"
 
 #define KEYBOARD_DATA_PORT 0x60
 #define KEYBOARD_COMMAND_PORT 0x64
 
-static const char defaultLookup[] = {
-    0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t',       // 0x00 to 0x0F
-    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n', 0, 'a', 's',      // 0x10 to 0x1F
-    'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', 0, '\\', 'z', 'x', 'c', 'v',     // 0x20 to 0x2F
-    'b', 'n', 'm', ',', '.', '/', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,                     // 0x30 to 0x3F
-    0, 0, 0, 0, 0, 0, 0, '7', '8', '9', '-', '4', '5', '6', '+', '1',                   // 0x40 to 0x4F
-    '2', '3', '0', '.'                                                                  // 0x50 to 0x53
+#define LSHIFT_PRESS_CODE 0x2A
+#define LSHIFT_RELEASE_CODE 0xAA
+#define RSHIFT_PRESS_CODE 0x36
+#define RSHIFT_RELEASE_CODE 0xB6
+#define CAPSLOCK_PRESS_CODE 0x3A
+#define ALTGR_PRESS_CODE 0x38   // Sends 0xE0 first
+#define ALTGR_RELEASE_CODE 0xB8 // Sends 0xE0 first
+
+// relevant CP437 extended ASCII
+// OS uses CP437, but something else (compiler?) uses othert encodeing for extended ASCII
+#define å 134
+#define Å 143
+#define æ 145
+#define Æ 146
+#define ø 236   // Infinity
+#define Ø 237   // Greek lower case phi
+#define µ 230 
+#define EUR 156 
+#define ´ 0     // might implement ó
+#define € 155   // Cent, ¢
+#define ¨ 0     // Might implement ö and ô
+#define ORB 0   //¤
+#define PGRPH 0 // §
+
+static bool shift = false;
+static bool capslock = false;
+static bool altgr = false;
+
+static bool us_keyboard_layout = false;
+
+static const uint8_t ASCII_us[] = {
+    0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t',
+    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n', 0, 'a', 's',
+    'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', 0, '\\', 'z', 'x', 'c', 'v',
+    'b', 'n', 'm', ',', '.', '/', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, '7', '8', '9', '-', '4', '5', '6', '+', '1',
+    '2', '3', '0', '.', 0, 0, 0
 };
+static const uint8_t ASCII_no[] = {
+    // can't be typed: ¨
+    0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '\\', '\b', '\t',
+    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', å, ¨, '\n', 0, 'a', 's',
+    'd', 'f', 'g', 'h', 'j', 'k', 'l', ø, æ, '|', 0, '\'', 'z', 'x', 'c', 'v',
+    'b', 'n', 'm', ',', '.', '-', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, '7', '8', '9', '-', '4', '5', '6', '+', '1',
+    '2', '3', '0', ',', 0, 0, '<'
+    // enter should be \r\n
+};
+static const uint8_t ASCII_shift_no[] = {
+    0, 0, '!', '\"', '#', ORB, '%', '&', '/', '(', ')', '=', '?', '`', '\b', '\t',
+    'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', Å, '^', '\n', 0, 'A', 'S',
+    'D', 'F', 'G', 'H', 'J', 'K', 'L', Ø, Æ, PGRPH, 0, '*', 'Z', 'X', 'C', 'V',
+    'B', 'N', 'M', ';', ':', '_', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, '7', '8', '9', '-', '4', '5', '6', '+', '1',
+    '2', '3', '0', ',', 0, 0, '>'
+    // enter is only \n and not \r also
+};
+static const uint8_t ASCII_caps_no[] = {
+    // can't be typed: ¨
+    0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '\\', '\b', '\t',
+    'Q', 'W', 'E', 'R', 'T', 'T', 'T', 'I', 'O', 'P', Å, ¨, '\n', 0, 'A', 'S',
+    'D', 'F', 'G', 'H', 'J', 'K', 'L', Ø, Æ, '|', 0, '\'', 'Z', 'X', 'C', 'V',
+    'B', 'N', 'M', ',', '.', '-', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, '7', '8', '9', '-', '4', '5', '6', '+', '1',
+    '2', '3', '0', ',', 0, 0, '<'
+    // enter should be \r\n
+};
+static const uint8_t ASCII_altgr_no[] = {
+    0, 0, 0, '@', EUR, '$', 0, 0, '{', '[', ']', '}', 0, ´, '\b', 0,
+    0, 0, €, 0, 0, 0, 0, 0, 0, 0, 0, '~', '\n', 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, µ, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 
+    // enter should be \r\n
+};
+
 
 void init_keyboard();
 void keyboard_handler(struct registers);

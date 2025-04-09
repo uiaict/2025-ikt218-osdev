@@ -47,7 +47,16 @@ int main(uint32_t my_struct, uint32_t magic, struct multiboot_info *mb_info_addr
     // asm volatile ("int $0x21"); 
 
 
+// for (size_t i = 0; i < 300; i++)
+// {
+//     printf(&i);
+// }
 
+    while (true)
+    {
+        /* code */
+    }
+    
 
     
     
