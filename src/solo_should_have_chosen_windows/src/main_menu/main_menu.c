@@ -11,6 +11,5 @@ static const char* main_menu =
 
 void print_main_menu(void){
     clearTerminal();
-    reset_cursor();
     printf("%s", main_menu);   
 }

@@ -3,7 +3,6 @@
 
 void start_screen_reveal() {
     clearTerminal();
-    reset_cursor();
     printf("\n\n             -----------------------------------------------------\n");
     printf("                     _______ __               __        __        \n");
     printf("                    |     __|  |--.--_--.--.--|  |   __| |        \n");

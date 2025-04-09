@@ -20,7 +20,6 @@ static const char *lines[] = {
 
 void print_about_screen(void) {
     clearTerminal();
-    reset_cursor();
 
     const int width = 50;
     const int padding = 2;
@@ -31,7 +30,7 @@ void print_about_screen(void) {
     }
     printf("+\n");
 
-    printf("|");
+   printf("|");
     int title_pad = (width - 2 - strlen(title)) / 2;
     for (int i = 0; i < title_pad; i++) {
         printf(" ");
@@ -47,17 +46,17 @@ void print_about_screen(void) {
         printf("-");
     }
     printf("+\n");
-
+ 
     for (int i = 0; i < (int) (sizeof(lines) / sizeof(lines[0])); i++) {
-        printf("|  ");
-        printf(lines[i]);
-        int space = width - 6 - (int) strlen(lines[i]);
+        printf("|");
+        printf("%s",lines[i]);
+        int space = width - 2 - (int)strlen(lines[i]);
         for (int j = 0;  j < space; j++) {
-            printf("           ");
-        }
+            printf(" ");
+        } 
         printf("|\n");
     }
-
+ 
     printf("+");
     for (int i = 0; i < width -2; i++) {
         printf("-");

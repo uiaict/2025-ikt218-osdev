@@ -6,6 +6,8 @@
 
 // External boolean to indicate if old logs should be printed
 extern bool old_logs;
+extern int cursor_position;
+
 
 // Function to move the cursor to a new position
 static inline void move_cursor(uint16_t position) {

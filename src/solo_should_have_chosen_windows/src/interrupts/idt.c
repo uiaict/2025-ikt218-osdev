@@ -4,6 +4,7 @@
 #include "interrupts/idt_function.h"
 #include "terminal/print.h"
 #include "libc/string.h"
+#include "libc/io.h"
 
 #define IDT_ENTRIES 256
 
@@ -42,4 +43,10 @@ void idt_init() {
 
 void enable_interrupts() {
     __asm__ volatile ("sti");
+}
+
+void keyboard_flush_buffer() {
+    while (inb(0x64) & 0x01) {
+        inb(0x60);
+    }
 }

@@ -12,9 +12,7 @@
 #define SCREEN_HEIGHT 25
 #define GREEN_ON_BLACK 0x02
 
-// Used to store the current cursor position
-static uint16_t cursor_position = 0;
-bool old_logs = false;
+
 
 static void scroll_or_reset() {
     cursor_position = 0;
@@ -182,9 +180,4 @@ void printf(const char *format, ...) {
     }
 
     va_end(args);
-}
-
-void reset_cursor() {
-    cursor_position = 0;
-    move_cursor(cursor_position);
 }

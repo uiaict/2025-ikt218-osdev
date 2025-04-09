@@ -64,6 +64,7 @@ add_executable(uiaos-kernel
 	src/gdt_function/gdt.c
 	src/terminal_function/clearTerminal.c
 	src/terminal_function/printf.c
+	src/terminal_function/cursor.c
 	src/libc/stdlib.c
 	src/interrupts/idt.c
 	src/interrupts/pic.c

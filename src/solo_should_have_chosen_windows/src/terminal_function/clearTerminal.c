@@ -20,5 +20,6 @@ void clearTerminal(void) {
 
     // Reset cursor to (0,0)
     old_logs = false;
-    move_cursor(0);
+    cursor_position = 0;
+    move_cursor(cursor_position);
 }

@@ -33,6 +33,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     
     gdt_init();
     idt_init();
+    keyboard_flush_buffer();
     enable_interrupts();
     pit_init();
     printf("GDT, IDT and interrupts initialized. PIT configured.\n");
