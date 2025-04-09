@@ -96,3 +96,82 @@ void writeline(const char* str) {
         terminal_putchar(str[i]);
     }
 }
+
+
+// Printf to make memory work
+static void print_uint(uint32_t num, int base) {
+    char buffer[32];
+    int pos = 0;
+    
+    // Handle special case for zero
+    if (num == 0) {
+        terminal_putchar('0');
+        return;
+    }
+    
+    // Convert number to string (in reverse)
+    while (num > 0) {
+        char digit = num % base;
+        buffer[pos++] = digit < 10 ? '0' + digit : 'a' + digit - 10;
+        num /= base;
+    }
+    
+    // Print in correct order
+    while (--pos >= 0) {
+        terminal_putchar(buffer[pos]);
+    }
+}
+
+static void print_int(int num) {
+    if (num < 0) {
+        terminal_putchar('-');
+        print_uint(-num, 10);
+    } else {
+        print_uint(num, 10);
+    }
+}
+
+void printf(const char* format, ...) {
+    __builtin_va_list args;
+    __builtin_va_start(args, format);
+    
+    while (*format != '\0') {
+        if (*format == '%') {
+            format++;
+            switch (*format) {
+                case 'c':
+                    terminal_putchar(__builtin_va_arg(args, int));
+                    break;
+                case 's': {
+                    const char* str = __builtin_va_arg(args, const char*);
+                    writeline(str);
+                    break;
+                }
+                case 'd':
+                case 'i':
+                    print_int(__builtin_va_arg(args, int));
+                    break;
+                case 'u':
+                    print_uint(__builtin_va_arg(args, unsigned int), 10);
+                    break;
+                case 'x':
+                    terminal_putchar('0');
+                    terminal_putchar('x');
+                    print_uint(__builtin_va_arg(args, unsigned int), 16);
+                    break;
+                case '%':
+                    terminal_putchar('%');
+                    break;
+                default:
+                    terminal_putchar('%');
+                    terminal_putchar(*format);
+                    break;
+            }
+        } else {
+            terminal_putchar(*format);
+        }
+        format++;
+    }
+    
+    __builtin_va_end(args);
+}

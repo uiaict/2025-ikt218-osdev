@@ -11,6 +11,7 @@ void writeline(const char* str);
 void terminal_putchar(char c);
 void update_cursor(int row, int col);
 void terminal_backspace();
+void printf(const char* format, ...);
 
 // Make these accessible for other modules (like keyboard handler)
 extern size_t terminal_row;

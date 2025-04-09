@@ -1,6 +1,7 @@
 #include "idt.h"
 #include "terminal.h"
 #include "libc/stdint.h"
+#include "pit.h"
 
 #define PIC1_COMMAND 0x20
 #define PIC1_DATA    0x21
@@ -186,7 +187,7 @@ void irq_handler(struct regs *r) {
     // Handle different IRQs
     switch (r->int_no) {
         case 32: // IRQ0: Timer
-            // Timer handler (can be empty for now)
+            pit_tick();
             break;
         case 33: // IRQ1: Keyboard
             // Read scancode from keyboard port
@@ -200,6 +201,8 @@ void irq_handler(struct regs *r) {
                 // If it's a valid character, process it
                 if (ascii != 0) {
                     terminal_putchar(ascii);
+                } else if (scancode == 14) {  // Backspace key
+                    terminal_backspace();
                 }
             }
             break;
