@@ -10,7 +10,6 @@
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 
-
 static volatile SystemState current_state = NOT_USED;
 static volatile SystemState previous_state = NOT_USED;
 
@@ -56,17 +55,25 @@ void update_state(void) {
                 char c = keyboard_get_char();
                 if (c != '\x1B') {
                     printf("%c", c);
-                    if(c == '\r') {
-                        get_last_line();
+                    if (c == '\r') {
+                        ShellCommand_t cmd = get_shell_command();
+                        switch (cmd) {
+                            case LOAD_INFO:
+                                change_state(INFO_SCREEN);
+                                break;
+                            case LOAD_MUSIC_PLAYER:
+                                change_state(MUSIC_PLAYER);
+                                break;
+                            default:
+                                break;
+                        }
                     }
-                }
-                else {
+                } else {
                     if (keyboard_has_char()) {
                         char d = keyboard_get_char();
                         if (d == 'D') {
                             move_cursor_left();
-                        }
-                        else if (d == 'C') {
+                        } else if (d == 'C') {
                             move_cursor_right();
                         }
                     }
@@ -74,9 +81,10 @@ void update_state(void) {
             }
             break;
         }
+
         previous_state = current_state;
         clearTerminal();
-        printf("Welcome to the shell!\n");
+        print_shell_welcome_message();
         break;
     }
     case MENU: {
@@ -98,8 +106,8 @@ void update_state(void) {
         if (same_state_check()) {
             if (keyboard_has_char()) {
                 char c = keyboard_get_char();
-                if (c == '\x1B') {
-                    change_state(MENU);
+                if (c == '\r') {
+                    change_state(SHELL);
                 }
             }
             break;

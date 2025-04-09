@@ -1,10 +1,12 @@
 #pragma once
 
 typedef enum {
+    NO_COMMAND,
     LOAD_INFO,
     LOAD_MUSIC_PLAYER
 } ShellCommand_t;
 
+void print_shell_welcome_message();
+void print_shell_command_not_found();
 
-ShellCommand_t get_shell_command(char *command);
-void get_last_line();
+ShellCommand_t get_shell_command();

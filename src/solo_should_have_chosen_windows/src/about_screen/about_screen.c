@@ -5,7 +5,7 @@
 #include "libc/string.h"
 
 static const char *title = "About Should Have Windows";
-static const char *esc_message = "Press ESC to return to the main menu";
+static const char *esc_message = "Press ENTER to return to the main menu";
 static const char *lines[] = {
     "This OS was developed as part of a university",
     "project to understand low-level systems and",

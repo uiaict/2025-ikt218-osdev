@@ -12,6 +12,16 @@
 #define LAST_ROW 24
 #define VGA_ADDRESS 0xB8000
 
+static const char* launch_stub = "ssw-launch";
+static const char* info_stub = "info";
+static const char* music_player_stub = "music-player";
+static const char* shell_wecome_message = "Welcome to the shell!\nCommands must start on a new line with ssw-launch follwed by the command name:\n"
+"info - Show information about the system\n"
+"music-player - Launch the music player\n"
+"Press Enter to execute the command.\n";
+
+const char* shell_command_not_found = "Command not found.\n";
+
 static char command_buffer[SCREEN_WIDTH];
 
 static void string_shorten() {
@@ -22,7 +32,7 @@ static void string_shorten() {
     }
 }
 
-void get_last_line() {
+static void get_last_line() {
     memset(command_buffer, 0, SCREEN_WIDTH);
 
     uint16_t *video_memory = (uint16_t*) VGA_ADDRESS;
@@ -42,5 +52,67 @@ void get_last_line() {
         command_buffer[i] = c;
     }
     string_shorten();
+}
+
+ShellCommand_t get_shell_command() {
+    get_last_line();
+    int i = 0;
+
+    char* first_word = malloc(strlen(launch_stub) + 1);
+    if (first_word == NULL) {
+        printf("Heap memory allocation failed\n");
+        return NO_COMMAND;
+    }
+   
+    for (i = 0; i < (int) (strlen(launch_stub)); i++) {
+        first_word[i] = command_buffer[i];
+    }
+
+    first_word[i] = '\0';
+
+    if (strcmp(first_word,launch_stub) != 0) {
+        printf("Command must begin with ssw-launch\n");
+        free(first_word);
+        return NO_COMMAND;
+    }
+    free(first_word);
+
+    if (command_buffer[i] == '\0') {
+        printf("No command given\n");
+        return NO_COMMAND;
+    }
     
+    if (command_buffer[i] != ' ') {
+        printf("Not a space after ssw-launch\n");
+        return NO_COMMAND;
+    }
+    
+    i++;
+
+    if (strcmp(command_buffer + i, info_stub) == 0) {
+        printf("Loading system information...\n");
+        return LOAD_INFO;
+    } else if (strcmp(command_buffer + i, music_player_stub) == 0) {
+        printf("Loading music player...\n");
+        return LOAD_MUSIC_PLAYER;
+    } else {
+        printf("No valid command given\n");
+        return NO_COMMAND;
+    }
+}
+
+void print_shell_welcome_message() {
+    printf("%s", shell_wecome_message);
+    for (int i = 0; i < SCREEN_WIDTH; i++) {
+        printf("-");
+    }
+    printf("\n");
+} 
+
+void print_shell_command_not_found() {
+    printf("%s", shell_command_not_found);
+    for (int i = 0; i < SCREEN_WIDTH; i++) {
+        printf("-");
+    }
+    printf("\n");
 }

@@ -17,7 +17,7 @@
 
 #include <multiboot2.h>
 
-#define HEAP_SIZE 64 * 1024 // 64 KB
+#define HEAP_SIZE 512 * 1024 // 512 KB
 
 
 extern uint32_t end;
@@ -41,12 +41,17 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("Initialising heap...\n");
     heap_init((void*)&end, HEAP_SIZE);
     printf("Heap initialized.\nHeap info:\n");
+    uint32_t heap_start = (uint32_t)&end;
+    uint32_t heap_end = heap_start + HEAP_SIZE;
+
+    printf("\nHeap start: %x\n", heap_start);
+    printf("Heap end: %x\n", heap_end);
     print_heap();
 
     paging_init();
     printf("Paging initialized.\n\n");
     
-    sleep_busy(3000);
+    sleep_busy(10);
     
        // Keep the CPU running forever
     while (1) {
