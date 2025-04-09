@@ -7,67 +7,92 @@ void init_keyboard(){
     register_interrupt_handler(IRQ1, keyboard_handler);
     return;
 }
-void keyboard_handler(struct registers){
+void keyboard_handler(struct registers reg){
     uint8_t scan_code = inb(KEYBOARD_DATA_PORT);
 
-    switch (scan_code){
-        
-        case LSHIFT_PRESS_CODE:
-            shift = true;
-            break;        
-        case RSHIFT_PRESS_CODE:
-            shift = true;
-            break;
-        case LSHIFT_RELEASE_CODE:
-            shift = false;
-            break;        
-        case RSHIFT_RELEASE_CODE:
-            shift = false;
-            break;
-        case CAPSLOCK_PRESS_CODE:
-            capslock = !capslock;
-            break;
-        case ALTGR_PRESS_CODE:
-            altgr = true;
-            break;
-        case ALTGR_RELEASE_CODE:
-            altgr = false;
-            break;
-        
-        default:
-            break;
-    }
-    
-    if (scan_code > 0x56){
-        // scancode for <
-        // Prevents printing of charachters on key release
-        // Will prevent some keypresses, but they arent implemented anyways
-        return;
-    }
     
     
-    uint8_t c;
-    
-    if (shift){
+    if (scan_code & 0x80){
+        // If first bit of scancode is 1, a key was just released
+        // 10000000 + 00101010 = 10101010
+        // 0x80 + SHIFT_PRESS_CODE = SHIFT_RELEASE_CODE
+
+        switch ((scan_code & 0x7F)){
         
-        c = ASCII_shift_no[scan_code];
+            case LSHIFT_CODE:
+                shift = false;
+                return;        
+            case RSHIFT_CODE:
+                shift = false;
+                return;
+            case ALTGR_CODE:
+                altgr = false;
+                return;
+            
+            default:
+                return; // We dont want to print on release
+        }
         
-    } else if(altgr){
-        
-        c = ASCII_altgr_no[scan_code];
-        
-    } else if(capslock){
-        
-        c = ASCII_caps_no[scan_code];
         
     } else{
         
-        c = ASCII_no[scan_code];
+        switch (scan_code){
+        
+            case LSHIFT_CODE:
+                shift = true;
+                return;        
+            case RSHIFT_CODE:
+                shift = true;
+                return;
+            case ALTGR_CODE:
+                altgr = true;
+                return;
+            case CAPSLOCK_CODE:
+                capslock = !capslock;
+                return;
+                
+            default:
+                break;
+        }
     }
+        
     
-    if ((int)c > 255 || (int)c < 0){
+    uint8_t c = 0;
+    
+    // If it works, it works
+    if (shift && !capslock && !altgr){
+        c = ASCII_shift[scan_code];
+        
+    } else if (!shift && capslock && !altgr){
+        c = ASCII_caps[scan_code]; 
+        
+    } else if (!shift && !capslock && altgr){
+        c = ASCII_altgr[scan_code]; 
+        
+    } else if (shift && capslock && !altgr){
+        c = ASCII_caps_shift[scan_code]; 
+        
+    } else if (shift && !capslock && altgr){
         c = 0;
+        
+    } else if (!shift && capslock && altgr){
+        c = ASCII_altgr[scan_code];
+        
+    } else if (shift && capslock && altgr){
+        c = 0;
+        
+    } else {
+        c = ASCII[scan_code];
     }
     
-    printf(&c);
+    
+    if ((int)c <= 255 && (int)c != 0){
+        putchar((int)c);
+    }
+    
+    if (!shift && scan_code == 0x1C){
+        // Generally, we want CRLF when we hit enter
+        putchar('\r');
+    }   
+    
 }

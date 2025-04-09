@@ -57,7 +57,7 @@ int main(uint32_t my_struct, uint32_t magic, struct multiboot_info *mb_info_addr
         /* code */
     }
     
-
+//TODO: scroll, arrow navigation, verify if x or y negative
     
     
     return 0;

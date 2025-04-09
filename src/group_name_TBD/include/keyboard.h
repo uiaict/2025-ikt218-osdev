@@ -5,13 +5,10 @@
 #define KEYBOARD_DATA_PORT 0x60
 #define KEYBOARD_COMMAND_PORT 0x64
 
-#define LSHIFT_PRESS_CODE 0x2A
-#define LSHIFT_RELEASE_CODE 0xAA
-#define RSHIFT_PRESS_CODE 0x36
-#define RSHIFT_RELEASE_CODE 0xB6
-#define CAPSLOCK_PRESS_CODE 0x3A
-#define ALTGR_PRESS_CODE 0x38   // Sends 0xE0 first
-#define ALTGR_RELEASE_CODE 0xB8 // Sends 0xE0 first
+#define LSHIFT_CODE 0x2A
+#define RSHIFT_CODE 0x36
+#define CAPSLOCK_CODE 0x3A
+#define ALTGR_CODE 0x38   // Sends 0xE0 first
 
 // relevant CP437 extended ASCII
 // OS uses CP437, but something else (compiler?) uses othert encodeing for extended ASCII
@@ -43,7 +40,7 @@ static const uint8_t ASCII_us[] = {
     0, 0, 0, 0, 0, 0, 0, '7', '8', '9', '-', '4', '5', '6', '+', '1',
     '2', '3', '0', '.', 0, 0, 0
 };
-static const uint8_t ASCII_no[] = {
+static const uint8_t ASCII[] = {
     // can't be typed: ¨
     0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '\\', '\b', '\t',
     'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', å, ¨, '\n', 0, 'a', 's',
@@ -53,7 +50,7 @@ static const uint8_t ASCII_no[] = {
     '2', '3', '0', ',', 0, 0, '<'
     // enter should be \r\n
 };
-static const uint8_t ASCII_shift_no[] = {
+static const uint8_t ASCII_shift[] = {
     0, 0, '!', '\"', '#', ORB, '%', '&', '/', '(', ')', '=', '?', '`', '\b', '\t',
     'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', Å, '^', '\n', 0, 'A', 'S',
     'D', 'F', 'G', 'H', 'J', 'K', 'L', Ø, Æ, PGRPH, 0, '*', 'Z', 'X', 'C', 'V',
@@ -62,7 +59,7 @@ static const uint8_t ASCII_shift_no[] = {
     '2', '3', '0', ',', 0, 0, '>'
     // enter is only \n and not \r also
 };
-static const uint8_t ASCII_caps_no[] = {
+static const uint8_t ASCII_caps[] = {
     // can't be typed: ¨
     0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '\\', '\b', '\t',
     'Q', 'W', 'E', 'R', 'T', 'T', 'T', 'I', 'O', 'P', Å, ¨, '\n', 0, 'A', 'S',
@@ -72,9 +69,18 @@ static const uint8_t ASCII_caps_no[] = {
     '2', '3', '0', ',', 0, 0, '<'
     // enter should be \r\n
 };
-static const uint8_t ASCII_altgr_no[] = {
-    0, 0, 0, '@', EUR, '$', 0, 0, '{', '[', ']', '}', 0, ´, '\b', 0,
-    0, 0, €, 0, 0, 0, 0, 0, 0, 0, 0, '~', '\n', 0, 0, 0,
+static const uint8_t ASCII_caps_shift[] = {
+    0, 0, '!', '\"', '#', ORB, '%', '&', '/', '(', ')', '=', '?', '`', '\b', '\t',
+    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', å, '^', '\n', 0, 'a', 's',
+    'd', 'f', 'g', 'h', 'j', 'k', 'l', ø, æ, PGRPH, 0, '*', 'z', 'x', 'c', 'v',
+    'B', 'N', 'M', ';', ':', '_', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, '7', '8', '9', '-', '4', '5', '6', '+', '1',
+    '2', '3', '0', ',', 0, 0, '>'
+    // enter is only \n and not \r also
+};
+static const uint8_t ASCII_altgr[] = {
+    0, 0, 0, '@', EUR, '$', 0, 0, '{', '[', ']', '}', 0, ´, 0, 0,
+    0, 0, €, 0, 0, 0, 0, 0, 0, 0, 0, '~', ' ', 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, µ, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

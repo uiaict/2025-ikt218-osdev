@@ -17,28 +17,33 @@ void set_vga_color(enum vga_color txt_color, enum vga_color bg_color){
     terminal_color = txt_color | bg_color << 4;
 }
 
-void printf(const char *string){
+
+void print(const unsigned char *string){
     
     for (size_t i = 0; i < strlen(string); i++) {
-        
-        if (string[i] >= 0 && string[i] <= 31){
-            
-            ctrlchar(string[i]);
-            continue;
-        } else {
-            
-            putchar_at(&string[i], cursor_xpos, cursor_ypos);
-            cursor_xpos++;
-            verify_cursor_pos();
-        }
+        putchar((int)string[i]);        
     }
 }
 
-void putchar_at(const char *c, size_t x, size_t y){
+int putchar(const int c){
     
-    const size_t index = y * terminal_width + x;
-    video_memory[index*2] = *c;
+    if (c > 255 || c < 0){
+        return false;
+    }
+    
+    if (c < 32){
+        ctrlchar(c);
+        return true;
+    }
+    
+    const size_t index = cursor_ypos * terminal_width + cursor_xpos;
+    video_memory[index*2] = (unsigned char)c;
     video_memory[index*2 +1] = terminal_color;
+    
+    cursor_xpos++;
+    verify_cursor_pos();
+    
+    return true;
 }
 
 
@@ -53,25 +58,40 @@ void verify_cursor_pos(){
     if (cursor_ypos > terminal_height){
         cursor_ypos = 0;
     }
+    
 }
 
 void ctrlchar(int c){
-    // \r\n nedded for regular std::newline
-    // Might change to only \n later
     
     switch (c){
-        case 10: // \n: Newline, does only LF
-            // cursor_xpos = 0;
+        case '\n':
             cursor_ypos++;
-            verify_cursor_pos();
             break;
             
-        case 13: // \r: Return, does only CR
-        cursor_xpos = 0;
+        case '\r':
+            cursor_xpos = 0;
+            break;
+            
+        case '\t':
+            cursor_xpos = (cursor_xpos / 8 + 1) * 8;
+            break;
+            
+        case '\b':
+            cursor_xpos--;
+            break; 
+            
+        case '\f':
+            cursor_ypos = (cursor_ypos / terminal_height + 1) * terminal_height;
+            cursor_xpos = 0;
+            break;
+            
+        case '\a':
+            //TODO: BEEP
             break;
         
         default:
             break;
     }
+    verify_cursor_pos();
 }
 

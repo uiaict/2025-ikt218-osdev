@@ -22,8 +22,8 @@ enum vga_color {
 	VGA_WHITE = 15,
 };
 
-void putchar_at(const char*, size_t, size_t);
-void printf(const char*);
+int putchar(const int);
+void print(const unsigned char*);
 void set_vga_color(enum vga_color, enum vga_color);
 
 // void reset_terminal();
