@@ -197,13 +197,13 @@ void irq_handler(struct regs *r) {
                 // Convert scancode to ASCII character
                 char ascii = scancode_to_ascii[scancode];
                 
-                // If it's a valid character, print it to screen
+                // If it's a valid character, process it
                 if (ascii != 0) {
                     terminal_putchar(ascii);
                 }
             }
             break;
-        // ...existing code for other IRQs...
+        // Handle other IRQs here...
     }
 
     // Send End of Interrupt (EOI) signal to the PIC

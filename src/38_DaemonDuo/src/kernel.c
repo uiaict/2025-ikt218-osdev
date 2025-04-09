@@ -15,27 +15,21 @@ struct multiboot_info {
 
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-    gdt_install();
-    terminal_initialize();
-    writeline("Hello World\n");
+    gdt_install(); // Initialize the GDT
+    terminal_initialize(); // Initialize the terminal
 
+    //install irq and idt
     idt_install();
-    
-    // Enable only keyboard IRQ for testing
-    enable_irq(1);
-    
-    // Enable interrupts globally
-    __asm__ __volatile__("sti");
+    enable_irq(1); // Enable only keyboard IRQ for testing
+    __asm__ __volatile__("sti"); // Enable interrupts globally
 
-    // Test only keyboard interrupt
-    writeline("Testing keyboard interrupt (33)...\n");
-    __asm__ __volatile__("int $33");
 
-    __asm__ __volatile__("int $1");
 
-    writeline("Test complete. Press any key for hardware interrupt.\n");
+
+    writeline("Hello World\n"); // Print to the terminal
+
     
     while(true) {
-        __asm__ __volatile__("hlt");
+        __asm__ __volatile__("hlt"); // Halt the CPU until an interrupt occurs
     }
 }
