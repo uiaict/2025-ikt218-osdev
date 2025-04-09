@@ -40,14 +40,14 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     printf("Initialising heap...\n");
     heap_init((void*)&end, HEAP_SIZE);
-    printf("Heap initialized.\n");
-
+    printf("Heap initialized.\nHeap info:\n");
+    print_heap();
 
     paging_init();
     printf("Paging initialized.\n\n");
     
-    sleep_busy(1000);
-        
+    sleep_busy(3000);
+    
        // Keep the CPU running forever
     while (1) {
        update_state();
