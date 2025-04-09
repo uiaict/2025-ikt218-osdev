@@ -23,8 +23,7 @@ typedef struct registers {
   uint32_t eip, cs, eflags;
 } registers_t;
 
-void pit_irq_handler(registers_t *r, void *ctx) { printf("Tick\n"); }
-
+void pit_irq_handler(registers_t *r, void *ctx) {};
 void init_pit(uint32_t frequency) {
   uint16_t divisor = (uint16_t)(PIT_FREQUENCY / frequency);
 
@@ -41,12 +40,16 @@ int cursor = 0;
 
 void printf(const char *message) {
   for (int i = 0; message[i] != '\0'; i++) {
-    vga[(cursor + i) * 2] = message[i];
-    vga[(cursor + i) * 2 + 1] = 0x07;
+    vga[(cursor) * 2] = message[i];
+    vga[(cursor) * 2 + 1] = 0x07;
+
+    cursor++;
+    if (cursor % 80 == 0 && cursor < 80 * 25) {
+      // La den gå til neste linje automatisk
+    } else if (cursor >= 80 * 25) {
+      cursor = 0; // wrap rundt
+    }
   }
-  cursor += 80;
-  if (cursor >= 80 * 25)
-    cursor = 0;
 }
 
 void outb(uint16_t port, uint8_t value) {
@@ -128,9 +131,39 @@ void register_irq_handler(int irq, isr_t handler, void *ctx) {
   irq_handlers[irq + 32].data = ctx;
 }
 
+static const char scancode_ascii[128] = {
+    0, 27, '1', '2', '3', '4', '5', '6', '7', '8', // 0x00 - 0x09
+    '9', '0', '+', '\\', '\b',                     // 0x0A - 0x0E
+    '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', '^',
+    '\n',                                                        // 0x0F - 0x1C
+    0,                                                           // ctrl
+    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ø', 'æ', '\'', // 0x1D -
+                                                                 // 0x28
+    0,                                                           // left shift
+    '<', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '-',       // 0x2C - 0x35
+    0,                                                           // right shift
+    '*',
+    0,   // alt
+    ' ', // space
+    0,   // caps lock
+         // resten kan være null
+};
+
 void irq_handler(registers_t *regs) {
-  if (regs->int_no == 32) {
-    printf("IRQ0 fired\n");
+  if (regs->int_no == 33) {
+    uint8_t scancode = inb(0x60);
+    char ascii = scancode_ascii[scancode];
+
+    if (scancode == 14) { // backspace
+      if (cursor > 0) {
+        cursor--;
+        vga[cursor * 2] = ' ';
+        vga[cursor * 2 + 1] = 0x07;
+      }
+    } else if (ascii && ascii >= 32 && ascii <= 126) {
+      char msg[2] = {ascii, '\0'};
+      printf(msg);
+    }
   }
 
   if (regs->int_no >= 40)
