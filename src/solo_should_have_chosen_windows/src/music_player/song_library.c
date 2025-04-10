@@ -114,6 +114,7 @@ Song super_mario_song = {
 
 Song* songList = NULL;
 size_t numOfSongs = 0;
+bool songLibraryInitialized = false;
 
 void init_song_library() {
     numOfSongs = 4;
@@ -134,4 +135,12 @@ void destroy_song_library() {
         free(songList);
         songList = NULL;
     }
+}
+
+void list_songs() {
+    printf("\nAvailable songs:\n");
+    for (size_t i = 0; i < numOfSongs; i++) {
+        printf("%s - %s by %s\n", songList[i].code, songList[i].title, songList[i].artist);
+    }
+    printf("\n");
 }

@@ -141,6 +141,7 @@ void update_state(void) {
                                 change_state(MUSIC_PLAYER_HELP);
                                 break;
                             case LIST_SONGS:
+                                list_songs();
                                 break;
                             default:
                                 break;
@@ -159,7 +160,12 @@ void update_state(void) {
             }
             break;
         }
-        previous_state = current_state;        
+        previous_state = current_state;
+        if (!songLibraryInitialized) {
+            init_song_library();
+            songLibraryInitialized = true;
+        }
+                
         break;
     }
     default:
