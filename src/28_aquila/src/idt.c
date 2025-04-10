@@ -106,6 +106,7 @@ void irq_handler(registers_t *regs) {
     outb(0xA0, 0x20); // Send to slave PIC
   }
   outb(0x20, 0x20); // Send to master PIC
+
 }
 
 static uint32_t ticks = 0;
