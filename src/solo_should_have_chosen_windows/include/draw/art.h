@@ -15,11 +15,14 @@ typedef struct {
 
 typedef struct {
     bool (*space_available)(void);
+    bool (*name_taken)(char* str);
     void (*create_drawing)(char* str);
     bool (*drawings_exist)(void);
     Drawing* (*fetch_drawing)(char* str);
     void (*save_drawing)(Drawing* drawing);
     void (*print_board)(Drawing* drawing);
+    void (*list_drawings)(void);
+    void (*delete_drawing)(char* str);
 } ArtManager;
 
 ArtManager* create_art_manager(void);

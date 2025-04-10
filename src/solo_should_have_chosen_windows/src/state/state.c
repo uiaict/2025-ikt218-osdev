@@ -239,6 +239,37 @@ void update_state(void) {
                             case CLEAR_SCREEN_ART:
                                 clearTerminal();
                                 break;
+                            case LIST_DRAWINGS: {
+                                ArtManager *manager = create_art_manager();
+                                if (manager != NULL) {
+                                    manager->list_drawings();
+                                    destroy_art_manager(manager);
+                                }
+                                break;
+                            }
+                            case DELETE_DRAWING: {
+                                ArtManager *manager = create_art_manager();
+                                if (manager != NULL) {
+                                    if (manager->drawings_exist()) {
+                                        char* command = get_art_command_string(DELETE_DRAWING);
+                                        if (command == NULL) {
+                                            printf("Name not found.\n");
+                                            break;
+                                        }
+                                        if (strlen(command) == 0) {
+                                            printf("Name cannot be empty.\n");
+                                            break;
+                                        }
+                                        manager->delete_drawing(command);
+                                        printf("If drawing existed, it is now deleted.\n");                                
+                                        destroy_art_manager(manager);
+                                        break;
+                                    } else {
+                                        printf("No drawings exist.\n");
+                                    }
+                                }
+                            }
+                                break;
                             case NEW_DRAWING: {
                                 ArtManager *manager = create_art_manager();
                                 if (manager != NULL) {
@@ -252,8 +283,13 @@ void update_state(void) {
                                             printf("Name cannot be empty.\n");
                                             break;
                                         }
-                                        manager->create_drawing(command);
-                                        printf("Drawing with name %s created.\n", command);
+                                        if (manager->name_taken(command)) {
+                                            printf("Name %s already taken.\n", command);
+                                        } else {
+                                            manager->create_drawing(command);
+                                            printf("Drawing with name %s created.\n", command);
+                                        }
+                                    
                                         destroy_art_manager(manager);
                                         break;
                                     } else {

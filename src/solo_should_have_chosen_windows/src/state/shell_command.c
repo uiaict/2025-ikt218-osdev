@@ -34,6 +34,7 @@ const char* art_command_list = "list";
 const char* art_command_exit = "exit";
 const char* art_command_new = "new";
 const char* art_command_load = "load";
+const char* art_command_delete = "delete";
 
 const char* shell_command_not_found = "Command not found.\n";
 
@@ -257,12 +258,20 @@ Art_Command_t get_art_command() {
 
     if (strcmp(command_buffer + i, clear_stub) == 0)
         return CLEAR_SCREEN_ART;
+
+    if (strcmp(command_buffer + i, art_command_list) == 0)
+        return LIST_DRAWINGS;
     
     if (strncmp(command_buffer + i, art_command_new, strlen(art_command_new)) == 0)
         return NEW_DRAWING;
     
     if (strncmp(command_buffer + i, art_command_load, strlen(art_command_load)) == 0)
         return LOAD_DRAWING;
+    
+    if (strncmp(command_buffer + i, art_command_delete, strlen(art_command_delete)) == 0)
+        return DELETE_DRAWING;
+    
+    
 
     printf("No valid command given\n");
     return NO_ART_COMMAND;
@@ -279,6 +288,12 @@ char* get_art_command_string(Art_Command_t cmd) {
             
         case LOAD_DRAWING: {
             int i = (int) (strlen(art_command_stub) + strlen(art_command_load) + 2);
+            return command_buffer + i;
+            break;
+        }
+
+        case DELETE_DRAWING: {
+            int i = (int) (strlen(art_command_stub) + strlen(art_command_delete) + 2);
             return command_buffer + i;
             break;
         }

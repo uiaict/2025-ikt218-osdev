@@ -12,6 +12,8 @@ static const char *lines[] = {
     "\tclear\t: Clears terminal.",
     "\tnew <name>\t: Creates new drawing with name <name>.",
     "\tload <name>\t: Loads drawing with name <name>.",
+    "\tdelete <name>\t: Deletes drawing with name <name>.",
+    "\tlist\t: Lists all drawings.",
     "\texit\t: Exits ascii art mode.\n\n",
     "When art is loaded, you can draw with all keys.\nSaving is automatic. Press ESC to save and exit.\n",
     ""

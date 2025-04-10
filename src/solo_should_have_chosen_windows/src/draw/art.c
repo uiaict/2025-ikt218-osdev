@@ -53,7 +53,10 @@ static void create_drawing(char* str) {
 }
 
 static Drawing* get_drawing(char* str) {
-    for (size_t i = 0; i < drawing_count; i++) {
+    for (size_t i = 0; i < MAX_DRAWINGS; i++) {
+        if (drawing_pointers[i] == NULL) {
+            continue;
+        }
         if (strcmp(drawing_pointers[i]->name, str) == 0) {
             return drawing_pointers[i];
         }
@@ -77,6 +80,45 @@ static void print_drawing(Drawing* drawing) {
     }
 }
 
+static void list_drawings() {
+    if (drawing_count == 0) {
+        printf("No drawings available.\n");
+        return;
+    }
+    printf("Available drawings:\n");
+    for (size_t i = 0; i < MAX_DRAWINGS; i++) {
+        if (drawing_pointers[i] == NULL) {
+            continue;
+        }
+        printf("\t%s\n", drawing_pointers[i]->name);
+    }
+}
+
+static bool name_taken(char* str) {
+    for (size_t i = 0; i < MAX_DRAWINGS; i++) {
+        if (drawing_pointers[i] == NULL) {
+            continue;
+        }
+        if (strcmp(drawing_pointers[i]->name, str) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static void delete_drawing(char* str) {
+    for (size_t i = 0; i < MAX_DRAWINGS; i++) {
+        if (drawing_pointers[i] == NULL) {
+            continue;
+        }
+        if (strcmp(drawing_pointers[i]->name, str) == 0) {
+            free(drawing_pointers[i]);
+            drawing_pointers[i] = NULL;
+            drawing_count--;
+        }      
+    }
+}
+
 ArtManager *create_art_manager(void) {
     ArtManager* manager = (ArtManager *)malloc(sizeof(ArtManager));
     if (manager == NULL) {
@@ -84,11 +126,14 @@ ArtManager *create_art_manager(void) {
         return NULL;
     }
     manager->space_available = space_available;
+    manager->name_taken = name_taken;
     manager->drawings_exist = drawings_exist;
     manager->create_drawing = create_drawing;
     manager->fetch_drawing = get_drawing;
     manager->print_board = print_drawing;
     manager->save_drawing = save_drawing;
+    manager->list_drawings = list_drawings;
+    manager->delete_drawing = delete_drawing;
     return manager;
 }
 

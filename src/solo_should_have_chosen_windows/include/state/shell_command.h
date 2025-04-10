@@ -25,6 +25,8 @@ typedef enum {
     CLEAR_SCREEN_ART,
     NEW_DRAWING,
     LOAD_DRAWING,
+    LIST_DRAWINGS,
+    DELETE_DRAWING,
     ART_EXIT
 } Art_Command_t;
 
@@ -49,6 +51,7 @@ extern const char* art_command_list;
 extern const char* art_command_exit;
 extern const char* art_command_new;
 extern const char* art_command_load;
+extern const char* art_command_delete;
 
 
 ShellCommand_t get_shell_command();
