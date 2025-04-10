@@ -1,5 +1,5 @@
 #pragma once
-
+#include <libc/stdint.h>
 
 typedef struct registers
 {
@@ -17,8 +17,8 @@ extern void isr0();
 extern void isr1();
 extern void isr2();
 
-// Optional: if you have a shared C handler
-void isr_handler(uint32_t int_no);
+// Updated to match implementation in isr.c
+void isr_handler(registers_t regs);
 
 void irq_handler(registers_t regs);
 

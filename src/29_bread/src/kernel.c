@@ -5,6 +5,8 @@
 #include <gdt/gdt.h>
 #include <libc/idt.h>
 #include <libc/isr.h>
+#include <print.h>
+#include <putchar.h>
 
 
 
@@ -16,15 +18,26 @@ struct multiboot_info {
 
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
+    // Initialize terminal for output
+    terminal_initialize();
 
-    init_idt();
-
+    // Set up GDT before IDT
+    printf("Initializing GDT...\n");
     gdt_install();
 
-    asm volatile("cli");
-    asm volatile("int $0x0");
+    // Initialize the IDT
+    printf("Initializing IDT...\n");
+    init_idt();
+    
+    printf("System initialized successfully!\n");
 
-    while(1);
+    asm volatile("int $0x3");
+
+    // Safe infinite loop to prevent CPU from executing random memory
+    printf("System is running. Press Ctrl+Alt+Del to restart.\n");
+    while(1) {
+        asm volatile("hlt");
+    }
+
     return 0;
-
 }

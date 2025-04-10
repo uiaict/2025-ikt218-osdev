@@ -12,8 +12,15 @@ void register_interrupt_handler(uint8_t n, isr_t handler)
   interrupt_handlers[n] = handler;
 }
 
-void isr_handler(uint32_t int_no) {
-    printf("Received interrupt: %d\n", int_no);
+// Match the declaration in isr.h
+void isr_handler(registers_t regs) {
+    printf("Received interrupt: %d, Error code: %d\n", regs.int_no, regs.err_code);
+    
+    // Halt the system if a critical exception occurs
+    if (regs.int_no <= 31) {
+        printf("SYSTEM HALTED: Exception %d\n", regs.int_no);
+        for(;;); // Halt the CPU
+    }
 }
 
 void irq_handler(registers_t regs)

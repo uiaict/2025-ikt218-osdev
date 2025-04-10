@@ -103,7 +103,11 @@ isr_common_stub:
     mov fs, ax
     mov gs, ax
 
+    ; Pass the registers_t structure as parameter
+    mov eax, esp            ; The registers_t struct is on the stack
+    push eax                ; Pass it as a parameter to isr_handler
     call isr_handler
+    add esp, 4              ; Clean up the parameter we pushed
 
     pop ebx        ; reload the original data segment descriptor
     mov ds, bx
@@ -117,7 +121,7 @@ isr_common_stub:
     iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
 
 ; In isr.c
- extern irq_handler
+extern irq_handler
 
 ; This is our common IRQ stub. It saves the processor state, sets
 ; up for kernel mode segments, calls the C-level fault handler,
@@ -134,7 +138,11 @@ irq_common_stub:
     mov fs, ax
     mov gs, ax
 
+    ; Pass the registers_t structure as parameter
+    mov eax, esp            ; The registers_t struct is on the stack
+    push eax                ; Pass it as a parameter to irq_handler
     call irq_handler
+    add esp, 4              ; Clean up the parameter we pushed
 
     pop ebx        ; reload the original data segment descriptor
     mov ds, bx
@@ -144,7 +152,7 @@ irq_common_stub:
 
     popa                     ; Pops edi,esi,ebp...
     add esp, 8     ; Cleans up the pushed error code and pushed ISR number
-
+    sti
     iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
 
 
