@@ -7,11 +7,11 @@
 static const char *title = "SHOULD HAVE WINDOWS COMMANDS";
 static const char *esc_message = "Press ESC to return to the main menu";
 static const char *lines[] = {
-    "Shell commands being with shc-launch: shc-launch <command>:",
-    " "
-    "info : Displays information about the OS.",
-    "command-ls : Displays command list.",
-    "music-player: Launches the music player.",
+    "Shell commands being with shc-launch: shc-launch <command>:\n",
+    "\tinfo\t: Displays information about the OS.",
+    "\thelp\t: Displays command list.",
+    "\tclear\t: Clears terminal.",
+    "\tmusic\t: Launches the music player.",
     ""
 };
 

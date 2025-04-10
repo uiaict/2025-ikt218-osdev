@@ -64,6 +64,9 @@ void update_state(void) {
                             case LOAD_MUSIC_PLAYER:
                                 change_state(MUSIC_PLAYER);
                                 break;
+                            case CLEAR_SCREEN:
+                                clearTerminal();
+                                break;
                             default:
                                 break;
                         }
@@ -99,9 +102,9 @@ void update_state(void) {
         previous_state = current_state;
         char* command = get_shell_command_string();
         if (command != NULL) {
-            if (strcmp(command, "info") == 0) {
+            if (strcmp(command, info_stub) == 0) {
                 print_about_screen();
-            } else if (strcmp(command, "command-ls") == 0) {
+            } else if (strcmp(command, help_stub) == 0) {
                 print_command_help();
             }
         }

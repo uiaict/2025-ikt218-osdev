@@ -12,11 +12,12 @@
 #define LAST_ROW 24
 #define VGA_ADDRESS 0xB8000
 
-static const char* launch_stub = "shc-launch";
-static const char* info_stub = "info";
-static const char* command_ls_stub = "command-ls";
+const char* launch_stub = "shc-launch";
+const char* info_stub = "info";
+const char* help_stub = "help";
+const char* clear_stub = "clear";
 
-static const char* music_player_stub = "music-player";
+static const char* music_player_stub = "music";
 
 const char* shell_command_not_found = "Command not found.\n";
 
@@ -81,15 +82,17 @@ ShellCommand_t get_shell_command() {
     }
     
     if (command_buffer[i] != ' ') {
-        printf("No space after ssw-launch\n");
+        printf("No space after shc-launch\n");
         return NO_COMMAND;
     }
     
     i++;
 
 
-    if ((strcmp(command_buffer + i, info_stub) == 0) || (strcmp(command_buffer + i, command_ls_stub) == 0)) {
+    if ((strcmp(command_buffer + i, info_stub) == 0) || (strcmp(command_buffer + i, help_stub) == 0)) {
         return LOAD_STATIC_SCREEN;
+    } else if(strcmp(command_buffer + i, clear_stub) == 0) {
+        return CLEAR_SCREEN;
     } else if (strcmp(command_buffer + i, music_player_stub) == 0) {
         printf("Loading music player...\n");
         return LOAD_MUSIC_PLAYER;
