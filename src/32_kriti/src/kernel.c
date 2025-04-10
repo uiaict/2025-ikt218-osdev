@@ -100,25 +100,6 @@ int main(unsigned long magic, struct multiboot_info* mb_info_addr) {
     kprint_dec(get_tick_count());
     kprint("\n");
 
-    // Test sleep_interrupt for 1000ms.
-    kprint("Testing sleep_interrupt for 1000ms...\n");
-    sleep_interrupt(1000);
-    kprint("Tick count after 1s interrupt sleep: ");
-    kprint_dec(get_tick_count());
-    kprint("\n");
-
-    // Test sleep_busy for 500ms.
-    kprint("Testing sleep_busy for 500ms...\n");
-    sleep_busy(500);
-    kprint("Tick count after 0.5s busy sleep: ");
-    kprint_dec(get_tick_count());
-    kprint("\n");
-
-    kprint("\n--- Pausing for 10 seconds to observe output ---\n");
-    sleep_interrupt(10000);
-
-    kprint("\nContinuing kernel initialization...\n");
-
     // Initialize keyboard input.
     kprint("Initializing keyboard...\n");
     keyboard_init();
@@ -174,30 +155,4 @@ int main(unsigned long magic, struct multiboot_info* mb_info_addr) {
     return 0;
 }
 
-#ifdef __cplusplus
-int cpp_kernel_main() {
-    kprint("Entering C++ kernel function\n");
-    kprint("Testing C++ memory allocation...\n");
-    int* test_array = new int[100];
-    kprint("C++ allocation at: 0x");
-    kprint_hex((unsigned long)test_array);
-    kprint("\n");
 
-    int sum = 0;
-    for (int i = 0; i < 100; i++) {
-        test_array[i] = i;
-    }
-    for (int i = 0; i < 100; i++) {
-        sum += test_array[i];
-    }
-    
-    kprint("Sum of array elements: ");
-    kprint_dec(sum);
-    kprint("\n");
-
-    delete[] test_array;
-    kprint("C++ memory test complete\n");
-
-    return 0;
-}
-#endif
