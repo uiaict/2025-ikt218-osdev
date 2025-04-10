@@ -1,11 +1,13 @@
 #include "state/state.h"
+#include "state/shell_command.h"
+#include "draw/art.h"
 #include "music_player/song_library.h"
 #include "music_player/song_player.h"
-#include "state/shell_command.h"
 #include "interrupts/keyboard/keyboard.h"
+#include "interrupts/pit.h"
 #include "main_menu/main_menu.h"
 #include "screens/screens.h"
-#include "interrupts/pit.h"
+#include "memory/heap.h"
 
 #include "terminal/print.h"
 #include "terminal/cursor.h"
@@ -17,6 +19,7 @@ static volatile SystemState current_state = NOT_USED;
 static volatile SystemState previous_state = NOT_USED;
 
 static bool playing = false;
+static Drawing* current_drawing = NULL;
 
 static bool same_state_check(void) {
     return current_state == previous_state;
@@ -69,8 +72,14 @@ void update_state(void) {
                             case LOAD_MUSIC_PLAYER:
                                 change_state(MUSIC_PLAYER);
                                 break;
+                            case LOAD_ART:
+                                change_state(ART);
+                                break;    
                             case CLEAR_SCREEN:
                                 clearTerminal();
+                                break;
+                            case HEAP_PRINT:
+                                print_heap();
                                 break;
                             default:
                                 break;
@@ -207,11 +216,159 @@ void update_state(void) {
         if (!songLibraryInitialized) {
             init_song_library();
             songLibraryInitialized = true;
-        }
-                
+        }       
         break;
     }
-    
+    case ART: {
+        if (same_state_check()) {
+            if (keyboard_has_char()) {
+                char c = keyboard_get_char();
+                if (c != '\x1B') {
+                    printf("%c", c);
+                    if (c == '\r') {
+                        Art_Command_t cmd = get_art_command();
+                        switch (cmd) {
+                            case LOAD_ART_HELP:
+                                change_state(ART_HELP);
+                                break;
+                            case ART_EXIT:
+                                change_state(SHELL);
+                                printf("Exiting art software...\n");
+                                sleep_busy(750);
+                                break;
+                            case CLEAR_SCREEN_ART:
+                                clearTerminal();
+                                break;
+                            case NEW_DRAWING: {
+                                ArtManager *manager = create_art_manager();
+                                if (manager != NULL) {
+                                    if (manager->space_available()) {
+                                        char* command = get_art_command_string(NEW_DRAWING);
+                                        if (command == NULL) {
+                                            printf("Name not found.\n");
+                                            break;
+                                        }
+                                        if (strlen(command) == 0) {
+                                            printf("Name cannot be empty.\n");
+                                            break;
+                                        }
+                                        manager->create_drawing(command);
+                                        printf("Drawing with name %s created.\n", command);
+                                        destroy_art_manager(manager);
+                                        break;
+                                    } else {
+                                        printf("No space available for new drawing.\n");
+                                    }
+                                }
+                            }
+                                break;
+                            case LOAD_DRAWING: {
+                                ArtManager *manager = create_art_manager();
+                                if (manager != NULL) {
+                                    if (manager->drawings_exist()) {
+                                        char* command = get_art_command_string(LOAD_DRAWING);
+                                        if (command == NULL) {
+                                            printf("Name not found.\n");
+                                            break;
+                                        }
+                                        if (strlen(command) == 0) {
+                                            printf("Name cannot be empty.\n");
+                                            break;
+                                        }
+                                        current_drawing = manager->fetch_drawing(command);
+                                        if (current_drawing != NULL) {
+                                            change_state(ART_DRAWING);
+                                        } else {
+                                            printf("Drawing with name %s not found.\n", command);
+                                        }
+                                
+                                        destroy_art_manager(manager);
+                                        break;
+                                    } else {
+                                        printf("No drawings exist.\n");
+                                    }
+                                }
+                            }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                } else {
+                    if (keyboard_has_char()) {
+                        char d = keyboard_get_char();
+                        if (d == 'D') {
+                            move_cursor_left();
+                        } else if (d == 'C') {
+                            move_cursor_right();
+                        }
+                    }
+                }
+            }
+            break;
+        }
+        previous_state = current_state;
+        break;
+    }
+
+    case ART_DRAWING: {
+        if (same_state_check()) {
+            if (keyboard_has_char()) {
+                char c = keyboard_get_char();
+                if (c != '\x1B') {
+                    if (c != '\r' && c != '\n' && c != '\t')
+                        printf("%c", c);
+                } else {
+                    if (keyboard_has_char()) {
+                        char d = keyboard_get_char();
+                        if (d == 'D') {
+                            move_cursor_left();
+                        } else if (d == 'C') {
+                            move_cursor_right();
+                        }
+                    }
+                    else {
+                        ArtManager *manager = create_art_manager();
+                        if (manager != NULL) {
+                            manager->save_drawing(current_drawing);
+                            clearTerminal();
+                            printf("Drawing with name %s saved.\n", current_drawing->name);
+                            change_state(ART);
+                            destroy_art_manager(manager);
+                            current_drawing = NULL;
+                            break;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+
+        previous_state = current_state;
+        clearTerminal();
+        ArtManager *manager = create_art_manager();
+        if (manager != NULL) {
+            manager->print_board(current_drawing);
+            destroy_art_manager(manager);
+        }
+        break;
+    }
+
+    case ART_HELP: {
+        if (same_state_check()) {
+            if (keyboard_has_char()) {
+                char c = keyboard_get_char();
+                if (c == '\x1B' && keyboard_has_char() == false)  {
+                    clearTerminal();
+                    change_state(ART);
+                }
+            }
+            break;
+        }
+        previous_state = current_state;
+        print_art_help();
+        break;
+    }
     default:
         __asm__ volatile ("hlt");
         break;

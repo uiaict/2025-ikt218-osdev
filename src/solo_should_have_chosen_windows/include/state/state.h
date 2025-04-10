@@ -7,7 +7,9 @@ typedef enum {
     MUSIC_PLAYER,
     MUSIC_PLAYER_HELP,
     SONG_PLAYING,
-    ASCII_ART_BOARD_MENU,
+    ART,
+    ART_HELP,
+    ART_DRAWING,
     WHOLE_KEYBOARD,
     NOT_USED
 } SystemState;

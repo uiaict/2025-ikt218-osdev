@@ -4,20 +4,20 @@
 #include "libc/stdint.h"
 #include "libc/string.h"
 
-static const char *title = "SHOULD HAVE WINDOWS COMMANDS";
+static const char *title = "ASCII ART HELP";
 static const char *esc_message = "Press ESC to return to the main menu";
 static const char *lines[] = {
-    "Shell commands being with shc-launch: shc-launch <command>:\n",
-    "\tinfo\t: Displays information about the OS.",
+    "Commands for ascii art mode start with shc-art <command>:\n",
     "\thelp\t: Displays command list.",
     "\tclear\t: Clears terminal.",
-    "\tmusic\t: Launches the music player.",
-    "\tart\t: Launches the art software.",
-    "\theap\t: Prints current heap status.",
+    "\tnew <name>\t: Creates new drawing with name <name>.",
+    "\tload <name>\t: Loads drawing with name <name>.",
+    "\texit\t: Exits ascii art mode.\n\n",
+    "When art is loaded, you can draw with all keys.\nSaving is automatic. Press ESC to save and exit.\n",
     ""
 };
 
-void print_command_help(void) {
+void print_art_help(void) {
     clearTerminal();
 
     const int width = 50;
