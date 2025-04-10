@@ -4,7 +4,7 @@
 
 void init_keyboard(){
     
-    register_interrupt_handler(IRQ1, keyboard_handler);
+    register_interrupt_handler(IRQ1, &keyboard_handler);
     return;
 }
 void keyboard_handler(struct registers reg){

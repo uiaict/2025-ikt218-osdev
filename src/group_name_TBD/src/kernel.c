@@ -6,6 +6,7 @@
 #include <multiboot2.h>
 #include "descriptor_tables.h"
 #include "keyboard.h"
+#include "timer.h"
 
 
 
@@ -21,6 +22,7 @@ int main(uint32_t my_struct, uint32_t magic, struct multiboot_info *mb_info_addr
     init_gdt();
     init_idt();
     init_keyboard();
+    init_pit(50); // 50Hz
 
     typedef struct{
         uint8_t a;
@@ -47,19 +49,14 @@ int main(uint32_t my_struct, uint32_t magic, struct multiboot_info *mb_info_addr
     // asm volatile ("int $0x21"); 
 
 
-// for (size_t i = 0; i < 300; i++)
-// {
-//     printf(&i);
-// }
 
-    while (true)
+
+    while (true);
     {
         /* code */
     }
     
-//TODO: scroll, arrow navigation, verify if x or y negative
     
-    
+//TODO: scroll, verify if x or y negative
     return 0;
-
 }

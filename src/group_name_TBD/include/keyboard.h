@@ -1,3 +1,6 @@
+#ifndef KEYBOARD_H
+#define KEYBOARD_H
+
 #include "libc/stdint.h"
 #include "isr.h"
 #include "libc/stdbool.h"
@@ -12,6 +15,7 @@
 
 // relevant CP437 extended ASCII
 // OS uses CP437, but something else (compiler?) uses othert encodeing for extended ASCII
+// https://www.ascii-codes.com/
 #define å 134
 #define Å 143
 #define æ 145
@@ -22,7 +26,7 @@
 #define EUR 156 
 #define ´ 0     // might implement ó
 #define € 155   // Cent, ¢
-#define ¨ 0     // Might implement ö and ô
+#define ¨ 0     // Might implement ö and ô, porbably not
 #define ORB 0   //¤
 #define PGRPH 0 // §
 
@@ -91,3 +95,6 @@ static const uint8_t ASCII_altgr[] = {
 
 void init_keyboard();
 void keyboard_handler(struct registers);
+
+
+#endif // KEYBOARD_H

@@ -1,3 +1,6 @@
+#ifndef ISR_H
+#define ISR_H
+
 #include "libc/stdint.h"
 
 #define M_PIC 0x20  // IO base address for master PIC
@@ -41,3 +44,5 @@ struct registers{
 void register_interrupt_handler(uint8_t, void (*)(struct registers)); 
 void isr_handler(struct registers);
 void irq_handler(struct registers);
+
+#endif // ISR_H

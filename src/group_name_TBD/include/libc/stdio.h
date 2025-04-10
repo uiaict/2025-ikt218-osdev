@@ -23,6 +23,7 @@ enum vga_color {
 };
 
 int putchar(const int);
+void putint(const uint32_t);
 void print(const unsigned char*);
 void set_vga_color(enum vga_color, enum vga_color);
 

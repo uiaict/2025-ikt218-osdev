@@ -2,6 +2,7 @@
 #include "stdint.h"
 #include "stdbool.h"
 #include "string.h"
+#include "stdlib.h"
 
 
 size_t terminal_width = 80; // Not const as to allow possible resize in the future
@@ -44,6 +45,13 @@ int putchar(const int c){
     verify_cursor_pos();
     
     return true;
+}
+
+void putint(const uint32_t num){
+    
+    unsigned char *string;
+    itoa(num, string);
+    print(string);
 }
 
 

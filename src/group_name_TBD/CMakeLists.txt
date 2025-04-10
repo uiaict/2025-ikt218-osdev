@@ -62,12 +62,14 @@ add_executable(uiaos-kernel
     src/kernel.c
 	include/libc/string.c
 	include/libc/stdio.c
+    include/libc/stdlib.c
     src/descriptor_tables.asm
     src/interrupt.asm
     src/descriptor_tables.c
     src/isr.c
     src/io.c
     src/keyboard.c
+    src/timer.c
 )
 
 # Include directories for the kernel target

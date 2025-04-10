@@ -1,3 +1,6 @@
+#ifndef DESCRIPTOR_TABLES_H
+#define DESCRIPTOR_TABLES_H
+
 #include "libc/stdint.h"
 
 #define GDT_ENTRIES 5
@@ -97,3 +100,5 @@ extern void irq12();
 extern void irq13();
 extern void irq14();
 extern void irq15(); //isr47
+
+#endif // DESCRIPTOR_TABLES_H
