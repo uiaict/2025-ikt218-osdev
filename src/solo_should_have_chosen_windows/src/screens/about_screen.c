@@ -13,7 +13,7 @@ static const char *lines[] = {
     "",
     "Features include:",
     "- Custom interrupt handlers",
-    "- Multistate UI with menu & music player",
+    "- Multistate UI with terminal & music player",
     "- Keyboard input with Norwegian QWERTY support",
     "- Simple shell with command execution",
     "- Basic memory management",

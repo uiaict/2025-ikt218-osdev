@@ -157,7 +157,7 @@ void update_state(void) {
                                         int song_index = get_song_index(command);
                         
                                         if (song_index == -1) {
-                                            printf("Invalid song code\n");
+                                            printf("Song with code %s not found.\n", command);
                                             playing = false;
                                             break;
                                         }
@@ -170,12 +170,13 @@ void update_state(void) {
                                 char* command = get_music_command_string(SHOW_INFO);
                                 int song_index = get_song_index(command);
                                 if (song_index == -1) {
-                                    printf("Invalid song code\n");
+                                    printf("Song with code %s not found.\n", command);
                                     break;
                                 }
                                 printf("Song: %s\n", songList[song_index].title);
                                 printf("Artist: %s\n", songList[song_index].artist);
                                 printf("Information: %s\n", songList[song_index].information);
+                                printf("\n");
                                 break;
                             case EXIT:
                                 change_state(SHELL);
@@ -183,7 +184,7 @@ void update_state(void) {
                                     destroy_song_library();
                                 }
                                 printf("Exiting music player...\n");
-                                sleep_busy(1500);
+                                sleep_busy(1000);
                                 break;
                             default:
                                 break;
@@ -210,37 +211,7 @@ void update_state(void) {
                 
         break;
     }
-    case SONG_PLAYING: {
-        if (same_state_check()) {
-            if (keyboard_has_char()) {
-                char c = keyboard_get_char();    
-            }
-
-            if (playing && !(keyboard_has_char())) {
-                playing = false;
-                change_state(MUSIC_PLAYER);
-                break;
-            }
-
-            if (!playing && !(keyboard_has_char())) {
-                playing = true;
-                char* command = get_music_command_string(PLAY_SONG);
-                int song_index = get_song_index(command);
-
-                if (song_index == -1) {
-                    printf("Invalid song code\n");
-                    playing = false;
-                    change_state(MUSIC_PLAYER);
-                    break;
-                }
-
-                playSong(songList[song_index]);
-            }
-            break;
-        }
-        previous_state = current_state;
-        break;
-    }
+    
     default:
         __asm__ volatile ("hlt");
         break;
