@@ -14,3 +14,4 @@ extern bool songLibraryInitialized;
 void init_song_library();
 void destroy_song_library();
 void list_songs();
+int get_song_index(char* song_code);

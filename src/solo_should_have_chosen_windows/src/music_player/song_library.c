@@ -5,6 +5,7 @@
 #include "memory/heap.h"
 #include "terminal/print.h"
 #include "libc/stddef.h"
+#include "libc/string.h"
 
 static Note fur_elise_notes[] = {
     // First phrase
@@ -144,4 +145,13 @@ void list_songs() {
         printf("%s - %s by %s\n", songList[i].code, songList[i].title, songList[i].artist);
     }
     printf("\n");
+}
+
+int get_song_index(char* song_code) {
+    for (size_t i = 0; i < numOfSongs; i++) {
+        if (strcmp(songList[i].code, song_code) == 0) {
+            return (int)i;
+        }
+    }
+    return -1;
 }

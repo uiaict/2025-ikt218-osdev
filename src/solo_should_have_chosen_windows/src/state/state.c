@@ -1,5 +1,6 @@
 #include "state/state.h"
 #include "music_player/song_library.h"
+#include "music_player/song_player.h"
 #include "state/shell_command.h"
 #include "interrupts/keyboard/keyboard.h"
 #include "main_menu/main_menu.h"
@@ -14,6 +15,8 @@
 
 static volatile SystemState current_state = NOT_USED;
 static volatile SystemState previous_state = NOT_USED;
+
+static bool playing = false;
 
 static bool same_state_check(void) {
     return current_state == previous_state;
@@ -147,6 +150,33 @@ void update_state(void) {
                             case CLEAR_SCREEN_MUSIC:
                                 clearTerminal();
                                 break;
+                            case PLAY_SONG: {                                                          
+                                    if (!playing) {
+                                        playing = true;
+                                        char* command = get_music_command_string(PLAY_SONG);
+                                        int song_index = get_song_index(command);
+                        
+                                        if (song_index == -1) {
+                                            printf("Invalid song code\n");
+                                            playing = false;
+                                            break;
+                                        }
+                                        playSong(songList[song_index]);
+                                        playing = false;
+                                    }
+                                }
+                                break;
+                            case SHOW_INFO:
+                                char* command = get_music_command_string(SHOW_INFO);
+                                int song_index = get_song_index(command);
+                                if (song_index == -1) {
+                                    printf("Invalid song code\n");
+                                    break;
+                                }
+                                printf("Song: %s\n", songList[song_index].title);
+                                printf("Artist: %s\n", songList[song_index].artist);
+                                printf("Information: %s\n", songList[song_index].information);
+                                break;
                             case EXIT:
                                 change_state(SHELL);
                                 if (songList != NULL) {
@@ -173,12 +203,42 @@ void update_state(void) {
             break;
         }
         previous_state = current_state;
-        printf("Loading music player...\n");
         if (!songLibraryInitialized) {
             init_song_library();
             songLibraryInitialized = true;
         }
                 
+        break;
+    }
+    case SONG_PLAYING: {
+        if (same_state_check()) {
+            if (keyboard_has_char()) {
+                char c = keyboard_get_char();    
+            }
+
+            if (playing && !(keyboard_has_char())) {
+                playing = false;
+                change_state(MUSIC_PLAYER);
+                break;
+            }
+
+            if (!playing && !(keyboard_has_char())) {
+                playing = true;
+                char* command = get_music_command_string(PLAY_SONG);
+                int song_index = get_song_index(command);
+
+                if (song_index == -1) {
+                    printf("Invalid song code\n");
+                    playing = false;
+                    change_state(MUSIC_PLAYER);
+                    break;
+                }
+
+                playSong(songList[song_index]);
+            }
+            break;
+        }
+        previous_state = current_state;
         break;
     }
     default:

@@ -13,7 +13,6 @@ typedef enum {
     EXIT,
     CLEAR_SCREEN_MUSIC,
     PLAY_SONG,
-    PLAY_ALL_SONGS,
     LIST_SONGS,
     SHOW_INFO
 } Music_Command_t;
@@ -37,4 +36,4 @@ ShellCommand_t get_shell_command();
 char* get_shell_command_string();
 
 Music_Command_t get_music_command();
-char* get_music_command_string();
+char* get_music_command_string(Music_Command_t cmd);

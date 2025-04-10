@@ -159,16 +159,36 @@ Music_Command_t get_music_command() {
     if (strcmp(command_buffer + i, music_command_exit) == 0)
         return EXIT;
 
+    // Check for play or info
+    if(strncmp(command_buffer + i, music_command_play, strlen(music_command_play)) == 0) {
+        return PLAY_SONG;
+    }
+
+    if(strncmp(command_buffer + i, music_command_info, strlen(music_command_info)) == 0) {
+        return SHOW_INFO;
+    }
+
     printf("No valid command given\n");
     return NO_MUSIC_COMMAND;
-        /*
-    } else if(strcmp(command_buffer + i, clear_stub) == 0) {
-        return CLEAR_SCREEN;
-    } else if (strcmp(command_buffer + i, music_player_stub) == 0) {
-        printf("Loading music player...\n");
-        return LOAD_MUSIC_PLAYER;
-    } else {
-        printf("No valid command given\n");
-        return NO_COMMAND;
-    } */
+       
 }   
+
+char* get_music_command_string(Music_Command_t cmd) {
+    switch (cmd) {
+        case PLAY_SONG: {
+            int i = (int) (strlen(music_command_stub) + strlen(music_command_play) + 2);
+            return command_buffer + i;
+            break;
+        }
+            
+        case SHOW_INFO: {
+            int i = (int) (strlen(music_command_stub) + strlen(music_command_info) + 2);
+            return command_buffer + i;
+            break;
+        }
+            
+        default:
+            break;
+    }
+    return NULL;
+}
