@@ -148,10 +148,12 @@ Music_Command_t get_music_command() {
     
     i++;
 
-    return NO_MUSIC_COMMAND;
+    if (strcmp(command_buffer + i, help_stub) == 0)
+        return LOAD_MUSIC_PLAYER_HELP;
 
-    /* if (strcmp(command_buffer + i, help_stub) == 0) {
-        return LOAD_STATIC_SCREEN;
+    if (strcmp(command_buffer + i, music_command_list) == 0)
+        return LIST_SONGS;
+        /*
     } else if(strcmp(command_buffer + i, clear_stub) == 0) {
         return CLEAR_SCREEN;
     } else if (strcmp(command_buffer + i, music_player_stub) == 0) {
@@ -161,4 +163,5 @@ Music_Command_t get_music_command() {
         printf("No valid command given\n");
         return NO_COMMAND;
     } */
-}
+    return NO_MUSIC_COMMAND;
+}   

@@ -85,6 +85,7 @@ add_executable(uiaos-kernel
 	src/main_menu/main_menu.c
 	src/screens/about_screen.c
 	src/screens/command_help.c
+	src/screens/music_player_help.c
 )
 
 # Include directories for the kernel target

@@ -1,4 +1,5 @@
 #include "state/state.h"
+#include "music_player/song_library.h"
 #include "state/shell_command.h"
 #include "interrupts/keyboard/keyboard.h"
 #include "main_menu/main_menu.h"
@@ -110,8 +111,24 @@ void update_state(void) {
         }
         break;
     }
+
+    case MUSIC_PLAYER_HELP: {
+        if (same_state_check()) {
+            if (keyboard_has_char()) {
+                char c = keyboard_get_char();
+                if (c == '\x1B' && keyboard_has_char() == false)  {
+                    clearTerminal();
+                    change_state(MUSIC_PLAYER);
+                }
+            }
+            break;
+        }
+        previous_state = current_state;
+        print_music_player_help();
+        break;
+    }
     
-    /* case MUSIC_PLAYER: {
+    case MUSIC_PLAYER: {
         if (same_state_check()) {
             if (keyboard_has_char()) {
                 char c = keyboard_get_char();
@@ -120,7 +137,11 @@ void update_state(void) {
                     if (c == '\r') {
                         Music_Command_t cmd = get_music_command();
                         switch (cmd) {
-                            
+                            case LOAD_MUSIC_PLAYER_HELP:
+                                change_state(MUSIC_PLAYER_HELP);
+                                break;
+                            case LIST_SONGS:
+                                break;
                             default:
                                 break;
                         }
@@ -140,7 +161,7 @@ void update_state(void) {
         }
         previous_state = current_state;        
         break;
-    } */
+    }
     default:
         __asm__ volatile ("hlt");
         break;

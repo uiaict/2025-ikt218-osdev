@@ -9,6 +9,7 @@ typedef enum {
 
 typedef enum {
     NO_MUSIC_COMMAND,
+    LOAD_MUSIC_PLAYER_HELP,
     EXIT,
     PLAY_SONG,
     PLAY_ALL_SONGS,
