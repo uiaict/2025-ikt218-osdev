@@ -75,7 +75,13 @@ add_executable(uiaos-kernel
 
 	src/terminal.c
 	src/io.c
+
+	src/memory.c
+	src/pit.c
+
+	src/stdio.c
 	
+
 
 )
 

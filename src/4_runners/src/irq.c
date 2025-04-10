@@ -7,7 +7,10 @@
 #define PIC1_COMMAND 0x20
 
 // External IRQ stubs from irq_stubs.asm
-extern void irq1_stub(void);
+extern void irq0_stub(void); // for PIT
+extern void irq1_stub(void); // keyboard
+extern void pit_handler(void); // add this
+
 
 void terminal_write(const char* str);
 void terminal_put_char(char c);
@@ -118,5 +121,6 @@ void pic_remap() {
 
 void irq_init(void) {
     pic_remap();
-    set_idt_entry(33, (uint32_t)irq1_stub, 0x08, 0x8E);
+    set_idt_entry(32, (uint32_t)irq0_stub, 0x08, 0x8E); // IRQ0 = PIT
+    set_idt_entry(33, (uint32_t)irq1_stub, 0x08, 0x8E); // IRQ1 = Keyboard
 }

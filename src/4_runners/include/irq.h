@@ -3,6 +3,8 @@
 void irq_init(void);
 void irq_handler(int irq);
 char keyboard_getchar(void);
+void irq0_stub(void);
+void pit_handler(void); // this is the C-level handler in pit.c
 
 
 // Declare all IRQ stubs
