@@ -1,40 +1,95 @@
 #include "musicplayer.h"
-#include "memory.h"    // For custom malloc/free.
-#include "kprint.h"    // For kprint, kprint_dec, and kprint_hex.
-#include "pit.h"       // For sleep_interrupt.
+#include "memory.h"
+#include "kprint.h"
+#include "pit.h"
 #include "isr.h"
 
-// Define the I/O ports for the PIT and PC speaker.
-#define PIT_COMMAND_PORT 0x43
-#define PIT_CHANNEL2_PORT 0x42
-#define SPEAKER_PORT     0x61
+// Speaker port
+#define SPEAKER_PORT 0x61
 
-// Turn on the tone for a given frequency.
-static void tone_on(uint32_t frequency) {
-    // The PIT runs at 1,193,180 Hz.
+// Play a direct beep sound (bypassing PIT for testing)
+void play_direct_beep(uint32_t duration_ms) {
+    // Direct method to generate a beep
+    uint8_t tmp = inb(SPEAKER_PORT);
+    
+    // Turn speaker on (alternate between on and off quickly)
+    for (uint32_t i = 0; i < duration_ms; i++) {
+        // Turn on
+        outb(SPEAKER_PORT, tmp | 3);
+        
+        // Short delay
+        for (volatile uint32_t j = 0; j < 10000; j++);
+        
+        // Turn off
+        outb(SPEAKER_PORT, tmp & 0xFC);
+        
+        // Short delay
+        for (volatile uint32_t j = 0; j < 10000; j++);
+    }
+}
+
+// Play sound at specified frequency
+void play_sound(uint32_t frequency) {
+    if (frequency == 0) return;
+    
+    // The PIT runs at 1,193,180 Hz
     uint32_t divisor = 1193180 / frequency;
-
-    // Configure PIT channel 2 in square wave mode.
-    outb(PIT_COMMAND_PORT, 0xB6);
-    outb(PIT_CHANNEL2_PORT, divisor & 0xFF);          // low byte
-    outb(PIT_CHANNEL2_PORT, (divisor >> 8) & 0xFF);     // high byte
-
-    // Enable the speaker by setting bits 0 and 1.
-    uint8_t tmp = inb(SPEAKER_PORT);
-    outb(SPEAKER_PORT, tmp | 3);
+    
+    // Save interrupt flag and disable interrupts
+    uint32_t eflags;
+    __asm__ volatile ("pushfl; popl %0; cli" : "=r" (eflags));
+    
+    // Configure PIT channel 2
+    outb(PIT_CMD_PORT, 0xB6);
+    outb(PIT_CHANNEL2_PORT, divisor & 0xFF);
+    outb(PIT_CHANNEL2_PORT, (divisor >> 8) & 0xFF);
+    
+    // Read current value of speaker port
+    uint8_t tmp = inb(PC_SPEAKER_PORT);
+    
+    // Enable speaker
+    outb(PC_SPEAKER_PORT, tmp | 3);
+    
+    // Restore interrupt flag
+    if (eflags & 0x200) __asm__ volatile ("sti");
+    
+    kprint("Speaker enabled with frequency ");
+    kprint_dec(frequency);
+    kprint(" Hz\n");
 }
 
-// Turn off the tone.
-static void tone_off(void) {
-    uint8_t tmp = inb(SPEAKER_PORT);
-    outb(SPEAKER_PORT, tmp & ~3);
+// Stop the sound
+void stop_sound(void) {
+    // Save interrupt flag and disable interrupts
+    uint32_t eflags;
+    __asm__ volatile ("pushfl; popl %0; cli" : "=r" (eflags));
+    
+    // Read current value of speaker port
+    uint8_t tmp = inb(PC_SPEAKER_PORT);
+    
+    // Disable speaker
+    outb(PC_SPEAKER_PORT, tmp & 0xFC);
+    
+    // Restore interrupt flag
+    if (eflags & 0x200) __asm__ volatile ("sti");
+    
+    kprint("Speaker disabled\n");
 }
 
-// play_song_impl iterates over the song's notes. For each note,
-// it outputs note information via kprint and then plays an audible tone.
+// Modified implementation to try different approaches
 void play_song_impl(Song* song) {
+    if (!song || !song->notes || song->note_count == 0) {
+        kprint("Invalid song or empty song\n");
+        return;
+    }
+    
+    // Try a direct beep first to see if speaker works at all
+    kprint("Testing direct beep...\n");
+    play_direct_beep(500);
+    sleep_interrupt(500);
+    
+    // Now play the actual song
     for (size_t i = 0; i < song->note_count; i++) {
-        // Print information about the note.
         kprint("Playing note ");
         kprint_dec(i);
         kprint(" - Frequency: ");
@@ -42,25 +97,26 @@ void play_song_impl(Song* song) {
         kprint(" Hz, Duration: ");
         kprint_dec(song->notes[i].duration);
         kprint(" ms\n");
-
-        // If frequency > 0, play the note.
+        
         if (song->notes[i].freq > 0) {
-            tone_on(song->notes[i].freq);
+            // Try with much higher frequencies for testing
+            uint32_t test_freq = song->notes[i].freq * 4;
+            kprint("Using test frequency: ");
+            kprint_dec(test_freq);
+            kprint(" Hz\n");
+            
+            play_sound(test_freq);
+            sleep_interrupt(song->notes[i].duration);
+            stop_sound();
+        } else {
+            sleep_interrupt(song->notes[i].duration);
         }
-
-        // Wait for the duration of the note.
-        sleep_interrupt(song->notes[i].duration);
-
-        // Turn off the tone.
-        tone_off();
-
-        // Optional: add a brief pause between notes.
-        sleep_interrupt(50);
+        
+        sleep_interrupt(10);
     }
 }
 
-// create_song_player uses the kernel's malloc to allocate a SongPlayer
-// and sets up its play_song function pointer.
+// Create a new SongPlayer
 SongPlayer* create_song_player(void) {
     SongPlayer* player = (SongPlayer*)malloc(sizeof(SongPlayer));
     if (player) {

@@ -7,12 +7,20 @@
 static interrupt_handler_t interrupt_handlers[256] = {0};
 
 // C function that gets called from the assembly stubs
+// C function that gets called from the assembly stubs
 void isr_handler(uint8_t interrupt_num) {
+    // Special handling for timer interrupt (IRQ0)
+    if (interrupt_num == 32) {
+        // Access the tick_count variable from pit.c
+        extern volatile uint32_t tick_count;
+        tick_count++;
+        
+        // Send EOI to the PIC
+        outb(0x20, 0x20);
+        return;
+    }
 
-    /*kprint("Received interrupt: 0x");
-    kprint_hex(interrupt_num);
-    kprint("\n");*/
-    // Call the registered handler if it exists
+    // Handle other interrupts as before
     if (interrupt_handlers[interrupt_num] != 0) {
         interrupt_handlers[interrupt_num](interrupt_num);
     } else {

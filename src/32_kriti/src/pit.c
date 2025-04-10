@@ -43,6 +43,8 @@ void init_pit() {
     
     // Register the PIT handler to IRQ0 (interrupt 32)
     register_interrupt_handler(32, pit_handler);
+    // In pit.c, after registering the handler
+
     
     // Make sure IRQ0 is enabled in the PIC
     uint8_t current_mask = inb(PIC1_DATA_PORT);
