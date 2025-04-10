@@ -2,13 +2,13 @@
 #include "state/shell_command.h"
 #include "interrupts/keyboard/keyboard.h"
 #include "main_menu/main_menu.h"
-#include "about_screen/about_screen.h"
+#include "screens/screens.h"
 
-#include "start_screen/start_screen.h"
 #include "terminal/print.h"
 #include "terminal/cursor.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
+#include "libc/string.h"
 
 static volatile SystemState current_state = NOT_USED;
 static volatile SystemState previous_state = NOT_USED;
@@ -58,8 +58,8 @@ void update_state(void) {
                     if (c == '\r') {
                         ShellCommand_t cmd = get_shell_command();
                         switch (cmd) {
-                            case LOAD_INFO:
-                                change_state(INFO_SCREEN);
+                            case LOAD_STATIC_SCREEN:
+                                change_state(STATIC_SCREEN);
                                 break;
                             case LOAD_MUSIC_PLAYER:
                                 change_state(MUSIC_PLAYER);
@@ -84,36 +84,27 @@ void update_state(void) {
 
         previous_state = current_state;
         clearTerminal();
-        print_shell_welcome_message();
         break;
     }
-    case MENU: {
+    case STATIC_SCREEN: {
         if (same_state_check()) {
             if (keyboard_has_char()) {
                 char c = keyboard_get_char();
-                if (c == '1') {
-                    change_state(INFO_SCREEN);
-                }
-            }
-            break;
-        }
-        previous_state = current_state;
-        print_main_menu();
-        break;
-    }
-
-    case INFO_SCREEN: {
-        if (same_state_check()) {
-            if (keyboard_has_char()) {
-                char c = keyboard_get_char();
-                if (c == '\r') {
+                if (c == '\x1B' && keyboard_has_char() == false)  {
                     change_state(SHELL);
                 }
             }
             break;
         }
         previous_state = current_state;
-        print_about_screen();
+        char* command = get_shell_command_string();
+        if (command != NULL) {
+            if (strcmp(command, "info") == 0) {
+                print_about_screen();
+            } else if (strcmp(command, "command-ls") == 0) {
+                print_command_help();
+            }
+        }
         break;
     }
     

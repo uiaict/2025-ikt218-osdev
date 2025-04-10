@@ -4,7 +4,7 @@ typedef enum {
     START_SCREEN,
     MENU,
     SHELL,
-    INFO_SCREEN,
+    STATIC_SCREEN,
     MUSIC_PLAYER,
     SONG_PLAYING,
     ASCII_ART_BOARD_MENU,

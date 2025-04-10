@@ -12,13 +12,11 @@
 #define LAST_ROW 24
 #define VGA_ADDRESS 0xB8000
 
-static const char* launch_stub = "ssw-launch";
+static const char* launch_stub = "shc-launch";
 static const char* info_stub = "info";
+static const char* command_ls_stub = "command-ls";
+
 static const char* music_player_stub = "music-player";
-static const char* shell_wecome_message = "Welcome to the shell!\nCommands must start on a new line with ssw-launch follwed by the command name:\n"
-"info - Show information about the system\n"
-"music-player - Launch the music player\n"
-"Press Enter to execute the command.\n";
 
 const char* shell_command_not_found = "Command not found.\n";
 
@@ -71,7 +69,7 @@ ShellCommand_t get_shell_command() {
     first_word[i] = '\0';
 
     if (strcmp(first_word,launch_stub) != 0) {
-        printf("Command must begin with ssw-launch\n");
+        printf("Command must begin with shc-launch\n");
         free(first_word);
         return NO_COMMAND;
     }
@@ -83,15 +81,15 @@ ShellCommand_t get_shell_command() {
     }
     
     if (command_buffer[i] != ' ') {
-        printf("Not a space after ssw-launch\n");
+        printf("No space after ssw-launch\n");
         return NO_COMMAND;
     }
     
     i++;
 
-    if (strcmp(command_buffer + i, info_stub) == 0) {
-        printf("Loading system information...\n");
-        return LOAD_INFO;
+
+    if ((strcmp(command_buffer + i, info_stub) == 0) || (strcmp(command_buffer + i, command_ls_stub) == 0)) {
+        return LOAD_STATIC_SCREEN;
     } else if (strcmp(command_buffer + i, music_player_stub) == 0) {
         printf("Loading music player...\n");
         return LOAD_MUSIC_PLAYER;
@@ -101,13 +99,6 @@ ShellCommand_t get_shell_command() {
     }
 }
 
-void print_shell_welcome_message() {
-    printf("%s", shell_wecome_message);
-    for (int i = 0; i < SCREEN_WIDTH; i++) {
-        printf("-");
-    }
-    printf("\n");
-} 
 
 void print_shell_command_not_found() {
     printf("%s", shell_command_not_found);
@@ -115,4 +106,8 @@ void print_shell_command_not_found() {
         printf("-");
     }
     printf("\n");
+}
+
+char* get_shell_command_string() {
+    return command_buffer + (int) strlen(launch_stub) + 1;
 }

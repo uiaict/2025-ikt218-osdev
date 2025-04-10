@@ -1,3 +1,5 @@
+#include "screens/screens.h"
+
 #include "terminal/print.h"
 #include "terminal/cursor.h"
 

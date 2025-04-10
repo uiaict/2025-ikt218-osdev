@@ -1,11 +1,11 @@
-#include "about_screen/about_screen.h"
+#include "screens/screens.h"
 #include "terminal/print.h"
 #include "terminal/cursor.h"
 #include "libc/stdint.h"
 #include "libc/string.h"
 
 static const char *title = "About Should Have Windows";
-static const char *esc_message = "Press ENTER to return to the main menu";
+static const char *esc_message = "Press ESC to return to the main menu";
 static const char *lines[] = {
     "This OS was developed as part of a university",
     "project to understand low-level systems and",
@@ -15,6 +15,8 @@ static const char *lines[] = {
     "- Custom interrupt handlers",
     "- Multistate UI with menu & music player",
     "- Keyboard input with Norwegian QWERTY support",
+    "- Simple shell with command execution",
+    "- Basic memory management",
     ""
 };
 
