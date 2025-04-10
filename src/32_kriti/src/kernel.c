@@ -1,39 +1,61 @@
-//Kernel.c
+// kernel.c
 
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 #include <multiboot2.h>
 #include "kprint.h"
-#include "libc/stdint.h"
-#include "libc/stddef.h"
-#include "libc/stdbool.h"
-#include "multiboot2.h"
-#include "kprint.h"
 #include "gdt.h"
 #include "idt.h"
 #include "isr.h"
 #include "keyboard.h"
 #include "memory.h"
-#include "pit.h"  // Include the PIT header
+#include "pit.h"        // For PIT functions like init_pit, sleep_interrupt, sleep_busy, get_tick_count.
+#include "musicplayer.h"
 
-// This is defined in the linker script (linker.ld)
+// The linker script defines this symbol (end of kernel).
 extern unsigned long end;
 
-struct multiboot_info {
-    uint32_t size;
-    uint32_t reserved;
-    struct multiboot_tag *first;
+// Define a simple song for testing.
+Note music_1[] = {
+    {440, 500},   // A note at 440 Hz for 500 ms.
+    {494, 500},   // Slightly higher note.
+    {523, 500}    // And so on.
 };
 
-// Main kernel entry point
+// play_music creates a Song (with our test music_1) and uses the music player to play it.
+void play_music(void) {
+    Song songs[] = {
+        { music_1, sizeof(music_1) / sizeof(Note) }
+    };
+    uint32_t n_songs = sizeof(songs) / sizeof(Song);
+
+    SongPlayer* player = create_song_player();
+    if (!player) {
+        kprint("Failed to create SongPlayer.\n");
+        return;
+    }
+
+    // Continuously play each song.
+    while (1) {
+        for (uint32_t i = 0; i < n_songs; i++) {
+            kprint("Playing Song...\n");
+            player->play_song(&songs[i]);
+            kprint("Finished playing the song.\n");
+        }
+    }
+
+    // Unreachable free (included for correctness).
+    free(player);
+}
+
 int main(unsigned long magic, struct multiboot_info* mb_info_addr) {
-    // Write "Hello World" directly to video memory (VGA text mode)
+    // Write "Hello World" directly to video memory (VGA text mode).
     const char *str = "Hello World";
-    char *video_memory = (char*) 0xb8000;
+    char *video_memory = (char*)0xb8000;
     for (int i = 0; str[i] != '\0'; i++) {
         video_memory[i * 2]     = str[i];
-        video_memory[i * 2 + 1] = 0x07;  // White on black
+        video_memory[i * 2 + 1] = 0x07;  // White text on black background.
     }
 
     kprint("Loading GDT...\n");
@@ -50,80 +72,68 @@ int main(unsigned long magic, struct multiboot_info* mb_info_addr) {
 
     kprint("Initializing PIC...\n");
     pic_init();
-
     kprint("PIC initialized\n");
 
-    // Enable interrupts early to ensure PIT works
+    // Enable interrupts.
     kprint("Enabling interrupts...\n");
     __asm__ volatile ("sti");
     kprint("Interrupts enabled\n");
 
-    // Initialize the kernel's memory manager using the end address of the kernel
+    // Initialize kernel memory manager using the address from the linker.
     kprint("Initializing kernel memory manager...\n");
     init_kernel_memory(&end);
-    
-    // Initialize paging for memory management
+
+    // Initialize paging.
     kprint("Initializing paging...\n");
     init_paging();
-    
-    // Print memory information
+
+    // Print current memory layout.
     kprint("Printing memory layout...\n");
     print_memory_layout();
-    
-    // Initialize PIT
-     kprint("Initializing PIT...\n");
+
+    // Initialize the PIT.
+    kprint("Initializing PIT...\n");
     init_pit();
-    
-    // Check initial tick count
+
+    // Display the initial tick count.
     kprint("Initial tick count: ");
     kprint_dec(get_tick_count());
     kprint("\n");
 
-    // Test sleep_interrupt
+    // Test sleep_interrupt for 1000ms.
     kprint("Testing sleep_interrupt for 1000ms...\n");
-    sleep_interrupt(1000);  // Sleep for 1 second
-    
+    sleep_interrupt(1000);
     kprint("Tick count after 1s interrupt sleep: ");
     kprint_dec(get_tick_count());
     kprint("\n");
-    
-    // Test sleep_busy
+
+    // Test sleep_busy for 500ms.
     kprint("Testing sleep_busy for 500ms...\n");
-    sleep_busy(500);  // Sleep for 0.5 seconds
-    
+    sleep_busy(500);
     kprint("Tick count after 0.5s busy sleep: ");
     kprint_dec(get_tick_count());
     kprint("\n");
 
-        // Add a long delay here to observe all the messages
-    kprint("\n--- Pausing for 10 seconds to observe output, press any key to continue ---\n");
+    kprint("\n--- Pausing for 10 seconds to observe output ---\n");
+    sleep_interrupt(10000);
 
-    // Option 1: Use a much longer sleep_interrupt
-    sleep_interrupt(10000);  // 10 seconds
-
-    // Option 2: Wait for a key press before continuing
-    // This requires implementing a function to wait for a key
-    // wait_for_keypress();  // Uncomment if you have this function
-
-    // Continue with the rest of your initialization
     kprint("\nContinuing kernel initialization...\n");
 
-    // Initialize keyboard
+    // Initialize keyboard input.
     kprint("Initializing keyboard...\n");
     keyboard_init();
 
-    // Test interrupts
+    // Test software interrupts.
     kprint("Testing NMI interrupt (int 0x2)...\n");
     __asm__ volatile ("int $0x2");
-    
     kprint("Testing breakpoint interrupt (int 0x3)...\n");
     __asm__ volatile ("int $0x3");
 
-    // Test memory allocation
+    // Test memory allocation.
     kprint("\nTesting memory allocation...\n");
     void* some_memory = malloc(12345);
-    void* memory2 = malloc(54321);
-    void* memory3 = malloc(13331);
+    void* memory2    = malloc(54321);
+    void* memory3    = malloc(13331);
     
     kprint("Allocated memory at: 0x");
     kprint_hex((unsigned long)some_memory);
@@ -136,25 +146,27 @@ int main(unsigned long magic, struct multiboot_info* mb_info_addr) {
     kprint("Allocated memory at: 0x");
     kprint_hex((unsigned long)memory3);
     kprint("\n");
-    
-    // Print updated memory layout
+
+    // Print updated memory layout.
     kprint("\nUpdated memory layout after allocations:\n");
     print_memory_layout();
     
-    // Test memory freeing
+    // Free one allocation and show updated memory layout.
     kprint("\nFreeing memory...\n");
     free(memory2);
-    
     kprint("Memory layout after free:\n");
     print_memory_layout();
 
     kprint("\nSystem initialized successfully!\n");
     kprint("Press any key to see keyboard input...\n");
 
-    // Unmask keyboard interrupt (IRQ1)
-    outb(PIC1_DATA_PORT, inb(PIC1_DATA_PORT) & ~0x02);  // Enable IRQ1 (keyboard)
+    // Unmask keyboard IRQ (IRQ1); ensure outb/inb and PIC port constants are defined.
+    outb(PIC1_DATA_PORT, inb(PIC1_DATA_PORT) & ~0x02);
 
-    // Simple main loop without heartbeat
+    // Play the music.
+    play_music();
+
+    // Main idle loop.
     while (1) {
         __asm__ volatile ("hlt");
     }
@@ -163,25 +175,18 @@ int main(unsigned long magic, struct multiboot_info* mb_info_addr) {
 }
 
 #ifdef __cplusplus
-// Optional C++ kernel main function if needed
 int cpp_kernel_main() {
     kprint("Entering C++ kernel function\n");
-    
-    // Test C++ memory allocation with operator new
     kprint("Testing C++ memory allocation...\n");
     int* test_array = new int[100];
-    
     kprint("C++ allocation at: 0x");
     kprint_hex((unsigned long)test_array);
     kprint("\n");
-    
-    // Initialize array
+
+    int sum = 0;
     for (int i = 0; i < 100; i++) {
         test_array[i] = i;
     }
-    
-    // Use array
-    int sum = 0;
     for (int i = 0; i < 100; i++) {
         sum += test_array[i];
     }
@@ -189,12 +194,10 @@ int cpp_kernel_main() {
     kprint("Sum of array elements: ");
     kprint_dec(sum);
     kprint("\n");
-    
-    // Free memory
+
     delete[] test_array;
-    
     kprint("C++ memory test complete\n");
-    
+
     return 0;
 }
 #endif

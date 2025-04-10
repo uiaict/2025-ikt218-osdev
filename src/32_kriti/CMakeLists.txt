@@ -71,6 +71,7 @@ add_executable(uiaos-kernel
 	#src/irq.c
 	src/memory.c
 	src/pit.c
+	src/musicplayer.c
 	
 
 )
