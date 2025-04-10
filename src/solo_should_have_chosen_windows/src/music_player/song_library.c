@@ -134,6 +134,7 @@ void destroy_song_library() {
     if (songList != NULL) {
         free(songList);
         songList = NULL;
+        songLibraryInitialized = false;
     }
 }
 

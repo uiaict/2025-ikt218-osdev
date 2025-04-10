@@ -101,7 +101,6 @@ ShellCommand_t get_shell_command() {
     } else if(strcmp(command_buffer + i, clear_stub) == 0) {
         return CLEAR_SCREEN;
     } else if (strcmp(command_buffer + i, music_player_stub) == 0) {
-        printf("Loading music player...\n");
         return LOAD_MUSIC_PLAYER;
     } else {
         printf("No valid command given\n");
@@ -153,6 +152,9 @@ Music_Command_t get_music_command() {
 
     if (strcmp(command_buffer + i, music_command_list) == 0)
         return LIST_SONGS;
+    
+    if (strcmp(command_buffer + i, music_command_exit) == 0)
+        return EXIT;
         /*
     } else if(strcmp(command_buffer + i, clear_stub) == 0) {
         return CLEAR_SCREEN;

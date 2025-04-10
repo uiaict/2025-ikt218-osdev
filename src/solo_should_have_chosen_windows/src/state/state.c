@@ -4,6 +4,7 @@
 #include "interrupts/keyboard/keyboard.h"
 #include "main_menu/main_menu.h"
 #include "screens/screens.h"
+#include "interrupts/pit.h"
 
 #include "terminal/print.h"
 #include "terminal/cursor.h"
@@ -143,6 +144,14 @@ void update_state(void) {
                             case LIST_SONGS:
                                 list_songs();
                                 break;
+                            case EXIT:
+                                change_state(SHELL);
+                                if (songList != NULL) {
+                                    destroy_song_library();
+                                }
+                                printf("Exiting music player...\n");
+                                sleep_busy(1500);
+                                break;
                             default:
                                 break;
                         }
@@ -161,6 +170,7 @@ void update_state(void) {
             break;
         }
         previous_state = current_state;
+        printf("Loading music player...\n");
         if (!songLibraryInitialized) {
             init_song_library();
             songLibraryInitialized = true;
