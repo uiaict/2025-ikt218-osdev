@@ -20,5 +20,7 @@ static inline void move_cursor(uint16_t position) {
 void clearTerminal(void);
 void move_cursor_right(void);
 void move_cursor_left(void);
+void move_cursor_up(void);
+void move_cursor_down(void);
 
 #endif // CURSOR_H

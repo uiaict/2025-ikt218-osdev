@@ -87,11 +87,11 @@ void update_state(void) {
                     }
                 } else {
                     if (keyboard_has_char()) {
-                        char d = keyboard_get_char();
-                        if (d == 'D') {
-                            move_cursor_left();
-                        } else if (d == 'C') {
-                            move_cursor_right();
+                        char arrow = keyboard_get_char();
+                        switch (arrow) {
+                            case 'C': move_cursor_right(); break;
+                            case 'D': move_cursor_left(); break;
+                            default: break;
                         }
                     }
                 }
@@ -201,11 +201,10 @@ void update_state(void) {
                     }
                 } else {
                     if (keyboard_has_char()) {
-                        char d = keyboard_get_char();
-                        if (d == 'D') {
-                            move_cursor_left();
-                        } else if (d == 'C') {
-                            move_cursor_right();
+                        char arrow = keyboard_get_char();
+                        switch (arrow) {
+                            case 'C': move_cursor_right(); break;
+                            case 'D': move_cursor_left(); break;
                         }
                     }
                 }
@@ -332,11 +331,10 @@ void update_state(void) {
                     }
                 } else {
                     if (keyboard_has_char()) {
-                        char d = keyboard_get_char();
-                        if (d == 'D') {
-                            move_cursor_left();
-                        } else if (d == 'C') {
-                            move_cursor_right();
+                        char arrow = keyboard_get_char();
+                        switch (arrow) {
+                            case 'C': move_cursor_right(); break;
+                            case 'D': move_cursor_left(); break;
                         }
                     }
                 }
@@ -351,19 +349,20 @@ void update_state(void) {
         if (same_state_check()) {
             if (keyboard_has_char()) {
                 char c = keyboard_get_char();
-                if (c != '\x1B') {
-                    if (c != '\r' && c != '\n' && c != '\t')
-                        printf("%c", c);
-                } else {
+    
+                if (c == '\x1B') {
+                    // Arrow key or ESC-based exit?
                     if (keyboard_has_char()) {
-                        char d = keyboard_get_char();
-                        if (d == 'D') {
-                            move_cursor_left();
-                        } else if (d == 'C') {
-                            move_cursor_right();
+                        char next = keyboard_get_char();
+                        switch (next) {
+                            case 'A': move_cursor_up(); break;
+                            case 'B': move_cursor_down(); break;
+                            case 'C': move_cursor_right(); break;
+                            case 'D': move_cursor_left(); break;
+                            default: break; // Unknown sequence
                         }
-                    }
-                    else {
+                    } else {
+                        // ESC was alone – treat it as save and exit
                         ArtManager *manager = create_art_manager();
                         if (manager != NULL) {
                             manager->save_drawing(current_drawing);
@@ -372,16 +371,20 @@ void update_state(void) {
                             change_state(ART);
                             destroy_art_manager(manager);
                             current_drawing = NULL;
-                            break;
                         }
                     }
+                } else if (c != '\r' && c != '\n' && c != '\t') {
+                    // Printable character
+                    printf("%c", c);
                 }
             }
             break;
         }
-
+    
+        // First-time entry into ART_DRAWING
         previous_state = current_state;
         clearTerminal();
+    
         ArtManager *manager = create_art_manager();
         if (manager != NULL) {
             manager->print_board(current_drawing);

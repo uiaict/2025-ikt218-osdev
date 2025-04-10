@@ -1,4 +1,5 @@
 #include "terminal/cursor.h"
+#include "terminal/keyboard.h"
 
 #include "libc/stdint.h"
 
@@ -9,6 +10,7 @@
 
 int cursor_position = 0; // Initialize cursor position
 bool old_logs = false;
+
 
 // Function to clear the terminal (clear screen and reset cursor)
 void clearTerminal(void) {
@@ -26,12 +28,26 @@ void clearTerminal(void) {
 }
 
 void move_cursor_right(void) {
-    cursor_position = (cursor_position + 1) % (SCREEN_WIDTH * SCREEN_HEIGHT);
-    move_cursor(cursor_position);
+    if (cursor_position < SCREEN_WIDTH * SCREEN_HEIGHT - 1) {
+        cursor_position++;
+        move_cursor(cursor_position);
+    }
 }
 
 void move_cursor_left(void) {
-    cursor_position = (cursor_position - 1 + (SCREEN_WIDTH * SCREEN_HEIGHT)) % (SCREEN_WIDTH * SCREEN_HEIGHT);
+    if (cursor_position > 0) {
+        cursor_position--;
+        move_cursor(cursor_position);
+    }
+}
+
+void move_cursor_up(void) {
+    cursor_position = (cursor_position - SCREEN_WIDTH + (SCREEN_WIDTH * SCREEN_HEIGHT)) % (SCREEN_WIDTH * SCREEN_HEIGHT);
+    move_cursor(cursor_position);
+}
+
+void move_cursor_down(void) {
+    cursor_position = (cursor_position + SCREEN_WIDTH) % (SCREEN_WIDTH * SCREEN_HEIGHT);
     move_cursor(cursor_position);
 }
 

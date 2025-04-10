@@ -41,6 +41,16 @@ void keyboard_handle_scancode(uint8_t scancode) {
                 kb_head = (kb_head + 1) % KEYBOARD_BUFFER_SIZE;
                 kb_buffer[kb_head] = 'C';     // 'C' means Right in escape codes
                 kb_head = (kb_head + 1) % KEYBOARD_BUFFER_SIZE;
+            } else if (scancode == 0x48) { // Up arrow
+                kb_buffer[kb_head] = '\x1B';
+                kb_head = (kb_head + 1) % KEYBOARD_BUFFER_SIZE;
+                kb_buffer[kb_head] = 'A';
+                kb_head = (kb_head + 1) % KEYBOARD_BUFFER_SIZE;
+            } else if (scancode == 0x50) { // Down arrow
+                kb_buffer[kb_head] = '\x1B';
+                kb_head = (kb_head + 1) % KEYBOARD_BUFFER_SIZE;
+                kb_buffer[kb_head] = 'B';
+                kb_head = (kb_head + 1) % KEYBOARD_BUFFER_SIZE;
             }
             return;
         }
