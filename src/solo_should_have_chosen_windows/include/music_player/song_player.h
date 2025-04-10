@@ -8,8 +8,10 @@ typedef struct {
 } Note;
 
 typedef struct {
+    char* code;
     char* title;
     char* artist;
+    char* information;
     Note *notes;
     size_t note_count;
 } Song;

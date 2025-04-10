@@ -111,6 +111,36 @@ void update_state(void) {
         break;
     }
     
+    /* case MUSIC_PLAYER: {
+        if (same_state_check()) {
+            if (keyboard_has_char()) {
+                char c = keyboard_get_char();
+                if (c != '\x1B') {
+                    printf("%c", c);
+                    if (c == '\r') {
+                        Music_Command_t cmd = get_music_command();
+                        switch (cmd) {
+                            
+                            default:
+                                break;
+                        }
+                    }
+                } else {
+                    if (keyboard_has_char()) {
+                        char d = keyboard_get_char();
+                        if (d == 'D') {
+                            move_cursor_left();
+                        } else if (d == 'C') {
+                            move_cursor_right();
+                        }
+                    }
+                }
+            }
+            break;
+        }
+        previous_state = current_state;        
+        break;
+    } */
     default:
         __asm__ volatile ("hlt");
         break;

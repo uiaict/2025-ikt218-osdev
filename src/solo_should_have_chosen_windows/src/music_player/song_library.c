@@ -60,32 +60,63 @@ static Note happy_birthday_notes[] = {
     {F4, 500}, {0, 20}, {G4, 500}, {0, 20}, {F4, 1000}
 };
 
+static Note super_mario_notes[] = {
+    {E5, 150}, {0, 50}, {E5, 150}, {0, 150},
+    {E5, 150}, {0, 150}, {C5, 150}, {0, 50},
+    {E5, 150}, {0, 150}, {G5, 150}, {0, 350},
+    {G4, 150}, {0, 350},
+
+    {C5, 150}, {0, 250}, {G4, 150}, {0, 250},
+    {E4, 150}, {0, 250}, {A4, 150}, {0, 50},
+    {B4, 150}, {0, 50}, {As4, 150}, {0, 50},
+    {A4, 150}, {0, 150},
+
+    {G4, 100}, {E5, 100}, {G5, 100}, {A5, 150}, {F5, 150},
+    {G5, 150}, {0, 150}, {E5, 150}, {0, 150},
+    {C5, 150}, {D5, 150}, {B4, 150}, {0, 300}
+};
+
 Song fur_elise_song = {
+    .code = "fur_elise",
     .title = "Fur Elise",
     .artist = "Ludwig van Beethoven",
     .notes = fur_elise_notes,
+    .information = "Fur Elise is a popular piece of classical music composed by Ludwig van Beethoven. It is often played on the piano and is known for its beautiful melody.",
     .note_count = sizeof(fur_elise_notes) / sizeof(Note)
 };
 
 Song twinkle_twinkle_song = {
+    .code = "twinkle_twinkle",
     .title = "Twinkle Twinkle Little Star",
     .artist = "Traditional",
     .notes = twinkle_twinkle_notes,
+    .information = "Twinkle, Twinkle, Little Star is a popular English lullaby. The melody is from a French tune, 'Ah! vous dirai-je, Maman', which was published in 1761.",
     .note_count = sizeof(twinkle_twinkle_notes) / sizeof(Note)
 };
 
 Song happy_birthday_song = {
+    .code = "happy_birthday",
     .title = "Happy Birthday",
     .artist = "Traditional",
     .notes = happy_birthday_notes,
+    .information = "Happy Birthday to You is a song traditionally sung to celebrate a person's birthday. The melody is from the song 'Good Morning to All', which was written by Patty Hill and her sister Mildred J. Hill in 1893.",
     .note_count = sizeof(happy_birthday_notes) / sizeof(Note)
+};
+
+Song super_mario_song = {
+    .code = "super_mario",
+    .title = "Super Mario Bros Theme (Intro)",
+    .artist = "Koji Kondo",
+    .notes = super_mario_notes,
+    .information = "A short version of the Super Mario Bros. theme — originally composed by Koji Kondo in 1985 for Nintendo.",
+    .note_count = sizeof(super_mario_notes) / sizeof(Note)
 };
 
 Song* songList = NULL;
 size_t numOfSongs = 0;
 
 void init_song_library() {
-    numOfSongs = 3;
+    numOfSongs = 4;
     songList = (Song*)malloc(numOfSongs * sizeof(Song));
     if (songList == NULL) {
         printf("Failed to allocate memory for song library\n");
@@ -95,6 +126,7 @@ void init_song_library() {
     songList[0] = fur_elise_song;
     songList[1] = twinkle_twinkle_song;
     songList[2] = happy_birthday_song;
+    songList[3] = super_mario_song;
 }
 
 void destroy_song_library() {

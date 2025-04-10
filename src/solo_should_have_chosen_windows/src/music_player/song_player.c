@@ -35,7 +35,6 @@ void destroy_song_player(SongPlayer *player) {
 }
 
 void playAllSongs() {
-    init_song_library();
     if (songList == NULL || numOfSongs == 0) {
         printf("No songs to play\n");
         return;

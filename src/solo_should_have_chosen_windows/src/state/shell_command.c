@@ -12,12 +12,19 @@
 #define LAST_ROW 24
 #define VGA_ADDRESS 0xB8000
 
+// Shell stubs
 const char* launch_stub = "shc-launch";
 const char* info_stub = "info";
 const char* help_stub = "help";
 const char* clear_stub = "clear";
+const char* music_player_stub = "music";
 
-static const char* music_player_stub = "music";
+// Music stubs
+const char* music_command_stub = "shc-music";
+const char* music_command_play = "play";
+const char* music_command_list = "list";
+const char* music_command_exit = "exit";
+const char* music_command_info = "info";
 
 const char* shell_command_not_found = "Command not found.\n";
 
@@ -70,7 +77,7 @@ ShellCommand_t get_shell_command() {
     first_word[i] = '\0';
 
     if (strcmp(first_word,launch_stub) != 0) {
-        printf("Command must begin with shc-launch\n");
+        printf("Command must begin with %s\n", launch_stub);
         free(first_word);
         return NO_COMMAND;
     }
@@ -82,7 +89,7 @@ ShellCommand_t get_shell_command() {
     }
     
     if (command_buffer[i] != ' ') {
-        printf("No space after shc-launch\n");
+        printf("No space after %s\n", launch_stub);
         return NO_COMMAND;
     }
     
@@ -102,15 +109,56 @@ ShellCommand_t get_shell_command() {
     }
 }
 
-
-void print_shell_command_not_found() {
-    printf("%s", shell_command_not_found);
-    for (int i = 0; i < SCREEN_WIDTH; i++) {
-        printf("-");
-    }
-    printf("\n");
-}
-
 char* get_shell_command_string() {
     return command_buffer + (int) strlen(launch_stub) + 1;
+}
+
+Music_Command_t get_music_command() {
+    get_last_line();
+    int i = 0;
+
+    char* first_word = malloc(strlen(music_command_stub) + 1);
+    if (first_word == NULL) {
+        printf("Heap memory allocation failed\n");
+        return NO_MUSIC_COMMAND;
+    }
+   
+    for (i = 0; i < (int) (strlen(music_command_stub)); i++) {
+        first_word[i] = command_buffer[i];
+    }
+
+    first_word[i] = '\0';
+
+    if (strcmp(first_word,music_command_stub) != 0) {
+        printf("Command must begin with %s\n", music_command_stub);
+        free(first_word);
+        return NO_MUSIC_COMMAND;
+    }
+    free(first_word);
+
+    if (command_buffer[i] == '\0') {
+        printf("No command given\n");
+        return NO_MUSIC_COMMAND;
+    }
+    
+    if (command_buffer[i] != ' ') {
+        printf("No space after %s\n", music_command_stub);
+        return NO_MUSIC_COMMAND;
+    }
+    
+    i++;
+
+    return NO_MUSIC_COMMAND;
+
+    /* if (strcmp(command_buffer + i, help_stub) == 0) {
+        return LOAD_STATIC_SCREEN;
+    } else if(strcmp(command_buffer + i, clear_stub) == 0) {
+        return CLEAR_SCREEN;
+    } else if (strcmp(command_buffer + i, music_player_stub) == 0) {
+        printf("Loading music player...\n");
+        return LOAD_MUSIC_PLAYER;
+    } else {
+        printf("No valid command given\n");
+        return NO_COMMAND;
+    } */
 }

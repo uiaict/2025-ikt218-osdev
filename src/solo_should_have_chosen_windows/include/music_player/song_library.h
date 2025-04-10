@@ -11,3 +11,4 @@ extern size_t numOfSongs;
 
 void init_song_library();
 void destroy_song_library();
+void list_songs();
