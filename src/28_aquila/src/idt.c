@@ -83,23 +83,30 @@ void register_irq_handler(int irq, isr_t handler, void *ctx) {
 void irq_handler(registers_t *regs) {
   if (regs->int_no == 33) {
     uint8_t scancode = inb(0x60);
-    char ascii = scancode_ascii[scancode];
+    if (!(scancode & 0x80)) { // Key press
+      if (scancode < 128) { // Scancode under 128 for key press to not go out of bounds
+          char ascii = scancode_ascii[scancode];
 
-    if (scancode == 14) {
-      if (cursor > 0) {
-        cursor--;
-        vga[cursor * 2] = ' ';
-        vga[cursor * 2 + 1] = 0x07;
+          if (scancode == 14) { // Backspace
+            if (cursor > 0) {
+              cursor--;
+              vga[cursor * 2] = ' ';
+              vga[cursor * 2 + 1] = 0x07;
+            }
+          } else if (ascii != 0) { 
+            if (ascii >= ' ' && ascii <= '~') {
+            char msg[2] = {ascii, '\0'};
+            printf(msg);
+             }
+          }
       }
-    } else if (ascii && ascii >= 32 && ascii <= 126) {
-      char msg[2] = {ascii, '\0'};
-      printf(msg);
     }
   }
+  if (regs->int_no >= 40) {
+    outb(0xA0, 0x20); // Send to slave PIC
+  }
+  outb(0x20, 0x20); // Send to master PIC
 
-  if (regs->int_no >= 40)
-    outb(0xA0, 0x20);
-  outb(0x20, 0x20);
 }
 
 static uint32_t ticks = 0;

@@ -27,21 +27,21 @@
 	////////////////////////////////////
 	// Linux Setup (X11)
 	////////////////////////////////////
-    "mounts": [
-        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached"
-    ],
-	"containerEnv": {},
+    //"mounts": [
+    //    "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached"
+    //],
+	//"containerEnv": {},
 
 
 	////////////////////////////////////
 	// Windows Setup (WSL2)
 	////////////////////////////////////
-    //"mounts": [
-	//	"source=/mnt/wslg,target=/mnt/wslg,type=bind,consistency=cached"
-    //],
-	//"containerEnv": {
-	//	"PULSE_SERVER": "/mnt/wslg/PulseServer"
-	//},
+    "mounts": [
+		"source=/mnt/wslg,target=/mnt/wslg,type=bind,consistency=cached"
+    ],
+	"containerEnv": {
+		"PULSE_SERVER": "/mnt/wslg/PulseServer"
+	},
 
 
 	////////////////////////////////////
