@@ -144,6 +144,9 @@ void update_state(void) {
                             case LIST_SONGS:
                                 list_songs();
                                 break;
+                            case CLEAR_SCREEN_MUSIC:
+                                clearTerminal();
+                                break;
                             case EXIT:
                                 change_state(SHELL);
                                 if (songList != NULL) {

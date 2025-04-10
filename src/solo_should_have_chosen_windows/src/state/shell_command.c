@@ -152,9 +152,15 @@ Music_Command_t get_music_command() {
 
     if (strcmp(command_buffer + i, music_command_list) == 0)
         return LIST_SONGS;
+
+    if (strcmp(command_buffer + i, clear_stub) == 0)
+        return CLEAR_SCREEN_MUSIC;
     
     if (strcmp(command_buffer + i, music_command_exit) == 0)
         return EXIT;
+
+    printf("No valid command given\n");
+    return NO_MUSIC_COMMAND;
         /*
     } else if(strcmp(command_buffer + i, clear_stub) == 0) {
         return CLEAR_SCREEN;
@@ -165,5 +171,4 @@ Music_Command_t get_music_command() {
         printf("No valid command given\n");
         return NO_COMMAND;
     } */
-    return NO_MUSIC_COMMAND;
 }   
