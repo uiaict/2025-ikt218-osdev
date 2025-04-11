@@ -1,5 +1,4 @@
 #include "terminal/cursor.h"
-#include "terminal/keyboard.h"
 
 #include "libc/stdint.h"
 
