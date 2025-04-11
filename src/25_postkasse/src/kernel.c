@@ -3,6 +3,8 @@
 #include "libc/stdbool.h"
 #include "libc/string.h"
 #include "libc/monitor.h"
+#include "libc/memory/memory.h"
+#include "libc/pit.h"
 #include <multiboot2.h>
 #include "arch/i386/gdt/gdt.h"
 #include "arch/i386/idt/idt.h"
@@ -32,8 +34,35 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     //Interupt 0 test 
     asm("int $0x0");
 
-    //init_pit(); // <------ THIS IS PART OF THE ASSIGNMENT
+    init_kernel_memory(&end); // <------ THIS IS PART OF THE ASSIGNMENT
 
+    init_paging();
+
+    print_memory_layout();
+    
+    init_pit(); // <------ THIS IS PART OF THE ASSIGNMENT
+
+    uint32_t counter = 0;
+
+    while (1) {
+        monitor_write("[");
+        monitor_write_dec(counter);
+        monitor_write("]: Sleeping with busy wait...\n");
+        sleep_busy(1000); // sleep 1000ms (1 second)
+        monitor_write("[");
+        monitor_write_dec(counter);
+        monitor_write("]: Slept busy wait\n");
+
+        monitor_write("[");
+        monitor_write_dec(counter);
+        monitor_write("]: Sleeping with interrupt...\n");
+        sleep_interrupt(1000); // sleep another second
+        monitor_write("[");
+        monitor_write_dec(counter);
+        monitor_write("]: Slept interrupt\n");
+
+        counter++;
+    }
     
     //infinite loop to keep the kernel running
     while (1) {

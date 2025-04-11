@@ -42,3 +42,36 @@ void monitor_newline() {
     cursor_x = 0;
     cursor_y++;
 }
+
+// Print a number in decimal
+void monitor_write_dec(uint32_t n) {
+    if (n == 0) {
+        monitor_write("0");
+        return;
+    }
+
+    char buf[16];
+    int i = 0;
+
+    while (n > 0) {
+        buf[i++] = '0' + (n % 10);
+        n /= 10;
+    }
+
+    while (i--) {
+        char str[2] = { buf[i], 0 };
+        monitor_write(str);
+    }
+}
+
+// Print a number in hexadecimal
+void monitor_write_hex(uint32_t n) {
+    char hex_chars[] = "0123456789ABCDEF";
+
+    monitor_write("0x");
+    for (int i = 7; i >= 0; i--) {
+        char c = hex_chars[(n >> (i * 4)) & 0xF];
+        char str[2] = { c, 0 };
+        monitor_write(str);
+    }
+}
