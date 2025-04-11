@@ -51,7 +51,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     paging_init();
     printf("Paging initialized.\n\n");
     
-    sleep_busy(10);
+    sleep_busy(1000);
     
        // Keep the CPU running forever
     while (1) {
