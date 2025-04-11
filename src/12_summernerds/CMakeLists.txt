@@ -77,7 +77,7 @@ add_executable(uiaos-kernel
 	#src/arch/i386/ISR.asm
 	src/arch/i386/ISR.c
 	src/arch/i386/print.c
-	src/arch/i386/ISR.asm
+	#src/arch/i386/ISR.asm
 
 )
 
