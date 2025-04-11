@@ -1,5 +1,22 @@
-#pragma once
+#ifndef LIBC_STDINT_H
+#define LIBC_STDINT_H
 
+typedef unsigned char      uint8_t;
+typedef unsigned short     uint16_t;
+typedef unsigned int       uint32_t;
+typedef unsigned int       uintptr_t;  // Added for pointer-to-integer conversions on 32-bit systems
+
+typedef signed char        int8_t;
+typedef signed short       int16_t;
+typedef signed int         int32_t;
+
+#endif
+ // LIBC_STDINT_H
+
+
+
+/*
+#pragma once
 
 typedef long unsigned int size_t;
 typedef long unsigned int uint32_t;
@@ -8,7 +25,7 @@ typedef unsigned char uint8_t;
 typedef long int int32_t;
 typedef short int16_t;
 typedef signed char int8_t;
-
+*/
 
 
 /*

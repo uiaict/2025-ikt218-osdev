@@ -58,20 +58,28 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 
 # Add executable target for the kernel
 add_executable(uiaos-kernel 
-	src/multiboot2.asm # TODO: Add multiboot2 support
+    src/multiboot2.asm
     src/kernel.c
-	src/gdt/gdt.c
-	src/terminal.c
-	src/gdt/gdt_flush.asm
-	src/idt/idt.asm
-	src/idt/idt.c
-	src/idt/util.c
-	src/idt/isr.asm
-	src/idt/isr.c
+    src/gdt/gdt.c
+    src/terminal.c
+    src/gdt/gdt_flush.asm
+    src/idt/idt.asm
+    src/idt/idt.c
+    src/idt/util.c
+    src/isr/isr.asm
+    src/isr/isr.c
+    src/keyboard/keyboard.c
+    src/common/common.c
+    src/isrs/isrs_gen.c
+    #src/pit.c
 )
+
+
 
 # Include directories for the kernel target
 target_include_directories(uiaos-kernel PUBLIC include)
+
+# target_include_directories(uiaos-kernel PRIVATE ${CMAKE_SOURCE_DIR}/include)  # new
 
 
 # Specify compile options for C and C++
@@ -148,8 +156,8 @@ add_custom_target(
 
 # set(SOURCES
   #  src/kernel.c
-  # src/gdt.c
+  #  src/gdt.c
   #  src/terminal.c
-  # src/arch/i386/gdt_flush.asm
+  #  src/arch/i386/gdt_flush.asm
 #)
 

@@ -1,35 +1,59 @@
+#ifndef IDT_H
+#define IDT_H
 
-#include "stdint.h"
-#include "../include/libc/isr.h"  // Definerer struct InterruptRegisters
+#include <libc/stdint.h>
+#include "libc/isr.h"  // Includes definition for registers_t and related ISR types
+#include <libc/stddef.h>            // Ensures standard types like size_t are available
 
+// --- Define missing macros if not defined elsewhere ---
 
-struct idt_entry_struct
-{
-   uint16_t base_low;             // The lower 16 bits of the address to jump to when this interrupt fires.
-   uint16_t sel;                 // Kernel segment selector.
-   uint8_t  always0;             // This must always be zero.
-   uint8_t  flags;               // More flags. See documentation.
-   uint16_t base_high;             // The upper 16 bits of the address to jump to.
+// Typical value for the kernel code segment in GDT (usually 0x08 in x86 OS development)
+#define i686_GDT_CODE_SEGMENT 0x08
+
+// For a 32-bit interrupt gate:
+//  - 0x80: present bit is set (P = 1)
+//  - 0x0E: denotes a 32-bit interrupt gate (TYPE = 0x0E)
+// Combining these, we get 0x8E.
+#define IDT_FLAG_GATE_32BIT_INT 0x8E
+
+// For ring 0 (kernel mode): no extra bits are needed
+#define IDT_FLAG_RING0 0x00
+
+// --- Macro alias with proper casting ---
+// This macro casts the ISR function pointer to uintptr_t before calling idt_set_gate.
+#define i686_IDT_SetGate(num, base, sel, flags) \
+    idt_set_gate((num), (uintptr_t)(base), (sel), (flags))
+
+// --- IDT Structures ---
+
+// An IDT entry: one entry in the Interrupt Descriptor Table.
+struct idt_entry_struct {
+    uint16_t base_low;   // Lower 16 bits of address of the interrupt handler.
+    uint16_t sel;        // Kernel segment selector.
+    uint8_t  always0;    // This must always be 0.
+    uint8_t  flags;      // Type and attributes.
+    uint16_t base_high;  // Upper 16 bits of the handler's address.
 } __attribute__((packed));
-//typedef struct idt_entry_struct idt_entry_t;
 
-// A struct describing a pointer to an array of interrupt handlers.
-// This is in a format suitable for giving to 'lidt'.
-struct idt_ptr_struct
-{
-
-   uint16_t limit;
-   uint32_t base;                // The address of the first element in our idt_entry_t array.
+// A structure describing a pointer to the IDT array; used with the lidt instruction.
+struct idt_ptr_struct {
+    uint16_t limit;
+    uintptr_t base;      // Base address of the first element in the idt_entry_struct array.
 } __attribute__((packed));
-//typedef struct idt_ptr_struct idt_ptr_t;
 
+// --- Function Prototypes ---
+
+// Initializes the IDT.
 void init_idt();
-void setIdtGate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags);
 
+// Sets an IDT entry.
+//  - num   : the index in the IDT.
+//  - base  : the address of the interrupt handler (now using uintptr_t).
+//  - sel   : the kernel segment selector.
+//  - flags : attributes for the entry (e.g., combination of IDT_FLAG_RING0 and IDT_FLAG_GATE_32BIT_INT).
+void idt_set_gate(uint8_t num, uintptr_t base, uint16_t sel, uint8_t flags);
 
-//void isr_handler(struct InterruptRegisters* regs);
-
-
+// --- External ISR Function Declarations ---
 extern void isr0();
 extern void isr1();
 extern void isr2();
@@ -66,8 +90,7 @@ extern void isr31();
 extern void isr128();
 extern void isr177();
 
-
-// Declare external IRQ handler functions
+// --- External IRQ Function Declarations ---
 extern void irq0();
 extern void irq1();
 extern void irq2();
@@ -84,3 +107,5 @@ extern void irq12();
 extern void irq13();
 extern void irq14();
 extern void irq15();
+
+#endif // IDT_H
