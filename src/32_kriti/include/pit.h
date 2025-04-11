@@ -1,38 +1,47 @@
 #ifndef PIT_H
 #define PIT_H
 
-#include <libc/stdint.h>
-#include <libc/stdbool.h>
+#include "libc/stdint.h"
+#include "libc/stdbool.h"
 
-// PIT (Programmable Interval Timer) related macros
-#define PIT_CMD_PORT 0x43
+// Ports
 #define PIT_CHANNEL0_PORT 0x40
 #define PIT_CHANNEL1_PORT 0x41
 #define PIT_CHANNEL2_PORT 0x42
+#define PIT_CMD_PORT 0x43
+
+// PIC Ports
+#define PIC1_CMD_PORT  0x20
+#define PIC1_DATA_PORT 0x21
+#define PIC2_CMD_PORT  0xA0
+#define PIC2_DATA_PORT 0xA1
+#define PIC_EOI        0x20
+
+// PC Speaker Ports and Constants
 #define PC_SPEAKER_PORT 0x61
-#define PIT_DEFAULT_DIVISOR 0x4E20 // 20000, which gives about 18.2 Hz (1193180 / 20000)
-
-// IRQ0 related macros
-#define PIC1_CMD_PORT 0x20
-#define PIC1_DATA_PORT 0x20
-#define PIC_EOI     0x20        /* End-of-interrupt command code */
- 
-// Custom sleep function constants
+#define PC_SPEAKER_ON_MASK 0x03
+#define PC_SPEAKER_OFF_MASK 0xFC
 #define PIT_BASE_FREQUENCY 1193180
-#define TARGET_FREQUENCY 1000 // 1000 Hz
-#define DIVIDER (PIT_BASE_FREQUENCY / TARGET_FREQUENCY)
-#define TICKS_PER_MS (TARGET_FREQUENCY / 1000)
+#define PIT_CHANNEL2_MODE3 0xB6
 
-// Main PIT functions
-void init_pit();
+// PIT Configuration
+#define TARGET_FREQUENCY 100   // 100 Hz = 10ms per tick
+#define DIVIDER (PIT_BASE_FREQUENCY / TARGET_FREQUENCY)
+#define TICKS_PER_MS (TARGET_FREQUENCY / 1000.0)
+
+// Function prototypes
+void init_pit(void);
 void sleep_interrupt(uint32_t milliseconds);
 void sleep_busy(uint32_t milliseconds);
-
-// Added these functions to access the tick counter from other files
 uint32_t get_tick_count(void);
-uint32_t get_current_tick();
 
-// Declare the tick_count as extern so other files can access it if needed
-extern volatile uint32_t tick_count;
+// PC Speaker function prototypes
+void init_pc_speaker(void);
+void enable_pc_speaker(void);
+void disable_pc_speaker(void);
+void set_pc_speaker_frequency(uint32_t frequency);
+void beep(uint32_t frequency, uint32_t duration_ms);
+void beep_blocking(uint32_t frequency, uint32_t duration_ms);
+void direct_speaker_test(void);  // Added this prototype
 
-#endif /* PIT_H */
+#endif // PIT_H

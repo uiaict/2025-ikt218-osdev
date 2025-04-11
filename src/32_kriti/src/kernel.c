@@ -10,17 +10,31 @@
 #include "isr.h"
 #include "keyboard.h"
 #include "memory.h"
-#include "pit.h"        // For PIT functions like init_pit, sleep_interrupt, sleep_busy, get_tick_count.
+#include "pit.h"
 #include "musicplayer.h"
 
 // The linker script defines this symbol (end of kernel).
 extern unsigned long end;
 
-// Define a simple song for testing.
+// Define a better test song with a wider range of notes
 Note music_1[] = {
-    {440, 500},   // A note at 440 Hz for 500 ms.
-    {494, 500},   // Slightly higher note.
-    {523, 500}    // And so on.
+    {262, 200},   // C4
+    {294, 200},   // D4
+    {330, 200},   // E4
+    {349, 200},   // F4
+    {392, 200},   // G4
+    {440, 200},   // A4
+    {494, 200},   // B4
+    {523, 400},   // C5 (longer note)
+    {0,   200},   // Rest
+    {523, 200},   // C5
+    {494, 200},   // B4
+    {440, 200},   // A4
+    {392, 200},   // G4
+    {349, 200},   // F4
+    {330, 200},   // E4
+    {294, 200},   // D4
+    {262, 400}    // C4 (longer note)
 };
 
 // play_music creates a Song (with our test music_1) and uses the music player to play it.
@@ -42,6 +56,9 @@ void play_music(void) {
             kprint("Playing Song...\n");
             player->play_song(&songs[i]);
             kprint("Finished playing the song.\n");
+            
+            // Wait between songs
+            sleep_interrupt(1000);
         }
     }
 
@@ -141,18 +158,28 @@ int main(unsigned long magic, struct multiboot_info* mb_info_addr) {
     kprint("\nSystem initialized successfully!\n");
     kprint("Press any key to see keyboard input...\n");
 
-    // Unmask keyboard IRQ (IRQ1); ensure outb/inb and PIC port constants are defined.
+    // Unmask keyboard IRQ (IRQ1)
     outb(PIC1_DATA_PORT, inb(PIC1_DATA_PORT) & ~0x02);
 
-    // Play the music.
+   // Initialize the PC speaker
+    kprint("Initializing PC Speaker...\n");
+    //init_pc_speaker();
+
+    // Play test beeps to verify speaker is working
+    kprint("Playing test beeps...\n");
+    beep_blocking(1000, 300);  // 1kHz tone for 300ms
+    sleep_interrupt(200);      // Brief pause
+    beep_blocking(1500, 300);  // 1.5kHz tone for 300ms
+
+    // Play the music
+    kprint("\nStarting music player...\n");
     play_music();
 
-    // Main idle loop.
+    // Main idle loop (should never reach here because play_music has its own loop)
+    kprint("Entering main idle loop...\n");
     while (1) {
         __asm__ volatile ("hlt");
     }
 
     return 0;
 }
-
-

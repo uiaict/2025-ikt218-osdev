@@ -43,8 +43,6 @@ void init_pit() {
     
     // Register the PIT handler to IRQ0 (interrupt 32)
     register_interrupt_handler(32, pit_handler);
-    // In pit.c, after registering the handler
-
     
     // Make sure IRQ0 is enabled in the PIC
     uint8_t current_mask = inb(PIC1_DATA_PORT);
@@ -110,4 +108,169 @@ void sleep_busy(uint32_t milliseconds) {
 // Public function to get the current tick count
 uint32_t get_tick_count(void) {
     return tick_count;
+}
+
+// Modified version of your PC Speaker functions in pit.c
+
+// Set the PC speaker frequency using PIT channel 2
+void set_pc_speaker_frequency(uint32_t frequency) {
+    if (frequency == 0) {
+        // For frequency 0, just disable the speaker
+        disable_pc_speaker();
+        return;
+    }
+    
+    // Calculate divisor for PIT
+    uint32_t divisor = PIT_BASE_FREQUENCY / frequency;
+    
+    // Ensure divisor is in range
+    if (divisor > 65535) divisor = 65535;
+    if (divisor < 1) divisor = 1;
+    
+    // Disable interrupts during this operation
+    __asm__ volatile ("cli");
+    
+    // Configure PIT channel 2 for square wave generation
+    // 10 = channel 2
+    // 11 = access mode: low byte then high byte
+    // 011 = mode 3 (square wave generator)
+    // 0 = 16-bit binary
+    outb(PIT_CMD_PORT, 0xB6);  // This is PIT_CHANNEL2_MODE3
+    
+    // Send divisor (low byte then high byte)
+    outb(PIT_CHANNEL2_PORT, divisor & 0xFF);
+    outb(PIT_CHANNEL2_PORT, (divisor >> 8) & 0xFF);
+    
+    // Restore interrupts
+    __asm__ volatile ("sti");
+    
+    kprint("PC Speaker frequency set to ");
+    kprint_dec(frequency);
+    kprint(" Hz\n");
+}
+
+// Enable the PC speaker
+void enable_pc_speaker(void) {
+    // Disable interrupts during port access
+    __asm__ volatile ("cli");
+    
+    // Read current value
+    uint8_t tmp = inb(PC_SPEAKER_PORT);
+    
+    // Set both bits 0 and 1 to enable speaker
+    // Bit 0: connects the PIT channel 2 to the speaker
+    // Bit 1: enables the speaker gate
+    outb(PC_SPEAKER_PORT, tmp | 0x03);  // This is PC_SPEAKER_ON_MASK (0x03)
+    
+    // Restore interrupts
+    __asm__ volatile ("sti");
+    
+    kprint("PC Speaker enabled\n");
+}
+
+// Disable the PC speaker
+void disable_pc_speaker(void) {
+    // Disable interrupts during port access
+    __asm__ volatile ("cli");
+    
+    // Read current value
+    uint8_t tmp = inb(PC_SPEAKER_PORT);
+    
+    // Clear bits 0 and 1 to disable speaker
+    outb(PC_SPEAKER_PORT, tmp & 0xFC);  // This is PC_SPEAKER_OFF_MASK (0xFC)
+    
+    // Restore interrupts
+    __asm__ volatile ("sti");
+    
+    kprint("PC Speaker disabled\n");
+}
+
+// Play a sound for the specified duration (blocking)
+// This function is self-contained and more reliable
+void beep_blocking(uint32_t frequency, uint32_t duration_ms) {
+    kprint("Beeping at ");
+    kprint_dec(frequency);
+    kprint(" Hz for ");
+    kprint_dec(duration_ms);
+    kprint(" ms\n");
+    
+    if (frequency == 0) {
+        // Just wait for the duration if frequency is 0 (rest)
+        sleep_interrupt(duration_ms);
+        return;
+    }
+    
+    // Calculate divisor for PIT
+    uint32_t divisor = PIT_BASE_FREQUENCY / frequency;
+    if (divisor > 65535) divisor = 65535;
+    if (divisor < 1) divisor = 1;
+    
+    // Disable interrupts during port access
+    __asm__ volatile ("cli");
+    
+    // Configure PIT channel 2 for square wave generation
+    outb(PIT_CMD_PORT, 0xB6);
+    
+    // Send divisor (low byte then high byte)
+    outb(PIT_CHANNEL2_PORT, divisor & 0xFF);
+    outb(PIT_CHANNEL2_PORT, (divisor >> 8) & 0xFF);
+    
+    // Turn speaker on - read first to preserve other bits
+    uint8_t tmp = inb(PC_SPEAKER_PORT);
+    outb(PC_SPEAKER_PORT, tmp | 0x03);
+    
+    // Restore interrupts
+    __asm__ volatile ("sti");
+    
+    // Wait for the specified duration
+    sleep_interrupt(duration_ms);
+    
+    // Disable interrupts during port access
+    __asm__ volatile ("cli");
+    
+    // Turn speaker off
+    tmp = inb(PC_SPEAKER_PORT);
+    outb(PC_SPEAKER_PORT, tmp & 0xFC);
+    
+    // Restore interrupts
+    __asm__ volatile ("sti");
+    
+    kprint("Beep complete\n");
+}
+// Add this function at the end of your pit.c file, 
+// after your existing PC speaker functions
+
+// Extremely simple and direct PC speaker test
+void direct_speaker_test(void) {
+    kprint("\n\n DIRECT SPEAKER TEST - SHOULD HEAR A LOUD 1kHz TONE \n\n");
+    
+    // Use direct port access for maximum compatibility
+    // First ensure the speaker is off
+    outb(0x61, inb(0x61) & 0xFC);
+    
+    // Configure PIT channel 2 for simple square wave (mode 3)
+    outb(0x43, 0xB6);
+    
+    // Set a 1kHz tone (divisor = 1193180 / 1000 = 1193)
+    uint16_t divisor = 1193;
+    outb(0x42, divisor & 0xFF);
+    outb(0x42, (divisor >> 8) & 0xFF);
+    
+    // Turn on the speaker (bits 0 and 1)
+    outb(0x61, inb(0x61) | 0x03);
+    
+    kprint("Speaker should be ON - 1kHz tone\n");
+    kprint("Waiting 3 seconds...\n");
+    
+    // Busy wait for 3 seconds
+    for (volatile uint32_t i = 0; i < 150000000; i++) {
+        if (i % 30000000 == 0) {
+            kprint("*");
+        }
+    }
+    
+    // Turn off the speaker
+    outb(0x61, inb(0x61) & 0xFC);
+    
+    kprint("\nSpeaker turned OFF\n");
 }

@@ -3,6 +3,7 @@
 
 #include "libc/stddef.h"
 #include "libc/stdint.h"
+#include "pit.h"  // Include pit.h for speaker functions
 
 // A single note, defined by its frequency (Hz) and duration (ms)
 typedef struct {
@@ -22,11 +23,13 @@ typedef struct {
 } SongPlayer;
 
 // Function prototypes
-void enable_speaker(void);
-void disable_speaker(void);
-void play_sound(uint32_t frequency);
-void stop_sound(void);
 void play_song_impl(Song* song);
 SongPlayer* create_song_player(void);
+
+// Note: The following functions are already defined in pit.c
+// and should NOT be redefined in musicplayer.c:
+// - init_pc_speaker()
+// - beep()
+// - beep_blocking()
 
 #endif // MUSICPLAYER_H
