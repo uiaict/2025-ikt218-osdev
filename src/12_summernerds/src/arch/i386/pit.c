@@ -1,6 +1,6 @@
 #include <kernel/pit.h>
-#include <src/12_summernerds/include/libc/stdint.h>
-#include <src/12_summernerds/include/libc/stdio.h>
+#include <libc/stdint.h>
+#include <libc/stdio.h>
 #include <ISR.h>
 // #include <kernel/io.c>
 

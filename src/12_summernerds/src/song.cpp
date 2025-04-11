@@ -1,6 +1,8 @@
-#include "song.h"
+#include <song/song.h>
 #include <kernel/pit.h>
-#include <kernel/common.h>
+#include <../src/common.h>
+#include <libc/stdint.h>
+
 
 void enable_speaker(){
     // Read the current state of the PC speaker control register

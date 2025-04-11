@@ -69,7 +69,6 @@ add_executable(uiaos-kernel
 	src/memory/malloc.c
 	src/memory/memory.c
 	src/memory/memutils.c
-
 	
 	src/arch/i386/io.c
 	src/arch/i386/IRQ.c
@@ -78,13 +77,12 @@ add_executable(uiaos-kernel
 	src/arch/i386/ISR.c
 	src/arch/i386/print.c
 	#src/arch/i386/ISR.asm
-
+	include/song/SongPlayer.c
 )
 
 add_library(gdt_asm OBJECT src/arch/i386/gdt.asm)
 set_target_properties(gdt_asm PROPERTIES LANGUAGE ASM_NASM)
 target_link_libraries(uiaos-kernel gdt_asm)
-
 
 set_source_files_properties(src/arch/i386/ISR.asm PROPERTIES LANGUAGE ASM_NASM)
 set_source_files_properties(src/arch/i386/gdt.asm PROPERTIES LANGUAGE ASM_NASM)
@@ -92,10 +90,8 @@ set_source_files_properties(src/arch/i386/gdt.asm PROPERTIES LANGUAGE ASM_NASM)
 # Link gdt_asm med uiaos-kernel
 #target_link_libraries(uiaos-kernel gdt_asm)
 
-
 # Include directories for the kernel target
 target_include_directories(uiaos-kernel PUBLIC include)
-
 
 # Specify compile options for C and C++
 target_compile_options(uiaos-kernel PRIVATE
@@ -104,12 +100,10 @@ target_compile_options(uiaos-kernel PRIVATE
     $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-m32 -march=i386 -Wno-unused-variable -Wno-unused-parameter>
 )
 
-
 # Specify link options for C and C++
 target_link_options(uiaos-kernel PUBLIC
     $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-ffreestanding -nostdlib -fno-builtin -static -pie -O0 -T${OS_KERNEL_LINKER} -g>
 )
-
 
 target_link_options(
 	uiaos-kernel
@@ -119,7 +113,6 @@ target_link_options(
 	PUBLIC "-pie"
 	PUBLIC "-T${OS_KERNEL_LINKER}"
 )
-
 
 # Set properties for the kernel target
 set_target_properties(uiaos-kernel PROPERTIES

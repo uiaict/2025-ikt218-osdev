@@ -1,7 +1,6 @@
-#include "song/song.h"
-#include "pit.h"
-#include "common.h"
-#include "libc/stdio.h"
+#include <song/song.h>
+#include "../include/kernel/pit.h"
+#include <libc/stdio.h>
 
 void enable_speaker()
 {uint8_t speaker_state = inb(0x61); outb(0x61, speaker_state | 3);}

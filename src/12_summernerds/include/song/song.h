@@ -1,7 +1,9 @@
 #ifndef SONG_H
 #define SONG_H
-#include <cstdint>
-#include "frequencies.h"
+#include <song/frequencies.h>
+#include <song/song.h>
+#include <libc/stdint.h>
+
 
 // Define a struct to represent a single musical note
 typedef struct {

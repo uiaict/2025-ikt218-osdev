@@ -1,5 +1,5 @@
 #include "kernel/memory.h"
-#include <libc/system.h>
+#include <libc/stdint.h>
 
 #define MAX_PAGE_ALIGNED_ALLOCS 32
 

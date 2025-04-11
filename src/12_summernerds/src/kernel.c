@@ -1,11 +1,11 @@
 #include <libc/stdint.h>
 #include <libc/stddef.h>
-#include <libc/stdbool.h>
-#include "screen.h"
-#include "keyboard.h"
-#include "kheap.h"         // for malloc(), free(), init_kernel_memory()
-#include "paging.h"        // for init_paging()
-#include "pit.h"           // for init_pit(), sleep functions
+#include "libc/stdbool.h"
+#include <../src/screen.h>
+#include "../src/arch/i386/keyboard.h"
+#include "../include/kernel/pit.h"
+//#include <kheap.h>
+//#include <paging.h>
 
 extern uint32_t end;       // Linker symbol marking the end of kernel
 

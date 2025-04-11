@@ -24,7 +24,8 @@
         "keyboard.h": "c",
         "irq.h": "c",
         "string.h": "c",
-        "gdt.h": "c"
+        "gdt.h": "c",
+        "pit.h": "c"
     }
 
 }
