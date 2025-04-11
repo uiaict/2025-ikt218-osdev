@@ -1,4 +1,4 @@
-#include "libc/memory.h"   // Include the header file that defines the functions
+#include "memory/memory.h"   // Include the header file that defines the functions
 
 
 #include "libc/stdint.h"   // Include the standard integer types

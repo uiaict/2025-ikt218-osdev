@@ -69,6 +69,7 @@ src/irq.c
 src/memory/malloc.c
 src/memory/memory.c
 src/memory/memutils.c
+src/pit/pit.c
 )
 
 # Include directories for the kernel target

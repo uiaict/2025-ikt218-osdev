@@ -1,10 +1,12 @@
 #include "libc/scrn.h"
 #include "libc/isr_handlers.h"
+#include "pit/pit.h"
 
 static int timer_ticks = 0;
 
 void handle_timer_interrupt() {
     timer_ticks++;
+    pit_increment_tick();
 
     if (timer_ticks % 500 == 0) {
        // printf("Five second has passed\n");
@@ -13,14 +15,12 @@ void handle_timer_interrupt() {
     send_eoi(0);
 }
 
-    void timer_phase(int hz) {
+/* void timer_phase(int hz) {
         int divisor = 1193180 / hz;       // 1.193180 MHz basefrekvens
         outb(0x43, 0x36);                 // Kommando: kanal 0, LSB+MSB, mode 3 (square wave)
         outb(0x40, divisor & 0xFF);       // Lav byte
         outb(0x40, divisor >> 8);         // Høy byte
-    }
-
-
+    } Erstattes av init_pit(); */
 
 bool shift_pressed = false;
 

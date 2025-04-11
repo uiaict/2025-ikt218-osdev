@@ -1,4 +1,4 @@
-#include "libc/memory.h"
+#include "memory/memory.h"
 #include "libc/scrn.h"
 //#include <libc/system.h> //Trenger denne fila? 
 

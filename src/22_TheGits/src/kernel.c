@@ -8,7 +8,8 @@
 #include "libc/idt.h"
 #include "libc/isr_handlers.h"
 #include "libc/irq.h"
-#include "libc/memory.h"
+#include "memory/memory.h"
+#include "pit/pit.h"
 
 
 
@@ -22,7 +23,7 @@ extern uint32_t end; // End of kernel memory
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_gdt();
-    timer_phase(100);
+    // timer_phase(100); denne erstattes av init_pit();
     printf("Hello, World!\n");
     remap_pic();
     init_idt();
@@ -32,15 +33,30 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_kernel_memory(&end);
     init_paging();
 
+    int counter = 0; 
+    init_pit();
+
     void* test = malloc(100);
         printf("Malloc adresse: 0x%x\n", (uint32_t)test);
 
     // Aktiver interrupts
     __asm__ volatile ("sti");
 
-    while (1) {
+
+    while(true){
+        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+        sleep_busy(1000);
+        printf("[%d]: Slept using busy-waiting.\n", counter++);
+
+        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+        sleep_interrupt(1000);
+        printf("[%d]: Slept using interrupts.\n", counter++);
+    };
+
+    /*while (1) {
         __asm__ volatile ("hlt");
-    }
+    }*/
+
 
     return 0;
 }
