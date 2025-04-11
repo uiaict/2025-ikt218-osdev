@@ -25,10 +25,19 @@ void keyboard_callback(registers_t* regs) {
 
     char c = scancode_to_ascii[scancode];
     if (c){
-        monitor_put(c); //Print the character to the screen
-        
-        //save letter to the clipboard
-        if (buffer_index < KEYBOARD_BUFFER_SIZE - 1) {
+        if (c == '\b') { // Handle backspace
+            if (buffer_index > 0) {
+                buffer_index--;
+                keyboard_buffer[buffer_index] = 0;
+                monitor_backspace();
+            }
+        }
+        else if (c == '\n') { // Handle enter
+            keyboard_buffer[buffer_index++] = '\n';
+            monitor_newline();
+        }
+        else { // Normal character
+            monitor_put(c); // Print the character
             keyboard_buffer[buffer_index++] = c;
         }
     }

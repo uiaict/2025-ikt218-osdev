@@ -21,12 +21,24 @@ void monitor_put(char c){
 }
 
 
-void monitor_write(const char *string ){
-    uint8_t colour = 0x07;
-    volatile char *video = (volatile char*)0xB8000;
-    while( *string != 0 ) // goes threw all char values in the "string"
-    {
-        *video++ = *string++;
-        *video++ = colour;
+void monitor_write(const char *string) {
+    while (*string != 0) {
+        monitor_put(*string++);
     }
+}
+
+void monitor_backspace() {
+    if (cursor_x > 0) {
+        cursor_x--;
+    } else if (cursor_y > 0) {
+        cursor_y--;
+        cursor_x = VGA_WIDTH - 1;
+    }
+
+    video_memory[cursor_y * VGA_WIDTH + cursor_x] = (WHITE_ON_BLACK << 8) | ' ';
+}
+
+void monitor_newline() {
+    cursor_x = 0;
+    cursor_y++;
 }

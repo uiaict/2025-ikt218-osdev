@@ -7,6 +7,8 @@
 #include "arch/i386/gdt/gdt.h"
 #include "arch/i386/idt/idt.h"
 
+extern uint32_t end;
+
 struct multiboot_info {
     uint32_t size;
     uint32_t reserved;
@@ -29,6 +31,9 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     //Interupt 0 test 
     asm("int $0x0");
+
+    //init_pit(); // <------ THIS IS PART OF THE ASSIGNMENT
+
     
     //infinite loop to keep the kernel running
     while (1) {
