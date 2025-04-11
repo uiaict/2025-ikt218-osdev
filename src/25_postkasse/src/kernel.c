@@ -44,23 +44,29 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     uint32_t counter = 0;
 
-    while (1) {
+    while (true) {
         monitor_write("[");
         monitor_write_dec(counter);
-        monitor_write("]: Sleeping with busy wait...\n");
-        sleep_busy(1000); // sleep 1000ms (1 second)
+        monitor_write("]: Sleeping with busy-waiting (HIGH CPU).\n");
+    
+        sleep_busy(1000);
+    
         monitor_write("[");
         monitor_write_dec(counter);
-        monitor_write("]: Slept busy wait\n");
-
+        monitor_write("]: Slept using busy-waiting.\n");
+    
+        counter++;
+    
         monitor_write("[");
         monitor_write_dec(counter);
-        monitor_write("]: Sleeping with interrupt...\n");
-        sleep_interrupt(1000); // sleep another second
+        monitor_write("]: Sleeping with interrupts (LOW CPU).\n");
+    
+        sleep_interrupt(1000);
+    
         monitor_write("[");
         monitor_write_dec(counter);
-        monitor_write("]: Slept interrupt\n");
-
+        monitor_write("]: Slept using interrupts.\n");
+    
         counter++;
     }
     

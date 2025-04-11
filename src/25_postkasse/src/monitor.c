@@ -10,13 +10,37 @@
  #define WHITE_ON_BLACK 0x0F
  
 void monitor_put(char c){
-    video_memory[cursor_y * VGA_WIDTH + cursor_x] = (WHITE_ON_BLACK << 8) | c;
 
-    cursor_x++;
-    if (cursor_x >= VGA_WIDTH)
-    {
+    if (c == '\n') {
         cursor_x = 0;
         cursor_y++;
+    }
+    else{
+        video_memory[cursor_y * VGA_WIDTH + cursor_x] = (WHITE_ON_BLACK << 8) | c;
+
+        cursor_x++;
+        if (cursor_x >= VGA_WIDTH)
+        {
+            cursor_x = 0;
+            cursor_y++;
+        }
+    }
+    
+    // Handle scrolling if cursor goes off the bottom
+    if (cursor_y >= VGA_HEIGHT) {
+        // Scroll up by one line
+        for (int y = 1; y < VGA_HEIGHT; y++) {
+            for (int x = 0; x < VGA_WIDTH; x++) {
+                video_memory[(y-1) * VGA_WIDTH + x] = video_memory[y * VGA_WIDTH + x];
+            }
+        }
+
+        // Clear last line
+        for (int x = 0; x < VGA_WIDTH; x++) {
+            video_memory[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = (WHITE_ON_BLACK << 8) | ' ';
+        }
+
+        cursor_y = VGA_HEIGHT - 1;
     }
 }
 
