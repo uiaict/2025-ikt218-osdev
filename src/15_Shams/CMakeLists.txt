@@ -73,6 +73,7 @@ add_executable(uiaos-kernel
     src/multiboot2.asm
 	src/keyboard.c
 	src/terminal.c
+	src/matrix.c
     src/kernel.c
 )
 

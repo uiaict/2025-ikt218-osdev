@@ -45,13 +45,13 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
 {
     terminal_write("Hello World\n");
 
-    init_gdt();      // Initialize the Global Descriptor Table (GDT)
-    check_gdt();     // Check if GDT is correct
-    init_idt();      // Initialize IDT
-    isr_install();   // Install ISRs
-    init_irq();      // Initialize IRQs
+    init_gdt();    // Initialize the Global Descriptor Table (GDT)
+    check_gdt();   // Check if GDT is correct
+    init_idt();    // Initialize IDT
+    isr_install(); // Install ISRs
+    init_irq();    // Initialize IRQs
     terminal_write("Interrupts are set up!\n");
-    init_pit(); // Initialize timer (PIT)
+    init_pit();      // Initialize timer (PIT)
     keyboard_init(); // Initialize keyboard
 
     __asm__ __volatile__("sti"); // Enable interrupts globally
@@ -62,15 +62,17 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
 
     terminal_write("Playing all songs...\n");
 
-    // Uncomment disse hvis du vil spille sanger:
-    /*
+    __asm__ __volatile__("cli"); // DISABLE interrupts
     play_song_impl(&song1);
     play_song_impl(&song2);
     play_song_impl(&song3);
     play_song_impl(&song4);
     play_song_impl(&song5);
     play_song_impl(&song6);
-    */
+
+    __asm__ __volatile__("sti"); // ENABLE interrupts
+
+    start_matrix_rain(); // <--- START ANIMASJONEN
 
     int counter = 0;
     /*

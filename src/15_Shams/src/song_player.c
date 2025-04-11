@@ -43,7 +43,6 @@ void stop_sound()
 
 void play_song_impl(Song *song)
 {
-    terminal_write("Playing Song...\n");
 
     enable_speaker();
     for (uint32_t i = 0; i < song->length; i++)
@@ -51,14 +50,9 @@ void play_song_impl(Song *song)
         Note note = song->notes[i];
         char buffer[16];
 
-        // Print frequency
-        terminal_write("Note: ");
         itoa(note.frequency, buffer, 10);
-        terminal_write(buffer);
-        terminal_write(" Hz, Duration: ");
+
         itoa(note.duration_ms, buffer, 10);
-        terminal_write(buffer);
-        terminal_write(" ms\n");
 
         play_sound(note.frequency);
         sleep_interrupt(note.duration_ms);
