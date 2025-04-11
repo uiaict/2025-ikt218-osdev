@@ -15,8 +15,9 @@ struct idt_ptr_struct {
     unsigned int base;
 } __attribute__((packed));
 
-struct idt_entry_struct idt[256];
-struct idt_ptr_struct idtp;
+// Use extern to prevent multiple definitions
+extern struct idt_entry_struct idt[256];
+extern struct idt_ptr_struct idtp;
 
 void idt_init();
 void idt_set_gate(uint16_t index, uint32_t base, uint16_t sel, uint8_t flags);

@@ -11,6 +11,11 @@ int row = 0;
 // https://wiki.osdev.org/Printing_To_Screen
 uint16_t *video = 0xB8000;
 
+void terminal_initialize() {
+    terminal_clear();
+    enable_cursor(0, 15);
+}
+
 void terminal_clear() {
     row = 0;
     col = 0;
@@ -19,6 +24,7 @@ void terminal_clear() {
             terminal_put(' ', WHITE, x, y);
         }
     }
+    update_cursor(col, row);
 }
 
 void terminal_put(char c, int color, int x, int y) {
@@ -51,6 +57,7 @@ void terminal_write(int color, const char *str) {
             }
         }
 
+        update_cursor(col, row);        
         i++;
     }
 }
@@ -64,8 +71,8 @@ void terminal_scroll_down() {
     }
 
     row--;
+    update_cursor(col, row);
 }
-
 
 void reverse(char *str, int len) {
     int start = 0;
@@ -133,11 +140,7 @@ void ftoa(float num, char *str, int afterpoint) {
     str[i] = '\0';
 }
 
-
-
-
 // https://wiki.osdev.org/Text_Mode_Cursor
-
 void enable_cursor(uint8_t cursor_start, uint8_t cursor_end) {
     outb(0x3D4, 0x0A);
 	outb(0x3D5, (inb(0x3D5) & 0xC0) | cursor_start);
