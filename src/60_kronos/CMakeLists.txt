@@ -66,6 +66,9 @@ add_executable(uiaos-kernel
 	src/kernel/gdt.c
 	src/kernel/idt.c
 	src/kernel/isr.c
+	src/memory/memory.c
+	src/memory/malloc.c
+	src/memory/memutils.c
 	src/drivers/terminal.c
 	src/drivers/keyboard.c
 	src/sys/io.c
