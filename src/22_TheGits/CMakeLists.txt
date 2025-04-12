@@ -70,6 +70,8 @@ src/memory/malloc.c
 src/memory/memory.c
 src/memory/memutils.c
 src/pit/pit.c
+src/audio/player.c
+src/audio/speaker.c
 )
 
 # Include directories for the kernel target

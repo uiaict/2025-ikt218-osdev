@@ -1,5 +1,6 @@
 #include "libc/irq.h"
 #include"libc/isr_handlers.h"
+#include "libc/scrn.h"
 
 
 void register_irq_handler(int irq, void (*handler)(void)) {
@@ -16,7 +17,6 @@ void unregister_irq_handler(int irq) {
 
 
 void irq_handler(int irq) {
-
     if (irq < IRQ_COUNT && irq_handlers[irq]) {
         irq_handlers[irq]();
     } else {

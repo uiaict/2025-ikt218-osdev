@@ -5,7 +5,7 @@
 static int timer_ticks = 0;
 
 void handle_timer_interrupt() {
-    timer_ticks++;
+    //timer_ticks++;
     pit_increment_tick();
 
     if (timer_ticks % 500 == 0) {

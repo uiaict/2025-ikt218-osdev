@@ -17,7 +17,8 @@
         "memory.h": "c",
         "limits.h": "c",
         "scrn.h": "c",
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "frequencies.h": "c"
     }
 
 }
