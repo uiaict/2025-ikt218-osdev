@@ -1,7 +1,5 @@
 #include "interrupts.h"
 #include "libc/system.h"
-
-#include "input.h"
 #include "libc/system.h"
 
 extern void terminal_printf(const char* format, ...);
