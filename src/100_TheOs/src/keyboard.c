@@ -1,6 +1,5 @@
 #include "interrupts.h"
 #include "libc/system.h"
-#include "input.h" 
 
 #include "input.h"
 #include "libc/system.h"
