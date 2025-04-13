@@ -4,17 +4,6 @@
 #include "libc/stdint.h"
 
 /**
- * @brief malloc.
- * @return pointer to memory address.
- */
-void *malloc(int bytes);
-
-/**
- * @brief free.
- */
-void free(void *pointer);
-
-/**
  * @brief OUTx
  *
  * Sends a 8/16/32-bit value on a I/O location. Traditional names are

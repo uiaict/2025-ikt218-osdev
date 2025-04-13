@@ -1,10 +1,6 @@
 #include "system.h"
 #include "print.h"
 
-void *malloc(int bytes) { return 0; }
-
-void free(void *pointer) {}
-
 void cursor_enable(uint8_t cursor_start, uint8_t cursor_end) {
   outb(0x3D4, 0x0A);
   outb(0x3D5, (inb(0x3D5) & 0xC0) | cursor_start);
