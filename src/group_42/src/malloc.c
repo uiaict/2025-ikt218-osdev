@@ -11,11 +11,12 @@
 int last_allocated_memory_address = FIRST_MEMORY_ADDRESS;
 
 void *malloc(int bytes) {
-  last_allocated_memory_address += bytes;
-  if (last_allocated_memory_address > LAST_MEMORY_ADDRESS) {
+  if (last_allocated_memory_address + bytes > LAST_MEMORY_ADDRESS) {
     return 0; // Out of memory
   } else {
-    return (void *)last_allocated_memory_address;
+    void *next_memory_address = (void *)last_allocated_memory_address;
+    last_allocated_memory_address += bytes;
+    return (void *)next_memory_address;
   }
 }
 
