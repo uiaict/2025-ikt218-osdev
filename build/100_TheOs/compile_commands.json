@@ -6,12 +6,12 @@
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/100_TheOs",
-  "command": "/usr/bin/c89-gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=c99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/kernel.c",
+  "command": "/usr/bin/gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/kernel.c",
   "file": "/workspaces/2025-ikt218-osdev/src/100_TheOs/src/kernel.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/100_TheOs",
-  "command": "/usr/bin/c89-gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=c99 -o CMakeFiles/uiaos-kernel.dir/src/gdt.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/gdt.c",
+  "command": "/usr/bin/gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/gdt.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/gdt.c",
   "file": "/workspaces/2025-ikt218-osdev/src/100_TheOs/src/gdt.c"
 },
 {
@@ -21,27 +21,22 @@
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/100_TheOs",
-  "command": "/usr/bin/c89-gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=c99 -o CMakeFiles/uiaos-kernel.dir/src/idt.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/idt.c",
+  "command": "/usr/bin/gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/idt.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/idt.c",
   "file": "/workspaces/2025-ikt218-osdev/src/100_TheOs/src/idt.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/100_TheOs",
-  "command": "/usr/bin/c89-gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=c99 -o CMakeFiles/uiaos-kernel.dir/src/irq.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/irq.c",
+  "command": "/usr/bin/gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/irq.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/irq.c",
   "file": "/workspaces/2025-ikt218-osdev/src/100_TheOs/src/irq.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/100_TheOs",
-  "command": "/usr/bin/c89-gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=c99 -o CMakeFiles/uiaos-kernel.dir/src/input.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/input.c",
-  "file": "/workspaces/2025-ikt218-osdev/src/100_TheOs/src/input.c"
-},
-{
-  "directory": "/workspaces/2025-ikt218-osdev/build/100_TheOs",
-  "command": "/usr/bin/c89-gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=c99 -o CMakeFiles/uiaos-kernel.dir/src/isr.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/isr.c",
+  "command": "/usr/bin/gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/isr.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/isr.c",
   "file": "/workspaces/2025-ikt218-osdev/src/100_TheOs/src/isr.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/100_TheOs",
-  "command": "/usr/bin/c89-gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=c99 -o CMakeFiles/uiaos-kernel.dir/src/common.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/common.c",
+  "command": "/usr/bin/gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/common.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/common.c",
   "file": "/workspaces/2025-ikt218-osdev/src/100_TheOs/src/common.c"
 },
 {
@@ -51,12 +46,12 @@
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/100_TheOs",
-  "command": "/usr/bin/c89-gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=c99 -o CMakeFiles/uiaos-kernel.dir/src/keyboard.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/keyboard.c",
+  "command": "/usr/bin/gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/keyboard.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/keyboard.c",
   "file": "/workspaces/2025-ikt218-osdev/src/100_TheOs/src/keyboard.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/100_TheOs",
-  "command": "/usr/bin/c89-gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=c99 -o CMakeFiles/uiaos-kernel.dir/src/isr.handlers.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/isr.handlers.c",
+  "command": "/usr/bin/gcc -I/workspaces/2025-ikt218-osdev/src/100_TheOs/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/isr.handlers.c.o -c /workspaces/2025-ikt218-osdev/src/100_TheOs/src/isr.handlers.c",
   "file": "/workspaces/2025-ikt218-osdev/src/100_TheOs/src/isr.handlers.c"
 }
 ]
