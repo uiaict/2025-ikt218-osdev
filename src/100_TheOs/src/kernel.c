@@ -4,6 +4,11 @@
 #include <multiboot2.h>
 #include <libc/stdarg.h> 
 
+
+extern void init_gdt(void);
+extern void start_isr_handlers();
+extern void start_keyboard();
+
 struct multiboot_info {
     uint32_t size;
     uint32_t reserved;
@@ -168,16 +173,52 @@ void terminal_printf(const char* format, ...) {
     va_end(args);
 }
 
-extern void init_gdt(void);
+
+
 int main(uint32_t magic, void* mb_info) {
-    //Initialize the GDT
+    // Initialize the GDT
     init_gdt();
-     // Write "Hello World"
-  terminal_printf("Hello kernel with printf\n");  // Use printf for first message too
-  terminal_printf("GDT has been initialized with NULL, CODE, and DATA segments.\n");
-  
-    // Hang the kernel
-    while(1) {}
+    
+    // Initialize IDT
+    start_idt();
+    terminal_printf("IDT Initialized\n");
+    
+    // Initialize IRQ
+    start_irq();
+    terminal_printf("IRQ Initialized\n");
+    
+    // Initialize ISR handlers
+    start_isr_controllers();
+    terminal_printf("ISR Handlers Initialized\n");
+    
+    // Initialize keyboard
+    start_keyboard();
+    
+    // Enable interrupts globally
+    asm volatile("sti");
+    
+    // Test interrupts
+    terminal_printf("Testing interrupts...\n");
+    
+    // Test division by zero interrupt (INT 0)
+    terminal_printf("Testing division by zero interrupt...\n");
+    asm volatile("int $0x0");
+    
+    // Test debug interrupt (INT 1)
+    terminal_printf("Testing debug interrupt...\n");
+    asm volatile("int $0x1");
+    
+    // Test NMI interrupt (INT 2)
+    terminal_printf("Testing NMI interrupt...\n");
+    asm volatile("int $0x2");
+    
+    terminal_printf("Interrupt testing complete.\n");
+    terminal_printf("System is ready. You can start typing...\n");
+    
+    // Main loop
+    while(1) {
+        asm volatile("hlt");  // Halt until next interrupt
+    }
     
     return 0;
 }
