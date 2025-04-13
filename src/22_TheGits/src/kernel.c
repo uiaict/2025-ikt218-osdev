@@ -42,9 +42,10 @@ void play_music() {
     }
 
     free(player); //<- never reaches this point due to infinite loop, but good practice to have here
-};
+}; 
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
+   
     init_gdt();
     // timer_phase(100); denne erstattes av init_pit();
     printf("Hello, World!\n");
@@ -66,8 +67,6 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     __asm__ volatile ("sti");
 
     play_music();
- 
-
 
 
     /* int counter = 0;
@@ -81,9 +80,9 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
         printf("[%d]: Slept using interrupts.\n", counter++);
     }; */
 
-    /*while (1) {
+    while (1) {
         __asm__ volatile ("hlt");
-    }*/
+    }
 
 
     return 0;
