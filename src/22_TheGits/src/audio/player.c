@@ -19,7 +19,7 @@ void play_song_impl(Song *song){
     for (uint32_t i = 0; i < song->length; i++) {
         Note* note = &song->notes[i]; // Get the current note
         // Display note details (frequency and duration)
-        printf("Note %d: freq = %d Hz, duration = %d ms\n", i, note->frequency, note->duration);
+       // printf("Note %d: freq = %d Hz, duration = %d ms\n", i, note->frequency, note->duration);
         play_sound(note->frequency); // Play the sound for the note
         sleep_interrupt(note->duration); // Delay for the duration of the note
         stop_sound(); // Stop the sound after playing the note

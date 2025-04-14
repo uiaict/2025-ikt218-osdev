@@ -21,7 +21,7 @@ void play_sound(uint32_t frequency) {
         return; // If frequency is 0, exit the function as this indicates no sound
     }
 
-    printf("Playing sound at frequency: %d Hz\n", frequency); // Debug message
+    //printf("Playing sound at frequency: %d Hz\n", frequency); // Debug message
 
     uint16_t divisor = (uint16_t)(PIT_BASE_FREQUENCY / frequency); // Calculate the divisor for the desired frequency
 
