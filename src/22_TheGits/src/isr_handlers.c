@@ -47,7 +47,7 @@ void handle_keyboard_interrupt() {
         return;
     }
 
-    if (scancode < 128) {
+    /*if (scancode < 128) {
         char ascii = shift_pressed ? scancode_to_ascii_shift[scancode] : scancode_to_ascii[scancode];
 
         if (ascii != 0) {
@@ -55,7 +55,7 @@ void handle_keyboard_interrupt() {
             terminal_write(str, VGA_COLOR(15, 0));
         }
     }
-
+*/
     send_eoi(1);
 }
 
@@ -102,3 +102,4 @@ char scancode_to_ascii_shift[128] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
+

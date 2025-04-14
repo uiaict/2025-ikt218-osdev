@@ -41,3 +41,29 @@ void stop_sound() {
     uint8_t state = inb(PC_SPEAKER_PORT); // Read the current state of the speaker control port
     outb(PC_SPEAKER_PORT, state & ~0x03); // Write the new state back to the control port
 }
+
+void play_success_melody() {
+    enable_speaker();
+
+    play_sound(131); sleep_busy(100); // C3
+    play_sound(165); sleep_busy(100); // E3
+    play_sound(196); sleep_busy(100); // G3
+    play_sound(262); sleep_busy(120); // C4
+
+    stop_sound();
+    disable_speaker();
+}
+
+
+void play_error_melody() {
+    enable_speaker();
+
+    play_sound(262); sleep_busy(100); // C4
+    play_sound(196); sleep_busy(100); // G3
+    play_sound(165); sleep_busy(100); // E3
+    play_sound(131); sleep_busy(120); // C3
+
+    stop_sound();
+    disable_speaker();
+}
+

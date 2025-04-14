@@ -13,8 +13,7 @@
 #include "audio/song.h"
 #include "audio/player.h"
 #include "audio/tracks.h"
-
-
+#include "game/wordgame.h"
 
 struct multiboot_info {
     uint32_t size;
@@ -27,7 +26,7 @@ extern uint32_t end; // End of kernel memory
 void play_music() {
     Song songs[] = {
         {music_1, sizeof(music_1) / sizeof(Note)},
-        // evt. flere sanger
+        // Flere sanger kan legges til her
     };
     uint32_t n_songs = sizeof(songs) / sizeof(Song);
 
@@ -42,32 +41,35 @@ void play_music() {
     }
 
     free(player); //<- never reaches this point due to infinite loop, but good practice to have here
-}; 
+}
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
    
+    // === SYSTEMINIT ===
     init_gdt();
     // timer_phase(100); denne erstattes av init_pit();
-    printf("Hello, World!\n");
     remap_pic();
     init_idt();
     init_irq();
-    //test_div_zero();
-
     init_kernel_memory(&end);
     init_paging();
-
-  
     init_pit();
 
+    __asm__ volatile ("sti"); // Aktiver interrupts
+
+    // === SKJERMSTART ===
+    printf("Hello, World!\n");
+
+    // === SPILL ===
+    start_word_game(); // Spill starter her – fullfør først
+
+    // === TEST MALLOC ===
     void* test = malloc(100);
-        printf("Malloc adresse: 0x%x\n", (uint32_t)test);
+    printf("Malloc adresse: 0x%x\n", (uint32_t)test);
 
-    // Aktiver interrupts
-    __asm__ volatile ("sti");
 
-    play_music();
-
+    // === MUSIKK ===
+    play_music(); // Starter musikk etter spillet
 
     /* int counter = 0;
     while(true){
@@ -80,10 +82,10 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
         printf("[%d]: Slept using interrupts.\n", counter++);
     }; */
 
+    // === HVILE ===
     while (1) {
         __asm__ volatile ("hlt");
     }
-
 
     return 0;
 }

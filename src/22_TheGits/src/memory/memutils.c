@@ -45,3 +45,16 @@ void* memset (void * ptr, int value, size_t num )
         *p++ = (unsigned char)value;   // Set each byte to the given value
     return ptr;               // Return the pointer to the block of memory
 }
+//NORA LAGT TIL
+int strcmp(const char *s1, const char *s2) {
+    while (*s1 && (*s1 == *s2)) {
+        s1++; s2++;
+    }
+    return *(const unsigned char *)s1 - *(const unsigned char *)s2;
+}
+
+char *strcpy(char *dest, const char *src) {
+    char *ret = dest;
+    while ((*dest++ = *src++));
+    return ret;
+}

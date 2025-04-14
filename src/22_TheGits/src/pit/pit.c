@@ -46,3 +46,7 @@ void sleep_busy(uint32_t milliseconds){
     }
 }
 
+uint32_t pit_get_tick() {
+    return get_current_tick();
+}
+

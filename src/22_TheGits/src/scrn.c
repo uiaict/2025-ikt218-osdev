@@ -7,33 +7,41 @@ void terminal_write(const char* str, uint8_t color) {
     uint16_t* vga_buffer = VGA_MEMORY;
 
     for (size_t i = 0; str[i] != '\0'; i++) {
-        if (str[i] == '\n') {
-            // Next line
+        char c = str[i];
+
+        if (c == '\n') {
+            // Gå til ny linje
             row++;
             col = 0;
+        } else if (c == '\b') {
+            // Backspace: flytt én kolonne tilbake og slett tegnet
+            if (col > 0) {
+                col--;
+                size_t index = row * VGA_WIDTH + col;
+                vga_buffer[index] = VGA_ENTRY(' ', color); // Skriv blankt tegn
+            }
         } else {
-            // Writ to VGA-buffer
+            // Vanlig tegn – skriv det til VGA-minnet
             size_t index = row * VGA_WIDTH + col;
-            vga_buffer[index] = VGA_ENTRY(str[i], color);
+            vga_buffer[index] = VGA_ENTRY(c, color);
             col++;
 
-            // If reaching end of line, move to next line
+            // Hvis vi går utenfor høyre kant, hopp til ny linje
             if (col >= VGA_WIDTH) {
-                row++;
                 col = 0;
+                row++;
             }
         }
 
-        // If reaching end of screen, start from start.
+        // Hvis vi går utenfor nederste linje, scroll opp
         if (row >= VGA_HEIGHT) {
-            // Rull skjermen opp
             for (size_t y = 1; y < VGA_HEIGHT; y++) {
                 for (size_t x = 0; x < VGA_WIDTH; x++) {
                     vga_buffer[(y - 1) * VGA_WIDTH + x] = vga_buffer[y * VGA_WIDTH + x];
                 }
             }
 
-            // Empty last line
+            // Tøm siste linje
             for (size_t x = 0; x < VGA_WIDTH; x++) {
                 vga_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = VGA_ENTRY(' ', color);
             }
@@ -42,6 +50,7 @@ void terminal_write(const char* str, uint8_t color) {
         }
     }
 }
+
 void itoa(int num, char* str, int base) {
     int i = 0;
     int is_negative = 0;
