@@ -17,15 +17,14 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
+extern uint32_t end; // Henta fra linker.ld
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Calculate end of kernel as the end of multiboot info structure initially
     // Initialize memory system with this preliminary end pointer
     terminal_initialize();
 
-    uint32_t kernel_end = (uint32_t)mb_info_addr + mb_info_addr->reserved;
-
-    init_kernel_memory(&kernel_end);
+    init_kernel_memory(&end);
     init_paging();
     
     gdt_init();
@@ -55,8 +54,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     keyboard_init();
     printf("Keyboard logger active - Start typing\n\n");
     
+    void *mem1 = malloc(1000);
     print_memory_layout();
-
 
     // Infinite loop to keep the kernel running
     for(;;) {

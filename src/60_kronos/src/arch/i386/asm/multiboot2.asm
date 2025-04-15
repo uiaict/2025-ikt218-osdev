@@ -38,7 +38,6 @@ _start:
 	push eax
 
     call main ; Jump main function
-    hlt ; So it does not run twice
 
 section .bss
 stack_bottom:
