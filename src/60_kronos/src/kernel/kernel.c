@@ -9,6 +9,7 @@
 #include "kernel/isr.h"
 #include "drivers/terminal.h"
 #include "drivers/keyboard.h"
+#include "memory/memory.h"
 
 struct multiboot_info {
     uint32_t size;
@@ -16,8 +17,16 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
+
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
+    // Calculate end of kernel as the end of multiboot info structure initially
+    // Initialize memory system with this preliminary end pointer
     terminal_initialize();
+
+    uint32_t kernel_end = (uint32_t)mb_info_addr + mb_info_addr->reserved;
+
+    init_kernel_memory(&kernel_end);
+    init_paging();
     
     gdt_init();
     printf("GDT initialized successfully\n");
@@ -27,18 +36,12 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     
     isrs_install();
     irq_install();
-    
-    // Register handler for breakpoint exception
-    register_interrupt_handler(3, custom_interrupt_handler);
-    
-    keyboard_init();
-    
-    printf("Kronos OS initialized\n");
-    printf("Interrupt system ready\n");
-    printf("Keyboard logger active - Start typing\n\n");
-    
-    // Enable interrupts
     asm volatile("sti");
+
+    printf("Kronos OS initialized\n");
+
+    // Register handler for breakpoint exception
+    register_interrupt_handler(3, print_interrupts);
     
     printf("=== Basic Output Tests ===\n");
     printf("Hei %x\n", 42);
@@ -48,7 +51,13 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("pi = %f\n", 3.14);
     printf("pi = %f.2\n", 3.14);
     printf("pi = %f.0\n", 3.14);
+
+    keyboard_init();
+    printf("Keyboard logger active - Start typing\n\n");
     
+    print_memory_layout();
+
+
     // Infinite loop to keep the kernel running
     for(;;) {
         // Halt CPU until next interrupt

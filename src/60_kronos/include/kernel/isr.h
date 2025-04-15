@@ -22,7 +22,7 @@ void register_interrupt_handler(uint8_t n, isr_handler_t handler);
 void isrs_install();
 
 // Custom interrupt handlers
-void custom_interrupt_handler(registers_t regs);
+void print_interrupts(registers_t regs);
 void syscall_handler(registers_t regs);
 
 // These need to be defined in assembly

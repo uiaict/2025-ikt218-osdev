@@ -166,6 +166,6 @@ void irq_handler(registers_t regs) {
     }
 }
 
-void custom_interrupt_handler(registers_t regs) {
+void print_interrupts(registers_t regs) {
     printf("Custom handler for interrupt %d\n", regs.int_no);
 }
