@@ -65,13 +65,22 @@ add_executable(uiaos-kernel
 	src/gdt/descriptor_table.asm
 	src/gdt/gdt.c
 
+	# Interrupts
 	src/interrupts/isr.asm
 	src/interrupts/irq.asm
 	src/interrupts/idt.c
 	src/interrupts/irq.c
 	src/interrupts/isr/handlers.c
 
-	# VGA
+	# Memory management and paging
+	src/memory/malloc.c
+	src/memory/memory.c
+	src/memory/memory.asm
+
+	# Programable Interval Timer (PIT)
+	src/pit.c
+
+	# VGA / printing
 	src/vga.c
 )
 

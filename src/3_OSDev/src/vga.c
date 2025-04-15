@@ -160,6 +160,34 @@ void print(int colour, const char* s, ...) {
                     }
                     break;
                 }
+                case 'p': {
+                    void* ptr = va_arg(args, void*);
+                    unsigned long long addr = (unsigned long long)ptr;
+                    char buffer[16]; // Enough for 64-bit addresses
+                    int i = 0;
+                    const char hex_chars[] = "0123456789abcdef";
+                    
+                    // Handle special case for 0
+                    if (addr == 0) {
+                        buffer[i++] = '0';
+                    }
+                    
+                    // Convert address to hex string (reversed)
+                    while (addr > 0) {
+                        buffer[i++] = hex_chars[addr % 16];
+                        addr /= 16;
+                    }
+                    
+                    // Print in correct order
+                    while (i > 0) {
+                        i--;
+                        if (coloumn == width) {
+                            newLine();
+                        }
+                        vga[line * width + (coloumn++)] = buffer[i] | current_colour;
+                    }
+                    break;
+                }
                 case '%':
                     if (coloumn == width) {
                         newLine();

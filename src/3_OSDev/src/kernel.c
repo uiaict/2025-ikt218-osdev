@@ -1,22 +1,18 @@
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
-
 #include <multiboot2.h>
-
 #include "vga.h"
 #include "descriptor_table.h"
 #include "interrupts.h"
+
+extern uint32_t end;
 
 struct multiboot_info {
     uint32_t size;
     uint32_t reserved;
     struct multiboot_tag *first;
 };
-
-// Sources: http://www.brokenthorn.com/Resources/OSDev10.html
-//          https://wiki.osdev.org/Printing_To_Screen
-//          https://www.youtube.com/watch?v=dQqLT4qGiqI&list=PL2EF13wm-hWAglI8rRbdsCPq_wRpYvQQy&index=3
 
 void display_ascii_logo(void) {
     print(0x0B, "   ____   _____ _____             ____  \n");
@@ -46,9 +42,25 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_irq();
     init_irq_handlers();
     enable_interrupts();
+
+    // Initilise paging for memory management.
+    init_kernel_memory(&end);
+    init_paging();
+
+    // Print memory information.
+    print_memory_layout();
+
+    // Initilise PIT.
+    // init_pit();
     
     // Print "Hello World!" to screen
     print(0x0F, "Hello World!\n");
+
+    void* some_memory = malloc(12345); 
+    void* memory2 = malloc(54321); 
+    void* memory3 = malloc(13331);
+
+    print_memory_layout();
 
     while (1) {}
     return 0;
