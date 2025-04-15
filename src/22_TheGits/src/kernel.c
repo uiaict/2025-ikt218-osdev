@@ -60,12 +60,14 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // === SKJERMSTART ===
     printf("Hello, World!\n");
 
-    // === SPILL ===
-    start_word_game(); // Spill starter her – fullfør først
-
+   
+   
     // === TEST MALLOC ===
     void* test = malloc(100);
     printf("Malloc adresse: 0x%x\n", (uint32_t)test);
+
+    // === SPILL ===
+    start_game_menu();
 
 
     // === MUSIKK ===

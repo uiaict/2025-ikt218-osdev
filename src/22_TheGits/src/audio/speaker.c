@@ -42,28 +42,39 @@ void stop_sound() {
     outb(PC_SPEAKER_PORT, state & ~0x03); // Write the new state back to the control port
 }
 
-void play_success_melody() {
-    enable_speaker();
-
-    play_sound(131); sleep_busy(100); // C3
-    play_sound(165); sleep_busy(100); // E3
-    play_sound(196); sleep_busy(100); // G3
-    play_sound(262); sleep_busy(120); // C4
-
+//NORA
+void play_note(uint32_t freq, uint32_t duration_ms) {
     stop_sound();
-    disable_speaker();
+    sleep_busy(2);
+
+    if (freq > 0) {
+        play_sound(freq);
+        sleep_busy(duration_ms);
+        stop_sound();
+    }
+
+    sleep_busy(8); // pause etter tone
 }
 
 
-void play_error_melody() {
-    enable_speaker();
-
-    play_sound(262); sleep_busy(100); // C4
-    play_sound(196); sleep_busy(100); // G3
-    play_sound(165); sleep_busy(100); // E3
-    play_sound(131); sleep_busy(120); // C3
-
-    stop_sound();
-    disable_speaker();
+void play_start_melody() {
+    play_note(262, 120); // C4
+    play_note(330, 120); // E4
+    play_note(392, 150); // G4
+    play_note(523, 200); // C5
 }
 
+void play_victory_melody() {
+    play_note(262, 150); // C4
+    play_note(330, 150); // E4
+    play_note(392, 150); // G4
+    play_note(523, 250); // C5
+    play_note(523, 250); // C5 (ekstra dramatisk)
+}
+
+void play_failure_melody() {
+    play_note(523, 200); // C5
+    play_note(392, 150); // G4
+    play_note(330, 150); // E4
+    play_note(262, 300); // C4
+}
