@@ -51,6 +51,7 @@ void start_game_menu() {
 }
 // Stokker bokstavene i ordet for å lage utfordringen
 // Bruker her Fisher-Yates-algoritmen for å stokke bokstavene, finn kilder!!
+// Bruker tick-teller som "random seed"
 void shuffle_word(const char* word, char* shuffled) {
     int len = 0;
     while (word[len] != '\0') len++;
@@ -65,20 +66,20 @@ void shuffle_word(const char* word, char* shuffled) {
     uint32_t seed = pit_get_tick();
     uint32_t rand = seed;
 
-    // Fisher-Yates shuffle
+    // Fisher-Yates shuffle - stokker rekkefølgen på bokstavene
     for (int i = len - 1; i > 0; i--) {
         // Enkel pseudo-random (lineær kongruensgenerator)
-        rand = (rand * 1103515245 + 12345) & 0x7fffffff;
+        rand = (rand * 1103515245 + 12345) & 0x7fffffff; // enkel PRNG
         int j = rand % (i + 1);
 
-        // Bytt shuffled[i] og shuffled[j]
+        // Bytt shuffled[i] og shuffled[j] - altså bytter to bokstaver
         char tmp = shuffled[i];
         shuffled[i] = shuffled[j];
         shuffled[j] = tmp;
     }
 }
 
-
+// Kjører en runde der spilleren gjetter riktig ord
 int play_round(const char* original_word) {
     char shuffled[MAX_WORD_LENGTH];
     shuffle_word(original_word, shuffled);
@@ -89,13 +90,15 @@ int play_round(const char* original_word) {
         char guess[MAX_WORD_LENGTH];
         get_input(guess, MAX_WORD_LENGTH);
 
+        // Tillater å avslutte spillet underveis
         if (strcmp(guess, "exit") == 0) {
             return -1;
         }
 
+        // Sjekker om brukeren gjettet riktig
         if (strcmp(guess, original_word) == 0) {
             printf("Correct!\n\n");
-            highscore++;
+            highscore++; // Øker poengsummen
             return 1;
         } else {
             printf("Wrong! Attempt %d/3\n", attempt);
@@ -103,9 +106,10 @@ int play_round(const char* original_word) {
     }
 
     printf("You lost. The correct word was: %s\n\n", original_word);
-    return 0;
+    return 0; // Spilleren tapte runden
 }
 
+// Fuller word_bank med forhåndsdefinerte ord
 void collect_words() {
     strcpy(word_bank[0], "operatingsystem");
     strcpy(word_bank[1], "coding");
@@ -157,6 +161,7 @@ void collect_words() {
     word_count = 46;
 }
 
+// Sorterer highscore etter poeng, deretter tid brukt (lavest tid først)
 void sort_highscores() {
     for (int i = 0; i < highscore_count - 1; i++) {
         for (int j = 0; j < highscore_count - i - 1; j++) {
@@ -178,6 +183,7 @@ void sort_highscores() {
     }
 }
 
+// Skriver ut hele highscore-listen i sortert rekkefølge
 void show_highscores() {
     printf("\n=== Highscore List ===\n");
 
@@ -202,7 +208,7 @@ void show_highscores() {
 }
 
 
-
+// Starter nytt spill og tar imot spillerens navn
 void start_word_game() {
     char player_name[MAX_NAME_LENGTH];
     printf("Enter your name: ");
@@ -217,7 +223,7 @@ void start_word_game() {
     play_start_melody();
     printf("\nStarting the game...\n\n");
 
-    uint32_t start_time = pit_get_tick();
+    uint32_t start_time = pit_get_tick(); // Start tidtaking
 
     for (int i = 0; i < word_count; i++) {
         int result = play_round(word_bank[i]);
@@ -235,13 +241,13 @@ void start_word_game() {
         }
     }
 
-    uint32_t end_time = pit_get_tick();
+    uint32_t end_time = pit_get_tick(); // Slutttid
     uint32_t total_ms = end_time - start_time;
 
     if (highscore == word_count) {
         play_victory_melody();
     }
-
+// Spillerens poengsum og tid vises
     printf("\n=== Game Summary ===\n");
     printf("Score: %d/%d\n", highscore, word_count);
     printf("Time: %d.", total_ms / 1000);
@@ -250,13 +256,14 @@ void start_word_game() {
     if (ms < 10) printf("0");
     printf("%d seconds\n", ms);
 
+    // Lagrer resultat til hichscore-listen hvis det er plass
     if (highscore_count < MAX_HIGHSCORES) {
         strcpy(highscores[highscore_count].name, player_name);
         highscores[highscore_count].score = highscore;
         highscores[highscore_count].duration_ms = total_ms;
         highscore_count++;
     }
-    sort_highscores();
+    sort_highscores(); // Sorter før visning
 
     printf("\n=== Highscore List ===\n");
     if (highscore_count == 0) {

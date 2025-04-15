@@ -7,6 +7,9 @@
 extern char scancode_to_ascii[128];
 extern char scancode_to_ascii_shift[128];
 
+
+// Leser input fra tastatur og lagrer det i buffer (maks max_len - 1 tegn + null-terminator)
+// Støtter Enter for avslutning, backspace for sletting og vanlig tekstinput
 void get_input(char* buffer, int max_len) {
     int index = 0;
     bool done = false;
@@ -30,7 +33,7 @@ void get_input(char* buffer, int max_len) {
             if (index > 0) {
                 index--;
 
-                // Flytt markør tilbake, skriv space for å slette, flytt tilbake igjen
+                // Visuelt slett ett tegn fra skjermen
                 terminal_write("\b \b", VGA_COLOR(15, 0));
             }
         }
@@ -49,9 +52,9 @@ void get_input(char* buffer, int max_len) {
             __asm__ volatile("hlt");
         }
 
-        // Debounce pause
+        // Debounce pause: pause for å hindre dobbelregistrering
         sleep_interrupt(30);
     }
 
-    buffer[index] = '\0';
+    buffer[index] = '\0'; // Sikre at streng alltid avsluttes riktig
 }
