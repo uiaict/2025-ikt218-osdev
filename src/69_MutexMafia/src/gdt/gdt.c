@@ -29,6 +29,4 @@ void setGdtGate(uint32_t num, uint32_t base, uint32_t limit, uint8_t access, uin
     gdt_entries[num].flags = (limit >> 16) & 0x0F;
     gdt_entries[num].flags |= (gran & 0xF0);
     gdt_entries[num].access = access;
-    
-    
     }

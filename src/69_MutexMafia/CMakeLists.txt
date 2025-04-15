@@ -68,6 +68,8 @@ add_executable(uiaos-kernel
 	src/idt/idt.asm
 	src/utils/utils.c
 	src/utils/utils.h
+	src/io/keyboard.c
+	src/io/keyboard.h
 	
 )
 

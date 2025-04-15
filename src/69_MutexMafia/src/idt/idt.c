@@ -2,23 +2,103 @@
 //#include "libc/stdio.h" 
 //#include "libc/string.h"
 #include "libc/stdint.h"
-
 #include "../utils/utils.h"
 #include "idt.h"
 #include "../io/printf.h"
 
-
-
 idt_entry_struct idt_entries[256];
 idt_ptr_struct idt_ptr;
 
+//henter flush funksjonen
 extern void idt_flush(uint32_t);
 
+
+void *irq_routines[16] = {
+    0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0
+};
+
+void irq_install_handler (int irq, void (*handler)(struct InterruptRegisters *r
+)){
+    irq_routines[irq] = handler;
+}
+void irq_uninstall_handler(int irq){
+    irq_routines[irq] = 0;
+}
+void irq_handler(struct InterruptRegisters *regs){
+   void (*handler)(struct InterruptRegisters *regs);
+   handler = irq_routines[regs ->int_no - 32];
+    if (handler){
+    handler(regs);
+    }
+
+    //else{
+    //    mafiaPrint("Unhandled IRQ %d\n", regs->int_no);
+    //}
+
+    if (regs->int_no >= 40){
+        outPortB(0xA0, 0x20); // sender end of interrupt (EoI) til slave PIC
+    }
+outPortB(0x20, 0x20); // sender end of interrupt (EoI) til master PIC
+};
+
+void setIdtGate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags){
+    idt_entries[num].base_low = base & 0xFFFF;
+    idt_entries[num].base_high = (base >> 16) & 0xFFFF;
+    idt_entries[num].selector = selector;
+    idt_entries[num].zero = 0;
+    idt_entries[num].flags = flags | 0x60;
+}
+
+const char *exception_message[] = {
+    "Division By Zero",
+    "Debug",
+    "Non Maskable Interrupt",
+    "Breakpoint",
+    "Into Detected Overflow",
+    "Out of Bounds",
+    "Invalid Opcode",
+    "No Coprocessor",
+    "Double Fault",
+    "Coprocessor Segment Overrun",
+    "Bad TSS",
+    "Segment Not Present",
+    "Stack Fault",
+    "General Protection Fault",
+    "Page Fault",
+    "Unknown Interrupt",
+    "Coprocessor Fault",
+    "Alignment Check",
+    "Machine Check",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",     
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved"
+};
+void isr_handler(struct InterruptRegisters* regs){
+    if (regs->int_no < 32){
+        mafiaPrint("Exception %d triggered! Error code: %d\n", regs->int_no, regs->err_code);
+        mafiaPrint("%s\n", exception_message[regs->int_no]);
+        __asm__ volatile("cli; hlt");
+    }
+}
+
 void initIdt(){
-    //  Set base and limit for IDTR
+    //  Set base og limit for IDT ptr struct
     idt_ptr.base = (uint32_t)&idt_entries;
     idt_ptr.limit = (uint16_t)(sizeof(idt_entry_struct) * 256 - 1);
 
+    //  nullstille IDT
     memset(&idt_entries, 0, sizeof(idt_entry_struct) * 256);
 
     outPortB(0x20, 0x11); // Init master PIC
@@ -31,12 +111,9 @@ void initIdt(){
     outPortB(0xA1, 0x01); // Aktiver 8086 mode
     outPortB(0x21, 0x00); // Unmask alle IRQ-er på master
     outPortB(0xA1, 0x00); // Unmask alle IRQ-er på slave
+    outPortB(0x21, inPortB(0x21) & 0x02); // Unmask IRQ1 (tastatur)
 
     setIdtGate( 0, (uint32_t)isr0 , 0x08, 0x8E);
-
-    //mafiaPrint("IDT Entry 0: base_low = 0x%X, base_high = 0x%X\n", idt_entries[0].base_low, idt_entries[0].base_high);
-
-
     setIdtGate( 1, (uint32_t)isr1 , 0x08, 0x8E);
     setIdtGate( 2, (uint32_t)isr2 , 0x08, 0x8E);
     setIdtGate( 3, (uint32_t)isr3 , 0x08, 0x8E);
@@ -85,89 +162,8 @@ void initIdt(){
     setIdtGate(46, (uint32_t)irq14, 0x08, 0x8E);
     setIdtGate(47, (uint32_t)irq15, 0x08, 0x8E);
 
+    //setIdtGate(128, (uint32_t)isr128, 0x08, 0x8E); //for systemkall, ikke implementert i asm
+    //setIdtGate(177, (uint32_t)isr177, 0x08, 0x8E); //for systemkall, ikke implementert i asm
 
-
-    setIdtGate(128, (uint32_t)isr128, 0x08, 0x8E); //for systemkall
-    setIdtGate(177, (uint32_t)isr177, 0x08, 0x8E); //for systemkall
-
-    idt_flush((uint32_t)&idt_ptr); // Load IDT
-
+    idt_flush((uint32_t)&idt_ptr); // laster inn IDT
 }
-
-void setIdtGate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags){
-    idt_entries[num].base_low = base & 0xFFFF;
-    idt_entries[num].base_high = (base >> 16) & 0xFFFF;
-    idt_entries[num].selector = selector;
-    idt_entries[num].zero = 0;
-    idt_entries[num].flags = flags | 0x60;
-}
-
-const char *exception_message[] = {
-    "Division By Zero",
-    "Debug",
-    "Non Maskable Interrupt",
-    "Breakpoint",
-    "Into Detected Overflow",
-    "Out of Bounds",
-    "Invalid Opcode",
-    "No Coprocessor",
-    "Double Fault",
-    "Coprocessor Segment Overrun",
-    "Bad TSS",
-    "Segment Not Present",
-    "Stack Fault",
-    "General Protection Fault",
-    "Page Fault",
-    "Unknown Interrupt",
-    "Coprocessor Fault",
-    "Alignment Check",
-    "Machine Check",
-    "Reserved",
-    "Reserved",
-    "Reserved",
-    "Reserved",     
-    "Reserved",
-    "Reserved",
-    "Reserved",
-    "Reserved",
-    "Reserved",
-    "Reserved",
-    "Reserved",
-    "Reserved",
-    "Reserved",
-    "Reserved"
-};
-
-
-void isr_handler(struct InterruptRegisters* regs){
-    if (regs->int_no < 32){
-        mafiaPrint("Exception %d triggered! Error code: %d\n", regs->int_no, regs->err_code);
-        mafiaPrint("%s\n", exception_message[regs->int_no]);
-        __asm__ volatile("cli; hlt");
-    }
-}
-
-void *irq_routines[16] = {
-    0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0
-};
-
-void irq_install_handler (int irq, void (*handler)(struct InterruptRegisters *r
-)){
-    irq_routines[irq] = handler;
-}
-void irq_uninstall_handler(int irq){
-    irq_routines[irq] = 0;
-}
-void irq_handler(struct InterruptRegisters *regs)
-{
-   void (*handler)(struct InterruptRegisters *regs);
-   handler = irq_routines[regs ->int_no - 32];
-if (handler){
-    handler(regs);
-}
-if (regs->int_no >= 40){
-    outPortB(0xA0, 0x20);
-}
-outPortB(0x20, 0x20);
-};

@@ -3,6 +3,7 @@
 
 void mafiaPrint(const char *format, ...);
 void int_to_string(int num, char *str, int base);
-void terminal_write(const char *str);
+//void terminal_write(const char *str);
+void putc(char c);
 
 #endif

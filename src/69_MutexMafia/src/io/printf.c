@@ -20,11 +20,12 @@ void terminal_write(const char str) {
 */
 void putc(char c) {
     if (c == '\n'){
-        cursor = (cursor / 80 + 1) * 80; 
+        cursor = (cursor / 160 + 1) * 160; 
     }else{
         video_memory[cursor++] = c;   
         video_memory[cursor++] = 0x07;  
         }
+
     
 }
 
@@ -68,11 +69,10 @@ void int_to_string(int num, char *str, int base)
     }
 }
 
-void mafiaPrint(const char *format,...)
-{
+void mafiaPrint(const char *format,...){
     va_list args;
     va_start(args, format);
-    char buffer[20];
+    char buffer[32];
 
 
     for (int i = 0; format[i] != '\0'; i++)

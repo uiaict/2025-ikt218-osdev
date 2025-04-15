@@ -6,6 +6,7 @@
 #include "gdt/gdt.h"
 #include "io/printf.h"
 #include "idt/idt.h"
+#include "io/keyboard.h"
 
 
 
@@ -20,8 +21,10 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     initGdt();
     initIdt();
     mafiaPrint("Yeeeee drugga\n");
-    asm("int $0x0");
-    //while (1){}
+    initKeyboard();
+    
+    //asm("int $0x0"); //testing av division by zero exception
+    while (1){}
     return 0;
 
 }

@@ -20,10 +20,25 @@ typedef struct {
 } __attribute__((packed)) idt_ptr_struct;
 
 
+struct InterruptRegisters
+{
+    uint32_t cr2;
+    uint32_t ds;
+    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
+    uint32_t int_no, err_code;
+    uint32_t eip, cs, eflags, useresp, ss;
+};
+
+
+
 void initIdt();
 void setIdtGate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags);
-
 void isr_handler(struct InterruptRegisters* regs);
+void irq_install_handler(int irq, void (*handler)(struct InterruptRegisters *r));
+void irq_uninstall_handler(int irq);
+void irq_handler(struct InterruptRegisters *regs);
+void irq_routine(struct InterruptRegisters *regs);
+
 
 
 extern void isr0 ();
@@ -76,8 +91,8 @@ extern void irq13();
 extern void irq14();
 extern void irq15();
 
-extern void isr128();
-extern void isr177();
+//extern void isr128(); // for system call
+//extern void isr177(); // for system call
 
 
 #endif

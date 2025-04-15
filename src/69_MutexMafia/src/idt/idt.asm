@@ -22,6 +22,14 @@ RET
         JMP isr_common_stub
 %endmacro
 
+%macro IRQ 1
+    global irq%1
+    irq%1:
+        CLI
+        PUSH LONG 0
+        JMP irq_common_stub
+%endmacro
+
 %macro IRQ 2
     global irq%1
     irq%1:
@@ -30,6 +38,8 @@ RET
         PUSH LONG %2
         JMP irq_common_stub
 %endmacro
+
+
 
 ISR_NOERRCODE 0
 ISR_NOERRCODE 1
