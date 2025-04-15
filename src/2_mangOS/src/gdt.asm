@@ -1,23 +1,3 @@
-; EXTERN gdt_ptr  ; Imports gdt_ptr
-; GLOBAL load_gdt ; Exports load_gdt
-
-; section .text
-; load_gdt:
-;     mov eax, [esp+4] ; Get the address of the GDT
-;     lgdt [gdt_ptr]
-
-;     mov ax, 0x10 ; Set up data segments to point to data segment (0x10)
-
-;     mov ds, ax ; Data segment
-;     mov es, ax ; Extra segment
-;     mov fs, ax ; FS segment
-;     mov gs, ax ; GS segment
-;     mov ss, ax ; Stack segment
-    
-;     jmp 0x08:.flush
-; .flush:
-;     ret
-
 [GLOBAL gdt_flush]    ; Allows the C code to call gdt_flush().
 
 gdt_flush:
