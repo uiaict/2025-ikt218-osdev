@@ -7,6 +7,7 @@
 #include "kernel/gdt.h"
 #include "kernel/idt.h"
 #include "kernel/isr.h"
+#include "kernel/pit.h"
 #include "drivers/terminal.h"
 #include "drivers/keyboard.h"
 #include "memory/memory.h"
@@ -24,38 +25,36 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialize memory system with this preliminary end pointer
     terminal_initialize();
 
-    init_kernel_memory(&end);
-    init_paging();
-    
     gdt_init();
-    printf("GDT initialized successfully\n");
-    
     idt_init();
-    printf("IDT initialized successfully\n");
     
     isrs_install();
     irq_install();
-    asm volatile("sti");
+    asm volatile("sti"); // Enable interrupts
 
-    printf("Kronos OS initialized\n");
+    init_kernel_memory(&end);
+    init_paging();
+
+    print_memory_layout();
+    keyboard_init();
 
     // Register handler for breakpoint exception
     register_interrupt_handler(3, print_interrupts);
-    
-    printf("=== Basic Output Tests ===\n");
-    printf("Hei %x\n", 42);
-    printf("Hei %u\n", 0x0F);
-    printf("Hei %s\n", "Amund");
-    printf("Hei %c\n", 'A');
-    printf("pi = %f\n", 3.14);
-    printf("pi = %f.2\n", 3.14);
-    printf("pi = %f.0\n", 3.14);
 
-    keyboard_init();
-    printf("Keyboard logger active - Start typing\n\n");
+    init_pit();
+
+    printf("Hello World!\n");
     
     void *mem1 = malloc(1000);
-    print_memory_layout();
+
+    int counter = 0;
+    printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+    sleep_busy(1000);
+    printf("[%d]: Slept using busy-waiting.\n", counter++);
+
+    printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+    sleep_interrupt(1000);
+    printf("[%d]: Slept using interrupts.\n", counter++);
 
     // Infinite loop to keep the kernel running
     for(;;) {
