@@ -66,6 +66,9 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     void* test = malloc(100);
     printf("Malloc adresse: 0x%x\n", (uint32_t)test);
 
+    
+    sleep_busy(100);   // Kort delay (100ms)
+
     // === SPILL ===
     start_game_menu();
 

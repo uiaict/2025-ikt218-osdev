@@ -42,13 +42,13 @@ void stop_sound() {
     outb(PC_SPEAKER_PORT, state & ~0x03); // Write the new state back to the control port
 }
 
-//NORA
+// Game melodies
 void play_note(uint32_t freq, uint32_t duration_ms) {
     stop_sound();
     sleep_busy(2);
 
     if (freq > 0) {
-        play_sound(freq);
+        play_sound(freq); // Aktiverer tone via PC speaker
         sleep_busy(duration_ms);
         stop_sound();
     }
@@ -56,7 +56,7 @@ void play_note(uint32_t freq, uint32_t duration_ms) {
     sleep_busy(8); // pause etter tone
 }
 
-
+// Start melody
 void play_start_melody() {
     play_note(262, 120); // C4
     play_note(330, 120); // E4
@@ -64,14 +64,16 @@ void play_start_melody() {
     play_note(523, 200); // C5
 }
 
+// Victory melody
 void play_victory_melody() {
     play_note(262, 150); // C4
     play_note(330, 150); // E4
     play_note(392, 150); // G4
     play_note(523, 250); // C5
-    play_note(523, 250); // C5 (ekstra dramatisk)
+    play_note(523, 250); // C5 
 }
 
+// Failure melody
 void play_failure_melody() {
     play_note(523, 200); // C5
     play_note(392, 150); // G4
