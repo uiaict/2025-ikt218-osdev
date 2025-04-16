@@ -2,20 +2,14 @@
 #include "isr.h"
 #include "libc/stdint.h"
 #include "common.h"
+#include "gdt.h"
 
 gdt_entry_t gdt_entries[5];
 gdt_ptr_t gdt_ptr;
 
 
-extern void gdt_flush(uint32_t gdt_ptr);
 
-static void init_gdt();
-
-static void gdt_set_gate(uint32_t , uint32_t , uint32_t , uint8_t , uint8_t );
-
-
-
-static void init_gdt()
+void init_gdt()
 {
     gdt_ptr.limit = (sizeof(gdt_entry_t)* 5)-1;
     gdt_ptr.base = (uint32_t)&gdt_entries;
@@ -28,7 +22,7 @@ static void init_gdt()
     gdt_flush((uint32_t) &gdt_ptr);
 
 }
-static void gdt_set_gate(uint32_t num , uint32_t base, uint32_t limit, uint8_t access, uint8_t gran)
+void gdt_set_gate(uint32_t num , uint32_t base, uint32_t limit, uint8_t access, uint8_t gran)
 {
     gdt_entries[num].base_low = (base & 0xFFFF);
     gdt_entries[num].base_middle = ((base >> 16)& 0xFF);

@@ -2,6 +2,7 @@
 #define ISR_H
 
 #include "gdt_idt_table.h"
+#include "idt.h"
 
 #define IRQ0 32
 #define IRQ1 33
@@ -20,6 +21,9 @@
 #define IRQ14 46
 #define IRQ15 47
 
+#define ISR0 0
+#define ISR1 1
+#define ISR2 2
 
 typedef struct registers
 {

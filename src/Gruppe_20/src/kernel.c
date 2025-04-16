@@ -5,9 +5,10 @@
 
 #include <multiboot2.h>
 #include "Descriptor_tables/gdt_idt_table.h"
-#include "Descriptor_tables/print.h"
 #include "Descriptor_tables/gdt.h"
 #include "Descriptor_tables/idt.h"
+#include "Descriptor_tables/isr.h"
+#include "Descriptor_tables/print.h"
 
 
 

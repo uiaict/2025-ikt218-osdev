@@ -1,8 +1,8 @@
 #ifndef GDT_IDT_TABLE_H
 #define GDT_IDT_TABLE_H
+
 #include "libc/stdint.h"
 
-//#include "lib/system.h"
 struct gdt_entry {
     uint16_t limit_low;
     uint16_t base_low;
