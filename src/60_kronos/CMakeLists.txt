@@ -60,6 +60,7 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 add_executable(uiaos-kernel 
 	src/arch/i386/asm/multiboot2.asm # TODO: Add multiboot2 support
 	src/kernel/kernel.c
+	src/kernel/kernel.cpp
 	src/arch/i386/asm/gdt.asm
 	src/arch/i386/asm/idt.asm
 	src/arch/i386/asm/isrs.asm
@@ -76,6 +77,8 @@ add_executable(uiaos-kernel
 	src/sys/io.c
 	src/libc/stdio.c
 	src/libc/string.c
+	src/libcpp/stddef.cpp
+	src/musicplayer/musicplayer.cpp
 )
 
 # Include directories for the kernel target
@@ -85,12 +88,11 @@ target_include_directories(uiaos-kernel PUBLIC include)
 # Specify compile options for C and C++
 target_compile_options(uiaos-kernel PRIVATE
     $<$<COMPILE_LANGUAGE:C>:-Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g>
-    $<$<COMPILE_LANGUAGE:CXX>:-Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -g>
+    $<$<COMPILE_LANGUAGE:CXX>:-Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -fno-exceptions -fno-rtti -g>
     $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-m32 -march=i386 -Wno-unused-variable -Wno-unused-parameter>
 )
 
 
-# Specify link options for C and C++
 target_link_options(uiaos-kernel PUBLIC
     $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-ffreestanding -nostdlib -fno-builtin -static -pie -O0 -T${OS_KERNEL_LINKER} -g>
 )
@@ -100,6 +102,8 @@ target_link_options(
 	uiaos-kernel
 	PUBLIC "-ffreestanding"
 	PUBLIC "-nostdlib"
+	PUBLIC "-fno-exceptions"
+	PUBLIC "-fno-rtti"
 	PUBLIC "-static"
 	PUBLIC "-pie"
 	PUBLIC "-T${OS_KERNEL_LINKER}"

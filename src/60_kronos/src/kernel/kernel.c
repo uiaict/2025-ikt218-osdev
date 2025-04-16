@@ -19,6 +19,7 @@ struct multiboot_info {
 };
 
 extern uint32_t end; // Henta fra linker.ld
+int kernel_main(void);
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Calculate end of kernel as the end of multiboot info structure initially
@@ -56,11 +57,6 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     sleep_interrupt(1000);
     printf("[%d]: Slept using interrupts.\n", counter++);
 
-    // Infinite loop to keep the kernel running
-    for(;;) {
-        // Halt CPU until next interrupt
-        asm volatile("hlt");
-    }
-    
-    return 0;
+
+    return kernel_main();
 }
