@@ -61,7 +61,14 @@ add_executable(uiaos-kernel
 	src/multiboot2.asm
     src/kernel.c
 	src/gdt.c      
-	src/arch/x86_64/gdt_flush.asm
+	src/descriptor_table.asm
+	src/idt.c
+	src/irq.c
+	src/isr.c
+	src/common.c
+	src/isr_asm.asm
+	src/keyboard.c
+	src/isr.handlers.c
 )
 set_source_files_properties(src/multiboot2.asm PROPERTIES LANGUAGE ASM_NASM)
 
