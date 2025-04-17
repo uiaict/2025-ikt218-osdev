@@ -8,6 +8,7 @@
 extern void init_gdt(void);
 extern void start_isr_handlers();
 extern void start_keyboard();
+extern void display_prompt();
 
 struct multiboot_info {
     uint32_t size;
@@ -20,33 +21,106 @@ static char* video_memory = (char*)0xB8000;
 static int cursor_x = 0;
 static int cursor_y = 0;
 
-// Write a string to the terminal
+// Function to set the cursor position
+void update_cursor() {
+    // Calculate position
+    uint16_t pos = cursor_y * 80 + cursor_x;
+    
+    // Send position to VGA controller
+    outb(0x3D4, 14);                // Set high byte
+    outb(0x3D5, (pos >> 8) & 0xFF); // Send high byte
+    outb(0x3D4, 15);                // Set low byte
+    outb(0x3D5, pos & 0xFF);        // Send low byte
+}
+
+// Scroll the terminal up one line
+void terminal_scroll() {
+    // Move all lines up by one
+    for(int y = 0; y < 24; y++) {  // 25-1=24 lines to move
+        for(int x = 0; x < 80; x++) {
+            int current = (y * 80 + x) * 2;
+            int next = ((y + 1) * 80 + x) * 2;
+            
+            video_memory[current] = video_memory[next];
+            video_memory[current + 1] = video_memory[next + 1];
+        }
+    }
+    
+    // Clear the last line
+    for(int x = 0; x < 80; x++) {
+        int position = (24 * 80 + x) * 2;
+        video_memory[position] = ' ';
+        video_memory[position + 1] = 0x0F;  // White on black
+    }
+}
+
 void terminal_write(const char* str) {
     while (*str) {
+        // Handle backspace
+        if (*str == '\b') {
+            if (cursor_x > 0) {
+                cursor_x--;
+                // Erase the character at current position
+                int offset = (cursor_y * 80 + cursor_x) * 2;
+                video_memory[offset] = ' ';
+                video_memory[offset + 1] = 0x0F;  // White on black
+            }
+            str++;
+            continue;
+        }
+        
         // Handle newline
         if (*str == '\n') {
             cursor_x = 0;
             cursor_y++;
+           
+            // Check if we need to scroll
+            if (cursor_y >= 25) {
+                terminal_scroll();
+                cursor_y = 24;  // Stay on last line
+            }
+           
             str++;
             continue;
         }
-
+        
         // Check if we need to wrap to next line
         if (cursor_x >= 80) {
             cursor_x = 0;
             cursor_y++;
+           
+            // Check if we need to scroll
+            if (cursor_y >= 25) {
+                terminal_scroll();
+                cursor_y = 24;  // Stay on last line
+            }
         }
-
+        
         // Calculate the offset in video memory
         int offset = (cursor_y * 80 + cursor_x) * 2;
-        
+       
         // Write character and color attribute
         video_memory[offset] = *str;
         video_memory[offset + 1] = 0x0F;  // White text on black background
-
+        
         str++;
         cursor_x++;
     }
+    update_cursor();
+}
+
+// Clear the terminal screen
+void terminal_clear() {
+    // Fill the entire screen with spaces
+    for(int i = 0; i < 80 * 25; i++) {
+        video_memory[i * 2] = ' ';
+        video_memory[i * 2 + 1] = 0x0F;  // White text on black background
+    }
+    
+    // Reset cursor position
+    cursor_x = 0;
+    cursor_y = 0;
+    update_cursor();
 }
 
 static void itoa(int value, char* str, int base) {
@@ -214,10 +288,10 @@ int main(uint32_t magic, void* mb_info) {
     
     terminal_printf("Interrupt testing complete.\n");
     terminal_printf("System is ready. You can start typing...\n");
-    
+    display_prompt();
     // Main loop
     while(1) {
-        asm volatile("hlt");  // Halt until next interrupt
+        asm volatile("hlt");
     }
     
     return 0;

@@ -1,11 +1,14 @@
-
 #include "common.h"
 
+// This file contains common functions and definitions used in the OS
+
+// Send a byte to I/O port
 void outb(uint16_t port, uint8_t value)
 {
     asm volatile ("outb %1, %0" : : "dN" (port), "a" (value));
 }
 
+// Read a byte from I/O port
 uint8_t inb(uint16_t port)
 {
    uint8_t ret;
@@ -13,6 +16,7 @@ uint8_t inb(uint16_t port)
    return ret;
 }
 
+// Read a word (2 bytes) to I/O port
 uint16_t inw(uint16_t port)
 {
    uint16_t ret;

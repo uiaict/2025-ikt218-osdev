@@ -1,25 +1,27 @@
 #include "interrupts.h"
 #include "libc/system.h"
 
-// Forward declaration of terminal_printf from your kernel
+// Fetches terminal printf function
 extern void terminal_printf(const char* format, ...);
 
-// controllers for specific interrupts
+// Division by zero controller
+// This function is called when a division by zero interrupt occurs
 void division_by_zero_controller(registers_t* regs, void* context) {
     terminal_printf("Interrupt 0: Division by Zero Error\n");
 }
-
+// Debug controller
+// This function is called when a debug interrupt occurs
 void debug_controller(registers_t* regs, void* context) {
     terminal_printf("Interrupt 1: Debug Exception\n");
 }
-
+// Non-Maskable Interrupt controller
+// This function is called when a non-maskable interrupt occurs
 void nmi_controller(registers_t* regs, void* context) {
     terminal_printf("Interrupt 2: Non-Maskable Interrupt\n");
 }
 
-// Initialize the ISR controllers
+// Starts the interrupt service routine (ISR) controllers
 void start_isr_controllers() {
-    // Register at least three specific controllers
     load_interrupt_controller(0, division_by_zero_controller, NULL);
     load_interrupt_controller(1, debug_controller, NULL);
     load_interrupt_controller(2, nmi_controller, NULL);

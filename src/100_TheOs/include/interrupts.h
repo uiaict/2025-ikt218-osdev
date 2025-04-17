@@ -4,6 +4,7 @@
 #include "libc/stdint.h"
 #include "descriptor_tables.h"
 
+// Definitions for Interrupts and IRQs
 #define ISR1 1
 #define ISR2 2
 #define ISR3 3
@@ -53,7 +54,7 @@
 #define IRQ15 47
 #define IRQ_COUNT 16
 
-
+// Fetch the isr functions
 extern void isr0 ();
 extern void isr1 ();
 extern void isr2 ();
@@ -103,48 +104,41 @@ extern void irq13();
 extern void irq14();
 extern void irq15();
 
-
+// Start irq controller
 void start_irq();
+// Start interrupt functions
 void start_interrupts();
 
+// Struct for registers
 typedef struct registers
   {
-      uint32_t ds;                  // Data segment selector
-      uint32_t edi, esi, ebp, useless_value, ebx, edx, ecx, eax; // Pushed by pusha.
-      uint32_t int_no, err_code;    // Interrupt number and error code (if applicable)
-      uint32_t eip, cs, eflags, esp, ss; // Pushed by the processor automatically.
+      uint32_t ds;                 
+      uint32_t edi, esi, ebp, useless_value, ebx, edx, ecx, eax; 
+      uint32_t int_no, err_code;    
+      uint32_t eip, cs, eflags, esp, ss;
   } registers_t;
 
 
-// Enables registration of callbacks for interrupts or IRQs.
-// For IRQs, to ease confusion, use the #defines above as the
-// first parameter.
+// Isr and registers function
 typedef void (*isr_t)(registers_t*, void*);
 
 
-// Structure to hold information about an interrupt controller
+// Int controller struct
 struct int_controller_t {
   int num;
   isr_t controller;
   void *data;
 };
 
-// Define an interrupt controller
+// Register the isr controller
 void register_irq_controller(int irq, isr_t controller, void* ctx);
+
+// Load the interrupt controller
 void load_interrupt_controller(uint8_t n, isr_t controller, void*);
 
-
+// Static variables for the interrupt controller
 static struct int_controller_t int_controllers[IDT_ENTRIES];
 static struct int_controller_t irq_controllers[IRQ_COUNT];
-
-
-#define IRQ_COUNT 16
-
-
-
-
-
-
 
 
 

@@ -4,12 +4,21 @@
 
 extern void terminal_printf(const char* format, ...);
 
+// Constants for keyboard input
+#define CHAR_NONE 0
+#define CHAR_ENTER 2
+#define CHAR_SPACE 3
+#define CHAR_BACKSPACE 8
+
 // Keyboard buffer
 #define KEYBOARD_BUFFER_SIZE 256
 static char keyboard_buffer[KEYBOARD_BUFFER_SIZE];
 static int buffer_pos = 0;
 
+// Command count for system info
+static int command_count = 0;
 
+// Almost all Scan codes
 typedef enum {
     KEY_ESC = 1,
     KEY_1 = 2,
@@ -24,6 +33,7 @@ typedef enum {
     KEY_0 = 11,
     KEY_DASH = 12,
     KEY_EQUALS = 13,
+    KEY_BACKSPACE = 14,
     KEY_TAB = 15,
     KEY_Q = 16,
     KEY_W = 17,
@@ -95,23 +105,16 @@ typedef enum {
     KEY_DEL = 83,
 } scan_code;
 
-#define CHAR_NONE 0
-#define CHAR_ENTER 2
-#define CHAR_SPACE 3
-
 static bool capsEnabled = false;
 static bool shiftEnabled = false;
-char scancode_to_ascii(unsigned char* scan_code) {
-    unsigned char a = *scan_code;
-    switch (a){
-       case KEY_RSHIFT:
-       case KEY_LSHIFT:
-        // Using shift toggle
-            shiftEnabled = !shiftEnabled;
-            return CHAR_NONE;
-            
+char scancode_to_ascii(unsigned char scancode) {  
+    if (scancode == KEY_LSHIFT || scancode == KEY_RSHIFT) {
+        shiftEnabled = true;
+        return CHAR_NONE;
+    }
+    
+    switch (scancode){
        case KEY_CAPS:
-       // Caps toggle
             capsEnabled = !capsEnabled;
             return CHAR_NONE;
 
@@ -119,7 +122,10 @@ char scancode_to_ascii(unsigned char* scan_code) {
             return CHAR_ENTER;
 
        case KEY_SPACE:
-            return CHAR_SPACE;
+            return ' ';
+            
+       case KEY_BACKSPACE:
+            return CHAR_BACKSPACE;
 
        case KEY_END:
        case KEY_DOWN:
@@ -245,39 +251,200 @@ char scancode_to_ascii(unsigned char* scan_code) {
     }
 }
 
+// Command buffer
+#define COMMAND_BUFFER_SIZE 256
+static char command_buffer[COMMAND_BUFFER_SIZE];
+static int cmd_buffer_pos = 0;
 
-// Key states
-static bool shift_pressed = false;
-static bool caps_pressed = false;
+// Display prompt
+void display_prompt() {
+    terminal_printf("The...OS> ");
+}
 
-// Keyboard IRQ controller (IRQ1)
+// Process a command
+void process_command(const char* cmd) {
+     // Implement basic commands
+     if (cmd[0] == 0) {
+         // Empty command
+         return;
+
+         
+     }
+     // Increment command count
+     command_count++;
+     
+     // Simple command checking with string comparison
+     if (strcmp(cmd, "help") == 0) {
+         terminal_printf("Available commands:\n");
+         terminal_printf("  help     - Display this help message\n");
+         terminal_printf("  clear    - Clear the screen\n");
+         terminal_printf("  version  - Display OS version\n");
+         terminal_printf("  echo     - Echo back text\n");
+         terminal_printf("  int0     - Test divide-by-zero interrupt\n");
+         terminal_printf("  int1     - Test debug interrupt\n");
+         terminal_printf("  int2     - Test NMI interrupt\n");
+         terminal_printf("  sysinfo  - Shows System information\n");
+     }
+     // Check for echo command
+     else if (strncmp(cmd, "echo ", 5) == 0) {
+         terminal_printf("%s\n", cmd + 5);
+     }
+     // Check for clear command
+     else if (strcmp(cmd, "clear") == 0) {
+          // Call the clear function instead of printing newlines
+          extern void terminal_clear(void);
+          terminal_clear();
+     }
+     // Check for version command
+     else if (strcmp(cmd, "version") == 0) {
+         terminal_printf("myOS version 0.1\n");
+     }
+     // Check for int0 command
+     else if (strcmp(cmd, "int0") == 0) {
+         terminal_printf("Triggering divide-by-zero interrupt...\n");
+         asm volatile("int $0x0");
+     }
+     // Check for int1 command
+     else if (strcmp(cmd, "int1") == 0) {
+         terminal_printf("Triggering debug interrupt...\n");
+         asm volatile("int $0x1");
+     }
+     // Check for int2 command
+     else if (strcmp(cmd, "int2") == 0) {
+         terminal_printf("Triggering NMI interrupt...\n");
+         asm volatile("int $0x2");
+     }
+     // Check for sysinfo command
+     else if (strcmp(cmd, "sysinfo") == 0) {
+          // Placeholders for system information
+          // Will be implemented after Pit and Memory support
+          int uptime_seconds = 0;
+          int memory_used = 0;
+
+          // Display system information
+          terminal_printf("System Information\n");
+          terminal_printf("------------------\n");
+          terminal_printf("OS Name: myOS\n");
+          terminal_printf("Version: 0.1\n");
+          terminal_printf("Architecture: x86 (32-bit)\n");
+          terminal_printf("Uptime: %d seconds\n", uptime_seconds); 
+          terminal_printf("Commands executed: %d\n", command_count);
+          terminal_printf("Memory used: %d KB\n", memory_used / 1024);
+     }
+     else {
+         terminal_printf("Unknown command: %s\n", cmd);
+         terminal_printf("Type 'help' for available commands\n");
+     }
+ }
+
+// Keyboard controller function
 void keyboard_controller(registers_t* regs, void* context) {
-    unsigned char scancode = inb(0x60); // Read scancode from port 0x60
+    unsigned char scancode = inb(0x60);
     
+    // Check for buffer overflow
+    if (scancode & 0x80) {
+        scancode &= 0x7F;
+        
+        // Handle key release
+        if (scancode == KEY_LSHIFT || scancode == KEY_RSHIFT) {
+            shiftEnabled = false;
+        }
+        
+        return;
+    }
     
-    char ascii = scancode_to_ascii(&scancode);
-    
-    switch (ascii) {
-        case CHAR_NONE:
-            return;
-        case CHAR_ENTER:
-            terminal_printf("\n");
-            break;
-        case CHAR_SPACE:
+    // Check for buffer overflow
+    if (scancode == KEY_ENTER) {
+        terminal_printf("\n");
+        
+        // Check for command buffer overflow
+        command_buffer[cmd_buffer_pos] = '\0';
+        
+        // Process the command
+        process_command(command_buffer);
+        
+        // Clear the command buffer
+        cmd_buffer_pos = 0;
+        for (int i = 0; i < COMMAND_BUFFER_SIZE; i++) {
+            command_buffer[i] = 0;
+        }
+        
+        // Display the prompt again
+        display_prompt();
+        return;
+    }
+    // if space is pressed add space to command buffer
+    else if (scancode == KEY_SPACE) {
+        if (cmd_buffer_pos < COMMAND_BUFFER_SIZE - 1) {
+            command_buffer[cmd_buffer_pos++] = ' ';
             terminal_printf(" ");
-            break;
-        default:
-            terminal_printf("%c", ascii);
+        }
+        return;
+    }
+    // if backspace is pressed remove last character from command buffer
+    else if (scancode == KEY_BACKSPACE) {
+        if (cmd_buffer_pos > 0) {
+            cmd_buffer_pos--;
+            command_buffer[cmd_buffer_pos] = 0;
+            terminal_printf("\b \b");
+        }
+        return;
+    }
+    
+    // Convert scancode to ASCII
+    // and add it to the command buffer
+    char ascii = scancode_to_ascii(scancode);
+    
+     // Check for valid ASCII character
+    if (ascii != CHAR_NONE && cmd_buffer_pos < COMMAND_BUFFER_SIZE - 1) {
+        command_buffer[cmd_buffer_pos++] = ascii;
+        terminal_printf("%c", ascii);
     }
 }
 
-// Initialize keyboard controller
-void start_keyboard() {
-    // Initialize key states
-    shift_pressed = false;
-    caps_pressed = false;
+// String comparison functions
+int strcmp(const char* s1, const char* s2) {
+    while (*s1 && (*s1 == *s2)) {
+        s1++;
+        s2++;
+    }
+    return *(const unsigned char*)s1 - *(const unsigned char*)s2;
+}
+/// String comparison with length limit
+int strncmp(const char* s1, const char* s2, size_t n) {
+    while (n && *s1 && (*s1 == *s2)) {
+        ++s1;
+        ++s2;
+        --n;
+    }
+    if (n == 0) {
+        return 0;
+    }
+    return *(const unsigned char*)s1 - *(const unsigned char*)s2;
+}
+
+
+
+// This function initializes the keyboard and sets up the IRQ
+void start_keyboard(void) {
+    // Reset keyboard states
+    shiftEnabled = false;
+    capsEnabled = false;
+    buffer_pos = 0;
+    cmd_buffer_pos = 0;
     
+    // Clear the command buffer
+    for (int i = 0; i < COMMAND_BUFFER_SIZE; i++) {
+        command_buffer[i] = 0;
+    }
+    
+    // Enable the keyboard controller
+    outb(0x21, inb(0x21) & ~(1 << 1));
+    
+    // Register the keyboard controller
     register_irq_controller(1, keyboard_controller, NULL);
-    
+
+    // Display the initial prompt
     terminal_printf("Keyboard initialized. Start typing...\n");
+    display_prompt();
 }

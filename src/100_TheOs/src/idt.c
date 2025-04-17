@@ -1,7 +1,10 @@
 #include "interrupts.h"
 #include "common.h"
 
+// Fetch idt_flush function
 extern void idt_flush(uint32_t);
+
+// Start the IDT 
 void start_idt() {
   idt_ptr.limit = sizeof(struct idt_entry_t) * IDT_ENTRIES - 1;
   idt_ptr.base = (uint32_t) &idt;
@@ -14,14 +17,16 @@ void start_idt() {
     idt[i].flags = 0x8E;
     int_controllers[i].controller = NULL;
   }
+  // Start the interrupts controller
   start_interrupts();
   idt_flush((uint32_t)&idt_ptr);
 }
-
+// Load the IDT
 void idt_load() {
   asm volatile("lidt %0" : : "m" (idt_ptr));
 }
 
+// Interupt gate function to set up the IDT values
 void interrupt_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags) {
   idt[num].low = base & 0xFFFF;
   idt[num].high = (base >> 16) & 0xFFFF;
@@ -29,8 +34,11 @@ void interrupt_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags) {
   idt[num].zero = 0;
   idt[num].flags = flags | 0x60;
 }
-
+// Start the interrupts
+// This function sets up the interrupt controller and registers the ISRs
 void start_interrupts() {
+
+  // outb is used to send a byte to the specified port
   outb(0x20, 0x11);
   outb(0xA0, 0x11);
   outb(0x21, 0x20);
@@ -42,6 +50,9 @@ void start_interrupts() {
   outb(0x21, 0x0);
   outb(0xA1, 0x0);
 
+  // interrupt_gate is used to connect the interrupt number to the ISR function
+  // example: interrupt_gate(0, (uint32_t)isr0 , 0x08, 0x8E); 
+  // isr0 is the ISR function for interrupt 0 and the 0x08, 0x8E are the selector and flags respectively
   interrupt_gate( 0, (uint32_t)isr0 , 0x08, 0x8E);
   interrupt_gate( 1, (uint32_t)isr1 , 0x08, 0x8E);
   interrupt_gate( 2, (uint32_t)isr2 , 0x08, 0x8E);
