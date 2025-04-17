@@ -31,8 +31,33 @@
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/fat.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/fat.c",
-  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/fat.c"
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/fat_alloc.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/fat_alloc.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/fat_alloc.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/fat_core.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/fat_core.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/fat_core.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/fat_dir.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/fat_dir.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/fat_dir.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/fat_fs.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/fat_fs.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/fat_fs.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/fat_io.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/fat_io.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/fat_io.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/fat_lfn.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/fat_lfn.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/fat_lfn.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
