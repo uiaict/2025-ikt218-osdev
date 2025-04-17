@@ -5,7 +5,12 @@
 #include "IDT.h"
 #include "printf.h"
 #include "keyboard.h"
+#include "memory.h"
+#include "pit.h"
 #include <multiboot2.h>
+
+// End of kernel - defined in linker script
+extern uint32_t end;
 
 struct multiboot_info {
     uint32_t size;
@@ -40,6 +45,44 @@ void test_general_protection_fault() {
     printf("This line should not be reached\n");
 }
 
+// Test memory allocation
+void test_memory_allocation() {
+    printf("\nTesting memory allocation:\n");
+    
+    // Allocate some memory blocks
+    void* ptr1 = malloc(100);
+    void* ptr2 = malloc(200);
+    void* ptr3 = malloc(300);
+    
+    printf("Allocated: ptr1=0x%x (100 bytes), ptr2=0x%x (200 bytes), ptr3=0x%x (300 bytes)\n", 
+           (uint32_t)ptr1, (uint32_t)ptr2, (uint32_t)ptr3);
+    
+    // Free one block and allocate another
+    printf("Freeing ptr2\n");
+    free(ptr2);
+    
+    void* ptr4 = malloc(150);
+    printf("Allocated: ptr4=0x%x (150 bytes)\n", (uint32_t)ptr4);
+    
+    print_memory_layout();
+}
+
+// Test PIT functions
+void test_pit() {
+    printf("\nTesting PIT sleep functions:\n");
+    
+    int counter = 0;
+    
+    // Test both sleep methods once
+    printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+    sleep_busy(1000);
+    printf("[%d]: Slept using busy-waiting.\n", counter++);
+    
+    printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+    sleep_interrupt(1000);
+    printf("[%d]: Slept using interrupts.\n", counter++);
+}
+
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialize GDT
     gdt_init();
@@ -48,28 +91,52 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     clear_screen();
     printf("Hello, Kernel!\n");
     
+    // Initialize memory management
+    init_kernel_memory(&end);
+    
+    // Initialize paging
+    init_paging();
+    
+    // Print memory layout
+    print_memory_layout();
+    
     // Initialize IDT (which also initializes IRQs)
     idt_init();
-    printf("IDT and IRQs initialized\n");
     
-    // Test the breakpoint interrupt (most likely to return control)
+    // Initialize PIT
+    init_pit();
+    
+    // Clear screen again after all the initialization messages
+    clear_screen();
+    printf("Hello, Kernel!\n");
+    printf("System initialized with Memory Management and PIT\n");
+    
+    // Test memory allocation
+    test_memory_allocation();
+    
+    // Test PIT functions
+    test_pit();
+    
+    // Test the breakpoint interrupt
     test_breakpoint();
-    
-    // Test general protection fault
-    // Uncomment the line below to test
-    // test_general_protection_fault();
-    
-    // Test divide by zero
-    // Uncomment the line below to test
-    // test_divide_by_zero();
     
     printf("IRQs are now enabled. Press keys to see keyboard IRQ handling.\n");
     printf("Keyboard input: ");
     
     // Kernel main loop
     printf("Entering kernel main loop...\n");
+    
+    // Continuous test of sleep functions in main loop
+    int counter = 2; // Start at 2 since we already did 0 and 1 in test_pit
     while(1) {
-        // Infinite loop to keep the kernel running
+        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+        sleep_busy(1000);
+        printf("[%d]: Slept using busy-waiting.\n", counter++);
+        
+        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+        sleep_interrupt(1000);
+        printf("[%d]: Slept using interrupts.\n", counter++);
+        
         // The timer and keyboard IRQs will now be handled automatically
     }
     

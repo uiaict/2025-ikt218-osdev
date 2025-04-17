@@ -1,7 +1,7 @@
 # Operating System Development Project Report
 
 ## Project Overview
-This project focused on implementing several crucial components of an operating system's low-level interaction with hardware: the Interrupt Descriptor Table (IDT), Interrupt Service Routines (ISRs), Interrupt Requests (IRQs), and a keyboard logger. These components form the foundation of how an operating system responds to both hardware and software events.
+This project focused on implementing several crucial components of an operating system's low-level interaction with hardware: the Interrupt Descriptor Table (IDT), Interrupt Service Routines (ISRs), Interrupt Requests (IRQs), keyboard input handling, memory management, and programmable interval timer (PIT). These components form the foundation of how an operating system responds to both hardware and software events, manages memory resources, and handles time-based operations.
 
 ## Task 1: Interrupt Descriptor Table (IDT)
 
@@ -111,6 +111,72 @@ The keyboard logger builds on the IRQ system to capture, interpret, and display 
 - Implemented proper cursor management for text insertion and deletion
 - Created a seamless visual editing experience with immediate feedback
 
+## Task 5: Memory Management
+
+Memory management is a fundamental aspect of any operating system. I implemented a simple but effective memory management system for the kernel:
+
+### Memory Manager Initialization
+- Created a function `init_kernel_memory()` that:
+  - Takes the address after the kernel's end as a parameter
+  - Aligns the heap start address to a 4KB boundary
+  - Sets up initial memory management structures
+
+### Memory Allocation System
+- Implemented a dynamic memory allocation system with:
+  - `malloc()` function for allocating memory blocks
+  - `free()` function for returning memory to the system
+  - Memory block metadata tracking for efficient reuse
+
+### Memory Block Management
+- Designed a linked list structure to track allocated and free memory blocks
+- Implemented algorithms to:
+  - Find suitable free blocks when requested
+  - Split larger blocks to reduce memory waste
+  - Expand the heap when no suitable blocks are available
+
+### Memory Layout Reporting
+- Created `print_memory_layout()` function that displays:
+  - Heap start and current end addresses
+  - Maximum heap size
+  - List of allocated and free memory blocks with their sizes
+  - Summary of total allocated and free memory
+
+### Memory Paging
+- Implemented basic paging functionality in `init_paging()` function:
+  - Created page directory and first page table
+  - Identity mapped the first 4MB of physical memory
+  - Enabled paging via CR3 and CR0 registers
+  - Set appropriate page flags for read/write access
+
+## Task 6: Programmable Interval Timer (PIT)
+
+The PIT provides essential timing capabilities for the operating system. I implemented:
+
+### Timer Configuration
+- Created an initialization function `init_pit()` that:
+  - Configures the PIT to operate at 100Hz (10ms resolution)
+  - Sets up Channel 0 in Mode 3 (square wave generator)
+  - Registers the timer interrupt handler
+
+### System Tick Management
+- Implemented a tick counting system:
+  - Maintains a global tick counter incremented on each timer interrupt
+  - Provides `get_tick_count()` function to access the current tick value
+  - Reports tick status at regular intervals for debugging
+
+### Sleep Function
+- Developed a `sleep()` function that:
+  - Takes millisecond duration as a parameter
+  - Calculates target tick count based on the timer frequency
+  - Halts the CPU while waiting for the specified time to pass
+  - Allows efficient CPU usage during wait periods
+
+### Timer Integration
+- Integrated the PIT timer with the existing interrupt system:
+  - Registered the timer handler for IRQ0
+  - Ensured proper interrupt acknowledgment
+  - Implemented clean separation between hardware and software timing logic
+
 ## Key Design Decisions
 
 ### Modular Architecture
@@ -139,10 +205,25 @@ The keyboard logger builds on the IRQ system to capture, interpret, and display 
 - Made all key components accessible through well-defined interfaces
 - Built a foundation for more complex text editing with support for basic editing operations
 
+### Resource Management
+- Implemented proper memory boundary checking to prevent heap overflow
+- Created flexible memory allocation with minimal fragmentation
+- Designed memory structures with minimal overhead per allocation
+
+### Timing Precision
+- Selected appropriate timer frequency balancing resolution and overhead
+- Used a tick-based timing system for consistent time measurement
+- Implemented efficient sleep function that doesn't busy-wait
+
+### Hardware Abstraction
+- Created clean interfaces to hardware functionality
+- Separated low-level hardware access from high-level system services
+- Designed extensible interfaces for future enhancements
+
 ## Conclusion
 
-This implementation provides a solid foundation for keyboard input in an operating system. The combination of IDT, ISRs, IRQs, and the keyboard logger enables user interaction with the system and forms the basis for more complex features like a command-line interface or a text editor. The design is modular and extensible, allowing for future enhancements.
+This implementation provides a solid foundation for a basic operating system kernel. The combination of interrupt handling, keyboard input, memory management, and timing services enables the creation of more complex system functionality. The design is modular and extensible, allowing for future enhancements.
 
-The addition of backspace functionality makes the interface much more user-friendly, enabling basic text editing capabilities directly in the kernel. This seemingly simple feature dramatically improves usability, allowing users to correct typing mistakes and providing the foundation for more sophisticated text manipulation.
+The memory management system efficiently allocates and tracks memory, providing the foundation for dynamic data structures and program loading. The PIT implementation enables time-based operations essential for multitasking, scheduling, and user interface timing.
 
-The most challenging aspects involved ensuring proper interaction between assembly and C code, managing the complex state required for keyboard input processing, and handling the subtleties of the x86 interrupt architecture. Despite these challenges, the implementation successfully provides a working keyboard input system for the operating system.
+The most challenging aspects involved ensuring proper interaction between hardware and software components, managing system state across interrupts, and implementing efficient algorithms for memory management. Despite these challenges, the implementation successfully provides the core services needed by a modern operating system kernel.

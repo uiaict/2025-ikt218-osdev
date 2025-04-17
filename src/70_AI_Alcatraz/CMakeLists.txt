@@ -65,6 +65,8 @@ set(KERNEL_SOURCES
     src/IDT.c
     src/interrupt.asm
     src/keyboard.c
+    src/memory.c
+    src/pit.c
 )
 
 # Add executable target for the kernel
