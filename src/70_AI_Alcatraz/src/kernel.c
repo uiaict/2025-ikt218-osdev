@@ -7,6 +7,7 @@
 #include "keyboard.h"
 #include "memory.h"
 #include "pit.h"
+#include "song.h" // Include the song header
 #include <multiboot2.h>
 
 // End of kernel - defined in linker script
@@ -83,6 +84,38 @@ void test_pit() {
     printf("[%d]: Slept using interrupts.\n", counter++);
 }
 
+// Function to play music using the SongPlayer
+void play_music() {
+    printf("Setting up music player...\n");
+    
+    // Create a song using our predefined music_1 array
+    Song songs[] = {
+        {music_1, music_1_length}
+    };
+    uint32_t n_songs = sizeof(songs) / sizeof(Song);
+    
+    // Create a song player
+    SongPlayer* player = create_song_player();
+    if (!player) {
+        printf("Failed to create song player\n");
+        return;
+    }
+    
+    printf("Music player ready. Starting playback...\n");
+    
+    // Infinite loop to play songs
+    while(1) {
+        for(uint32_t i = 0; i < n_songs; i++) {
+            printf("Playing Song %d...\n", i + 1);
+            player->play_song(&songs[i]);
+            printf("Finished playing song %d.\n", i + 1);
+            
+            // Delay between songs
+            sleep_interrupt(1000);
+        }
+    }
+}
+
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialize GDT
     gdt_init();
@@ -111,34 +144,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("Hello, Kernel!\n");
     printf("System initialized with Memory Management and PIT\n");
     
-    // Test memory allocation
-    test_memory_allocation();
-    
-    // Test PIT functions
-    test_pit();
-    
-    // Test the breakpoint interrupt
-    test_breakpoint();
-    
-    printf("IRQs are now enabled. Press keys to see keyboard IRQ handling.\n");
-    printf("Keyboard input: ");
-    
-    // Kernel main loop
-    printf("Entering kernel main loop...\n");
-    
-    // Continuous test of sleep functions in main loop
-    int counter = 2; // Start at 2 since we already did 0 and 1 in test_pit
-    while(1) {
-        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-        sleep_busy(1000);
-        printf("[%d]: Slept using busy-waiting.\n", counter++);
-        
-        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);
-        
-        // The timer and keyboard IRQs will now be handled automatically
-    }
+    // Start playing music instead of the old continuous test loop
+    play_music();
     
     return 0;
 }

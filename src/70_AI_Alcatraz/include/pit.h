@@ -28,4 +28,10 @@ void sleep_interrupt(uint32_t milliseconds);
 void sleep_busy(uint32_t milliseconds);
 uint32_t get_current_tick();
 
+// Speaker and sound functions
+void enable_speaker();
+void disable_speaker();
+void play_sound(uint32_t frequency);
+void stop_sound();
+
 #endif

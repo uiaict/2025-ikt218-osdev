@@ -1,3 +1,4 @@
+; filepath: c:\Users\oskar\OneDrive - Universitetet i Agder\Documents\GitHub\2025-ikt218-osdev\src\70_AI_Alcatraz\src\interrupt.asm
 [BITS 32]
 
 ; Export functions to C code
@@ -35,7 +36,7 @@ global isr29
 global isr30
 global isr31
 
-; Export IRQ handlers
+; IRQs
 global irq0
 global irq1
 global irq2
@@ -79,6 +80,15 @@ idt_flush:
         jmp isr_common_stub  ; Go to common handler
 %endmacro
 
+; Common IRQ stub for IRQ handlers
+%macro IRQ 2
+    irq%1:
+        cli                  ; Disable interrupts
+        push byte 0          ; Push a dummy error code
+        push byte %2         ; Push the interrupt number
+        jmp irq_common_stub  ; Go to the common IRQ handler
+%endmacro
+
 ; Define ISRs for CPU exceptions
 ISR_NOERRCODE 0  ; Division by zero
 ISR_NOERRCODE 1  ; Debug
@@ -113,32 +123,23 @@ ISR_NOERRCODE 29 ; Reserved
 ISR_NOERRCODE 30 ; Reserved
 ISR_NOERRCODE 31 ; Reserved
 
-; Define IRQ handlers
-%macro IRQ 2
-    irq%1:
-        cli                  ; Disable interrupts
-        push byte 0          ; Push a dummy error code
-        push byte %2         ; Push the interrupt number
-        jmp irq_common_stub  ; Go to common handler
-%endmacro
-
-; Map IRQs to interrupt numbers (after remapping)
-IRQ 0, 32   ; Timer (PIT)
-IRQ 1, 33   ; Keyboard
-IRQ 2, 34   ; Cascade for IRQs 8-15
-IRQ 3, 35   ; COM2
-IRQ 4, 36   ; COM1
-IRQ 5, 37   ; LPT2
-IRQ 6, 38   ; Floppy disk
-IRQ 7, 39   ; LPT1 / Spurious
-IRQ 8, 40   ; CMOS Real-time clock
-IRQ 9, 41   ; Free / Legacy SCSI / NIC
-IRQ 10, 42  ; Free / SCSI / NIC
-IRQ 11, 43  ; Free / SCSI / NIC
-IRQ 12, 44  ; PS/2 Mouse
-IRQ 13, 45  ; FPU / Coprocessor
-IRQ 14, 46  ; Primary ATA
-IRQ 15, 47  ; Secondary ATA
+; Map IRQs 0-15 to IDT entries 32-47
+IRQ 0, 32
+IRQ 1, 33
+IRQ 2, 34
+IRQ 3, 35
+IRQ 4, 36
+IRQ 5, 37
+IRQ 6, 38
+IRQ 7, 39
+IRQ 8, 40
+IRQ 9, 41
+IRQ 10, 42
+IRQ 11, 43
+IRQ 12, 44
+IRQ 13, 45
+IRQ 14, 46
+IRQ 15, 47
 
 ; Common ISR stub. Saves processor state, sets up for kernel mode segments,
 ; calls the C-level fault handler, and restores stack frame.
@@ -169,11 +170,14 @@ isr_common_stub:
     
     ; Restore registers
     popa
-    add esp, 8      ; Clean up the pushed error code and pushed ISR number
-    sti             ; Re-enable interrupts
-    iret            ; Return from interrupt
+    
+    ; Clean up error code and interrupt number
+    add esp, 8
+    
+    ; Return from interrupt
+    iret
 
-; Common IRQ stub. Similar to ISR stub but calls irq_handler instead
+; Common IRQ stub, similar to ISR stub but calls the IRQ handler
 irq_common_stub:
     ; Save all registers
     pusha
@@ -201,6 +205,9 @@ irq_common_stub:
     
     ; Restore registers
     popa
-    add esp, 8      ; Clean up the pushed error code and pushed IRQ number
-    sti             ; Re-enable interrupts
-    iret            ; Return from interrupt
+    
+    ; Clean up error code and interrupt number
+    add esp, 8
+    
+    ; Return from interrupt
+    iret

@@ -67,6 +67,7 @@ set(KERNEL_SOURCES
     src/keyboard.c
     src/memory.c
     src/pit.c
+    src/song.c
 )
 
 # Add executable target for the kernel
@@ -131,4 +132,15 @@ add_custom_target(
     COMMAND sudo rm -rf ${ISO_DIR}
     DEPENDS create-fat32-disk uiaos-kernel
     VERBATIM
+)
+
+##############################################################
+# Run Target
+##############################################################
+add_custom_target(run COMMAND qemu-system-i386
+    -drive format=raw,file=${CMAKE_BINARY_DIR}/disk.iso
+    -serial stdio
+    -soundhw pcspk
+    DEPENDS uiaos-create-image
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )

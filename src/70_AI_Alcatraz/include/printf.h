@@ -29,6 +29,9 @@ static void move_cursor() {
     outb(0x3D5, (pos >> 8) & 0xFF);
 }
 
+// Add a non-static prototype for move_cursor so it can be called from other files
+void move_cursor();
+
 // Tømmer skjermen
 static void clear_screen() {
     for (int y = 0; y < VGA_HEIGHT; y++) {
