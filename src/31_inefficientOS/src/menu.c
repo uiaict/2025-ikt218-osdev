@@ -16,6 +16,7 @@ static Menu* main_menu = NULL;
 // Forward declarations for menu actions
 static void action_system_info();
 static void action_memory_test();
+static void action_interrupt_test();
 static void action_pit_test();
 static void action_music_player();
 static void action_hello_world();
@@ -177,6 +178,8 @@ void main_menu_init() {
                  "Display the traditional Hello World message");
     menu_add_item(main_menu, "System Information", action_system_info, 
                  "Display information about the OS and hardware");
+    menu_add_item(main_menu, "Interrupt Test", action_interrupt_test, 
+                 "Test interrupt service routines (ISRs)");
     menu_add_item(main_menu, "Memory Management Test", action_memory_test, 
                  "Test memory allocation and paging functionality");
     menu_add_item(main_menu, "PIT Testing", action_pit_test, 
@@ -256,6 +259,52 @@ static void action_system_info() {
         sleep_busy(10);
     }
     
+    menu_display(main_menu);
+}
+
+// Action for interrupt testing
+static void action_interrupt_test() {
+    terminal_write_colored("===== Interrupt Service Routine Testing =====\n\n", VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK);
+    
+    terminal_writestring("This test will trigger interrupts 0, 1, and 2.\n");
+    terminal_writestring("If properly implemented, each should display the correct exception message.\n\n");
+    
+    terminal_write_colored("Press 1, 2, or 3 to trigger different interrupts:\n", 
+                          VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
+    terminal_writestring("1. Interrupt 0 \n");
+    terminal_writestring("2. Interrupt 1 \n");
+    terminal_writestring("3. Interrupt 2 \n\n");
+    
+    uint8_t scancode;
+    while (1) {
+        scancode = keyboard_get_scancode();
+        
+        // Check for ESC to return to main menu
+        if (scancode == KEY_ESC) {
+            break;
+        }
+        
+        // Check for number keys
+        char c = keyboard_scancode_to_ascii(scancode);
+        if (c == '1') {
+            terminal_writestring("\nTriggering interrupt 0...\n");
+            asm volatile("int $0");
+            terminal_writestring("\n");
+        } else if (c == '2') {
+            terminal_writestring("\nTriggering interrupt 1...\n");
+            asm volatile("int $1");
+            terminal_writestring("\n");
+        } else if (c == '3') {
+            terminal_writestring("\nTriggering interrupt 2...\n");
+            asm volatile("int $2");
+            terminal_writestring("\n");
+        }
+        
+        // Small delay
+        sleep_busy(10);
+    }
+    
+    // Return to main menu
     menu_display(main_menu);
 }
 

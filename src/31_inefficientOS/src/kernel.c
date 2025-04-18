@@ -117,7 +117,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialize custom ISRs
     terminal_writestring("Initializing custom ISRs...\n");
     custom_isrs_init();
-   
+
     // Init keyboard
     terminal_writestring("Initializing keyboard...\n");
     keyboard_init();

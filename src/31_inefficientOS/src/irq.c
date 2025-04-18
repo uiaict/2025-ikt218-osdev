@@ -29,7 +29,7 @@ void init_irq() {
   video_memory[81] = (0x0F << 8) | 'I'; // Row 1, column 1
   video_memory[82] = (0x0F << 8) | 'C'; // Row 1, column 2
 
-  // Initialize the PIC
+  // Remap the PIC
   outb(0x20, 0x11);  // ICW1: Initialize master PIC
   outb(0xA0, 0x11);  // ICW1: Initialize slave PIC
   outb(0x21, 0x20);  // ICW2: Map master PIC interrupts to 0x20-0x27
