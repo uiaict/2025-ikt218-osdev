@@ -6,10 +6,10 @@ gdt_flush:
 
     mov ax, 0x10      ; 0x10 is the offset in the GDT to our data segment
     mov ds, ax        ; Load all data segment selectors
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    mov ss, ax
+    mov es, ax        ; Extra segment
+    mov fs, ax        ; FS segment
+    mov gs, ax        ; GS segment
+    mov ss, ax        ; Stack segment
     jmp 0x08:.flush   ; 0x08 is the offset to our code segment: Far jump!
 .flush:
     ret

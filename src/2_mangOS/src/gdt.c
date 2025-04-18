@@ -25,12 +25,11 @@ void init_gdt()
 
 void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran)
 {
-    gdt[num].base_low = (base & 0xFFFF);
-    gdt[num].base_middle = (base >> 16) & 0xFF;
-    gdt[num].base_high = (base >> 24) & 0xFF;
-
-    gdt[num].limit_low = (limit & 0xFFFF);
-    gdt[num].granularity = ((limit >> 16) & 0x0F) | (gran & 0xF0);
+    gdt[num].base_low = (base & 0xFFFF);                           // Lowest base 16 bits (0-15)
+    gdt[num].base_middle = (base >> 16) & 0xFF;                    // Next base 8 bits(16-23)
+    gdt[num].base_high = (base >> 24) & 0xFF;                      // Highest base 8 bits (24-31)
+    gdt[num].limit_low = (limit & 0xFFFF);                         // Lowest limit 16 bits (0-15)
+    gdt[num].granularity = ((limit >> 16) & 0x0F) | (gran & 0xF0); // Next limit 4 bits (16-19) and granularity
 
     gdt[num].access = access;
 }
