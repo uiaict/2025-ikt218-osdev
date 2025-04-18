@@ -73,7 +73,7 @@ add_executable(uiaos-kernel
 
 	src/keyboard/keyboard.c
 
-	src/PIT/timer.c
+	src/PIT/PIT.c
 )
 
 # Include directories for the kernel target

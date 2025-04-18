@@ -163,6 +163,7 @@ void irq_handler(struct InterruptRegisters* regs) {
 
     if(handler) {
         handler(regs);
+        
     }
 
     if(regs->int_no >= 40) {

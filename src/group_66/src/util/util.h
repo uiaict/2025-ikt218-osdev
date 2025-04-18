@@ -18,6 +18,6 @@ struct InterruptRegisters{
     uint32_t ds;
     uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
     uint32_t int_no, err_code;
-    uint32_t rip,cs, rflags, userrsp, ss; // eip,cs, rflags, userrsp, ss if shit goes wrong with this maybe try these instead. I dunno
+    uint32_t eip,cs, eflags, useresp, ss; // eip,cs, rflags, userrsp, ss if shit goes wrong with this maybe try these instead. I dunno
 };
 #endif

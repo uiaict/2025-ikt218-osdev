@@ -7,7 +7,11 @@
 #include "vga/vga.h"
 #include "idt/idt.h"
 #include "keyboard/keyboard.h"
-#include "PIT/timer.h"
+#include "PIT/PIT.h"
+
+extern uint32_t end; // This is defined in arch/i386/linker.ld
+uint32_t teller = 0;
+
 struct multiboot_info {
     uint32_t size;
     uint32_t reserved;
@@ -20,7 +24,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     initIdt();
     initKeyboard();
     enable_cursor(0,15);
-    initTimer();
+    initPit();
     printf("=======================================================\n");
     printf("      .___                                             \n");
     printf("    __| _/____   ____   _____       ____  ______       \n");
@@ -32,6 +36,14 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("                 Welcome to hell!                      \n");
     printf("               Aris, Marcus, Albert                    \n");
     printf("=======================================================\n");
-    
+    while(true){
+        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", teller);
+        sleepBusy(2000);
+        printf("[%d]: Slept using busy-waiting.\n", teller++);
+
+        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", teller);
+        sleepInterrupt(2000);
+        printf("[%d]: Slept using interrupts.\n", teller++);
+    };
     return 0;
 }
