@@ -25,6 +25,7 @@
         "irq.h": "c",
         "string.h": "c",
         "gdt.h": "c",
+        "pit.h": "c",
         "interuptregister.h": "c"
     }
 

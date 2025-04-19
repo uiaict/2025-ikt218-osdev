@@ -1,5 +1,7 @@
 ENTRY(_start)
 
+extern uint32_t end;
+
 SECTIONS {
     . = 1M;
 

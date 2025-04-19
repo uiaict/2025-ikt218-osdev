@@ -2,8 +2,6 @@
 
 #include <libc/stdint.h>          // Include the standard integer types
 #include <libc/stddef.h>          // Include the standard size types
-#include "../src/arch/i386/print.h"
-
 
 // Function to copy memory from source to destination
 void* memcpy(void* dest, const void* src, size_t count )
