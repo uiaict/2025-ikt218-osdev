@@ -1,4 +1,8 @@
-// Oppdatert idt.c med riktige IRQ-stubber
+/*
+#include "libc/stdint.h"
+#include "../i386/IDT.h"
+#include "../i386/print.h"
+#include "../src/screen.h"
 #include "../src/arch/i386/ISR.h"
 #include "../src/arch/i386/IRQ.h"
 #include "libc/string.h"
