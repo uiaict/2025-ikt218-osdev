@@ -1,61 +1,134 @@
-; isr.s – Dette er assemblerfilen som definerer interrupt-stubber for IRQ-er
-; IRQ0 → 32, IRQ1 (keyboard) → 33, ..., IRQ15 → 47
-; Hver "stub" er en funksjon som CPU hopper til når en IRQ skjer
-
-[bits 32]                ; Vi jobber i 32-bit protected mode
-
-
-;dette er en forenklet versjon, for task 3 og 4
-
-
-
-; Forteller linker at denne funksjonen finnes, slik at C-kode kan bruke `extern`
-; Her kan du endre navnene hvis du vil, men de må også endres i `idt.c`!
-global isr_stub_32
-global isr_stub_33
-global isr_stub_34
-global isr_stub_35
-global isr_stub_36
-global isr_stub_37
-global isr_stub_38
-global isr_stub_39
-global isr_stub_40
-global isr_stub_41
-global isr_stub_42
-global isr_stub_43
-global isr_stub_44
-global isr_stub_45
-global isr_stub_46
-global isr_stub_47
-
-; C-funksjonen som skal håndtere interrupten i C-kode (her er irq irq_handler)
-extern irq_handler
-
-; Én makro som lager en stub – slipper du skrive samme kode 16 ganger
-%macro IRQ_STUB 1
-isr_stub_%1:
-    pusha               ; lagre alle generelle registre
-    push dword %1       ; push nummeret til IRQ-en (eks. 33 = keyboard)
-    call irq_handler  ; kall C-funksjonen som håndterer IRQ-er
-    add esp, 4          ; fjern IRQ-nummeret fra stacken
-    popa                ; gjenopprett registre
-    iret                ; returner fra interrupt
+; Common ISR stub which does NOT pass its own error code
+%macro ISR_NOERRCODE 1
+    global isr%1
+    isr%1:
+        ;cli
+        push byte 0
+        push %1
+        jmp isr_common_stub
 %endmacro
 
-; Her kaller vi makroen for hver IRQ (fra 32 til 47)
-IRQ_STUB 32   ; IRQ0 – system timer
-IRQ_STUB 33   ; IRQ1 – tastatur (viktig for at tasturet skal fungere)
-IRQ_STUB 34
-IRQ_STUB 35
-IRQ_STUB 36
-IRQ_STUB 37
-IRQ_STUB 38
-IRQ_STUB 39
-IRQ_STUB 40
-IRQ_STUB 41
-IRQ_STUB 42
-IRQ_STUB 43
-IRQ_STUB 44
-IRQ_STUB 45
-IRQ_STUB 46
-IRQ_STUB 47
+
+; Common ISR stub which passes its own error code
+%macro ISR_ERRCODE 1
+    global isr%1
+    isr%1:
+      ;cli
+      push %1
+      jmp isr_common_stub
+%endmacro
+
+%macro IRQ 2
+    global irq%1
+    irq%1:
+      ;cli
+      push byte 0
+      push byte %2
+      jmp irq_common_stub
+%endmacro
+
+ISR_NOERRCODE 0
+ISR_NOERRCODE 1
+ISR_NOERRCODE 2
+ISR_NOERRCODE 3
+ISR_NOERRCODE 4
+ISR_NOERRCODE 5
+ISR_NOERRCODE 6
+ISR_NOERRCODE 7
+ISR_ERRCODE 8
+ISR_NOERRCODE 9
+ISR_ERRCODE 10
+ISR_ERRCODE 11
+ISR_ERRCODE 12
+ISR_ERRCODE 13
+ISR_ERRCODE 14
+ISR_NOERRCODE 15
+ISR_NOERRCODE 16
+ISR_ERRCODE 17
+ISR_NOERRCODE 18
+ISR_NOERRCODE 19
+ISR_NOERRCODE 20
+ISR_ERRCODE 21
+ISR_NOERRCODE 22
+ISR_NOERRCODE 23
+ISR_NOERRCODE 24
+ISR_NOERRCODE 25
+ISR_NOERRCODE 26
+ISR_NOERRCODE 27
+ISR_NOERRCODE 28
+ISR_NOERRCODE 29
+ISR_NOERRCODE 30
+ISR_NOERRCODE 31
+ISR_NOERRCODE 128
+IRQ   0,    32
+IRQ   1,    33
+IRQ   2,    34
+IRQ   3,    35
+IRQ   4,    36
+IRQ   5,    37
+IRQ   6,    38
+IRQ   7,    39
+IRQ   8,    40
+IRQ   9,    41
+IRQ   10,   42
+IRQ   11,   43
+IRQ   12,   44
+IRQ   13,   45
+IRQ   14,   46
+IRQ   15,   47
+
+; In isr.c
+extern isr_handler
+
+isr_common_stub:
+    pusha
+
+    mov ax, ds
+    push eax
+
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    call isr_handler
+
+    pop ebx
+    mov ds, bx
+    mov es, bx
+    mov fs, bx
+    mov gs, bx
+
+    popa
+    add esp, 8
+    sti
+    iret
+
+; In isr.c
+extern irq_handler
+
+irq_common_stub:
+    pusha
+
+    mov ax, ds
+    push eax
+
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    call irq_handler
+
+    pop ebx
+    mov ds, bx
+    mov es, bx
+    mov fs, bx
+    mov gs, bx
+
+    popa
+    add esp, 8
+    
+    iret

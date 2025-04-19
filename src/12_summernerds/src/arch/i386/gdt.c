@@ -1,10 +1,12 @@
 #include "../src/arch/i386/gdt.h"
-#include "libc/stdint.h"
+//#include "libc/stdint.h"
 
 
 
 //////////////////////////////////100%gp  fra nå...
 //gdt.c
+
+/*
 
 extern void gdt_flush(uint32_t);
 
@@ -14,7 +16,7 @@ void init_gdt();
 
 void set_gdt_gate(uint32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity);
 
-GDTEntry gdt_entries[5];    // A array with 5 GDT segments usually:(Null, Code, Dat, User-cod, User-data). (Håndeterer minnesegmentering og definerer kode/data segmenter)
+GDTEntry gdt[5];    // A array with 5 GDT segments usually:(Null, Code, Dat, User-cod, User-data). (Håndeterer minnesegmentering og definerer kode/data segmenter)
 GDTPointer  gdt_ptr;           // A pointer to the completed GDT that will be loaded
 
 extern GDTPointer idt_ptr;
@@ -47,12 +49,14 @@ void init_desc_tables()
 {
     init_gdt();
 }
+*/
 
+extern void gdt_flush(uint32_t gdt_ptr);
 
 void init_gdt()
 {
     gdt_ptr.limit = (sizeof(struct GDTEntry) * 5)-1;
-    gdt_ptr.base = (uint32_t)gdt_entries;
+    gdt_ptr.base = (uint32_t) &gdt;
 
     set_gdt_gate(0,0,0,0,0);                    //NULL segment 
     
@@ -70,13 +74,13 @@ void init_gdt()
 
 // Setter en oppføring i GDT-tabellen
 void set_gdt_gate(uint32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity) {
-    gdt_entries[num].base_low    = (base & 0xFFFF);
-    gdt_entries[num].base_middle = (base >> 16) & 0xFF;
-    gdt_entries[num].base_high   = (base >> 24) & 0xFF;
+    gdt[num].base_low    = (base & 0xFFFF);
+    gdt[num].base_middle = (base >> 16) & 0xFF;
+    gdt[num].base_high   = (base >> 24) & 0xFF;
 
-    gdt_entries[num].limit_low   = (limit & 0xFFFF);
-    gdt_entries[num].granularity = (limit >> 16) & 0x0F;
+    gdt[num].limit_low   = (limit & 0xFFFF);
+    gdt[num].granularity = (limit >> 16) & 0x0F;
 
-    gdt_entries[num].granularity = granularity & 0xF0;
-    gdt_entries[num].access      = access;
+    gdt[num].granularity = granularity & 0xF0;
+    gdt[num].access      = access;
 }

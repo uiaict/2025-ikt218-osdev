@@ -1,65 +1,23 @@
-#include "../src/arch/i386/ISR.h"
-//#include "../src/screen.h" // //må huske å korrigere til rett fil referanse 
-#include <libc/stddef.h>
-//#include <libc/stdio.h>
-//#include "print.h"
+#include "../src/arch/i386/interuptRegister.h"
+#include "libc/stdint.h"
+#include "libc/stddef.h"
 
-
-//#include "../kernel/util.h"   // her også
-
-extern void irq_handler (int irq);
-
-// hvis det ikke funker ternger ikke det som er på inndsiden av bracketsene [ irq_handler(irq); ]
-//byttet fra irq_handler_33() til irq_handler()
-
-
-
-//array for å holde funksjon til hver interrupt (maks 256 som vi definerte til header filen) 
-static interrupt_listener_t listeners[MAX_INTERRUPTS][MAX_LISTENERS_PER_ISR];
-
-// Array for globale interrupt-lyttere
-static interrupt_listener_t global_listeners[MAX_LISTENERS_PER_ISR];
-
-//Initialiserer (nullstiller) handlers mha. en for-løkke. 
-void isr_init() {
-    for (int i = 0; i < MAX_INTERRUPTS; i++)
-    {for (int j = 0; j < MAX_LISTENERS_PER_ISR; j++) {listeners[i][j] = NULL;}}
-    
-    for (int i = 0; i < MAX_LISTENERS_PER_ISR; i++)
-    {global_listeners[i] = NULL; // Bruk NULL for å indikere NULL listener
-        }
+void register_interrupt_handler(uint8_t n, isr_t handler, void* context) {
+    int_handlers[n].handler = handler;
+    int_handlers[n].data = context;
 }
 
-// Registrerer en interrupt listener til ein interrupt (spesifikt)
-void subscribe_interrupt(uint8_t interrupt_number, interrupt_listener_t handler) {
-    for (int i = 0; i < MAX_LISTENERS_PER_ISR; i++) {
-        //leter etter en ledig plass for listeneren
-        if (listeners[interrupt_number][i] == NULL)
-        {listeners[interrupt_number][i] = handler;return;}
+// This is the main interrupt handler function. It is called by the ASM interrupt handler stub
+void isr_handler(registers_t regs) {
+    uint8_t int_no = regs.int_no & 0xFF; // Sign extend the interrupt number
+    struct int_handler_t intrpt = int_handlers[int_no];
+    if (intrpt.handler != 0) {
+        intrpt.handler(&regs, intrpt.data);
+    } else {
+        /*monitor_write("Unhandled interrupt: ");
+        monitor_write_hex(int_no);
+        monitor_put('\n');*/
+        for(;;); // Infinite loop if no handler is registered
     }
 
-    // Skriver feilmelding for dersom den ikke finner en ledig plass for listeneren i for-løkka over.
-    printf("ISR-ERROR: Too many listeners for interrupt %d\n", interrupt_number);
-
-}
-
-// Registrerer en global interrupt listeneur
-void subscribe_global(interrupt_listener_t handler) {
-
-    // Prøver å finne en ledig plass for den globale listeneren (samme som over)
-    for (int i = 0; i < MAX_LISTENERS_PER_ISR; i++)
-    {if(global_listeners[i] == NULL) {global_listeners[i] = handler;return;}}
-
-    // feilmelding for ikke-funnet listener
-    printf("ISR ERROR: Too many global listeners\n");}
-
-// Utfører alle registrerte lyttere for en gitt interrupt
-void isr_dispatch(registers_t* regs) {
-    // Utfør spesifikke interrupt-lyttere
-    for (int i = 0; i < MAX_LISTENERS_PER_ISR; i++)
-    {if (listeners[regs->int_no][i] != NULL){listeners[regs->int_no][i](regs);}}
-
-    // Utfør globale interrupt-lyttere
-    for (int i = 0; i < MAX_LISTENERS_PER_ISR; i++)
-    {if (global_listeners[i] != NULL) {global_listeners[i](regs);}}
 }

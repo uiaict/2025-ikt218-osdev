@@ -1,8 +1,13 @@
+#ifndef COMMON_H
+#define COMMON_H
 
+#include "libc/stdint.h"
 
-// io.h
-#pragma once
-#include "libc/stdint.h" // For uint8_t og uint16_t
+// https://wiki.osdev.org/Serial_Ports
 
+// I/O port functions
+void outb(uint16_t port, uint8_t value);
 uint8_t inb(uint16_t port);
-void outb(uint16_t port, uint8_t data);
+uint16_t inw(uint16_t port);
+
+#endif

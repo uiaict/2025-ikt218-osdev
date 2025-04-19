@@ -1,5 +1,6 @@
-#include <libc/system.h>
-#include "kernel/memory.h"
+//#include <libc/system.h>
+#include "../include/kernel/memory.h"
+#include "../src/arch/i386/print.h"
 
 static uint32_t* page_directory = 0;   // Define a pointer to the page directory and initialize it to zero
 static uint32_t page_dir_loc = 0;      // Define the location of the page directory and initialize it to zero

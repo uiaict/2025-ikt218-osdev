@@ -1,18 +1,18 @@
-#include "song.h"
+/*#include "libc/song/song.h"
 #include <kernel/pit.h>
 #include <kernel/common.h>
 
 void enable_speaker(){
     // Read the current state of the PC speaker control register
     uint8_t speaker_state = inb(PC_SPEAKER_PORT);
-    /*
+    *//*
     Bit 0: Speaker gate
             0: Speaker disabled
             1: Speaker enabled
     Bit 1: Speaker data
             0: Data is not passed to the speaker
             1: Data is passed to the speaker
-    */
+    *//*
     // Check if bits 0 and 1 are not set (0 means that the speaker is disabled)
     if (speaker_state != (speaker_state | 3)) {
         // If bits 0 and 1 are not set, enable the speaker by setting bits 0 and 1 to 1
@@ -61,3 +61,4 @@ SongPlayer* create_song_player() {
     player->play_song = play_song_impl;
     return player;
 }
+    */

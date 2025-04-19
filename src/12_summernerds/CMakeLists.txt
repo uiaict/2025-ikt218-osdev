@@ -64,7 +64,7 @@ add_executable(uiaos-kernel
 	src/screen.c
 	src/song.cpp
 	#src/arch/i386/gdt.asm
-	#src/arch/i386/gdt.c
+	src/arch/i386/gdt.c
 	src/arch/i386/Keyboard.c
 	src/memory/malloc.c
 	src/memory/memory.c

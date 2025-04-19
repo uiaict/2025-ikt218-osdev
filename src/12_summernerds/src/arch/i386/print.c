@@ -1,3 +1,5 @@
+
+/*
 //#include "libc/stdio.h"
 #include "print.h"
 #include "libc/stdint.h"
@@ -123,3 +125,11 @@ char* int_to_string(int num, char* str) {
 
     return str;
 }
+
+void panic(const char *msg) {
+    write_to_terminal("PANIC: ", 1);
+    write_to_terminal(msg, 1);
+    while (1);  // Stopp alt
+}
+
+*/

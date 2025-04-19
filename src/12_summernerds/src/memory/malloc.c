@@ -1,5 +1,6 @@
-#include "kernel/memory.h"
-#include <libc/system.h>
+#include "../include/kernel/memory.h"
+#include "../src/arch/i386/print.h"
+
 
 #define MAX_PAGE_ALIGNED_ALLOCS 32
 
