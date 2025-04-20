@@ -66,6 +66,15 @@ add_executable(uiaos-kernel
 	src/libc/stdio.c
 	src/libc/terminal.c
 	src/libc/stdlib.c
+	src/libc/system.c
+	src/libc/panic.c
+	src/isr.asm
+	src/idt.asm
+	src/isr.c
+	src/idt.c
+	src/common.c
+	src/irq.c
+	src/input.c
 )
 
 # Include directories for the kernel target
