@@ -1,4 +1,5 @@
 #include "libc/system.h"
+#include "libc/terminal.h"
 #include "libc/stdarg.h"
 
 // less risky when the stack is blown out
@@ -36,6 +37,7 @@ void print_backtrace()
 
 __attribute__((noreturn)) void panic(const char *reason)
 {
+    terminal_clear();
     printf("\n\n!!! PANIC !!!\n%s\n", reason);
 
     print_backtrace();

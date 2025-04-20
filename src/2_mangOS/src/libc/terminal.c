@@ -99,7 +99,21 @@ void _terminal_put(char c)
         terminal_row++;
         scroll();
         return;
-        break;
+
+    case '\b':
+        if (terminal_column > 0)
+        {
+            terminal_column--;
+        }
+        else if (terminal_row > 0)
+        {
+            terminal_row--;
+            terminal_column = VGA_WIDTH - 1;
+        }
+
+        terminal_putentryat(' ', terminal_color, terminal_column, terminal_row);
+        return;
+
     default:
         break;
     }

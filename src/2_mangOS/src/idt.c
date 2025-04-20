@@ -58,6 +58,10 @@ void init_interrupts()
     outb(0x21, 0x0);
     outb(0xA1, 0x0);
 
+    uint8_t mask = inb(0x21);
+    mask &= ~(1 << 1);
+    outb(0x21, mask);
+
     idt_set_gate(0, (uint32_t)isr0, 0x08, 0x8E);
     idt_set_gate(1, (uint32_t)isr1, 0x08, 0x8E);
     idt_set_gate(2, (uint32_t)isr2, 0x08, 0x8E);

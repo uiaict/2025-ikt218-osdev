@@ -134,6 +134,7 @@ irq_common_stub:
     mov fs, ax
     mov gs, ax
 
+    extern irq_handler
     call irq_handler
 
     pop ebx        ; reload the original data segment descriptor
@@ -144,6 +145,7 @@ irq_common_stub:
 
     popa                     ; Pops edi,esi,ebp...
     add esp, 8     ; Cleans up the pushed error code and pushed ISR number
+    sti
 
     iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
 

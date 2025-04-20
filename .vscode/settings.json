@@ -4,6 +4,7 @@
     "cmake.useCMakePresets": "never",
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
+        "*.html": "html",
         "cstddef": "cpp",
         "*.tcc": "cpp",
         "*.ipp": "cpp",
@@ -15,6 +16,7 @@
         "multiboot2.h": "c",
         "interrupts.h": "c",
         "memory.h": "c",
-        "limits.h": "c"
+        "limits.h": "c",
+        "time.h": "c"
     }
 }
