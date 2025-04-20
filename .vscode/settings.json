@@ -17,7 +17,9 @@
         "memory.h": "c",
         "limits.h": "c",
         "gdt.h": "c",
-        "console.h": "c"
+        "console.h": "c",
+        "keyboard.h": "c",
+        "idt.h": "c"
     }
 
 }
