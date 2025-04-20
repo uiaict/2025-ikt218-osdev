@@ -17,6 +17,7 @@
         "interrupts.h": "c",
         "memory.h": "c",
         "limits.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "idt.h": "c"
     }
 }

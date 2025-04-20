@@ -8,7 +8,6 @@
 #include "gdt.h"
 #include "idt.h"
 #include "keyboard.h"
-#include "time.h"
 
 struct multiboot_info
 {
@@ -36,6 +35,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
     printf("IDT initialized\n");
 
     init_isr_handlers();
+    init_irq_handlers();
     printf("ISR handlers initialized\n");
 
     init_keyboard();

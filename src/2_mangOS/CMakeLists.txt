@@ -75,7 +75,8 @@ add_executable(uiaos-kernel
 	src/common.c
 	src/irq.c
 	src/helpers/input.c
-	src/handlers/interrupts.c
+	src/handlers/isr_handler.c
+	src/handlers/irq_handler.c
 	src/drivers/keyboard.c
 )
 
