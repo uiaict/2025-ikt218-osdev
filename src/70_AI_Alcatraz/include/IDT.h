@@ -5,52 +5,51 @@
 
 // IDT entry structure
 struct idt_entry {
-    uint16_t base_low;     // Lower 16 bits of handler function address
-    uint16_t selector;     // Kernel segment selector
-    uint8_t zero;          // Always zero
-    uint8_t flags;         // Flags
-    uint16_t base_high;    // Upper 16 bits of handler function address
+    uint16_t base_low;     
+    uint16_t selector;     
+    uint8_t zero;          
+    uint8_t flags;         
+    uint16_t base_high;    
 } __attribute__((packed));
 
 // IDT pointer structure
 struct idt_ptr {
-    uint16_t limit;       // Size of IDT - 1
-    uint32_t base;        // Base address of IDT
+    uint16_t limit;     
+    uint32_t base;        
 } __attribute__((packed));
 
 // Define ISR functions that will be implemented in assembly
-extern void isr0();  // Division by zero
-extern void isr1();  // Debug
-extern void isr2();  // Non-maskable interrupt
-extern void isr3();  // Breakpoint
-extern void isr4();  // Overflow
-extern void isr5();  // Bound range exceeded
-extern void isr6();  // Invalid opcode
-extern void isr7();  // Device not available
-extern void isr8();  // Double fault
-extern void isr9();  // Coprocessor segment overrun
-extern void isr10(); // Invalid TSS
-extern void isr11(); // Segment not present
-extern void isr12(); // Stack-segment fault
-extern void isr13(); // General protection fault
-extern void isr14(); // Page fault
-extern void isr15(); // Reserved
-extern void isr16(); // x87 FPU error
-extern void isr17(); // Alignment check
-extern void isr18(); // Machine check
-extern void isr19(); // SIMD floating-point exception
-extern void isr20(); // Virtualization exception
-extern void isr21(); // Reserved
-extern void isr22(); // Reserved
-extern void isr23(); // Reserved
-extern void isr24(); // Reserved
-extern void isr25(); // Reserved
-extern void isr26(); // Reserved
-extern void isr27(); // Reserved
-extern void isr28(); // Reserved
-extern void isr29(); // Reserved
-extern void isr30(); // Reserved
-extern void isr31(); // Reserved
+extern void isr0();  
+extern void isr1();  
+extern void isr2();  
+extern void isr3();  
+extern void isr4();  
+extern void isr5();  
+extern void isr6();  
+extern void isr7();  
+extern void isr8();  
+extern void isr9();  
+extern void isr10(); 
+extern void isr11(); 
+extern void isr12(); 
+extern void isr13(); 
+extern void isr14(); 
+extern void isr15(); 
+extern void isr16(); 
+extern void isr17(); 
+extern void isr18(); 
+extern void isr19();
+extern void isr21(); 
+extern void isr22();    
+extern void isr23(); 
+extern void isr24(); 
+extern void isr25(); 
+extern void isr26(); 
+extern void isr27(); 
+extern void isr28(); 
+extern void isr29(); 
+extern void isr30(); 
+extern void isr31(); 
 
 // Define IRQ functions that will be implemented in assembly
 extern void irq0();
@@ -72,10 +71,10 @@ extern void irq15();
 
 // Struct for registers saved by interrupt
 typedef struct {
-    uint32_t ds;                                     // Data segment selector
-    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax; // Pushed by pusha
-    uint32_t int_no, err_code;                       // Interrupt number and error code
-    uint32_t eip, cs, eflags, useresp, ss;           // Pushed by the processor automatically
+    uint32_t ds;                                     
+    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax; 
+    uint32_t int_no, err_code;                       
+    uint32_t eip, cs, eflags, useresp, ss;           
 } registers_t;
 
 // Function pointer for interrupt handlers

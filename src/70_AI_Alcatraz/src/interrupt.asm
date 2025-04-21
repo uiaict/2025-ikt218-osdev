@@ -60,33 +60,33 @@ extern irq_handler
 
 ; IDT loading function
 idt_flush:
-    mov eax, [esp+4]  ; Get the pointer to the IDT, passed as a parameter
-    lidt [eax]        ; Load the IDT pointer
-    ret               ; Return to the calling function
+    mov eax, [esp+4]  
+    lidt [eax]        
+    ret              
 
-; Common ISR stub to save processor state, set up for C code, and restore
+
 %macro ISR_NOERRCODE 1
     isr%1:
-        cli                  ; Disable interrupts
-        push byte 0          ; Push a dummy error code (if CPU doesn't push one already)
-        push byte %1         ; Push the interrupt number
-        jmp isr_common_stub  ; Go to common handler
+        cli                  
+        push byte 0          
+        push byte %1         
+        jmp isr_common_stub  
 %endmacro
 
 %macro ISR_ERRCODE 1
     isr%1:
-        cli                  ; Disable interrupts
-        push byte %1         ; Push the interrupt number
-        jmp isr_common_stub  ; Go to common handler
+        cli                  
+        push byte %1         
+        jmp isr_common_stub  
 %endmacro
 
-; Common IRQ stub for IRQ handlers
+
 %macro IRQ 2
     irq%1:
-        cli                  ; Disable interrupts
-        push byte 0          ; Push a dummy error code
-        push byte %2         ; Push the interrupt number
-        jmp irq_common_stub  ; Go to the common IRQ handler
+        cli                  
+        push byte 0          
+        push byte %2        
+        jmp irq_common_stub  
 %endmacro
 
 ; Define ISRs for CPU exceptions
@@ -141,13 +141,11 @@ IRQ 13, 45
 IRQ 14, 46
 IRQ 15, 47
 
-; Common ISR stub. Saves processor state, sets up for kernel mode segments,
-; calls the C-level fault handler, and restores stack frame.
+
 isr_common_stub:
-    ; Save all registers
+    
     pusha
     
-    ; Save data segment
     mov ax, ds
     push eax
     
@@ -177,7 +175,7 @@ isr_common_stub:
     ; Return from interrupt
     iret
 
-; Common IRQ stub, similar to ISR stub but calls the IRQ handler
+
 irq_common_stub:
     ; Save all registers
     pusha
