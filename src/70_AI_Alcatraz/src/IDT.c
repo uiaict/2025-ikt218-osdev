@@ -10,6 +10,10 @@ struct idt_ptr idtp;
 // Array of function pointers for interrupt handlers
 isr_t interrupt_handlers[256];
 
+// Global variables for keyboard state
+bool shift_pressed = false;
+bool caps_lock_on = false;
+
 // (Interrupt 0)
 void divide_by_zero_handler(registers_t* regs) {
     printf("Divide by zero exception (#DE) occurred!\n");
@@ -75,7 +79,6 @@ void timer_handler(registers_t* regs) {
 #define KEYBOARD_BUFFER_SIZE 64
 char keyboard_buffer[KEYBOARD_BUFFER_SIZE]; 
 int buffer_position = 0;                    
-bool caps_lock_on = false;                  
 
 
 static const char scancode_to_ascii_low[] = {
