@@ -1,6 +1,11 @@
 [
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/assert.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/assert.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/assert.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
   "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/block_device.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/block_device.c",
   "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/block_device.c"
 },
@@ -28,6 +33,11 @@
   "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
   "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/elf_loader.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/elf_loader.c",
   "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/elf_loader.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/exception_table.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/exception_table.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/exception_table.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
@@ -113,6 +123,11 @@
   "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
   "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/Group_14/include -f elf32 -g -o CMakeFiles/uiaos-kernel.dir/src/isr_stubs.asm.o /workspaces/2025-ikt218-osdev/src/Group_14/src/isr_stubs.asm",
   "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/isr_stubs.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/Group_14/include -f elf32 -g -o CMakeFiles/uiaos-kernel.dir/src/jump_user.asm.o /workspaces/2025-ikt218-osdev/src/Group_14/src/jump_user.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/jump_user.asm"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
@@ -273,6 +288,16 @@
   "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
   "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/Group_14/include -f elf32 -g -o CMakeFiles/uiaos-kernel.dir/src/tss_flush.asm.o /workspaces/2025-ikt218-osdev/src/Group_14/src/tss_flush.asm",
   "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/tss_flush.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/Group_14/include -f elf32 -g -o CMakeFiles/uiaos-kernel.dir/src/uaccess.asm.o /workspaces/2025-ikt218-osdev/src/Group_14/src/uaccess.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/uaccess.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/uaccess.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/uaccess.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/uaccess.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
