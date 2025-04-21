@@ -6,6 +6,7 @@
 #include <multiboot2.h>
 #include "arch/idt.h"
 #include "arch/isr.h"
+#include "arch/irq.h"
 
 
 
@@ -26,7 +27,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     putc_raw('Z');       // Debugmarkør
     idt_init();          // Last IDT
     isr_install();       // <-- Denne MÅ inn for å registrere alle ISR-ene
-    irq_install();  // <-- legg til denne!
+    irq_install();        // <-- legg til denne!
     gdt_init();          // Last GDT
     printf("Hello, Nils!\n");
     putc_raw('T');     // <- denne skal vises i hjørnet!
