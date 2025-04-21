@@ -1,3 +1,7 @@
+; Most, if not all, of this file is taken from Bran's Kernel Development Tutorial
+; http://www.osdever.net/bkerndev/Docs/gdt.htm
+
+
 ; This will set up our new segment registers. We need to do
 ; something special in order to set CS. We do what is called a
 ; far jump. A jump that includes a segment as well as an offset.
