@@ -2,22 +2,35 @@
 #include "arch/idt.h"
 #include "libc/io.h"
 #include "printf.h"
+#include "devices/keyboard.h"
+
+extern void* irq_stub_table[16];
 
 // Remap PIC to avoid conflicts with CPU exceptions
 static void pic_remap() {
-    outb(0x20, 0x11); // init master
-    outb(0xA0, 0x11); // init slave
-    outb(0x21, 0x20); // master offset = 0x20
-    outb(0xA1, 0x28); // slave offset = 0x28
-    outb(0x21, 0x04); // master tells there is slave at IRQ2
-    outb(0xA1, 0x02); // slave identity
-    outb(0x21, 0x01); // 8086 mode
-    outb(0xA1, 0x01); // 8086 mode
-    outb(0x21, 0x0);  // clear masks
-    outb(0xA1, 0x0);  // clear masks
-}
+    // Start init sequence
+    outb(0x20, 0x11);
+    outb(0xA0, 0x11);
 
-extern void* irq_stub_table[16];
+    // Set new offsets
+    outb(0x21, 0x20); // Master = 0x20 (32)
+    outb(0xA1, 0x28); // Slave = 0x28 (40)
+
+    // Tell master/slave relationship
+    outb(0x21, 0x04);
+    outb(0xA1, 0x02);
+
+    // Set 8086 mode
+    outb(0x21, 0x01);
+    outb(0xA1, 0x01);
+
+    // Clear all masks first
+    outb(0x21, 0x00);
+    outb(0xA1, 0x00);
+
+    // Unmask IRQ1 only (keyboard)
+    outb(0x21, 0xFD); // 11111101 = IRQ1 on, rest off
+}
 
 void irq_install() {
     pic_remap();
@@ -28,10 +41,16 @@ void irq_install() {
 }
 
 void irq_handler(struct registers* regs) {
-    printf("IRQ %d triggered\n", regs->int_no - 0x20);
+    printf("INT: %d\n", regs->int_no);  // <- Debug line 1
 
-    // Send EOI (end of interrupt) to PIC
+    if (regs->int_no == 0x21) {
+        printf("IRQ1 fired!\n");        // <- Debug line 2
+        uint8_t scancode = inb(0x60);
+        keyboard_handler(scancode);
+    }
+
     if (regs->int_no >= 0x28)
-        outb(0xA0, 0x20); // slave
-    outb(0x20, 0x20);     // master
+        outb(0xA0, 0x20);
+    outb(0x20, 0x20);
 }
+
