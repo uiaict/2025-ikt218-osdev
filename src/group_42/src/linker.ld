@@ -1,0 +1,35 @@
+OUTPUT_FORMAT(elf32-i386)
+ENTRY(start)
+
+SECTIONS
+{
+    /* Start of the program */
+    . = 0x00100000;
+
+    /* Text (code) section */
+    .text : {
+        *(.text)
+    }
+
+    /* Data section */
+    .data : {
+        *(.data)
+    }
+
+    /* BSS section (uninitialized data) */
+    .bss : {
+        *(.bss)
+        *(COMMON)
+    }
+
+    /* Global Descriptor Table (GDT) section */
+    .gdt : {
+        KEEP(*(.gdt))
+    }
+
+    /* End of the program */
+    /DISCARD/ : {
+        *(.note*)
+        *(.comment)
+    }
+}
