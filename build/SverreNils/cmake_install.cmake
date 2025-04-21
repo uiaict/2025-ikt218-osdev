@@ -1,4 +1,4 @@
-# Install script for directory: /workspaces/2025-ikt218-osdev-1/src/SverreNils
+# Install script for directory: /workspaces/2025-ikt218-osdev/src/SverreNils
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/workspaces/2025-ikt218-osdev-1/build/SverreNils/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/workspaces/2025-ikt218-osdev/build/SverreNils/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -4,6 +4,7 @@
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 #include <multiboot2.h>
+#include "arch/idt.h"
 
 
 
@@ -21,6 +22,7 @@ void putc_raw(char c) {
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     putc_raw('Z');
+    idt_init();
     gdt_init();
     printf("Hello, Nils!\n");
     return 0;

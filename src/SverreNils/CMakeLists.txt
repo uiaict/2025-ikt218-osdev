@@ -64,6 +64,8 @@ add_executable(uiaos-kernel
 	src/printf.c
 	src/arch/gdt.c
     src/arch/gdt.asm
+	src/arch/idt.c               
+	src/arch/idt_load.asm
 	
 )
 
@@ -72,6 +74,7 @@ add_executable(uiaos-kernel
 target_include_directories(uiaos-kernel PUBLIC
     include
     include/libc
+	src/arch 
 )
 
 
