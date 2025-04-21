@@ -11,6 +11,7 @@
 #include "keyboard.h"
 #include "pit.h"
 #include "music/songplayer.h"
+#include "view.h"
 
 struct multiboot_info
 {
@@ -67,44 +68,39 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
     // Uncomment to cause panic
     // asm volatile("int $0x6");
 
-    Song song1 = {starwars_theme, sizeof(starwars_theme) / sizeof(Note)};
-    Song song2 = {battlefield_1942_theme, sizeof(battlefield_1942_theme) / sizeof(Note)};
-    Song customSong = {victory, sizeof(victory) / sizeof(Note)};
-    Song song3 = {music_2, sizeof(music_2) / sizeof(Note)};
-    Song twinkle = {twinkle_twinkle, sizeof(twinkle_twinkle) / sizeof(Note)};
-
-    Song *songs[] = {
-        &twinkle,
-        &song3,
-        &customSong,
-        &song1,
-        &song2};
-
-    uint32_t n_songs = sizeof(songs) / sizeof(Song *);
-
     SongPlayer *player = create_song_player();
 
-    for (uint32_t i = 0; i < n_songs; i++)
-    {
-        printf("Playing song...\n");
-        player->play_song(songs[i]);
-        printf("Done!\n");
-    }
+    // for (uint32_t i = 0; i < n_songs; i++)
+    // {
+    //     printf("Playing song...\n");
+    //     player->play_song(songs[i]);
+    //     printf("Done!\n");
+    // }
 
     int counter = 0;
-    while (1)
+    int choice;
+    do
     {
-        // Uncomment to test PIT sleep busy/interrupt
-        // printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-        // sleep_busy(1000);
-        // printf("[%d]: Slept using busy-waiting.\n", counter++);
+        choice = menu();
+        switch (choice)
+        {
+        case 1:
+            printf("Playing song...\n");
+            Song customSong = {victory, sizeof(victory) / sizeof(Note)};
+            player->play_song(&customSong);
+            break;
 
-        // printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-        // sleep_interrupt(1000);
-        // printf("[%d]: Slept using interrupts.\n", counter++);
-        asm volatile("hlt");
-    }
-    // This should never be reached
+        case 2:
+            print_memory_layout();
+            printf("Press any key to continue...\n");
+            getChar();
+            break;
+
+        default:
+            break;
+        }
+    } while (choice != 4);
+
     printf("Exiting...\n");
 
     return 0;
