@@ -1,22 +1,22 @@
 #ifndef GDT_H
 #define GDT_H
 
-// GDT Entry struktur
+// GDT Entry structure
 struct gdt_entry {
-    unsigned short limit_low;   // De første 16 bitene av segmentgrensen
-    unsigned short base_low;    // De første 16 bitene av baseadressen
-    unsigned char base_middle;  // De neste 8 bitene av baseadressen
-    unsigned char access;       // Tilgangsbyte (bestemmer type segment)
-    unsigned char granularity;  // Inneholder granularity flagg og limit høyeste bits
-    unsigned char base_high;    // De siste 8 bitene av baseadressen
+    unsigned short limit_low;   
+    unsigned short base_low;    
+    unsigned char base_middle;  
+    unsigned char access;       
+    unsigned char granularity;  
+    unsigned char base_high;    
 } __attribute__((packed));
 
-// GDT register (brukes av `lgdt`)
+// GDT registry structure
 struct gdt_ptr {
-    unsigned short limit;  // Størrelse på GDT-tabellen - 1
-    unsigned int base;     // Baseadresse til GDT-tabellen
+    unsigned short limit;  
+    unsigned int base;     
 } __attribute__((packed));
 
-void gdt_init(void); // Funksjon for å initialisere GDT
+void gdt_init(void); 
 
-#endif // GDT_H
+#endif 

@@ -3,36 +3,33 @@
 
 #include "libc/stdint.h"
 
-// Definerer VGA-tekstmodus bufferadresse og skjermstørrelse
 #define VGA_ADDRESS 0xB8000
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 #define WHITE_ON_BLACK 0x0F
 
-// Declare outb function first
+
 static inline void outb(uint16_t port, uint8_t val) {
     asm volatile ( "outb %%al, %%dx" : : "a"(val), "d"(port) );
 }
 
-// Globale variabler for terminalbuffer og markørposisjon
 static unsigned short* terminal_buffer = (unsigned short*) VGA_ADDRESS;
 static int cursor_x = 0, cursor_y = 0;
 
-// Flytter markøren i VGA-tekstbufferet
+
 static void move_cursor() {
     unsigned short pos = cursor_y * VGA_WIDTH + cursor_x;
 
-    // Porter for VGA markør
     outb(0x3D4, 0x0F);
     outb(0x3D5, pos & 0xFF);
     outb(0x3D4, 0x0E);
     outb(0x3D5, (pos >> 8) & 0xFF);
 }
 
-// Add a non-static prototype for move_cursor so it can be called from other files
+
 void move_cursor();
 
-// Tømmer skjermen
+
 static void clear_screen() {
     for (int y = 0; y < VGA_HEIGHT; y++) {
         for (int x = 0; x < VGA_WIDTH; x++) {
@@ -44,7 +41,7 @@ static void clear_screen() {
     move_cursor();
 }
 
-// Skriver et tegn til skjermen
+// for printing a single character to the screen
 static void putchar(char c) {
     if (c == '\n') {
         cursor_x = 0;
@@ -54,13 +51,12 @@ static void putchar(char c) {
         cursor_x++;
     }
 
-    // Gå til neste linje om nødvendig
+    // Jumps to next line if we reach the end of the screen width
     if (cursor_x >= VGA_WIDTH) {
         cursor_x = 0;
         cursor_y++;
     }
 
-    // Rens skjermen hvis vi når slutten
     if (cursor_y >= VGA_HEIGHT) {
         clear_screen();
     }
@@ -68,14 +64,13 @@ static void putchar(char c) {
     move_cursor();
 }
 
-// Skriver en streng til skjermen
+// for printing strings and integers to the screen
 static void print(const char* str) {
     while (*str) {
         putchar(*str++);
     }
 }
 
-// Skriver et heltall til skjermen
 static void print_int(int num) {
     if (num < 0) {
         putchar('-');
@@ -93,7 +88,7 @@ static void print_int(int num) {
     }
 }
 
-// En enkel printf-funksjon med %s, %d, %c, %%
+// basic printf function
 static void printf(const char* format, ...) {
     char** arg_ptr = (char**) &format;
     arg_ptr++;
@@ -127,4 +122,4 @@ static void printf(const char* format, ...) {
     }
 }
 
-#endif // PRINTF_H
+#endif 
