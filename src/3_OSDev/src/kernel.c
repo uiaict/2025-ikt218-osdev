@@ -1,10 +1,13 @@
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
+
 #include <multiboot2.h>
 #include "vga.h"
 #include "descriptor_table.h"
 #include "interrupts.h"
+#include "memory/memory.h"
+#include "pit.h"
 
 extern uint32_t end;
 
@@ -51,7 +54,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     print_memory_layout();
 
     // Initilise PIT.
-    // init_pit();
+    init_pit();
     
     // Print "Hello World!" to screen
     print(0x0F, "Hello World!\n");
@@ -61,6 +64,18 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     void* memory3 = malloc(13331);
 
     print_memory_layout();
+
+    // Test PIT
+    uint32_t counter = 0;
+    while(true){
+        print(0x0F, "[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+        sleep_busy(1000);
+        print(0x0F, "[%d]: Slept using busy-waiting.\n", counter++);
+
+        print(0x0F, "[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+        sleep_interrupt(1000);
+        print(0x0F, "[%d]: Slept using interrupts.\n", counter++);
+    };
 
     while (1) {}
     return 0;

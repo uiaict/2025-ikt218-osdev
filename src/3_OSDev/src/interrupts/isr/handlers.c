@@ -1,5 +1,6 @@
 #include <interrupts.h>
 #include <descriptor_table.h>
+#include <pit.h>
 #include <libc/stdint.h>
 #include <libc/stddef.h>
 #include <libc/stdbool.h>
@@ -22,12 +23,8 @@ char scancode_ascii_upper[128] = {
     'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', '~', 0, '|',
     'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?'
 };
+
 bool shift_pressed = false;
-
-void timer_handler(void) {
-    print(0x0E, "Timer Interrupt\n");
-}
-
 void keyboard_handler(void) {
 
     uint8_t scancode = inb(0x60);
@@ -118,7 +115,6 @@ void network_handler(void) {
 }
 
 void init_irq_handlers(void) {
-    // register_irq_handlers(IRQ0, timer_handler);
     register_irq_handlers(IRQ1, keyboard_handler);
     register_irq_handlers(IRQ12, mouse_handler);
 }
