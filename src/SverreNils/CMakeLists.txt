@@ -66,7 +66,9 @@ add_executable(uiaos-kernel
     src/arch/gdt.asm
 	src/arch/idt.c               
 	src/arch/idt_load.asm
-	
+	src/arch/isr.c
+	src/arch/isr.asm
+
 )
 
 

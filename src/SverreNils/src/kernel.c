@@ -5,6 +5,7 @@
 #include "libc/stdbool.h"
 #include <multiboot2.h>
 #include "arch/idt.h"
+#include "arch/isr.h"
 
 
 
@@ -21,10 +22,15 @@ void putc_raw(char c) {
 }
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-    putc_raw('Z');
-    idt_init();
-    gdt_init();
+    putc_raw('Z');       // Debugmarkør
+    idt_init();          // Last IDT
+    isr_install();       // <-- Denne MÅ inn for å registrere alle ISR-ene
+    gdt_init();          // Last GDT
     printf("Hello, Nils!\n");
-    return 0;
+    putc_raw('T');     // <- denne skal vises i hjørnet!
+    asm("int $0x00"); // skal gi 0
+    asm("int $0x2A"); // skal gi 42
+    
 
+    return 0;
 }

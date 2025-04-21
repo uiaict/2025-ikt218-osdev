@@ -19,3 +19,4 @@ struct idt_ptr {
 } __attribute__((packed));
 
 void idt_init();
+void idt_set_gate(int n, uint32_t handler, uint16_t selector, uint8_t flags);
