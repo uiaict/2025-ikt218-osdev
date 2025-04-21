@@ -5,6 +5,7 @@
 #include "libc/monitor.h"
 #include "libc/memory/memory.h"
 #include "libc/pit.h"
+#include "libc/music.h"
 #include <multiboot2.h>
 #include "arch/i386/gdt/gdt.h"
 #include "arch/i386/idt/idt.h"
@@ -42,33 +43,11 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     
     init_pit(); // <------ THIS IS PART OF THE ASSIGNMENT
 
-    uint32_t counter = 0;
+    play_sound(440); // Play an A4 note
+    sleep_interrupt(500); // Let it play for 500ms
+    stop_sound(); // Stop the sound
 
-    while (true) {
-        monitor_write("[");
-        monitor_write_dec(counter);
-        monitor_write("]: Sleeping with busy-waiting (HIGH CPU).\n");
-    
-        sleep_busy(1000);
-    
-        monitor_write("[");
-        monitor_write_dec(counter);
-        monitor_write("]: Slept using busy-waiting.\n");
-    
-        counter++;
-    
-        monitor_write("[");
-        monitor_write_dec(counter);
-        monitor_write("]: Sleeping with interrupts (LOW CPU).\n");
-    
-        sleep_interrupt(1000);
-    
-        monitor_write("[");
-        monitor_write_dec(counter);
-        monitor_write("]: Slept using interrupts.\n");
-    
-        counter++;
-    }
+
     
     //infinite loop to keep the kernel running
     while (1) {
