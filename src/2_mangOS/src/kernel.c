@@ -10,6 +10,7 @@
 #include "idt.h"
 #include "keyboard.h"
 #include "pit.h"
+#include "music/songplayer.h"
 
 struct multiboot_info
 {
@@ -65,6 +66,30 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
     asm volatile("int $0x5");
     // Uncomment to cause panic
     // asm volatile("int $0x6");
+
+    Song song1 = {starwars_theme, sizeof(starwars_theme) / sizeof(Note)};
+    Song song2 = {battlefield_1942_theme, sizeof(battlefield_1942_theme) / sizeof(Note)};
+    Song customSong = {victory, sizeof(victory) / sizeof(Note)};
+    Song song3 = {music_2, sizeof(music_2) / sizeof(Note)};
+    Song twinkle = {twinkle_twinkle, sizeof(twinkle_twinkle) / sizeof(Note)};
+
+    Song *songs[] = {
+        &twinkle,
+        &song3,
+        &customSong,
+        &song1,
+        &song2};
+
+    uint32_t n_songs = sizeof(songs) / sizeof(Song *);
+
+    SongPlayer *player = create_song_player();
+
+    for (uint32_t i = 0; i < n_songs; i++)
+    {
+        printf("Playing song...\n");
+        player->play_song(songs[i]);
+        printf("Done!\n");
+    }
 
     int counter = 0;
     while (1)
