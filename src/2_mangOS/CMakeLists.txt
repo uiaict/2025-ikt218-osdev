@@ -77,7 +77,11 @@ add_executable(uiaos-kernel
 	src/helpers/input.c
 	src/handlers/isr_handler.c
 	src/handlers/irq_handler.c
+	src/drivers/pit.c
 	src/drivers/keyboard.c
+	src/memory/malloc.c
+	src/memory/paging.c
+	src/memory/memutils.c
 )
 
 # Include directories for the kernel target

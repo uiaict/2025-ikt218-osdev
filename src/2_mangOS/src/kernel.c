@@ -5,9 +5,11 @@
 #include "libc/string.h"
 #include "libc/stdio.h"
 #include "libc/terminal.h"
+#include "memory/memory.h"
 #include "gdt.h"
 #include "idt.h"
 #include "keyboard.h"
+#include "pit.h"
 
 struct multiboot_info
 {
@@ -15,6 +17,8 @@ struct multiboot_info
     uint32_t reserved;
     struct multiboot_tag *first;
 };
+
+extern uint32_t end;
 
 int main(uint32_t magic, struct multiboot_info *mb_info_addr)
 {
@@ -41,8 +45,19 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
     init_keyboard();
     printf("Keyboard initialized\n");
 
+    init_kernel_memory((uint32_t *)&end);
+    init_paging();
+    printf("Kernel memory initialized & paging\n");
+
+    print_memory_layout();
+    init_pit();
+
     asm volatile("sti");
     printf("Interrupts enabled\n");
+
+    void *ptr = malloc(12345);
+    void *ptr2 = malloc(54321);
+    void *ptr3 = malloc(100);
 
     // Testing interrupt 3, 4 & 5
     asm volatile("int $0x3");
@@ -51,8 +66,17 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
     // Uncomment to cause panic
     // asm volatile("int $0x6");
 
+    int counter = 0;
     while (1)
     {
+        // Uncomment to test PIT sleep busy/interrupt
+        // printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+        // sleep_busy(1000);
+        // printf("[%d]: Slept using busy-waiting.\n", counter++);
+
+        // printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+        // sleep_interrupt(1000);
+        // printf("[%d]: Slept using interrupts.\n", counter++);
         asm volatile("hlt");
     }
     // This should never be reached

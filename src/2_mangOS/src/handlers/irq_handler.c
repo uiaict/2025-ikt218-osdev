@@ -92,7 +92,6 @@ void irq15_handler(registers_t *regs, void *ctx)
 
 void init_irq_handlers()
 {
-    register_irq_handler(IRQ0, irq0_handler, NULL);
     register_irq_handler(IRQ2, irq2_handler, NULL);
     register_irq_handler(IRQ3, irq3_handler, NULL);
     register_irq_handler(IRQ4, irq4_handler, NULL);

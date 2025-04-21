@@ -1,4 +1,5 @@
 #include "idt.h"
+#include "libc/stdio.h"
 
 void isr3_handler(registers_t *regs, void *ctx)
 {
