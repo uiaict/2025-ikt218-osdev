@@ -1,8 +1,9 @@
-#include "song/song.h"
+#include "libc/song.h"
 
-#include "pit.h"
-#include "common.h"
+#include "libc/pit.h"
+#include "libc/common.h"
 #include "libc/stdio.h"
+#include "libc/memory.h"  // for malloc
 
 void speaker_enable() 
 {
@@ -48,7 +49,7 @@ void internal_play_song(Song *track)
     for (uint32_t idx = 0; idx < track->length; idx++) 
     {
         Note *current = &track->notes[idx];
-        printf("Note: %u, Freq=%u, Duration=%u\n", idx, current->frequency, current->duration);
+        kprint("Note %u: Freq = %u Hz, Duration = %u ms\n", idx, current->frequency, current->duration);
         sound_start(current->frequency);
         sleep_interrupt(current->duration);
         sound_stop();
@@ -60,4 +61,11 @@ void internal_play_song(Song *track)
 void play_song(Song *track) 
 {
     internal_play_song(track);
+}
+
+SongPlayer* create_song_player()
+{
+    SongPlayer* player = (SongPlayer*)malloc(sizeof(SongPlayer));
+    player->play_song = play_song;
+    return player;
 }

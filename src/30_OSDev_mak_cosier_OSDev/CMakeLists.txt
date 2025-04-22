@@ -78,6 +78,8 @@ add_executable(uiaos-kernel
     src/memory/paging.c
     # Add PIT implementation
     src/pit/pit.c
+    # Song
+    src/song/song.c
 )
 
 # Include directories for the kernel target

@@ -1,4 +1,5 @@
 // kernel.c
+
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
@@ -11,6 +12,7 @@
 #include "libc/io.h"
 #include "libc/pit.h"
 #include "libc/memory.h"
+#include "libc/song.h"
 
 // Declaration for the kernel end symbol defined in linker.ld
 extern uint32_t end;
@@ -34,16 +36,10 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr)
     // Memory Management Initialization
     // --------------------------------
     
-    // Initialize the kernel memory manager using the end address of the kernel.
     init_kernel_memory((uint32_t)&end);
-    
-    // Initialize paging for memory management.
     paging_init();
-
-    // Print the memory layout to verify the memory manager's state.
     print_memory_layout();
 
-    // Test memory allocation:
     void* mem1 = malloc(1000);
     void* mem2 = malloc(500);
     kprint("Allocated memory blocks at %x and %x\n", mem1, mem2);
@@ -52,12 +48,9 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr)
     // PIT (Programmable Interval Timer) Initialization
     // -----------------------------
     
-    // Initialize the PIT for timer interrupts.
     init_pit();
 
-    // Test the sleep functions with a counter
     int counter = 0;
-    
     kprint("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
     sleep_busy(1000);
     kprint("[%d]: Slept using busy-waiting.\n", counter++);
@@ -66,7 +59,23 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr)
     sleep_interrupt(1000);
     kprint("[%d]: Slept using interrupts.\n", counter++);
 
-    // Continue running with a loop to demonstrate PIT functionality
+    // -----------------------------
+    // 🎵 Music Playback Section 🎵
+    // -----------------------------
+    Song starwars = {
+        .notes = starwars_theme,
+        .length = sizeof(starwars_theme) / sizeof(Note)
+    };
+
+    SongPlayer* player = create_song_player();
+
+    kprint(" Playing Star Wars theme via PC speaker...\n");
+    player->play_song(&starwars);
+    kprint(" Finished playing the Star Wars theme.\n");
+
+    // -----------------------------
+    // Loop demonstrating PIT
+    // -----------------------------
     while(1) {
         kprint("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
         sleep_busy(1000);
