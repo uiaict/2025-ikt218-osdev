@@ -7,6 +7,7 @@
 #include "descriptor_tables.h"
 #include "keyboard.h"
 #include "timer.h"
+#include "sound.h"
 
 
 
@@ -23,6 +24,11 @@ int main(uint32_t my_struct, uint32_t magic, struct multiboot_info *mb_info_addr
     init_idt();
     init_keyboard();
     init_pit(50); // 50Hz
+    enable_speaker();
+    play_sound(500);
+    busy_sleep(500);
+    stop_sound();
+
 
     typedef struct{
         uint8_t a;
@@ -47,7 +53,6 @@ int main(uint32_t my_struct, uint32_t magic, struct multiboot_info *mb_info_addr
     // asm volatile ("int $0x1F"); 
     // asm volatile ("int $0x20");
     // asm volatile ("int $0x21"); 
-
 
 
 

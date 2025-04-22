@@ -23,11 +23,11 @@
 #define ø 236   // Infinity
 #define Ø 237   // Greek lower case phi
 #define µ 230 
-#define EUR 156 
-#define ´ 0     // might implement ó
-#define € 155   // Cent, ¢
+#define GBP 156 // £
+#define ´ 0     // might implement ó, porbably not
+#define € 155   // No € support, replaced with ¢
 #define ¨ 0     // Might implement ö and ô, porbably not
-#define ORB 0   //¤
+#define ORB 0   // ¤
 #define PGRPH 0 // §
 
 static bool shift = false;
@@ -45,7 +45,6 @@ static const uint8_t ASCII_us[] = {
     '2', '3', '0', '.', 0, 0, 0
 };
 static const uint8_t ASCII[] = {
-    // can't be typed: ¨
     0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '\\', '\b', '\t',
     'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', å, ¨, '\n', 0, 'a', 's',
     'd', 'f', 'g', 'h', 'j', 'k', 'l', ø, æ, '|', 0, '\'', 'z', 'x', 'c', 'v',
@@ -83,7 +82,7 @@ static const uint8_t ASCII_caps_shift[] = {
     // enter is only \n and not \r also
 };
 static const uint8_t ASCII_altgr[] = {
-    0, 0, 0, '@', EUR, '$', 0, 0, '{', '[', ']', '}', 0, ´, 0, 0,
+    0, 0, 0, '@', GBP, '$', 0, 0, '{', '[', ']', '}', 0, ´, 0, 0,
     0, 0, €, 0, 0, 0, 0, 0, 0, 0, 0, '~', ' ', 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, µ, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

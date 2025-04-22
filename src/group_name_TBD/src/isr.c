@@ -31,7 +31,7 @@ void irq_handler(struct registers reg){
     // IRQ0-7 / ISR32-39 master PIC
     // IRQ8-15 / ISR40-47 slave PIC
     
-   if (reg.int_no > 39){
+   if (reg.int_no > IRQ7){
        // IRQ went through slave PIC
        // Needs End Of Interrupt signal
        outb(S_PIC_COMMAND, PIC_EOI);

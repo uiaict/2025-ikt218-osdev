@@ -57,26 +57,26 @@ void init_idt() {
     
 // Remap the irq table.
 // ICW: Initialization Command Words
-// Arbitrary numbers meaning specific things to the pic
+// Arbitrary numbers meaning specific things to the PIC
 
     // Gives command to master and slave PIC
-    outb(M_PIC_COMMAND, 0x10 | 0x01);
-    outb(S_PIC_COMMAND, 0x10 | 0x01);
+    outb(M_PIC_COMMAND, 0x10 | 0x01); // ICW_INIT + tells ICW4 will be used
+    outb(S_PIC_COMMAND, 0x10 | 0x01); //   (ICW1)
     
     // Sends data to master and slave PIC
     outb(M_PIC_DATA, 0x20);     // Offset to shift IRQ0
-    outb(S_PIC_DATA, 0x28);     //  from ISR0 to ISR32
+    outb(S_PIC_DATA, 0x28);     //   from ISR0 to ISR32
     
     outb(M_PIC_DATA, 0x04);     // Tell Master PIC that there is a slave PIC at IRQ2 (0000 0100)
     outb(S_PIC_DATA, 0x02);     // Tell Slave PIC its cascade identity (0000 0010)
     
     outb(M_PIC_DATA, 0x01);     // Makes PIC use 8086 mode
-    outb(S_PIC_DATA, 0x01);     //  instead of 8080 mode
+    outb(S_PIC_DATA, 0x01);     //   instead of 8080 mode (ICW4)
     
     outb(M_PIC_DATA, 0xFC);     // Only unmansk IRQ1 for keyboard interrupts
-    outb(S_PIC_DATA, 0xFF);     //  and IRQ0 for PIT
+    outb(S_PIC_DATA, 0xFF);     //   and IRQ0 for PIT (0xFC=11111100)
     
-    asm volatile("sti");        // Enables hardware interrupts. Probably a better place for it.
+    asm volatile("sti");        // Enables hardware interrupts.
 // IRQs 0..15 correspond to ISRs 32..47 (31 being the last CPU-used ISR)
     
     

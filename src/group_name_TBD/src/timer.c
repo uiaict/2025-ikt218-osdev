@@ -1,13 +1,10 @@
 #include "timer.h"
 #include "libc/stdio.h"
 
-uint32_t tick = 0;
-uint32_t frequency;
+volatile uint32_t tick = 0;
+uint32_t int_frequency;
 
 uint32_t get_global_tick(){
-    // Allows outside access as well as 
-    //  differentiates the global tick from 
-    //  other tick-related variables
     return tick;
 }
 
@@ -16,13 +13,13 @@ void init_pit(uint32_t freq){
     
     register_interrupt_handler(IRQ0, pit_handler);
     
-    frequency = freq;
+    int_frequency = freq;
     
-    uint32_t divisor = PIT_REFRESHRATE / frequency;
-    // divisor max value 65535/0xFFFF
-    
-    outb(PIT_COMMAND, 0x36); // 00 11 011 0, repeating, https://wiki.osdev.org/Programmable_Interval_Timer
-    //channel0 l/h mode3 16bit
+    uint32_t divisor = PIT_REFRESHRATE / int_frequency;
+    // Divisor max value 65535 or 0xFFFF
+
+    outb(PIT_COMMAND, 0x36); // 0x36 = 00 11 011 0
+                             // channel0, l/h, mode3, 16bit binary
 
     // Divisor has to be sent byte-wise, so split here into upper/lower bytes.
     uint8_t lo = (uint8_t)(divisor & 0xFF);
@@ -35,17 +32,13 @@ void init_pit(uint32_t freq){
 
 
 void pit_handler(struct registers reg){
-    
     tick++;
-    // print("Tick");
-    // putint(tick);
-    // print("\n\r");
 }
 
 void busy_sleep(uint32_t ms){
 
     uint32_t start_tick = get_global_tick();
-    uint32_t ticks_to_wait = (uint32_t)(ms/1000) * frequency;
+    uint32_t ticks_to_wait = (uint32_t)((ms/1000) * int_frequency); // Convert ms to s
     uint32_t elapsed_ticks = 0;
     
         while (elapsed_ticks < ticks_to_wait){
@@ -69,7 +62,7 @@ void busy_sleep(uint32_t ms){
 void interrupt_sleep(uint32_t ms){
     uint32_t start_tick = get_global_tick();
     uint32_t current_tick = start_tick;
-    uint32_t ticks_to_wait = (uint32_t)(ms/1000) * frequency;
+    uint32_t ticks_to_wait = (uint32_t)(ms/1000) * int_frequency; // Convert ms to s
     uint32_t end_tick = current_tick + ticks_to_wait;
     
     while ((current_tick - start_tick) < ticks_to_wait){ // Prevents overflow issues
