@@ -11,20 +11,20 @@ int puts(const char* str) {
     return 0;
 }
 
-static void print_number(int value, int base) {
+static void print_number(unsigned int value, int base, bool is_signed) {
     char buffer[32];
     const char* digits = "0123456789ABCDEF";
     int i = 0;
-    bool is_negative = false;
+
+    // Handle signed negative numbers in base 10
+    if (is_signed && (int)value < 0 && base == 10) {
+        value = (unsigned int)(-(int)value);
+        buffer[i++] = '-';
+    }
 
     if (value == 0) {
         console_write_char('0');
         return;
-    }
-
-    if (value < 0 && base == 10) {
-        is_negative = true;
-        value = -value;
     }
 
     while (value != 0) {
@@ -32,10 +32,9 @@ static void print_number(int value, int base) {
         value /= base;
     }
 
-    if (is_negative) buffer[i++] = '-';
-
-    while (--i >= 0) {
-        console_write_char(buffer[i]);
+    // If we added a '-' above, it’s in buffer[0], so we print from the end
+    for (int j = i - 1; j >= 0; j--) {
+        console_write_char(buffer[j]);
     }
 }
 
@@ -54,10 +53,13 @@ int printf(const char* __restrict__ format, ...) {
                     console_write(va_arg(args, const char*));
                     break;
                 case 'd':
-                    print_number(va_arg(args, int), 10);
+                    print_number(va_arg(args, int), 10, true); // signed
+                    break;
+                case 'u':
+                    print_number(va_arg(args, unsigned int), 10, false); // unsigned
                     break;
                 case 'x':
-                    print_number(va_arg(args, int), 16);
+                    print_number(va_arg(args, unsigned int), 16, false); // hex
                     break;
                 case '%':
                     console_write_char('%');
