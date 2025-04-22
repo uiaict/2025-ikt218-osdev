@@ -1,6 +1,8 @@
-#include "memory/memory.h"   // Include the header file that defines the functions
+#include "libc/memory.h"   // Fix include path
+#include "libc/common.h"    // For u32int definition
 
-// Function to copy memory from source to destination
+// Commenting out duplicate memcpy function - already defined in common.c
+/*
 void* memcpy(void* dest, const void* src, size_t count )
 {
     char* dst8 = (char*)dest;  // Cast the destination pointer to char*
@@ -23,6 +25,7 @@ void* memcpy(void* dest, const void* src, size_t count )
 
     return (void*)dest;        // Return the destination pointer
 }
+*/
 
 // Function to set a block of memory with a 16-bit value
 void* memset16 (void *ptr, uint16_t value, size_t num)
@@ -33,11 +36,13 @@ void* memset16 (void *ptr, uint16_t value, size_t num)
     return ptr;               // Return the pointer to the block of memory
 }
 
-// Function to set a block of memory with a byte value
-void* memset (void * ptr, int value, size_t num )
+// Commenting out duplicate memset function - already defined in idt/util.c
+/*
+void* memset(void *dest, unsigned char val, u32int n)
 {
-    unsigned char* p=ptr;     // Cast the pointer to unsigned char*
-    while(num--)
-        *p++ = (unsigned char)value;   // Set each byte to the given value
-    return ptr;               // Return the pointer to the block of memory
+    unsigned char* p = dest;     // Cast the pointer to unsigned char*
+    while(n--)
+        *p++ = val;   // Set each byte to the given value
+    return dest;      // Return the pointer to the block of memory
 }
+*/

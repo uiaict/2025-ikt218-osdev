@@ -53,9 +53,11 @@ char* exception_messages[] =
 // The function to handle general ISRs (Interrupt Service Routines)
 void isr_handler(registers_t regs)
 {
-    if (regs.int_no < 32) {
+    if (regs.int_no < 32) 
+    {
         kprint("Received interrupt %d: %s\n", regs.int_no, exception_messages[regs.int_no]);
-    } else {
+    } else 
+    {
         kprint("Received interrupt %d\n", regs.int_no);
     }
 }

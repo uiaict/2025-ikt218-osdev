@@ -71,10 +71,14 @@ add_executable(uiaos-kernel
     src/keyboard/keyboard.c
     src/common/common.c
     src/isrs/isrs_gen.c
-    #src/pit.c
+    # Add memory management files
+    src/memory/memory.c
+    src/memory/malloc.c
+    src/memory/memutils.c
+    src/memory/paging.c
+    # Add PIT implementation
+    src/pit/pit.c
 )
-
-
 
 # Include directories for the kernel target
 target_include_directories(uiaos-kernel PUBLIC include)

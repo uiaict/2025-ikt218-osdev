@@ -5,7 +5,8 @@
 #include "libc/common.h"  // For inb() and outb()
 
 // Define registers_t with typedef so you can use it directly
-typedef struct registers_t {
+typedef struct registers_t 
+{
     uint32_t ds;
     uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
     uint32_t int_no, err_code;

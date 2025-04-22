@@ -12,7 +12,8 @@ void __attribute((cdecl)) i686_ISR255() { /* Handle interrupt 255 */ }
 // Initialize ISRs in the IDT
 void i686_ISR_InitializeGates()
 {
-    for (int i = 0; i <= 255; i++) {
+    for (int i = 0; i <= 255; i++) 
+    {
         i686_IDT_SetGate(i, i686_ISR0 + i, i686_GDT_CODE_SEGMENT, IDT_FLAG_RING0 | IDT_FLAG_GATE_32BIT_INT);
     }
 }

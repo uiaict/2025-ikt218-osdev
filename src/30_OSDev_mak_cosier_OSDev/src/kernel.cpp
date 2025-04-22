@@ -1,4 +1,3 @@
-/*
 // Global operator new
 void* operator new(size_t size) 
 {
@@ -9,7 +8,6 @@ void* operator new[](size_t size)
 {
     return malloc(size);
 }
-
 
 // Global operator delete
 void operator delete(void* ptr) noexcept 
@@ -22,20 +20,18 @@ void operator delete[](void* ptr) noexcept
     free(ptr);
 }
 
-
 // Sized deallocation operators (optional)
 void operator delete(void* ptr, size_t size) noexcept 
 {
-    (void)size;
+    (void)size; // Unused parameter
     free(ptr);
 }
 
 void operator delete[](void* ptr, size_t size) noexcept 
 {
-    (void)size;
+    (void)size; // Unused parameter
     free(ptr);
 }
-
 
 int kernel_main_c(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // … (initializations of monitor, GDT, IDT, IRQ, etc.)
@@ -52,4 +48,3 @@ int kernel_main_c(uint32_t magic, struct multiboot_info* mb_info_addr) {
     
     // … continue with other initialization (PIT, etc.)
 }
-*/

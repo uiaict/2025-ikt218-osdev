@@ -1,9 +1,14 @@
 #ifndef IDT_H
 #define IDT_H
 
-#include <libc/stdint.h>
-#include "libc/isr.h"  // Includes definition for registers_t and related ISR types
-#include <libc/stddef.h>            // Ensures standard types like size_t are available
+#include <libc/stdint.h>  // Include this first to ensure uint32_t is defined
+#include "libc/isr.h"     // Includes definition for registers_t and related ISR types
+#include <libc/stddef.h>  // Ensures standard types like size_t are available
+
+// Define uintptr_t if not already defined (pointer to integer type)
+#ifndef uintptr_t
+typedef uint32_t uintptr_t;
+#endif
 
 // --- Define missing macros if not defined elsewhere ---
 
@@ -22,7 +27,7 @@
 // --- Macro alias with proper casting ---
 // This macro casts the ISR function pointer to uintptr_t before calling idt_set_gate.
 #define i686_IDT_SetGate(num, base, sel, flags) \
-    idt_set_gate((num), (uintptr_t)(base), (sel), (flags))
+    idt_set_gate((num), (uint32_t)(base), (sel), (flags))
 
 // --- IDT Structures ---
 
@@ -38,7 +43,7 @@ struct idt_entry_struct {
 // A structure describing a pointer to the IDT array; used with the lidt instruction.
 struct idt_ptr_struct {
     uint16_t limit;
-    uintptr_t base;      // Base address of the first element in the idt_entry_struct array.
+    uint32_t base;      // Base address of the first element in the idt_entry_struct array.
 } __attribute__((packed));
 
 // --- Function Prototypes ---
@@ -48,10 +53,10 @@ void init_idt();
 
 // Sets an IDT entry.
 //  - num   : the index in the IDT.
-//  - base  : the address of the interrupt handler (now using uintptr_t).
+//  - base  : the address of the interrupt handler
 //  - sel   : the kernel segment selector.
-//  - flags : attributes for the entry (e.g., combination of IDT_FLAG_RING0 and IDT_FLAG_GATE_32BIT_INT).
-void idt_set_gate(uint8_t num, uintptr_t base, uint16_t sel, uint8_t flags);
+//  - flags : attributes for the entry
+void idt_set_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags);
 
 // --- External ISR Function Declarations ---
 extern void isr0();

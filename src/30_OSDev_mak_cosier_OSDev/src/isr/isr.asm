@@ -79,11 +79,7 @@ isr_common_stub:
    sti                      ; Set interrupts
    iret                     ; Return from interrupt
 
-
-
-
 ;IRQ
-
 %macro IRQ 2
   global irq%1
   irq%1:
@@ -92,7 +88,6 @@ isr_common_stub:
     push byte %2
     jmp irq_common_stub
 %endmacro
-
 
 IRQ   0,    32
 IRQ   1,    33
@@ -110,7 +105,6 @@ IRQ  12,    44
 IRQ  13,    45
 IRQ  14,    46
 IRQ  15,    47
-
 
 extern irq_handler
 
