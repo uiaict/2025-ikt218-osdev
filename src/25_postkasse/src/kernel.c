@@ -9,6 +9,8 @@
 #include <multiboot2.h>
 #include "arch/i386/gdt/gdt.h"
 #include "arch/i386/idt/idt.h"
+#include "libc/frequencies.h"
+#include "libc/song.h"
 
 extern uint32_t end;
 
@@ -43,9 +45,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     
     init_pit(); // <------ THIS IS PART OF THE ASSIGNMENT
 
-    play_sound(440); // Play an A4 note
-    sleep_interrupt(500); // Let it play for 500ms
-    stop_sound(); // Stop the sound
+
+    play_song(music_1, MUSIC_1_LENGTH);
 
 
     

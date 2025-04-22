@@ -69,6 +69,7 @@ add_executable(uiaos-kernel
 	src/monitor.c
 	src/pit.c
 	src/music.c
+	src/song.c
 	src/memory/malloc.c
 	src/memory/paging.c
 	src/memory/memutils.c
