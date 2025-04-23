@@ -26,6 +26,8 @@ extern void irq13();
 extern void irq14(); 
 extern void irq15(); 
 
+extern volatile uint32_t tick;
+
 void outb(uint16_t port, uint8_t value) {
     asm volatile("outb %1, %0" : : "dN"(port), "a"(value));
 }
@@ -40,9 +42,9 @@ uint8_t inb(uint16_t port) {
 static const unsigned char scancode_ascii[128] = {
       0,  27, '1', '2', '3', '4', '5', '6', '7', '8', /* 0x00 - 0x09 */
     '9', '0', '+', '\\', '\b', '\t', 'q', 'w', 'e', 'r', /* 0x0A - 0x13 */
-    't', 'y', 'u', 'i', 'o', 'p', 0xE5, '^', '\n',   0, /* 0x14 - 0x1D --- 0xE5 = å */
-    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 0xF8, /* 0x1E - 0x27 --- 0xF8 = ø */
-   0xE6, '|',   0, '\'', 'z', 'x', 'c', 'v', 'b', 'n', /* 0x28 - 0x31 --- 0xE6 = æ */
+    't', 'y', 'u', 'i', 'o', 'p', 0x86, '^', '\n',   0, /* 0x14 - 0x1D --- 0xE5 = å */
+    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 0x9D, /* 0x1E - 0x27 --- 0xF8 = ø */
+    0x91, '|',   0, '\'', 'z', 'x', 'c', 'v', 'b', 'n', /* 0x28 - 0x31 --- 0xE6 = æ */
     'm', ',', '.', '-',   0, '*',   0, ' ',   0,   0, /* 0x32 - 0x3B */
       0,   0,   0,   0,   0,   0,   0,   0,   0,   0, /* 0x3C - 0x45 */
       0,   0, '7', '8', '9', '-', '4', '5', '6', '+', /* 0x46 - 0x4F */
@@ -85,6 +87,7 @@ void irq_handler(registers_t *regs) {
         }
     }
     else if (regs->int_no == 32) {
+        tick++;
     }
 
     if (regs->int_no >= 40) {
@@ -168,21 +171,6 @@ void idt_set_gate(int n, uint32_t handler, uint16_t sel, uint8_t flags) {
 
 void lidt(void* idtp_ptr) {
     asm volatile("lidt (%0)" : : "r"(idtp_ptr));
-}
-
-#define PIT_CHANNEL0_PORT 0x40
-#define PIT_COMMAND_PORT  0x43
-#define PIT_FREQUENCY     1193182 
-
-
-void init_pit(uint32_t frequency) {
-    uint32_t divisor = PIT_FREQUENCY / frequency;
-    if (frequency == 0) divisor = 65535; 
-    if (divisor == 0) divisor = 1; 
-    if (divisor > 65535) divisor = 65535; 
-    outb(PIT_COMMAND_PORT, 0x36);
-    outb(PIT_CHANNEL0_PORT, (uint8_t)(divisor & 0xFF));
-    outb(PIT_CHANNEL0_PORT, (uint8_t)((divisor >> 8) & 0xFF));
 }
 
 void init_idt() {

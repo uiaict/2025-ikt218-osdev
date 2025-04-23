@@ -4,7 +4,7 @@
 #include "libc/stdint.h"
 
 // Viser tekst til skjermen
-void printf(const char *message);
+void printf(const char *message, ...);
 
 // Disse må være tilgjengelig eksternt
 extern volatile char *vga;
