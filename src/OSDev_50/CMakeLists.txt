@@ -66,7 +66,24 @@ add_executable(uiaos-kernel
     src/kernel.c
     src/gdt.c
     src/terminal/terminal.c
-    src/arch/i386/gdt_flush.asm
+    src/descriptor_table.asm
+
+	src/libc/panic.c
+	src/libc/system.c
+	src/libc/string.c
+	src/libc/stdio.c
+
+    src/common.c
+	src/monitor.c
+	src/gdt.c
+	src/idt.c
+	src/irq.c
+	src/isr.c
+	src/isr_asm.asm
+
+    src/input.c
+
+
 )
 
 # Configure include directories for kernel
