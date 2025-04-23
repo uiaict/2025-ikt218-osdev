@@ -18,7 +18,7 @@ void pit_callback(registers_t regs)
 
 void init_pit()
 {
-    irq_register_handler(0, pit_callback);
+    // irq_register_handler(0, pit_callback);
 
     uint32_t divisor = PIT_BASE_FREQUENCY / TARGET_FREQUENCY;
 
