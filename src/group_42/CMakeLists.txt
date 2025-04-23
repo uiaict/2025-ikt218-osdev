@@ -74,6 +74,8 @@ add_executable(uiaos-kernel
 	src/interrupt_wrappers.asm
 	src/interrupts.h
 	src/interrupts.c
+	src/keyboard.c
+	src/keyboard.h
 	src/pic.h
 	src/pic.c
 )

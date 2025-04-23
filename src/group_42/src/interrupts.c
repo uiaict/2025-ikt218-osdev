@@ -1,5 +1,6 @@
 #include "interrupts.h"
 #include "idt.h"
+#include "keyboard.h"
 #include "print.h"
 #include "system.h"
 
@@ -30,13 +31,21 @@ void spurious_interrupt_handler() {
 
 void keyboard_handler() {
   volatile char *video_memory = (volatile char *)0xB8000;
-
   volatile uint8_t scancode = inb(0x60);
 
-  video_memory[0] = '0' + (scancode >> 4); // Display high nibble
-  video_memory[1] = VIDEO_WHITE;
+  // Check if it's a key press and not a key release:
+  if (!(scancode & 0x80)) {
+    // Convert scancode to ASCII
+    if (scancode < SCANCODE_MAX) {
+      char ascii = scancode_to_ascii[scancode];
+      if (ascii != 0) { // Only display printable characters
+	video_memory[0] = ascii;
+	video_memory[1] = VIDEO_WHITE;
+      }
+    }
+  }
 
-  outb(0x20, 0x20);
+  outb(0x20, 0x20); // Send EOI
 }
 
 extern void default_interrupt_handler_wrapper(void);
