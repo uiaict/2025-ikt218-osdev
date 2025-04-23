@@ -8,7 +8,7 @@
             "program": "${config:cmake.buildDirectory}/kernel.bin",
             "cwd": "${config:cmake.buildDirectory}",
             "args": [],
-            "targetArchitecture": "x86",
+            "targetArchitecture": "x86", // Change to x64 for 64-bit architecture
             "MIMode": "gdb",
             "miDebuggerPath": "/usr/bin/gdb-multiarch",
             "miDebuggerArgs": "",
