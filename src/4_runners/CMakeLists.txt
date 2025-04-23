@@ -80,8 +80,7 @@ add_executable(uiaos-kernel
 	src/pit.c
 
 	src/stdio.c
-	
-
+	src/song.c
 
 )
 

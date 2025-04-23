@@ -158,3 +158,27 @@ void print_memory_layout() {
     printf("Memory used    : %u bytes\n", used);
     printf("Memory free    : %u bytes\n", free);
 }
+
+
+// // Example notes:
+// static Note music_1[] = {
+//     {440, 500},  // A4 for 0.5 seconds
+//     {494, 300},  // B4 for 0.3 seconds
+//     {523, 500},  // C5 for 0.5 seconds
+//     {0,   200},  // rest for 0.2 seconds
+//     {660, 500}   // E5 for 0.5 seconds
+// };
+
+
+// static void play_music_demo() {
+//     // Create a Song struct referencing music_1
+//     Song mySong;
+//     mySong.notes = music_1;
+//     mySong.note_count = sizeof(music_1)/sizeof(Note);
+
+//     SongPlayer* player = create_song_player(); // from song.cpp
+
+//     printf("Playing a sample song...\n");
+//     player->play_song(&mySong);
+//     printf("Finished playing the song.\n");
+// }
