@@ -44,6 +44,9 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
     sleep_interrupt(1000);
     printf("[%d]: Slept using interrupts.\n", counter++);
+
+    // malloc something and print the address
+    printf("malloc(0x1000) = 0x%x\n", malloc(0x1000));
   
     printf("Hello, Aquila!\n");
     printf("aquila: ");

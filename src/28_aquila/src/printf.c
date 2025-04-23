@@ -10,6 +10,17 @@
 volatile char *vga = (volatile char *)VGA_ADDRESS;
 int cursor = 0;
 
+extern void outb(uint16_t port, uint8_t value);
+
+
+void update_cursor(int x, int y) {
+    uint16_t pos = y * VGA_WIDTH + x;
+    outb(0x3D4, 0x0F);
+    outb(0x3D5, (uint8_t)(pos & 0xFF));
+    outb(0x3D4, 0x0E);
+    outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
+  }
+
 void putchar(char c) {
     if (c == '\n') {
         cursor += VGA_WIDTH - (cursor % VGA_WIDTH); // Move to start of next line
@@ -74,4 +85,8 @@ void printf(const char* fmt, ...) {
     }
 
     va_end(args);
+
+    int x = cursor % VGA_WIDTH;
+    int y = cursor / VGA_WIDTH;
+    update_cursor(x, y);
 }
