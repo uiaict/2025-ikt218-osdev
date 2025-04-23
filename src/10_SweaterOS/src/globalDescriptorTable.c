@@ -1,5 +1,6 @@
 #include "descriptorTables.h" // Inkluderer header for GDT-definisjoner
-#include "miscFuncs.h"      // For terminal_write functions
+#include "display.h"      // For display functions and colors
+#include "miscFuncs.h"    // For delay function
 
 // GDT-tabellen med tre entries: null-segment, kode-segment og data-segment
 struct gdt_entries gdt[GDT_SIZE];
@@ -14,7 +15,7 @@ extern void gdt_flush(uint32_t);
 static void gdt_add_entry(int index, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity) {
     // Sjekk at indeksen er gyldig
     if (index < 0 || index >= GDT_SIZE) {
-        terminal_write_color("ERROR: Invalid GDT index\n", COLOR_LIGHT_RED);
+        display_write_color("ERROR: Invalid GDT index\n", COLOR_LIGHT_RED);
         delay(100);
         return;
     }
@@ -38,7 +39,7 @@ static void gdt_add_entry(int index, uint32_t base, uint32_t limit, uint8_t acce
 // Setter opp og installerer GDT.
 void initializer_GDT() 
 {
-    terminal_write_color("Setting up Global Descriptor Table (GDT)...\n", COLOR_WHITE);
+    display_write_color("Setting up Global Descriptor Table (GDT)...\n", COLOR_WHITE);
     
     // Set up the GDT pointer
     gdt_info.table_size = (sizeof(struct gdt_entries) * GDT_SIZE) - 1;
@@ -47,26 +48,26 @@ void initializer_GDT()
     // Null segment (required by CPU)
     // Base=0, Limit=0, Access=0, Granularity=0
     gdt_add_entry(0, 0, 0, 0, 0);
-    terminal_write_color("  - NULL descriptor added\n", COLOR_GRAY);
+    display_write_color("  - NULL descriptor added\n", COLOR_DARK_GREY);
 
     // Code segment: 
     // Access=0x9A (Present=1, Ring=0, Type=1, Code=1, Conforming=0, Readable=1, Accessed=0)
     // Granularity=0xCF (Granularity=1 [4KB], Size=1 [32-bit])
     gdt_add_entry(1, 0, 0xFFFFF, 0x9A, 0xCF);
-    terminal_write_color("  - Code segment added\n", COLOR_GRAY);
+    display_write_color("  - Code segment added\n", COLOR_DARK_GREY);
     
     // Data segment:
     // Access=0x92 (Present=1, Ring=0, Type=1, Code=0, Writable=1, Accessed=0)
     // Granularity=0xCF (Granularity=1 [4KB], Size=1 [32-bit])
     gdt_add_entry(2, 0, 0xFFFFF, 0x92, 0xCF);
-    terminal_write_color("  - Data segment added\n", COLOR_GRAY);
+    display_write_color("  - Data segment added\n", COLOR_DARK_GREY);
     
-    terminal_write_color("Loading GDT into CPU...\n", COLOR_WHITE);
+    display_write_color("Loading GDT into CPU...\n", COLOR_WHITE);
     
     // Load the GDT
     gdt_flush((uint32_t)&gdt_info);
     
-    terminal_write_color("GDT loaded successfully!\n", COLOR_LIGHT_GREEN);
+    display_write_color("GDT loaded successfully!\n", COLOR_LIGHT_GREEN);
     
     // Liten pause for å kunne lese output
     delay(50);

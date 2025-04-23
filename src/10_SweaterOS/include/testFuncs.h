@@ -6,6 +6,9 @@
 // Global flag to track if the IDT test was invoked
 extern volatile int idt_test_triggered;
 
+// Test system initialization and setup
+void test_system_initialization(void);
+
 // Test VGA terminal output with different colors
 void test_terminal_output(void);
 
@@ -23,6 +26,21 @@ void test_software_interrupt(void);
 
 // Test hardware interrupts (IRQs) - spesielt tastatur-input
 void test_hardware_interrupts(void);
+
+// Test interrupt status and functionality
+void test_interrupt_status(void);
+
+// Test memory management and allocation
+void test_memory_management(void);
+
+// Test Programmable Interval Timer functions
+void test_programmable_interval_timer(void);
+
+// Test PC speaker music playback
+void test_music_player(void);
+
+// Test hard drive functionality
+void test_hard_drive(void);
 
 // Run all tests
 void run_all_tests(void);

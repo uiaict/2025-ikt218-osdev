@@ -1,69 +1,60 @@
 #include "libc/stdint.h"
+// Sett en definisjon for å unngå typekonflikter med size_t
+#define _SIZE_T_DEFINED
 #include "miscFuncs.h"
 #include "descriptorTables.h"
 #include "interruptHandler.h"
 #include "testFuncs.h"
+#include "memory_manager.h"
+#include "programmableIntervalTimer.h"
+#include "menu.h"
+#include "display.h"
+
+// This is defined in the linker script
+extern uint32_t end;
 
 /**
- * Starter operativsystemet
+ * Starts the operating system
  * 
- * Denne funksjonen initialiserer alle nødvendige komponenter
- * og kjører tester for å verifisere at alt fungerer.
+ * This function initializes all necessary components
+ * and runs tests to verify that everything works.
  */
-void startOS() {
-    // Initialiser terminal for output
-    terminal_initialize();
+static void startOS() {
+    // Initialize terminal for output
+    display_initialize();
     
-    // Vis velkomstmelding
-    terminal_write_color("SweaterOS - Interrupt System\n", COLOR_YELLOW);
-    terminal_write_color("===========================\n\n", COLOR_YELLOW);
+    // Initialize system components and run tests first
+    // This includes PIT and interrupt setup
+    test_system_initialization();
     
-    // Initialiser GDT (Global Descriptor Table)
-    terminal_write_color("Initializing Global Descriptor Table (GDT)...\n", COLOR_WHITE);
-    initializer_GDT();
-    terminal_write_color("GDT initialized successfully!\n\n", COLOR_GREEN);
+    // Clear the screen completely for the boot logo
+    display_clear();
     
-    // Initialiser IDT (Interrupt Descriptor Table)
-    terminal_write_color("Initializing Interrupt Descriptor Table (IDT)...\n", COLOR_WHITE);
-    initializer_IDT();
-    terminal_write_color("IDT initialized successfully!\n\n", COLOR_GREEN);
+    // Now that everything is initialized, we can show the boot logo
+    display_boot_logo();
     
-    // Initialiser PIC (Programmable Interrupt Controller)
-    terminal_write_color("Initializing Programmable Interrupt Controller (PIC)...\n", COLOR_WHITE);
-    pic_initialize();
-    terminal_write_color("PIC initialized successfully!\n\n", COLOR_GREEN);
+    // Use sleep_interrupt which is more efficient than busy waiting
+    sleep_interrupt(3000);  // Wait for 3 seconds to view the logo
     
-    // Aktiver interrupts
-    terminal_write_color("Enabling interrupts...\n", COLOR_WHITE);
-    __asm__ volatile("sti");
-    terminal_write_color("Interrupts enabled!\n\n", COLOR_GREEN);
-    
-    // Kjør tester
-    run_all_tests();
-    
-    // Systemet er nå initialisert og klart
-    terminal_write_color("\n\nSystem initialization complete!\n", COLOR_LIGHT_GREEN);
-    terminal_write_color("System is now in idle state.\n", COLOR_LIGHT_GREEN);
+    // Start menu system without overlapping the logo
+    display_clear();  // Clear screen before showing menu
+    run_menu_loop();
+
+    // Halt the CPU
+    halt();
 }
 
 /**
- * Hovedinngang til operativsystemet
- * 
- * @param magic Magisk tall fra bootloader
- * @param mb_info_addr Peker til multiboot-informasjon
- * @return Returnerer aldri
+ * Kernel entry point - called from boot.s
  */
-int main(uint32_t magic, void* mb_info_addr) {
-    // Verifiser multiboot magic number
-    verify_boot_magic(magic);
-    
-    // Start operativsystemet
-    startOS();
-    
-    // Idle loop - systemet vil aldri nå hit under normal drift
-    while(1) {
-        __asm__ volatile("hlt");
+void main(uint32_t magic, void* mb_info_addr) {
+    // Verify multiboot magic number
+    if (!verify_boot_magic(magic)) {
+        display_write_color("ERROR: Invalid multiboot magic number!\n", COLOR_LIGHT_RED);
+        halt();
+        return;
     }
     
-    return 0;  // Nås aldri
+    // Start the operating system
+    startOS();
 }

@@ -2,6 +2,7 @@
 #include "descriptorTables.h"
 #include "miscFuncs.h"
 #include "interruptHandler.h"
+#include "display.h"
 
 /**
  * Interrupt Descriptor Table (IDT) implementasjon
@@ -20,11 +21,11 @@
 
 // IDT-tabellen - array av IDT-entries
 // Hver entry inneholder informasjon om en interrupt handler
-struct idt_entries idt[IDT_SIZE];
+static struct idt_entries idt_entries[IDT_SIZE];
 
 // IDT-peker - forteller CPU hvor IDT er i minnet
 // Denne strukturen lastes inn i IDTR-registeret med lidt-instruksjonen
-struct idt_pointer idt_info;
+static struct idt_pointer idt_ptr;
 
 // Importerer funksjonen for å laste IDT inn i CPU-en
 // Denne er definert i assembly fordi vi trenger lidt-instruksjonen
@@ -112,16 +113,16 @@ static void idt_add_entry(int index, uint32_t base, uint16_t selector, uint8_t t
 {
     // Valider parametrene for å unngå korrupsjon av IDT-tabellen
     if (index < 0 || index >= IDT_SIZE) {
-        terminal_write_color("ERROR: Ugyldig IDT-indeks\n", COLOR_RED);
+        display_write_color("ERROR: Ugyldig IDT-indeks\n", COLOR_RED);
         return;
     }
     
     // Sett opp IDT-inngangen
-    idt[index].isr_address_low = base & 0xFFFF;          // Nedre 16 bit av handler-adressen
-    idt[index].segment_selector = selector;              // Segment selector (vanligvis 0x08)
-    idt[index].zero = 0;                                 // Alltid 0 (reservert felt)
-    idt[index].type_and_flags = type_attr;               // Type og attributter
-    idt[index].isr_address_high = (base >> 16) & 0xFFFF; // Øvre 16 bit av handler-adressen
+    idt_entries[index].isr_address_low = base & 0xFFFF;          // Nedre 16 bit av handler-adressen
+    idt_entries[index].segment_selector = selector;              // Segment selector (vanligvis 0x08)
+    idt_entries[index].zero = 0;                                 // Alltid 0 (reservert felt)
+    idt_entries[index].type_and_flags = type_attr;               // Type og attributter
+    idt_entries[index].isr_address_high = (base >> 16) & 0xFFFF; // Øvre 16 bit av handler-adressen
 }
 
 /**
@@ -136,8 +137,8 @@ static void idt_add_entry(int index, uint32_t base, uint16_t selector, uint8_t t
 void initializer_IDT() 
 {
     // Sett opp IDT-pekeren
-    idt_info.table_address = (uint32_t)&idt;
-    idt_info.table_size = (sizeof(struct idt_entries) * IDT_SIZE) - 1;
+    idt_ptr.table_address = (uint32_t)&idt_entries;
+    idt_ptr.table_size = (sizeof(struct idt_entries) * IDT_SIZE) - 1;
     
     // Nullstill IDT-tabellen først
     for (int i = 0; i < IDT_SIZE; i++) {
@@ -202,8 +203,8 @@ void initializer_IDT()
     idt_add_entry(46, (uint32_t)irq14, 0x08, 0x8E);
     idt_add_entry(47, (uint32_t)irq15, 0x08, 0x8E);
     
-    // Last IDT-tabellen inn i CPU-en
-    idt_flush((uint32_t)&idt_info);
+    // Load IDT
+    idt_flush((uint32_t)&idt_ptr);
     
-    terminal_write_color("IDT initialisert med 48 handlers\n", COLOR_GREEN);
+    display_write_color("IDT initialisert med 48 handlers\n", COLOR_GREEN);
 }

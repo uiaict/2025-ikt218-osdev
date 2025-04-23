@@ -65,11 +65,11 @@ struct gdt_pointer {
  * - Software interrupts (generert av int-instruksjonen)
  */
 struct idt_entries {
-    uint16_t isr_address_low;   // Nedre 16 bit av ISR-adressen
-    uint16_t segment_selector;  // Hvilket kodesegment ISR ligger i (vanligvis 0x08 for kernel)
-    uint8_t zero;               // Alltid 0 (reservert felt)
-    uint8_t type_and_flags;     // Type gate (interrupt/trap) og attributter (present, ring-nivå)
-    uint16_t isr_address_high;  // Øvre 16 bit av ISR-adressen
+    uint16_t isr_address_low;   // Lower 16 bits of handler address
+    uint16_t segment_selector;  // Kernel segment selector
+    uint8_t zero;              // Always 0
+    uint8_t type_and_flags;    // Type and attribute flags
+    uint16_t isr_address_high; // Upper 16 bits of handler address
 } __attribute__((packed));
 
 /**
@@ -79,8 +79,8 @@ struct idt_entries {
  * Den forteller CPU-en hvor IDT-tabellen er i minnet og hvor stor den er.
  */
 struct idt_pointer {
-    uint16_t table_size;    // Størrelse på IDT minus 1 (i bytes)
-    uint32_t table_address; // Fysisk adresse til IDT i minnet
+    uint16_t table_size;    // Size of IDT minus 1
+    uint32_t table_address; // Address of IDT in memory
 } __attribute__((packed));
 
 /**
@@ -90,7 +90,7 @@ struct idt_pointer {
  * og laster dem inn i CPU-en.
  */
 void initializer_GDT(); // Initialiserer Global Descriptor Table
-void initializer_IDT(); // Initialiserer Interrupt Descriptor Table
+void initializer_IDT(void); // Initialiserer Interrupt Descriptor Table
 
 /**
  * Assembly-funksjoner for å laste deskriptortabellene

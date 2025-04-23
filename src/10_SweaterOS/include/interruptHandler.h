@@ -14,6 +14,11 @@
 
 #define PIC_EOI           0x20    // End of Interrupt kommando
 
+// Keyboard ports and commands
+#define KEYBOARD_DATA_PORT    0x60    // Keyboard data port
+#define KEYBOARD_STATUS_PORT  0x64    // Keyboard status port
+#define KEYBOARD_COMMAND_PORT 0x64    // Keyboard command port
+
 // ICW = Initialization Command Word
 #define ICW1_ICW4         0x01    // ICW4 følger
 #define ICW1_SINGLE       0x02    // Single modus (ikke cascade)
@@ -28,48 +33,20 @@
 #define ICW4_SFNM         0x10    // Special fully nested modus
 
 /**
- * CPU state structure - inneholder alle CPU-registre
- * 
- * Denne strukturen representerer tilstanden til CPU-en når et interrupt oppstår.
- * Rekkefølgen på feltene er viktig og må matche rekkefølgen i assembly-koden.
- * 
- * Merk: Denne strukturen fylles av 'pusha' instruksjonen i assembly-koden,
- * så rekkefølgen på feltene må være: edi, esi, ebp, esp, ebx, edx, ecx, eax.
- */
-struct cpu_state {
-    uint32_t edi;
-    uint32_t esi;
-    uint32_t ebp;
-    uint32_t esp;
-    uint32_t ebx;
-    uint32_t edx;
-    uint32_t ecx;
-    uint32_t eax;
-} __attribute__((packed));
-
-/**
- * Stack state structure - inneholder informasjon om stack-tilstanden
- * 
- * Denne strukturen representerer tilstanden til stack-en når et interrupt oppstår.
- * Rekkefølgen på feltene er viktig og må matche rekkefølgen i assembly-koden.
- * 
- * Merk: Denne strukturen fylles delvis av CPU-en (eip, cs, eflags) og delvis
- * av vår assembly-kode (error_code).
- */
-struct stack_state {
-    uint32_t error_code;
-    uint32_t eip;
-    uint32_t cs;
-    uint32_t eflags;
-} __attribute__((packed));
-
-/**
  * Skriver en byte til en I/O-port
  * 
  * I/O-porten (0-65535)
  * Verdien som skal skrives (0-255)
  */
 void outb(uint16_t port, uint8_t value);
+
+/**
+ * Skriver et 16-bit ord til en I/O-port
+ * 
+ * I/O-porten (0-65535)
+ * Verdien som skal skrives (0-65535)
+ */
+void outw(uint16_t port, uint16_t value);
 
 /**
  * Leser en byte fra en I/O-port
@@ -80,6 +57,11 @@ void outb(uint16_t port, uint8_t value);
 uint8_t inb(uint16_t port);
 
 /**
+ * Leser et 16-bit ord fra en I/O-port
+ */
+uint16_t inw(uint16_t port);
+
+/**
  * Gir en kort forsinkelse, brukes ofte etter I/O-operasjoner
  */
 void io_wait(void);
@@ -87,20 +69,16 @@ void io_wait(void);
 /**
  * Exception handler - håndterer CPU exceptions (0-31)
  * 
- * CPU-tilstanden når exception oppstod
- * Exception-nummeret (0-31)
- * Stack-tilstanden når exception oppstod
+ * @param esp Peker til stack frame som inneholder alle registers og exception info
  */
-void isr_handler(struct cpu_state cpu, uint32_t int_no, struct stack_state stack);
+void isr_handler(uint32_t esp);
 
 /**
  * IRQ handler - håndterer hardware interrupts (32-47)
  * 
- * CPU-tilstanden når interrupt oppstod
- * Interrupt-nummeret (32-47)
- * Stack-tilstanden når interrupt oppstod
+ * @param esp Peker til stack frame som inneholder alle registers og interrupt info
  */
-void irq_handler(struct cpu_state cpu, uint32_t int_no, struct stack_state stack);
+void irq_handler(uint32_t esp);
 
 /**
  * Initialiserer PIC (Programmable Interrupt Controller)
@@ -125,9 +103,9 @@ void interrupt_initialize(void);
 void keyboard_handler(void);
 
 /**
- * Sjekker om det er data tilgjengelig i tastatur-bufferen
+ * Sjekker om det er tegn tilgjengelig i tastatur-bufferen
  * 
- * Returnerer 1 hvis data er tilgjengelig, 0 ellers
+ * Returnerer 1 hvis det er tegn tilgjengelig, 0 ellers
  */
 int keyboard_data_available(void);
 
@@ -137,5 +115,33 @@ int keyboard_data_available(void);
  * Returnerer ASCII-tegnet, eller 0 hvis bufferen er tom
  */
 char keyboard_getchar(void);
+
+/**
+ * Checks if interrupts are currently enabled
+ * 
+ * Returnerer 1 hvis interrupts er aktivert, 0 hvis deaktivert
+ */
+int interrupts_enabled(void);
+
+/**
+ * Get the ASCII mapping for a given scancode
+ * 
+ * Returnerer ASCII-tegnet for en scancode, eller 0 hvis ingen mapping finnes
+ */
+char get_ascii_for_scancode(uint8_t scancode, int shift);
+
+/**
+ * Initialize the keyboard controller
+ */
+void keyboard_initialize(void);
+
+/**
+ * Timer interrupt handler function
+ * Called when a timer interrupt (IRQ0) occurs
+ */
+void timer_handler(void);
+
+// Convert scancode to ASCII character
+char scancode_to_ascii(uint8_t scancode);
 
 #endif /* INTERRUPT_HANDLER_H */ 
