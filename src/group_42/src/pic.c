@@ -13,6 +13,7 @@ And so on…
 
 void remap_pic() {
   // TODO: This needs a source
+
   outb(0x20, 0x11); // Start initialization of master PIC
   outb(0xA0, 0x11); // Start initialization of slave PIC
   outb(0x21, 0x20); // Remap master PIC to 0x20-0x27
@@ -23,4 +24,8 @@ void remap_pic() {
   outb(0xA1, 0x01); // Set slave PIC to 8086 mode
   outb(0x21, 0x0);  // Enable all IRQs on master PIC
   outb(0xA1, 0x0);  // Enable all IRQs on slave PIC
+
+  // Enable only keyboard interrupt
+  outb(0x21, 0xFD);
+  outb(0xA1, 0xFF);
 }

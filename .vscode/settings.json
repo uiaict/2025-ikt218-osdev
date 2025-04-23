@@ -17,7 +17,8 @@
         "memory.h": "c",
         "limits.h": "c",
         "idt.h": "c",
-        "pic.h": "c"
+        "pic.h": "c",
+        "keyboard.h": "c"
     },
     "editor.formatOnSave": true,
     "C_Cpp.default.compilerPath": "/usr/local/bin/i686-elf-gcc"

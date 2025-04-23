@@ -68,8 +68,6 @@ add_executable(uiaos-kernel
 	src/print.c
 	src/malloc.h
 	src/malloc.c
-	src/keyboard.h
-	src/keyboard.c
 	src/idt.h
 	src/idt.c
 	src/interrupts.h
