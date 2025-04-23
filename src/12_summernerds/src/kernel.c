@@ -3,22 +3,24 @@
 #include "libc/stdbool.h"
 #include <../src/screen.h>
 #include "../src/arch/i386/keyboard.h"
-//#include "../src/arch/i386/print.h"
+// #include "../src/arch/i386/print.h"
 #include "../src/common.h"
 #include "../src/arch/i386/gdt.h"
-//#include "../src/arch/i386/IDT.h"
-//#include "../src/arch/i386/ISR.h"
+// #include "../src/arch/i386/IDT.h"
+// #include "../src/arch/i386/ISR.h"
 #include "../src/arch/i386/interuptRegister.h"
 #include "../src/arch/i386/monitor.h"
 #include "../include/kernel/pit.h"
-//#include <kheap.h>
-//#include <paging.h>
+#include "kernel/memory.h"
+// #include <kheap.h>
+// #include <paging.h>
 
-extern uint32_t end;       // Linker symbol marking the end of kernel
+extern uint32_t end; // Linker symbol marking the end of kernel
 
-int kernel_main_c(uint32_t magic, uint32_t mb_info_addr) {
+int kernel_main_c(uint32_t magic, uint32_t mb_info_addr)
+{
 
-    //initializing basic systems
+    // initializing basic systems
     monitor_initialize();
     init_gdt();
     init_idt();
@@ -37,16 +39,17 @@ int kernel_main_c(uint32_t magic, uint32_t mb_info_addr) {
     init_pit();
 
     // Here we test the memory allocation
-    void* mem1 = malloc(12345);
-    void* mem2 = malloc(54321);
-    void* mem3 = malloc(13331);
+    void *mem1 = malloc(12345);
+    void *mem2 = malloc(54321);
+    void *mem3 = malloc(13331);
 
     // print if we get any problem with allocating memory
     printf("Allocated memory blocks at: %p, %p, %p\n", mem1, mem2, mem3);
 
     // Test PIT sleep
     int counter = 0;
-    while (true) {
+    while (true)
+    {
         printf("[%d]: Sleeping with busy-waiting (HIGH CPU)...\n", counter);
         sleep_busy(1000);
         printf("[%d]: Slept using busy-waiting.\n", counter++);
