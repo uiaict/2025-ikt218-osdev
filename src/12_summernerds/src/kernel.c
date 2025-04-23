@@ -19,6 +19,7 @@ static char key_buffer[BUFFER_SIZE];
 #define VGA_MEMORY (volatile uint16_t *)0xB8000
 
 extern uint32_t end; // Linker symbol marking the end of kernel
+extern uint32_t end; // Linker symbol marking the end of kernel
 
 // uint8_t rainbow_colours[4] = {0x4, 0xE, 0x2, 0x9}; // Rød, gul, grønn, blå
 
