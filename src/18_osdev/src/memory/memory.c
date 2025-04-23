@@ -36,7 +36,7 @@ void print_memory_layout() {
     monitor_write("\n");
 
     monitor_write("Heap start: ");
-    monitor_write_hex((uint32_t)heap_start);
+    monitor_write_hex((uint32_t)heap_ptr);
     monitor_write("\n");
 
     // Optional: show how much memory used

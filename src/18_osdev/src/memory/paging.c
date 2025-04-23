@@ -35,8 +35,7 @@ void init_paging() {
 
     uint32_t cr0;
     asm volatile("mov %%cr0, %0" : "=r"(cr0));
-    cr0 |= 0x80000000; // set the paging bit
-    asm volatile("mov %0, %%cr0" : : "r"(cr0)); // load the new CR0 value
-
+    cr0 |= 0x80000000; // set paging bit (bit 31)
+    asm volatile("mov %0, %%cr0" : : "r"(cr0));
     }
 

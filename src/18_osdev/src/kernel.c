@@ -31,8 +31,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_paging();
     
 
-    void* mem1 = malloc(1234);
-    void* mem2 = malloc(5678);
+    void* mem1 = malloc(20);
+    void* mem2 = malloc(50);
 
     print_memory_layout();
     return 0;
