@@ -10,7 +10,7 @@ void speaker_enable()
     uint8_t status = inb(PC_SPEAKER_PORT);
 
     // Enable speaker only if bits 0 and 1 are not set
-    if ((status & 0x03) != 0x03) 
+    if (status != (status | 0x03)) 
     {
         outb(PC_SPEAKER_PORT, status | 0x03);
     }
@@ -45,11 +45,10 @@ void sound_stop()
 void internal_play_song(Song *track) 
 {
     speaker_enable();
-
     for (uint32_t idx = 0; idx < track->length; idx++) 
     {
         Note *current = &track->notes[idx];
-        kprint("Note %u: Freq = %u Hz, Duration = %u ms\n", idx, current->frequency, current->duration);
+        kprint("Note %d: Freq = %d Hz, Duration = %d ms\n", idx, current->frequency, current->duration);
         sound_start(current->frequency);
         sleep_interrupt(current->duration);
         sound_stop();
