@@ -62,6 +62,8 @@ add_executable(uiaos-kernel
 	src/gdt.asm
 	src/gdt.c
 	src/keyboard.c
+	src/paging.c
+	src/pmalloc.c
 	src/arch/i386/idt.c
 	src/arch/i386/idt.asm
 	src/arch/i386/console.c

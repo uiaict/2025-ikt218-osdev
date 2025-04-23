@@ -19,7 +19,9 @@
         "gdt.h": "c",
         "console.h": "c",
         "keyboard.h": "c",
-        "idt.h": "c"
+        "idt.h": "c",
+        "portio.h": "c",
+        "paging.h": "c"
     }
 
 }

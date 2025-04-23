@@ -7,6 +7,8 @@
 #include "gdt.h"
 #include "arch/i386/idt.h"
 #include "keyboard.h"
+#include "libc/paging.h"
+#include "pmalloc.h"
 
 extern uint32_t end;
 
@@ -31,8 +33,22 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     enable_interrupts();
     init_keyboard();
 
-    heap_init((void*)&end, HEAP_SIZE);
-    print_heap();
+    printf("Setting up Paging... \n");
+    init_paging();
+    enable_paging();
+    printf("Paging enabled! \n");
+    pmalloc(2);
+    printf("Pmalloc works\n");
+    
+    init_kernel_memory(&end);
+    
+    char* heap_test = (char*)malloc(128);
+    printf("malloc returned: 0x%x\n", (uint32_t)heap_test);
+    print_memory_layout();
+
+   /* heap_init((void*)&end, HEAP_SIZE);
+    print_heap();*/
+
     //register_int_handler(0, test_handler, NULL);
 
     // Trigger interrupt manually to test
