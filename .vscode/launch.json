@@ -1,7 +1,6 @@
 {
     "version": "0.2.0",
     "configurations": [
-        
         {
             "name": "Qemu Debug",
             "type": "cppdbg",
@@ -9,7 +8,7 @@
             "program": "${config:cmake.buildDirectory}/kernel.bin",
             "cwd": "${config:cmake.buildDirectory}",
             "args": [],
-            "targetArchitecture": "x86", // Change to x64 for 64-bit architecture
+            "targetArchitecture": "x86",
             "MIMode": "gdb",
             "miDebuggerPath": "/usr/bin/gdb-multiarch",
             "miDebuggerArgs": "",
