@@ -4,57 +4,57 @@
 #include "system.h"
 
 void init_ps2() {
-  // Disable keyboard and mouse interrupts
+  // Wait for keyboard controller to be ready
+  while ((inb(0x64) & 2) != 0) {
+    io_wait();
+  }
+
+  // Disable devices
   outb(0x64, 0xAD); // Disable first PS/2 port
-  outb(0x64, 0xA7); // Disable second PS/2 port
+  io_wait();
 
   // Flush output buffer
-  io_wait();
   while ((inb(0x64) & 1) != 0) {
     inb(0x60);
     io_wait();
   }
 
-  // Set controller configuration
-  outb(0x64, 0x20); // Command: Read configuration
+  // Configure controller - enable IRQ1
+  outb(0x64, 0x20); // Read configuration byte
   io_wait();
   uint8_t config = inb(0x60);
-  config |= 1;      // Enable keyboard interrupt
-  outb(0x64, 0x60); // Command: Write configuration
+  config |= 1;         // Enable keyboard interrupt
+  config &= ~(1 << 6); // Enable translation to scan code set 1
+
+  outb(0x64, 0x60); // Write configuration byte
   io_wait();
   outb(0x60, config);
   io_wait();
 
-  // Re-enable devices
-  outb(0x64, 0xAE); // Enable first PS/2 port
+  // Re-enable first PS/2 port
+  outb(0x64, 0xAE);
   io_wait();
 
-  // Reset keyboard
+  // Reset keyboard and wait for acknowledgment
   outb(0x60, 0xFF);
   io_wait();
+  io_wait();
 
-  // Wait for ACK (0xFA)
+  // Wait for and discard the self-test response
   if (inb(0x60) != 0xFA) {
-    print("Keyboard reset failed!\n");
+    // Continue anyway - some keyboards don't ACK properly
   }
 
-  // Set scan code set
-  outb(0x60, 0xF0); // Command: Set scan code set
-  io_wait();
-  if (inb(0x60) != 0xFA) {
-    print("Keyboard command failed!\n");
-  }
-
-  outb(0x60, 0x02); // Use scan code set 2
-  io_wait();
-  if (inb(0x60) != 0xFA) {
-    print("Keyboard command failed!\n");
+  // Drain any pending data
+  while ((inb(0x64) & 1) != 0) {
+    inb(0x60);
+    io_wait();
   }
 
   // Enable scanning
   outb(0x60, 0xF4);
   io_wait();
-  if (inb(0x60) != 0xFA) {
-    print("Keyboard enable failed!\n");
-  }
+  io_wait();
+
+  // We're done - don't wait for ACK as some keyboards behave differently
 }

@@ -9,8 +9,8 @@ default_interrupt_handler_wrapper:
     cld
     call default_interrupt_handler
     popa
-    iret
     sti
+    iret
 
 [global spurious_interrupt_handler_wrapper]
 spurious_interrupt_handler_wrapper:
@@ -19,8 +19,8 @@ spurious_interrupt_handler_wrapper:
     cld
     call spurious_interrupt_handler
     popa
-    iret
     sti
+    iret
 
 [global keyboard_handler_wrapper]
 keyboard_handler_wrapper:
@@ -29,5 +29,5 @@ keyboard_handler_wrapper:
     cld
     call keyboard_handler
     popa
-    iret
     sti
+    iret

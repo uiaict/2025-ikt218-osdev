@@ -32,6 +32,13 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   init_ps2();
 
   print("Set up PS/2 keybaord done\n");
+  print("Waiting...\n");
+
+  for (int i = 0; i < 1000000; i++) {
+    io_wait();
+  }
+
+  print("Done waiting\n");
 
   asm volatile("sti");
   print("Interrupts enabled.\n");
