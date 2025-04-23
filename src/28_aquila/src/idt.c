@@ -5,6 +5,10 @@
 #include "printf.h" 
 #include <multiboot2.h>
 
+bool left_shift_pressed = false;
+bool right_shift_pressed = false;
+bool caps_lock_on = false;
+
 extern void isr0(); 
 extern void isr1();
 extern void isr14(); 
@@ -36,18 +40,32 @@ uint8_t inb(uint16_t port) {
     return ret;
 }
 
-// NORDIC ISO Norsk øæå
+// NORDIC ISO Norsk øæå (Unshifted) - CP437
 static const unsigned char scancode_ascii[128] = {
-      0,  27, '1', '2', '3', '4', '5', '6', '7', '8', /* 0x00 - 0x09 */
-    '9', '0', '+', '\\', '\b', '\t', 'q', 'w', 'e', 'r', /* 0x0A - 0x13 */
-    't', 'y', 'u', 'i', 'o', 'p', 0xE5, '^', '\n',   0, /* 0x14 - 0x1D --- 0xE5 = å */
-    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 0xF8, /* 0x1E - 0x27 --- 0xF8 = ø */
-   0xE6, '|',   0, '\'', 'z', 'x', 'c', 'v', 'b', 'n', /* 0x28 - 0x31 --- 0xE6 = æ */
-    'm', ',', '.', '-',   0, '*',   0, ' ',   0,   0, /* 0x32 - 0x3B */
-      0,   0,   0,   0,   0,   0,   0,   0,   0,   0, /* 0x3C - 0x45 */
-      0,   0, '7', '8', '9', '-', '4', '5', '6', '+', /* 0x46 - 0x4F */
-    '1', '2', '3', '0', '.',   0,   0, '<',   0,   0, /* 0x50 - 0x59 */
-    /* Rest are 0 */
+    0,  27, '1', '2', '3', '4', '5', '6', '7', '8', // 0x00 - 0x09 
+  '9', '0', '+', '\\', '\b', '\t', 'q', 'w', 'e', 'r', // 0x0A - 0x13 
+  't', 'y', 'u', 'i', 'o', 'p', 0x86, '^', '\n',   0, // 0x14 - 0x1D --- 0x1A -> 0x86 = CP437 'å' 
+  'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 0xF8, // 0x1E - 0x27 --- 0x27 -> 0xF8 = CP437 '°' (placeholder for ø) 
+ 0x91, '|',   0, '\'', 'z', 'x', 'c', 'v', 'b', 'n', // 0x28 - 0x31 --- 0x28 -> 0x91 = CP437 'æ' 
+  'm', ',', '.', '-',   0, '*',   0, ' ',   0,   0, // 0x32 - 0x3B 
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0, // 0x3C - 0x45 
+    0,   0, '7', '8', '9', '-', '4', '5', '6', '+', // 0x46 - 0x4F Numpad
+  '1', '2', '3', '0', '.',   0,   0, '<',   0,   0, // 0x50 - 0x59 
+  // Rest are 0
+};
+
+// NORDIC ISO Norsk ØÆÅ (Shifted) - CP437
+static const unsigned char scancode_ascii_shifted[128] = {
+    0,  27, '!', '"', '#', '$', '%', '&', '/', '(', // 0x00 - 0x09
+  ')', '=', '?', '`', '\b', '\t', 'Q', 'W', 'E', 'R', // 0x0A - 0x13
+  'T', 'Y', 'U', 'I', 'O', 'P', 0x8F, '*', '\n',   0, // 0x14 - 0x1D --- 0x1A -> 0x8F = CP437 'Å'
+  'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 0xF8, // 0x1E - 0x27 --- 0x27 -> 0xF8 = CP437 '°' (placeholder for Ø)
+ 0x92, '§',   0, '\\', 'Z', 'X', 'C', 'V', 'B', 'N', // 0x28 - 0x31 --- 0x28 -> 0x92 = CP437 'Æ'
+  'M', ';', ':', '_',   0, '*',   0, ' ',   0,   0, // 0x32 - 0x3B
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0, // 0x3C - 0x45 
+    0,   0, '7', '8', '9', '-', '4', '5', '6', '+', // 0x46 - 0x4F Numpad
+  '1', '2', '3', '0', '.',   0,   0, '>',   0,   0, // 0x50 - 0x59 
+   // Rest are 0
 };
 
 typedef struct registers {
@@ -59,18 +77,53 @@ typedef struct registers {
 
 
 void irq_handler(registers_t *regs) {
-    if (regs->int_no == 33) {
-        uint8_t scancode = inb(0x60); 
-        if (!(scancode & 0x80)) {
+    if (regs->int_no == 33) { // Keyboard interrupt IRQ 1
+        uint8_t scancode = inb(0x60);
+
+        // Handle modifier key presses/releases
+        if (scancode == 0x2A) { left_shift_pressed = true; }         // pressed=true
+        else if (scancode == 0xAA) { left_shift_pressed = false; }   // relased=false
+        else if (scancode == 0x36) { right_shift_pressed = true; }
+        else if (scancode == 0xB6) { right_shift_pressed = false; }
+        else if (scancode == 0x3A) { // caps lock
+            caps_lock_on = !caps_lock_on;
+        }
+        else if (!(scancode & 0x80)) { 
             if (scancode < 128) { // Ensure scancode is within bounds
 
-                unsigned char ascii = scancode_ascii[scancode];
+                bool shift_held = left_shift_pressed || right_shift_pressed;
+                unsigned char ascii_raw = scancode_ascii[scancode];
+                unsigned char ascii = 0;
+
+                bool effective_shift = shift_held;
+                if ((ascii_raw >= 'a' && ascii_raw <= 'z') || 
+                 ascii_raw == 0x86 ||                     // CP437 å
+                 ascii_raw == 0x91)                       // CP437 æ
+                 {
+                    effective_shift = shift_held ^ caps_lock_on;
+                }
+
+                // Select shift or not ascii table
+                if (effective_shift) {
+                    ascii = scancode_ascii_shifted[scancode];
+                } else {
+                    ascii = ascii_raw;
+                }
+
+                // Enter handling, with prefix aquila, terminal look
+                if (scancode == 0x1C) { // Enter key
+                    printf("\n");
+                    printf("aquila: ");
+                }
 
                 if (scancode == 0x0E) { // Backspace
                     if (cursor > 0) {
                         cursor--;
-                        vga[cursor * 2] = ' ';     
-                        vga[cursor * 2 + 1] = 0x07; 
+                        vga[cursor * 2] = ' ';
+                        vga[cursor * 2 + 1] = 0x07;
+                        int x = cursor % 80;
+                        int y = cursor / 80;
+                        update_cursor(x, y);
                     }
                 } else if (ascii != 0) {
                      if (ascii >= ' ' || ascii >= 0x80) { // ext. chars øæå
@@ -78,19 +131,16 @@ void irq_handler(registers_t *regs) {
                        printf(msg);
                     }
                 }
-
             }
-        } else {
-
         }
-    }
-    else if (regs->int_no == 32) {
+
+    } else if (regs->int_no == 32) { // Timer interrupt IRQ 0
     }
 
-    if (regs->int_no >= 40) {
-        outb(0xA0, 0x20); // Slave PIC
+    if (regs->int_no >= 40) { // If IRQ involved the slave PIC (IRQ 8-15)
+        outb(0xA0, 0x20); // Slave PIC EOI
     }
-    outb(0x20, 0x20); // Master PIC
+    outb(0x20, 0x20); // Master PIC EOI
 }
 
 
