@@ -9,6 +9,9 @@
 #include <putchar.h>
 #include <libc/irq.h>
 #include <keyboard.h>
+#include "memory.h"  // Changed from <memory.h>
+
+extern uint32_t end; // Linker-provided symbol for end of kernel
 
 struct multiboot_info {
     uint32_t size;
@@ -25,6 +28,9 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialize terminal for output
     terminal_initialize();
 
+    printf("initializing kernel memory...\n");
+    init_kernel_memory((uint32_t*)&end); // You'll need to define 'end' as extern
+    printf("Kernel memory initialized\n");
     // Set up GDT before IDT
     printf("Initializing GDT...\n");
     gdt_install();
@@ -51,12 +57,19 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("----------------------------------\n");
     printf("DEBUG: About to enable interrupts\n");
     
+
+    
     // Enable interrupts after all handlers are registered
     asm volatile("sti");
     printf("Interrupts enabled\n");
     
+   init_kernel_memory(&end);
+   init_paging();
+   print_memory_layout();
+
+
     printf("System is running. Type on the keyboard...\n");
-    
+
     // Safe infinite loop to prevent CPU from executing random memory
     while(1) {
         asm volatile("hlt");

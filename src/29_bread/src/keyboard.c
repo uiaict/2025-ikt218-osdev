@@ -7,7 +7,7 @@
 static char keyboard_buffer[256];
 static uint8_t buffer_start = 0;
 static uint8_t buffer_end = 0;
-static uint8_t buffer_count = 0;
+static uint16_t buffer_count = 0;  // Changed from uint8_t to uint16_t to allow comparison with 256
 
 // Shift key state
 static uint8_t shift_pressed = 0;
