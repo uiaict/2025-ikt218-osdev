@@ -58,7 +58,7 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 
 # Add the song source files to your kernel sources
 set(KERNEL_SOURCES
-    src/multiboot2.asm # TODO: Add multiboot2 support
+    src/multiboot2.asm
     src/kernel.c
     src/gdt.c
     src/gdt.asm
@@ -72,6 +72,10 @@ set(KERNEL_SOURCES
     src/song/song.c
     src/song/song_player.c
     src/loading_screen.c
+    src/command.c
+    src/snake_game.c
+    src/libc/string.c
+    src/libc/stdlib.c
 )
 
 # Add executable target for the kernel

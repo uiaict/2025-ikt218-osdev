@@ -2,6 +2,8 @@
 #include "terminal.h"
 #include "libc/stdint.h"
 #include "pit.h"
+#include "command.h"
+#include "snake_game.h"
 
 #define PIC1_COMMAND 0x20
 #define PIC1_DATA    0x21
@@ -27,6 +29,9 @@ unsigned char scancode_to_ascii[128] = {
 // Define the IDT with 256 entries (maximum possible interrupts)
 struct idt_entry idt[256];
 struct idt_ptr idtp;
+
+// Global to track if we're in snake game mode
+static bool in_snake_game = false;
 
 // Remap the PIC to avoid conflicts with CPU exceptions
 void pic_remap() {
@@ -225,9 +230,27 @@ void irq_handler(struct regs *r) {
                 
                 // If it's a valid character, process it
                 if (ascii != 0) {
-                    terminal_putchar(ascii);
+                    if (in_snake_game) {
+                        // Send key to snake game
+                        snake_handle_input(ascii);
+                    } else {
+                        // Process for terminal/command entry
+                        if (ascii == '\n' || ascii == '\r') {
+                            execute_current_command();
+                        } else {
+                            terminal_putchar(ascii);
+                            append_to_command(ascii);
+                        }
+                    }
                 } else if (scancode == 14) {  // Backspace key
-                    terminal_backspace();
+                    if (!in_snake_game) {
+                        terminal_backspace();
+                        // Also remove character from command buffer if it exists
+                        if (command_length > 0) {
+                            command_length--;
+                            command_buffer[command_length] = 0;
+                        }
+                    }
                 }
             }
             break;
@@ -239,6 +262,11 @@ void irq_handler(struct regs *r) {
         outb(PIC2_COMMAND, 0x20); // Send EOI to Slave PIC
     }
     outb(PIC1_COMMAND, 0x20);     // Send EOI to Master PIC
+}
+
+// Set the snake game mode flag
+void set_snake_game_mode(bool mode) {
+    in_snake_game = mode;
 }
 
 // Function to install the IDT

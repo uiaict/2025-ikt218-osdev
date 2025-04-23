@@ -4,42 +4,95 @@
 #include "pit.h"
 #include "idt.h"
 
-
+// Flag to track if speaker is enabled
+static bool speaker_enabled = false;
 
 // play sound with given frequency
 void play_sound(uint32_t frequency) {
     if (frequency == 0) {
+        stop_sound();
         return;
     }
 
-    uint16_t divisor = (uint16_t)(PIT_BASE_FREQUENCY / frequency);
+    // Make sure we preserve the keyboard IRQ state
+    uint8_t pic1_mask = inb(PIC1_DATA_PORT);
+    bool keyboard_enabled = !(pic1_mask & (1 << 1));
+    
+    // Save current interrupt state and disable interrupts during configuration
+    uint32_t eflags;
+    asm volatile("pushf; pop %0" : "=r"(eflags));
+    asm volatile("cli");
 
-    // Set up the PIT
-    outb(PIT_CMD_PORT, 0b10110110); 
+    uint32_t divisor = PIT_BASE_FREQUENCY / frequency;
+    
+    // Set up PIT channel 2 for the tone
+    outb(PIT_CMD_PORT, 0xB6); // 10110110 - Channel 2, lobyte/hibyte, mode 3 (square wave)
     outb(PIT_CHANNEL2_PORT, (uint8_t)(divisor & 0xFF));
-    outb(PIT_CHANNEL2_PORT, (uint8_t)(divisor >> 8));
+    outb(PIT_CHANNEL2_PORT, (uint8_t)((divisor >> 8) & 0xFF));
 
-    // Enable the speaker by setting bits 0 and 1
-    uint8_t speaker_state = inb(PC_SPEAKER_PORT);
-    outb(PC_SPEAKER_PORT, speaker_state | 0x03);
+    // Read current speaker value
+    uint8_t tmp = inb(PC_SPEAKER_PORT);
+    
+    // Enable speaker by setting bits 0 and 1
+    // Bit 0: Timer 2 gate to speaker enable
+    // Bit 1: Speaker data enable
+    outb(PC_SPEAKER_PORT, tmp | 3);
+    speaker_enabled = true;
+    
+    // Restore interrupt state
+    if (eflags & (1 << 9)) {  // Check if interrupts were enabled
+        asm volatile("sti");
+    }
+    
+    // Restore keyboard IRQ if it was enabled
+    if (keyboard_enabled) {
+        outb(PIC1_DATA_PORT, inb(PIC1_DATA_PORT) & ~(1 << 1));
+    }
 }
 
 // Function to enable PC speaker
 void enable_speaker() {
-    // Read the current state of the PC speaker control register
-    uint8_t speaker_state = inb(PC_SPEAKER_PORT);
+    // Save current interrupt state and disable interrupts during configuration
+    uint32_t eflags;
+    asm volatile("pushf; pop %0" : "=r"(eflags));
+    asm volatile("cli");
     
-    // Enable the speaker by setting bits 0 and 1 to 1
-    outb(PC_SPEAKER_PORT, speaker_state | 3);
+    // Read the current state of the PC speaker control register
+    uint8_t tmp = inb(PC_SPEAKER_PORT);
+    
+    // Prepare the speaker by setting bit 0 (connect PIT to speaker)
+    // We don't set bit 1 yet, which would actually start the sound
+    outb(PC_SPEAKER_PORT, tmp | 1);
+    speaker_enabled = true;
+    
+    // Restore interrupt state
+    if (eflags & (1 << 9)) {  // Check if interrupts were enabled
+        asm volatile("sti");
+    }
 }
 
 // Function to disable PC speaker
 void disable_speaker() {
+    if (!speaker_enabled) {
+        return;  // Already disabled
+    }
+    
+    // Save current interrupt state and disable interrupts during configuration
+    uint32_t eflags;
+    asm volatile("pushf; pop %0" : "=r"(eflags));
+    asm volatile("cli");
+    
     // Read the current state of the PC speaker control register
-    uint8_t speaker_state = inb(PC_SPEAKER_PORT);
+    uint8_t tmp = inb(PC_SPEAKER_PORT);
     
     // Disable the speaker by clearing bits 0 and 1
-    outb(PC_SPEAKER_PORT, speaker_state & 0xFC);
+    outb(PC_SPEAKER_PORT, tmp & 0xFC);
+    speaker_enabled = false;
+    
+    // Restore interrupt state
+    if (eflags & (1 << 9)) {  // Check if interrupts were enabled
+        asm volatile("sti");
+    }
 }
 
 // Function to introduce a delay (in ms)
@@ -49,10 +102,32 @@ void delay(uint32_t duration) {
 
 // Function to stop the sound
 void stop_sound() {
-    // Read the current state of the PC speaker control register
-    uint8_t speaker_state = inb(PC_SPEAKER_PORT);
+    if (!speaker_enabled) {
+        return;  // Already stopped
+    }
     
-    // Clear bit 1 (speaker data) while preserving bit 0 (speaker gate)
-    // This keeps the speaker enabled but stops passing data to it
-    outb(PC_SPEAKER_PORT, (speaker_state & ~0x02) | 0x01);
+    // Make sure we preserve the keyboard IRQ state
+    uint8_t pic1_mask = inb(PIC1_DATA_PORT);
+    bool keyboard_enabled = !(pic1_mask & (1 << 1));
+    
+    // Save current interrupt state and disable interrupts during configuration
+    uint32_t eflags;
+    asm volatile("pushf; pop %0" : "=r"(eflags));
+    asm volatile("cli");
+    
+    // Read the current state of the PC speaker control register
+    uint8_t tmp = inb(PC_SPEAKER_PORT);
+    
+    // Clear bit 1 (speaker data) while preserving other bits
+    outb(PC_SPEAKER_PORT, tmp & ~0x02);
+    
+    // Restore interrupt state
+    if (eflags & (1 << 9)) {  // Check if interrupts were enabled
+        asm volatile("sti");
+    }
+    
+    // Restore keyboard IRQ if it was enabled
+    if (keyboard_enabled) {
+        outb(PIC1_DATA_PORT, inb(PIC1_DATA_PORT) & ~(1 << 1));
+    }
 }

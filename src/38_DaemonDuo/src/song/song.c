@@ -173,6 +173,10 @@ const struct note mario_theme[] = {
 void play_song(const struct note song[]) {
     int i = 0;
     
+    // Make sure timer and keyboard interrupts are enabled
+    enable_irq(0);
+    enable_irq(1);
+    
     // Enable the speaker at the beginning
     enable_speaker();
 
@@ -182,23 +186,70 @@ void play_song(const struct note song[]) {
         printf("Playing note: %d Hz for %d ms\n", song[i].frequency, song[i].duration);
         
         // Play the current note
-        play_sound(song[i].frequency);
-        
-        // Play for the specified duration
-        sleep_interrupt(song[i].duration);
-
-        // Stop the sound
-        stop_sound();
+        if (song[i].frequency > 0) {
+            play_sound(song[i].frequency);
+            
+            // Play for the specified duration with timeout checking
+            uint32_t start_tick = tick_count;
+            uint32_t duration_ticks = song[i].duration * TICKS_PER_MS;
+            
+            while (tick_count - start_tick < duration_ticks) {
+                // Use hlt to save power and let interrupts happen
+                asm volatile("sti; hlt");
+                
+                // Add a small timeout in case we get stuck
+                if (tick_count - start_tick > duration_ticks * 2) {
+                    break;
+                }
+            }
+            
+            // Stop the sound
+            stop_sound();
+        } else {
+            // Just a rest - no sound, just wait
+            uint32_t start_tick = tick_count;
+            uint32_t duration_ticks = song[i].duration * TICKS_PER_MS;
+            
+            while (tick_count - start_tick < duration_ticks) {
+                // Use hlt to save power and let interrupts happen
+                asm volatile("sti; hlt");
+                
+                // Add a small timeout in case we get stuck
+                if (tick_count - start_tick > duration_ticks * 2) {
+                    break;
+                }
+            }
+        }
         
         // Pause between notes if needed
         if (song[i].pause > 0) {
-            sleep_interrupt(song[i].pause);
+            uint32_t start_tick = tick_count;
+            uint32_t pause_ticks = song[i].pause * TICKS_PER_MS;
+            
+            while (tick_count - start_tick < pause_ticks) {
+                // Use hlt to save power and let interrupts happen
+                asm volatile("sti; hlt");
+                
+                // Add a small timeout in case we get stuck
+                if (tick_count - start_tick > pause_ticks * 2) {
+                    break;
+                }
+            }
         }
         
         // Move to the next note
         i++;
     }
+    
     writeline("Finished playing song\n");
+    
     // Disable the speaker at the end
     disable_speaker();
+    
+    // Reset the PIT to make sure timer interrupts work again
+    reset_pit_timer();
+    
+    // Re-enable the keyboard IRQ explicitly
+    enable_irq(1);
+    enable_irq(0);
 }

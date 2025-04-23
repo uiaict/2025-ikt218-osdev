@@ -26,6 +26,7 @@
 // Function declarations
 void init_pit();
 void pit_tick();
+void reset_pit_timer();
 void sleep_interrupt(uint32_t milliseconds);
 void sleep_busy(uint32_t milliseconds);
 

@@ -2,6 +2,7 @@
 #define IDT_H
 
 #include "libc/stdint.h"
+#include "libc/stdbool.h"
 #include "terminal.h"
 
 // IDT entry structure
@@ -42,6 +43,9 @@ void idt_load();
 void pic_remap();
 void enable_irq(uint8_t irq);
 void disable_irq(uint8_t irq);
+
+// Function to set snake game mode for keyboard handling
+void set_snake_game_mode(bool mode);
 
 // External assembly ISRs
 extern void isr0();
