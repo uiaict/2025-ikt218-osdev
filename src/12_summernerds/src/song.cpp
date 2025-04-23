@@ -1,7 +1,23 @@
 #include <song/song.h>
 #include <kernel/pit.h>
 #include <../src/common.h>
+#include <kernel/pit.h> // Ensure pit_sleep is declared
+extern "C" void pit_sleep(uint32_t milliseconds); // Explicit declaration of pit_sleep
 #include <libc/stdint.h>
+
+// Define play_sound function
+void play_sound(uint32_t frequency) {
+    if (frequency == 0) {
+        return;
+    }
+
+    auto divisor = (uint16_t)(PIT_BASE_FREQUENCY / frequency);
+
+    // Set up the PIT
+    outb(PIT_CMD_PORT, 0b10110110); 
+    outb(PIT_CHANNEL2_PORT, (uint8_t)(divisor & 0xFF));
+    outb(PIT_CHANNEL2_PORT, (uint8_t)(divisor >> 8));
+}
 
 
 void enable_speaker(){
@@ -33,28 +49,9 @@ void play_song_impl(Song *song) {
     enable_speaker();
     for (uint32_t i = 0; i < song->length; i++) {
         Note* note = &song->notes[i];
-        //printf("Note: %d, Freq=%d, Sleep=%d\n", i, note->frequency, note->duration);
         play_sound(note->frequency);
-        sleep_interrupt(note->duration);
-        disable_speaker();
+        pit_sleep(note->duration);
     }
-}
-
-void play_song(Song *song) {
-    play_song_impl(song);
-}
-
-void play_sound(uint32_t frequency) {
-    if (frequency == 0) {
-        return;
-    }
-
-    auto divisor = (uint16_t)(PIT_BASE_FREQUENCY / frequency);
-
-    // Set up the PIT
-    outb(PIT_CMD_PORT, 0b10110110); 
-    outb(PIT_CHANNEL2_PORT, (uint8_t)(divisor & 0xFF));
-    outb(PIT_CHANNEL2_PORT, (uint8_t)(divisor >> 8));
 }
 
 

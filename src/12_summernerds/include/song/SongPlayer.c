@@ -1,12 +1,13 @@
-#include <song/song.h>
+#include <../include/song/song.h>
 #include "../include/kernel/pit.h"
 #include <libc/stdio.h>
+#include "../src/common.h"
 
 void enable_speaker()
 {uint8_t speaker_state = inb(0x61); outb(0x61, speaker_state | 3);}
 
 void disable_speaker() 
-{uint8_t speaker_state = inb(0x61); outb(0x61, speaker_state & 0xFC)}
+{uint8_t speaker_state = inb(0x61); outb(0x61, speaker_state & 0xFC);}
 
 void play_sound(uint32_t frequency) {
     if (frequency == 0) return;
@@ -38,14 +39,14 @@ void beep() {
 
 
 void stop_sound()
-{uint8_t speaker_state = inb(0x61)outb(0x61, speaker_state & ~3);}
+{uint8_t speaker_state = inb(0x61); outb(0x61, speaker_state & ~3);}
 
 void play_song_impl(Song *song) {
 enable_speaker();
 
 for (uint32_t i = 0; i < song->length; i++)
     {Note* note = &song->notes[i];
-    print("Playing note with frequency %d in length %d.", i, note->frequency, note->duration);
+    printf("Playing note with frequency %d in length %d.\n", note->frequency, note->duration);
     play_sound(note->frequency);
     sleep_interrupt(note->duration);
     stop_sound();}

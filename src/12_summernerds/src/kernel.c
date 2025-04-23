@@ -3,65 +3,26 @@
 #include "libc/stdbool.h"
 #include <../src/screen.h>
 #include "../src/arch/i386/keyboard.h"
-<<<<<<< HEAD
 //#include "../src/arch/i386/print.h"
-#include "../src/arch/i386/io.h"
+#include "../src/common.h"
 #include "../src/arch/i386/gdt.h"
 //#include "../src/arch/i386/IDT.h"
 //#include "../src/arch/i386/ISR.h"
 #include "../src/arch/i386/interuptRegister.h"
 #include "../src/arch/i386/monitor.h"
-#include "../include/kernel/memutils.h"
-//#include "../include/kernel/memutils.h"
-=======
 #include "../include/kernel/pit.h"
 //#include <kheap.h>
 //#include <paging.h>
->>>>>>> 2dcfd71b24fec2d908b9054d255e14ba6f084607
 
 extern uint32_t end;       // Linker symbol marking the end of kernel
 
 int kernel_main_c(uint32_t magic, uint32_t mb_info_addr) {
 
-<<<<<<< HEAD
-int main(uint32_t magic, struct multiboot_info* mb_info_addr);
-
-extern uint32_t end();
-
-void isr_handler(struct InterruptRegister* regs) {
-    // Handle the interrupt here
-    // Prints the interrupt number
-    printf("Interrupt: %d\n", regs->int_no);
-}
-
-int main(uint32_t magic, struct multiboot_info* mb_info_addr)
-{
-    monitor_init(); // Initialize the monitor
-
-
-    init_gdt();
-    init_idt();
-    init_irq();  // flytt gjerne denne hit etter IDT init
-    isr_init();
-    init_kernel_memory(&end);
-
-    // Initialize paging for memory management.
-    init_paging();
-
-    // Print memory information.
-    print_memory_layout();
-
-    init_pit();
-    
-    write_to_terminal("Hello Summernerds!!!", 1);
-    init_keyboard();
-=======
     //initializing basic systems
     monitor_initialize();
     init_gdt();
     init_idt();
     init_irq();
->>>>>>> 2dcfd71b24fec2d908b9054d255e14ba6f084607
 
     // Initializing the kernel memory manager
     init_kernel_memory(&end);

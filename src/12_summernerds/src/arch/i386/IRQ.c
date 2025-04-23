@@ -1,5 +1,5 @@
 #include "../src/arch/i386/interuptRegister.h"
-#include "../i386/io.h"
+#include "../src/common.h"
 
 // Initializing the IRQ handlers
 void init_irq() {

@@ -7,8 +7,8 @@
  #ifndef MEMORY_H
  #define MEMORY_H
  
- #include <libc/libc/stdint.h> /* Include standard integer types */
- #include <libc/libc/limits.h> /* Include standard definitions */
+ #include <libc/stdint.h> /* Include standard integer types */
+ #include <libc/limits.h> /* Include standard definitions */
  
  /*
   * Definition of a struct that represents a memory allocation.

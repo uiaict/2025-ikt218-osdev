@@ -1,7 +1,7 @@
 #ifndef MONITOR_H
 #define MONITOR_H
 
-#include "../i386/io.h"
+#include "../src/common.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 

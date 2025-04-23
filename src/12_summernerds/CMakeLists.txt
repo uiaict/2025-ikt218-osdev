@@ -61,31 +61,44 @@ enable_language(ASM)  #  Fortell CMake at vi bruker Assembly
 # Legg til eksekverbar kernel, men IKKE gdt.s her!
 add_executable(uiaos-kernel 
     src/kernel.c
-	src/screen.c
-	src/song.cpp
-	#src/arch/i386/gdt.asm
-	src/arch/i386/gdt.c
-	src/arch/i386/Keyboard.c
-	src/memory/malloc.c
-	src/memory/memory.c
-	src/memory/memutils.c
-	
-	src/arch/i386/io.c
-	src/arch/i386/IRQ.c
-	src/arch/i386/IDT.c
-	#src/arch/i386/ISR.asm
-	src/arch/i386/ISR.c
-	src/arch/i386/print.c
-	#src/arch/i386/ISR.asm
-	include/song/SongPlayer.c
+    src/screen.c
+    src/song.cpp
+    src/common.c
+
+    # SYSTEM
+    src/arch/i386/IRQ.c
+    src/arch/i386/ISR.c
+    src/arch/i386/Keyboard.c
+    src/arch/i386/IDT.c
+    src/arch/i386/gdt.c
+    src/arch/i386/stdio.c
+    src/arch/i386/monitor.c
+    src/arch/i386/panic.c
+    src/arch/i386/system.c
+    src/arch/i386/pit.c
+    src/arch/i386/string.c
+
+    # MEMORY
+    src/memory/malloc.c
+    src/memory/memory.c
+    src/memory/memutils.c
+
+    # SONG
+    include/song/SongPlayer.c
+
 )
+
+
 
 add_library(gdt_asm OBJECT src/arch/i386/gdt.asm)
 set_target_properties(gdt_asm PROPERTIES LANGUAGE ASM_NASM)
 target_link_libraries(uiaos-kernel gdt_asm)
-
-set_source_files_properties(src/arch/i386/ISR.asm PROPERTIES LANGUAGE ASM_NASM)
 set_source_files_properties(src/arch/i386/gdt.asm PROPERTIES LANGUAGE ASM_NASM)
+set_source_files_properties(src/arch/i386/ISR.asm PROPERTIES LANGUAGE ASM_NASM)
+add_library(isr_asm OBJECT src/arch/i386/ISR.asm)
+target_link_libraries(uiaos-kernel isr_asm)
+
+
 
 # Link gdt_asm med uiaos-kernel
 #target_link_libraries(uiaos-kernel gdt_asm)
