@@ -3,15 +3,22 @@ section .text
 global isr_stub_table
 extern exception_handler
 
+
+
 %macro isr_no_err_stub 1
 isr_stub_%+%1:
+    push dword %1           ; Push the interrupt number
     call exception_handler
+    add esp, 4              ; Clean up the stack
     iret
 %endmacro
 
+
 %macro isr_err_stub 1
 isr_stub_%+%1:
+    push dword %1
     call exception_handler
+    add esp, 4
     iret
 %endmacro
 
@@ -47,10 +54,29 @@ isr_no_err_stub 28
 isr_no_err_stub 29
 isr_err_stub    30
 isr_no_err_stub 31
+isr_no_err_stub 32
+isr_no_err_stub 33
+isr_no_err_stub 34
+isr_no_err_stub 35
+isr_no_err_stub 36
+isr_no_err_stub 37
+isr_no_err_stub 38
+isr_no_err_stub 39
+isr_no_err_stub 40
+isr_no_err_stub 41
+isr_no_err_stub 42
+isr_no_err_stub 43
+isr_no_err_stub 44
+isr_no_err_stub 45
+isr_no_err_stub 46
+isr_no_err_stub 47
+
 
 isr_stub_table:
 %assign i 0
-%rep 32
+%rep 48
     dd isr_stub_%+i
 %assign i i+1
 %endrep
+
+
