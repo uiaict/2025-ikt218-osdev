@@ -46,7 +46,6 @@ void switch_to_protected_mode() {
   uint8_t a20_status = inb(0x92);
   outb(0x92, a20_status | 2);
 
-  // Load GDT (assuming you have gdt_load() defined in gdt.h)
   gdt_install();
 
   // Set PE (Protection Enable) bit in CR0
