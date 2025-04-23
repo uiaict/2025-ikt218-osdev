@@ -29,8 +29,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
 
   print("Setting up PS/2 keyboard\n");
 
-  // init_ps2();
-  init_keyboard();
+  init_ps2();
 
   print("Set up PS/2 keybaord done\n");
 

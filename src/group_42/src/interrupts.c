@@ -4,29 +4,24 @@
 #include "system.h"
 
 void default_interrupt_handler() {
-  asm volatile("cli");
 
   volatile char *video_memory = (volatile char *)0xB8000;
   video_memory[0] = 'U';
   video_memory[1] = VIDEO_WHITE;
 
   outb(0x20, 0x20);
-  asm volatile("sti");
 }
 
 void spurious_interrupt_handler() {
-  asm volatile("cli");
   volatile char *video_memory = (volatile char *)0xB8000;
   video_memory[2] = 'S';
   video_memory[3] = VIDEO_WHITE;
 
   outb(0xA0, 0x20);
   outb(0x20, 0x20);
-  asm volatile("sti");
 }
 
 void keyboard_handler() {
-  asm volatile("cli");
   volatile char *video_memory = (volatile char *)0xB8000;
 
   volatile uint8_t scancode = inb(0x60);
@@ -35,7 +30,6 @@ void keyboard_handler() {
   video_memory[1] = VIDEO_WHITE;
 
   outb(0x20, 0x20);
-  asm volatile("sti");
 }
 
 extern void default_interrupt_handler_wrapper(void);
