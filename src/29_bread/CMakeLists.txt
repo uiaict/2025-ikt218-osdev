@@ -69,6 +69,8 @@ add_executable(uiaos-kernel
 	src/common.c
 	src/terminal.c  # Added terminal implementation
 	src/printf.c    # Added printf implementation
+    src/irq.c
+	src/keyboard.c
 )
 
 # Include directories for the kernel target
@@ -78,7 +80,7 @@ target_include_directories(uiaos-kernel PUBLIC include)
 # Specify compile options for C and C++
 target_compile_options(uiaos-kernel PRIVATE
     $<$<COMPILE_LANGUAGE:C>:-Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g>
-    $<$<COMPILE_LANGUAGE:CXX>:-Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -g>
+    $<$<COMPILE_LANGUAGE:CXX>:-Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march:i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -g>
     $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-m32 -march=i386 -Wno-unused-variable -Wno-unused-parameter>
 )
 

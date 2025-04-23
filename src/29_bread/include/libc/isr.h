@@ -22,3 +22,6 @@ void isr_handler(registers_t regs);
 
 void irq_handler(registers_t regs);
 
+// Add this if not already present
+extern void handle_irq(registers_t regs);
+
