@@ -82,3 +82,13 @@ void monitor_write_dec(uint32_t n) {
         monitor_put(buf[i]);
     }
 }
+
+void monitor_write_hex(uint32_t num) {
+    char hex_digits[] = "0123456789ABCDEF";
+    char buffer[11] = "0x00000000";
+    for (int i = 9; i >= 2; --i) {
+        buffer[i] = hex_digits[num & 0xF];
+        num >>= 4;
+    }
+    monitor_write(buffer);
+}
