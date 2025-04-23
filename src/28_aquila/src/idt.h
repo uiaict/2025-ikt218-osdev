@@ -6,6 +6,4 @@
 
 void init_idt();
 
-extern void init_pit(uint32_t frequency);
-
 #endif

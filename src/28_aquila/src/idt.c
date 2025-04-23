@@ -30,6 +30,8 @@ extern void irq13();
 extern void irq14(); 
 extern void irq15(); 
 
+extern volatile uint32_t tick;
+
 void outb(uint16_t port, uint8_t value) {
     asm volatile("outb %1, %0" : : "dN"(port), "a"(value));
 }
@@ -133,9 +135,11 @@ void irq_handler(registers_t *regs) {
                 }
             }
         }
-
-    } else if (regs->int_no == 32) { // Timer interrupt IRQ 0
     }
+    else if (regs->int_no == 32) {
+        tick++;
+
+    } 
 
     if (regs->int_no >= 40) { // If IRQ involved the slave PIC (IRQ 8-15)
         outb(0xA0, 0x20); // Slave PIC EOI
@@ -218,21 +222,6 @@ void idt_set_gate(int n, uint32_t handler, uint16_t sel, uint8_t flags) {
 
 void lidt(void* idtp_ptr) {
     asm volatile("lidt (%0)" : : "r"(idtp_ptr));
-}
-
-#define PIT_CHANNEL0_PORT 0x40
-#define PIT_COMMAND_PORT  0x43
-#define PIT_FREQUENCY     1193182 
-
-
-void init_pit(uint32_t frequency) {
-    uint32_t divisor = PIT_FREQUENCY / frequency;
-    if (frequency == 0) divisor = 65535; 
-    if (divisor == 0) divisor = 1; 
-    if (divisor > 65535) divisor = 65535; 
-    outb(PIT_COMMAND_PORT, 0x36);
-    outb(PIT_CHANNEL0_PORT, (uint8_t)(divisor & 0xFF));
-    outb(PIT_CHANNEL0_PORT, (uint8_t)((divisor >> 8) & 0xFF));
 }
 
 void init_idt() {
