@@ -8,7 +8,7 @@ void default_interrupt_handler() {
 
   volatile char *video_memory = (volatile char *)0xB8000;
   video_memory[0] = 'U';
-  video_memory[1] = 0x07;
+  video_memory[1] = VIDEO_WHITE;
 
   outb(0x20, 0x20);
   asm volatile("sti");
@@ -16,9 +16,9 @@ void default_interrupt_handler() {
 
 void spurious_interrupt_handler() {
   asm volatile("cli");
-  char *video_memory = (char *)0xB8000;
+  volatile char *video_memory = (volatile char *)0xB8000;
   video_memory[2] = 'S';
-  video_memory[3] = 0x07;
+  video_memory[3] = VIDEO_WHITE;
 
   outb(0xA0, 0x20);
   outb(0x20, 0x20);
@@ -27,26 +27,29 @@ void spurious_interrupt_handler() {
 
 void keyboard_handler() {
   asm volatile("cli");
-  char *video_memory = (char *)0xB8000;
-  video_memory[0] = 'K';
-  video_memory[1] = 0x07;
+  volatile char *video_memory = (volatile char *)0xB8000;
 
   volatile uint8_t scancode = inb(0x60);
+
+  video_memory[0] = '0' + (scancode >> 4); // Display high nibble
+  video_memory[1] = VIDEO_WHITE;
 
   outb(0x20, 0x20);
   asm volatile("sti");
 }
 
+extern void default_interrupt_handler_wrapper(void);
+extern void spurious_interrupt_handler_wrapper(void);
+extern void keyboard_handler_wrapper(void);
+
 void init_interrupts() {
   // Point IDT entries to the assembly wrappers
   for (int i = 0; i < IDT_ENTRIES; i++) {
-    set_idt_entry(i, (uint32_t)default_interrupt_handler);
+    set_idt_entry(i, (uint32_t)default_interrupt_handler_wrapper);
   }
 
-  set_idt_entry(0x21, (uint32_t)keyboard_handler);
-  set_idt_entry(0x27, (uint32_t)spurious_interrupt_handler);
+  set_idt_entry(0x21, (uint32_t)keyboard_handler_wrapper);
+  set_idt_entry(0x27, (uint32_t)spurious_interrupt_handler_wrapper);
 
   load_idt();
-
-  asm volatile("sti");
 }

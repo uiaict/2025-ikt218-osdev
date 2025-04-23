@@ -70,6 +70,9 @@ add_executable(uiaos-kernel
 	src/malloc.c
 	src/idt.h
 	src/idt.c
+	src/keyboard.h
+	src/keyboard.c
+	src/interrupt_wrappers.asm
 	src/interrupts.h
 	src/interrupts.c
 	src/pic.h
