@@ -71,6 +71,7 @@ set(KERNEL_SOURCES
     src/pit.c
     src/song/song.c
     src/song/song_player.c
+    src/loading_screen.c
 )
 
 # Add executable target for the kernel

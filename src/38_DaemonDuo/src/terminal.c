@@ -175,3 +175,17 @@ void printf(const char* format, ...) {
     
     __builtin_va_end(args);
 }
+
+void terminal_clear(void) {
+    // Fill the entire screen with blank spaces (white on black)
+    for (size_t i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++) {
+        vga_buffer[i] = (uint16_t) ' ' | (uint16_t) 0x0700;
+    }
+    
+    // Reset cursor position to top-left
+    terminal_row = 0;
+    terminal_column = 0;
+    
+    // Update the hardware cursor
+    update_cursor(terminal_row, terminal_column);
+}
