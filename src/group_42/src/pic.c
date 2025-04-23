@@ -12,6 +12,7 @@ And so on…
 */
 
 void remap_pic() {
+  // TODO: This needs a source
   outb(0x20, 0x11); // Start initialization of master PIC
   outb(0xA0, 0x11); // Start initialization of slave PIC
   outb(0x21, 0x20); // Remap master PIC to 0x20-0x27
