@@ -26,6 +26,13 @@ void remap_pic() {
   outb(0xA1, 0x0);  // Enable all IRQs on slave PIC
 
   // Enable only keyboard interrupt
-  outb(0x21, 0xFD);
-  outb(0xA1, 0xFF);
+  // outb(0x21, 0xFD);
+  // outb(0xA1, 0xFF);
+}
+
+void send_eoi(uint8_t irq) {
+  if (irq >= 8) {
+    outb(0xA0, 0x20); // Send EOI to slave PIC
+  }
+  outb(0x20, 0x20); // Send EOI to master PIC
 }

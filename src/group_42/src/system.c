@@ -1,4 +1,5 @@
 #include "system.h"
+#include "gdt.h"
 #include "print.h"
 
 void cursor_enable(uint8_t cursor_start, uint8_t cursor_end) {
@@ -35,4 +36,38 @@ uint16_t get_cursor_position(void) {
   outb(0x3D4, 0x0E);
   pos |= ((uint16_t)inb(0x3D5)) << 8;
   return pos;
+}
+
+void switch_to_protected_mode() {
+  // Disable interrupts
+  __asm__ volatile("cli");
+
+  // Enable A20 line using Fast A20 Gate
+  uint8_t a20_status = inb(0x92);
+  outb(0x92, a20_status | 2);
+
+  // Load GDT (assuming you have gdt_load() defined in gdt.h)
+  gdt_install();
+
+  // Set PE (Protection Enable) bit in CR0
+  __asm__ volatile("movl %%cr0, %%eax\n"
+                   "orl $1, %%eax\n"
+                   "movl %%eax, %%cr0"
+                   :
+                   :
+                   : "eax");
+
+  // Long jump to clear the pipeline and switch to 32-bit code
+  __asm__ volatile("ljmp $0x08, $protected_mode_jump\n"
+                   "protected_mode_jump:\n"
+                   ".code32\n"
+                   "movw $0x10, %%ax\n"
+                   "movw %%ax, %%ds\n"
+                   "movw %%ax, %%es\n"
+                   "movw %%ax, %%fs\n"
+                   "movw %%ax, %%gs\n"
+                   "movw %%ax, %%ss"
+                   :
+                   :
+                   : "eax");
 }

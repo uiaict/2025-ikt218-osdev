@@ -42,8 +42,8 @@ void init_interrupts() {
     set_idt_entry(i, (uint32_t)default_interrupt_handler_wrapper);
   }
 
-  set_idt_entry(0x21, (uint32_t)keyboard_handler_wrapper);
-  set_idt_entry(0x27, (uint32_t)spurious_interrupt_handler_wrapper);
+  set_idt_entry(IRQ1, (uint32_t)keyboard_handler_wrapper);
+  set_idt_entry(IRQ7, (uint32_t)spurious_interrupt_handler_wrapper);
 
   load_idt();
 }

@@ -87,4 +87,6 @@ void update_cursor(int x, int y);
  */
 uint16_t get_cursor_position(void);
 
+void switch_to_protected_mode(void);
+
 #endif
