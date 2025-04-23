@@ -77,6 +77,7 @@ add_executable(uiaos-kernel
     src/pit.c
     src/song.c
     src/menu.c
+    src/snake.c
 )
 
 # Include directories

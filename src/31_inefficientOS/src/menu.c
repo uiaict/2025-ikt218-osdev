@@ -5,6 +5,7 @@
 #include "pit.h"
 #include "song.h"
 #include "common.h"
+#include "snake.h"
 
 // Forward declarations for functions defined in kernel.c
 void uint_to_hex(uint32_t num, char* str);
@@ -20,6 +21,7 @@ static void action_interrupt_test();
 static void action_pit_test();
 static void action_music_player();
 static void action_hello_world();
+static void action_snake_game();
 
 // Initialize the menu system
 void menu_init() {
@@ -172,7 +174,7 @@ void menu_run(Menu* menu) {
 
 // Initialize the main menu
 void main_menu_init() {
-    main_menu = menu_create("31_inefficientOS", 6);
+    main_menu = menu_create("31_inefficientOS", 8);
     
     menu_add_item(main_menu, "Hello World", action_hello_world, 
                  "Display the traditional Hello World message");
@@ -186,6 +188,8 @@ void main_menu_init() {
                  "Test Programmable Interval Timer (PIT) functionality");
     menu_add_item(main_menu, "Music Player", action_music_player, 
                  "Play various tunes using the PC speaker");
+    menu_add_item(main_menu, "Snake Game", action_snake_game, 
+                 "Play the classic Snake game");
     menu_add_item(main_menu, "Exit", NULL, 
                  "Return to default OS operation");
 }
@@ -245,6 +249,7 @@ static void action_system_info() {
     terminal_writestring(" - Memory Management\n");
     terminal_writestring(" - Programmable Interval Timer\n");
     terminal_writestring(" - PC Speaker Music\n");
+    terminal_writestring(" - Snake Game\n");
     
     // Wait for user input to return
     terminal_write_colored("\n\nPress ESC to return to main menu...\n", 
@@ -543,5 +548,11 @@ static void action_music_player() {
         sleep_busy(10);
     }
     
+    menu_display(main_menu);
+}
+
+// Action for Snake game
+static void action_snake_game() {
+    snake_game_start();
     menu_display(main_menu);
 }
