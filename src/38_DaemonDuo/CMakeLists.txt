@@ -56,20 +56,25 @@ set(CMAKE_ASM_NASM_COMPILE_OBJECT
 ########################################
 set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/linker.ld")
 
-# Add executable target for the kernel
-add_executable(uiaos-kernel 
-	src/multiboot2.asm # TODO: Add multiboot2 support
+# Add the song source files to your kernel sources
+set(KERNEL_SOURCES
+    src/multiboot2.asm # TODO: Add multiboot2 support
     src/kernel.c
-	src/gdt.c
-	src/gdt.asm
-	src/terminal.c
-	src/idt.c
-	src/interrupt.asm
-	src/memory/malloc.c
-	src/memory/memory.c
-	src/memory/memutils.c
-	src/pit.c
+    src/gdt.c
+    src/gdt.asm
+    src/terminal.c
+    src/idt.c
+    src/interrupt.asm
+    src/memory/malloc.c
+    src/memory/memory.c
+    src/memory/memutils.c
+    src/pit.c
+    src/song/song.c
+    src/song/song_player.c
 )
+
+# Add executable target for the kernel
+add_executable(uiaos-kernel ${KERNEL_SOURCES})
 
 # Include directories for the kernel target
 target_include_directories(uiaos-kernel PUBLIC include)
