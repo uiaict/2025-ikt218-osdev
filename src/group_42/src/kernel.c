@@ -35,6 +35,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   switch_to_protected_mode();
   print("Protected mode switched.\n");
 
+  print("Enabling interrupts...\n");
   asm volatile("sti");
   print("Interrupts enabled.\n");
 
