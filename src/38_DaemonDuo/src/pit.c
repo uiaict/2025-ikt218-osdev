@@ -9,7 +9,8 @@ volatile uint32_t sleep_ticks = 0;
 
 // Initialize the PIT (Programmable Interval Timer)
 void init_pit() {
-    uint32_t divisor = PIT_DEFAULT_DIVISOR;
+    //uint32_t divisor = PIT_DEFAULT_DIVISOR;
+    uint32_t divisor = DIVIDER;
 
     // Set command byte: channel 0, access mode: lobyte/hibyte, operating mode: rate generator
     outb(PIT_CMD_PORT, 0x36);

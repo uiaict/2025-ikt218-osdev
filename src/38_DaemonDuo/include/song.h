@@ -1,7 +1,22 @@
-#pragma once
+#ifndef SONG_H
+#define SONG_H
+
 #include "libc/stdint.h"
 
-// Changed from uint8_t to uint16_t to handle larger frequency values
-extern const uint16_t example_song[];
+// Structure to represent a musical note
+struct note {
+    uint32_t frequency;  // Frequency in Hz
+    uint32_t duration;   // Duration in milliseconds
+    uint32_t pause;      // Pause after the note in milliseconds
+};
 
-void play_song(const uint16_t* song_data);
+// Define the end marker for a song (zero frequency means end of song)
+#define END_OF_SONG { 0, 0, 0 }
+
+// Play a song defined as an array of notes
+void play_song(const struct note song[]);
+
+// External declaration for example_song
+extern const struct note example_song[];
+
+#endif // SONG_H

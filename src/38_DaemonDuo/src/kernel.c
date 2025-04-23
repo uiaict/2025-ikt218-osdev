@@ -8,10 +8,14 @@
 #include "terminal.h"
 #include "memory.h"
 #include "pit.h"
-#include "song.h"  // Add this include to access play_song and example_song
+#include "song.h"
+#include "song_player.h"
 
 // Reference to the end of the kernel in memory
 extern uint32_t end;
+
+// External declaration for example_song
+extern const struct note example_song[];
 
 struct multiboot_info {
     uint32_t size;
@@ -43,9 +47,15 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
         
     // Test sleep function
     writeline("Sleeping for 2 seconds...\n");
-    sleep_interrupt(2 * 59.7); // Sleep for 2 seconds
+    sleep_interrupt(2000); // Sleep for 2 seconds
     writeline("Woke up!\n");
 
+    // In kernel.c, after enabling interrupts
+    writeline("Testing PC Speaker...\n");
+    play_sound(1000);  // Use 1000Hz - clearly audible tone
+    sleep_interrupt(2000);  // Wait 2 seconds
+    stop_sound();
+    writeline("PC Speaker test complete\n");
 
     play_song(example_song); // Play the example song
     
