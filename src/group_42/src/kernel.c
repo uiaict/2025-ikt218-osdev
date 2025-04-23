@@ -18,8 +18,6 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   cursor_disable();
   print("Just booted. Hello!\n");
 
-  VideoColour colour = 1;
-
   print("Initialising PIC...\n");
   remap_pic();
 
@@ -41,12 +39,6 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   print("Interrupts enabled.\n");
 
   while (true) {
-    printc("Test\n", colour);
-    for (int i = 0; i < 1000000; i++)
-      io_wait();
-    colour++;
-    if (colour >= VIDEO_WHITE)
-      colour = 1;
   }
 
   return 0;

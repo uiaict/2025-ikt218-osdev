@@ -5,17 +5,24 @@
 
 void default_interrupt_handler() {
 
+  /*
+  // Debug code to see if the default interrupt handler gets triggered.
   volatile char *video_memory = (volatile char *)0xB8000;
   video_memory[0] = 'U';
   video_memory[1] = VIDEO_WHITE;
+  */
 
   outb(0x20, 0x20);
 }
 
 void spurious_interrupt_handler() {
+  /*
+  // Debug code to see if the spurious interrupt handler gets triggered.
+
   volatile char *video_memory = (volatile char *)0xB8000;
   video_memory[2] = 'S';
   video_memory[3] = VIDEO_WHITE;
+  */
 
   outb(0xA0, 0x20);
   outb(0x20, 0x20);
