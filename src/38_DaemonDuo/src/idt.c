@@ -159,17 +159,41 @@ void isr_handler(struct regs *r) {
             writeline("Machine Check Exception\n");
             break;
         case 19:
+            writeline("Exception 19\n");
+            break;
         case 20:
+            writeline("Exception 20\n");
+            break;
         case 21:
+            writeline("Exception 21\n");
+            break;
         case 22:
+            writeline("Exception 22\n");
+            break;
         case 23:
+            writeline("Exception 23\n");
+            break;
         case 24:
+            writeline("Exception 24\n");
+            break;
         case 25:
+            writeline("Exception 25\n");
+            break;
         case 26:
+            writeline("Exception 26\n");
+            break;
         case 27:
+            writeline("Exception 27\n");
+            break;
         case 28:
+            writeline("Exception 28\n");
+            break;
         case 29:
+            writeline("Exception 29\n");
+            break;
         case 30:
+            writeline("Exception 30\n");
+            break;
         case 31:
             writeline("Reserved Exception\n");
             break;
@@ -187,6 +211,7 @@ void irq_handler(struct regs *r) {
     // Handle different IRQs
     switch (r->int_no) {
         case 32: // IRQ0: Timer
+            //writeline("Timer Interrupt called\n");
             pit_tick();
             break;
         case 33: // IRQ1: Keyboard

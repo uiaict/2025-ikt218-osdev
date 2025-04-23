@@ -42,7 +42,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     // Test sleep function
     writeline("Sleeping for 2 seconds...\n");
-    sleep_interrupt(2000); // Sleep for 2 seconds
+    sleep_interrupt(2 * 59.7); // Sleep for 2 seconds
     writeline("Woke up!\n");
     
     while(true) {
