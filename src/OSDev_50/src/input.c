@@ -4,6 +4,11 @@
 #include "monitor.h"
 #include "interrupts.h"
 
+#define LOG_BUFFER_SIZE 256
+
+static char key_log[LOG_BUFFER_SIZE];
+static size_t log_index = 0;
+
 bool capsEnabled = false;
 
 const char large_ascii[] = {'?', '?', '1', '2', '3', '4', '5', '6',
@@ -87,6 +92,34 @@ void keyboard_handler(registers_t* regs, void* context) {
     }
 
     outb(0x20, 0x20); // Send EOI to the PIC
+}
+
+void keyboard_logger(registers_t* regs, void* context) {
+    (void)regs;    // Mark as unused
+    (void)context; // Mark as unused
+
+    uint8_t scancode = inb(0x60); // Read scancode from the keyboard controller
+    char ascii = scancode_to_ascii(&scancode);
+
+    if (ascii != 0) {
+        // Add the key to the log buffer
+        if (log_index < LOG_BUFFER_SIZE - 1) {
+            key_log[log_index++] = ascii;
+            key_log[log_index] = '\0'; // Null-terminate the string
+        }
+
+        // Display the key on the screen
+        monitor_put(ascii);
+    }
+
+    // Send EOI to the PIC
+    outb(0x20, 0x20);
+}
+
+void print_key_log() {
+    monitor_writestring("Key Log: ");
+    monitor_writestring(key_log);
+    monitor_put('\n');
 }
 
 void test_outb() {

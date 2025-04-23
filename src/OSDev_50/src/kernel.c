@@ -25,9 +25,6 @@ struct multiboot_info {
 
 
 void kernel_main(void) {
-    // Initialize terminal first
-    // terminal_initialize();
-
     // Initialize monitor
     monitor_initialize();
     
@@ -40,14 +37,23 @@ void kernel_main(void) {
     // Initialize IRQ
     init_irq();
 
+    // Enable global interrupts
+    asm volatile("sti");
+
     // Print Hello World
     monitor_writestring("Hello World!\n");
 
     // Test the outb function
     test_outb();
 
-    asm("int $0x0");
+    // Simulate some activity (e.g., wait for key presses)
+    for (volatile int i = 0; i < 1000000; i++);
 
-    
-    
+    // Print the key log
+    print_key_log();
+
+    // Halt the CPU
+    while (1) {
+        asm volatile("hlt");
+    }
 }

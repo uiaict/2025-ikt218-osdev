@@ -1,12 +1,6 @@
-#pragma once
-
 #include "interrupts.h"
 #include "common.h"
 #include "input.h"
-
-void keyboard_handler(registers_t* regs, void* context);
-char scancode_to_ascii(unsigned char* scan_code);
-void test_outb(); // Add this declaration
 
 // Initialize IRQ handlers
 void init_irq() {
@@ -17,7 +11,7 @@ void init_irq() {
     }
 
     // Register the keyboard handler for IRQ1
-    register_irq_handler(IRQ1, keyboard_handler, NULL);
+    register_irq_handler(IRQ1, keyboard_logger, NULL);
 }
 
 // Register an IRQ handler
@@ -47,6 +41,3 @@ void irq_handler(registers_t regs)
     }
 
 }
-
-static struct int_handler_t irq_handlers[IRQ_COUNT];
-static struct int_handler_t int_handlers[IDT_ENTRIES];
