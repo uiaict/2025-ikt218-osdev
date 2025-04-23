@@ -1,15 +1,15 @@
 #include <libc/stdint.h>
 #include <libc/stddef.h>
 #include "libc/stdbool.h"
-#include <../src/screen.h>
-#include "../src/arch/i386/keyboard.h"
-// #include "../src/arch/i386/print.h"
-#include "../src/common.h"
-#include "../src/arch/i386/gdt.h"
-// #include "../src/arch/i386/IDT.h"
-// #include "../src/arch/i386/ISR.h"
-#include "../src/arch/i386/interuptRegister.h"
-#include "../src/arch/i386/monitor.h"
+#include <screen.h>
+#include "i386/keyboard.h"
+// #include "i386/print.h"
+#include "common.h"
+#include "i386/gdt.h"
+// #include "i386/IDT.h"
+// #include "i386/ISR.h"
+#include "i386/interuptRegister.h"
+#include "i386/monitor.h"
 #include "../include/kernel/pit.h"
 #include "kernel/memory.h"
 // #include <kheap.h>
@@ -48,7 +48,7 @@ int kernel_main_c(uint32_t magic, uint32_t mb_info_addr)
 
     // Test PIT sleep
     int counter = 0;
-    /* while (true)
+    while (true)
     {
         printf("[%d]: Sleeping with busy-waiting (HIGH CPU)...\n", counter);
         sleep_busy(1000);
@@ -57,7 +57,7 @@ int kernel_main_c(uint32_t magic, uint32_t mb_info_addr)
         printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);
         sleep_interrupt(1000);
         printf("[%d]: Slept using interrupts.\n", counter++);
-    }*/
+    }
 
     // Usually shouldnt get here, since it then quits kernel main.
     return 0;

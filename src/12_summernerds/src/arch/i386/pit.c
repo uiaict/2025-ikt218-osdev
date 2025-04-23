@@ -1,11 +1,11 @@
 #include <kernel/pit.h>
 #include <libc/stdint.h>
 #include <libc/stdio.h>
-#include "../src/arch/i386/ISR.h"
-#include "../src/arch/i386/IRQ.h"
-#include "../src/arch/i386/gdt.h"
-#include "../src/common.h"
-#include "IRQ.h"
+#include "i386/ISR.h"
+#include "i386/IRQ.h"
+#include "i386/gdt.h"
+#include "common.h"
+#include "i386/IRQ.h"
 // #include <kernel/io.c>
 
 static volatile uint32_t pit_tickets = 0;
@@ -18,7 +18,7 @@ void pit_callback(registers_t regs)
 
 void init_pit()
 {
-    // irq_register_handler(0, pit_callback);
+    // register_irq_handler(0, pit_callback); // THIS IS NOT IMPLEMENTED
 
     uint32_t divisor = PIT_BASE_FREQUENCY / TARGET_FREQUENCY;
 

@@ -1,7 +1,7 @@
 #include <../include/song/song.h>
 #include "../include/kernel/pit.h"
 #include <libc/stdio.h>
-#include "../src/common.h"
+#include "common.h"
 
 void enable_speaker()
 {
