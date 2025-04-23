@@ -71,6 +71,7 @@ add_executable(uiaos-kernel
 	src/PIT/timer.c
 	src/memory/memory.c
 	src/memory/paging.c
+	src/PIT/pit.c
 )
 
 # Include directories for the kernel target

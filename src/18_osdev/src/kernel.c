@@ -7,6 +7,7 @@
 #include "memory/memory.h"
 #include "memory/paging.h"
 #include "libc/monitor.h"
+#include "PIT/pit.h"
 #include <multiboot2.h>
 
 extern uint32_t end;
@@ -35,5 +36,14 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     void* mem2 = malloc(50);
 
     print_memory_layout();
+
+    init_pit();  // Initialize timer
+
+    sleep_interrupt(1000); // sleep 1 second using interrupts
+    monitor_write("Slept 1 second!\n");
+
+    sleep_busy(500);       // sleep 0.5 second using busy waiting
+    monitor_write("Slept 0.5 second!\n");
+
     return 0;
 }
