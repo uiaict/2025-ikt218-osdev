@@ -1,4 +1,6 @@
 #include "libc/stdarg.h"
+#include "libc/stdbool.h"
+#include "libc/stddef.h"
 #include "libc/stdint.h"
 
 #define VGA_ADDRESS 0xB8000

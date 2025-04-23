@@ -11,6 +11,8 @@
 
 extern uint32_t end;
 
+// extern uint32_t end; // Task 1 - define
+
 int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
 
     init_gdt();
@@ -25,20 +27,27 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     init_pit();
 
     asm volatile("sti");
-
+  
+  // Clear previous buffer
+    while (inb(0x64) & 0x01) {
+        inb(0x60); 
+    }
+  
     int counter = 0;
 
     // teste sleeping
 
-    for (int i = 0; i < 2; i++) {
-        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-        sleep_busy(1000);
-        printf("[%d]: Slept using busy-waiting.\n", counter++);
-    
-        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);
-    }
+    printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+    sleep_busy(1000);
+    printf("[%d]: Slept using busy-waiting.\n", counter++);
+
+    printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+    sleep_interrupt(1000);
+    printf("[%d]: Slept using interrupts.\n", counter++);
+  
+    printf("Hello, Aquila!\n");
+    printf("aquila: ");
+
 
     while (1) {
         asm volatile("hlt"); 
