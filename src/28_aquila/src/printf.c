@@ -2,15 +2,23 @@
 #include "libc/stdbool.h"
 #include "libc/stddef.h"
 #include "libc/stdint.h"
+#include "printf.h"
 
-#define VGA_ADDRESS 0xB8000
-#define VGA_WIDTH 80
-#define VGA_HEIGHT 25
+
 
 volatile char *vga = (volatile char *)VGA_ADDRESS;
 int cursor = 0;
 
 extern void outb(uint16_t port, uint8_t value);
+
+void clear_screen() {
+    for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++) {
+        vga[i * 2] = ' ';
+        vga[i * 2 + 1] = 0x07;
+    }
+    cursor = 0;
+    update_cursor(0, 0);
+}
 
 
 void update_cursor(int x, int y) {
@@ -21,9 +29,39 @@ void update_cursor(int x, int y) {
     outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
   }
 
+void scroll() {
+    // Copy each line one row up
+    for (int y = 1; y < VGA_HEIGHT; y++) {
+        for (int x = 0; x < VGA_WIDTH; x++) {
+            int from = (y * VGA_WIDTH + x) * 2;
+            int to = ((y - 1) * VGA_WIDTH + x) * 2;
+            vga[to] = vga[from];
+            vga[to + 1] = vga[from + 1];
+        }
+    }
+
+    // Clear the last line
+    for (int x = 0; x < VGA_WIDTH; x++) {
+        int i = ((VGA_HEIGHT - 1) * VGA_WIDTH + x) * 2;
+        vga[i] = ' ';
+        vga[i + 1] = 0x07;
+    }
+
+    // Move the cursor to the first column of the last line
+    cursor = (VGA_HEIGHT - 1) * VGA_WIDTH;
+}
+
+
 void putchar(char c) {
     if (c == '\n') {
         cursor += VGA_WIDTH - (cursor % VGA_WIDTH); // Move to start of next line
+    } else if (c == '\b') {
+        if (cursor > 0) {
+            cursor--;
+            vga[cursor * 2] = ' ';
+            vga[cursor * 2 + 1] = 0x07; // Default attribute
+        }
+
     } else {
         vga[cursor * 2] = c;
         vga[cursor * 2 + 1] = 0x07;
@@ -31,7 +69,7 @@ void putchar(char c) {
     }
 
     if (cursor >= VGA_WIDTH * VGA_HEIGHT) {
-        cursor = 0; // Wrap (or implement scrolling here)
+        scroll();
     }
 }
 
