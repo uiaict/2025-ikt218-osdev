@@ -1,6 +1,6 @@
 {
-    "cmake.buildDirectory": "${workspaceFolder}/build/group_42",
-    "cmake.sourceDirectory": "${workspaceFolder}/src/group_42",
+    "cmake.buildDirectory": "${workspaceFolder}/build/group_name",
+    "cmake.sourceDirectory": "${workspaceFolder}/src/group_name",
     "cmake.useCMakePresets": "never",
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
@@ -15,12 +15,7 @@
         "multiboot2.h": "c",
         "interrupts.h": "c",
         "memory.h": "c",
-        "limits.h": "c",
-        "idt.h": "c",
-        "pic.h": "c",
-        "keyboard.h": "c",
-        "print.h": "c"
-    },
-    "editor.formatOnSave": true,
-    "C_Cpp.default.compilerPath": "/usr/local/bin/i686-elf-gcc"
+        "limits.h": "c"
+    }
+
 }
