@@ -72,6 +72,7 @@ void heap_init (void* heap_mem_start, size_t heap_size) {
     heap_start->free = 1;
     heap_start->next = NULL;
 }
+//
 
 void* malloc (size_t size) {
     heap_block_header_t* current = heap_start;

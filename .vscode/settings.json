@@ -21,7 +21,9 @@
         "keyboard.h": "c",
         "idt.h": "c",
         "portio.h": "c",
-        "paging.h": "c"
+        "paging.h": "c",
+        "music_1.h": "c",
+        "note.h": "c"
     }
 
 }
