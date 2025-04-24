@@ -8,12 +8,12 @@
 #include <multiboot2.h>
 #include "kernel/memory.h"
 #include "kernel/pit.h"
+#include "song.h"
 
 extern uint32_t end;
 
+
 extern int input_start; 
-
-
 int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
 
     init_gdt();
@@ -66,10 +66,13 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
         printf("\b\b\b\b");
     }
     clear_screen();
+
+    play_music("\n");
+
+    printf("Hello, Aquila!\n");
     printf("aquila: ");
 
     input_start = cursor; // prevent deletion of "aquila: "
-
 
     while (1) {
         asm volatile("hlt"); 
