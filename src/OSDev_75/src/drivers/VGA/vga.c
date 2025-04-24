@@ -1,7 +1,109 @@
-#include <stddef.h>   // for size_t
+
+#include <stddef.h>
 #include "vga.h"
 #include "util.h" // for outPortB, inPortB, etc.
+#include <stdarg.h>
 
+// Simple printf implementation for debugging
+int printf(const char* format, ...) {
+    // Buffer for formatted output
+    char buffer[256];
+    int i = 0;
+    
+    va_list args;
+    va_start(args, format);
+    
+    // Very simple formatting - only handles %d, %x, %s
+    while (format[i]) {
+        if (format[i] == '%' && format[i+1]) {
+            i++;
+            switch(format[i]) {
+                case 'd': {
+                    int val = va_arg(args, int);
+                    char num_buffer[12];
+                    int j = 0;
+                    int is_negative = 0;
+                    
+                    if (val < 0) {
+                        is_negative = 1;
+                        val = -val;
+                    }
+                    
+                    // Convert to string
+                    do {
+                        num_buffer[j++] = '0' + (val % 10);
+                        val /= 10;
+                    } while (val);
+                    
+                    // Add negative sign if needed
+                    if (is_negative) {
+                        print("-");
+                    }
+                    
+                    // Print in reverse (correct order)
+                    while (j > 0) {
+                        char c[2] = {num_buffer[--j], '\0'};
+                        print(c);
+                    }
+                    break;
+                }
+                case 's': {
+                    char* str = va_arg(args, char*);
+                    print(str);
+                    break;
+                }
+                case 'x': {
+                    int val = va_arg(args, int);
+                    char num_buffer[12];
+                    int j = 0;
+                    
+                    // Convert to hex string
+                    do {
+                        int digit = val & 0xF;
+                        num_buffer[j++] = digit < 10 ? '0' + digit : 'a' + (digit - 10);
+                        val >>= 4;
+                    } while (val);
+                    
+                    print("0x");
+                    
+                    // Print in reverse (correct order)
+                    while (j > 0) {
+                        char c[2] = {num_buffer[--j], '\0'};
+                        print(c);
+                    }
+                    break;
+                }
+                default:
+                    // Handle % character
+                    char c[2] = {format[i], '\0'};
+                    print(c);
+                    break;
+            }
+        } else {
+            // Regular character
+            char c[2] = {format[i], '\0'};
+            print(c);
+        }
+        i++;
+    }
+    
+    va_end(args);
+    return i;
+}
+
+// Simple panic function
+void panic(const char* message) {
+    // Set color to bright red on black for panic messages
+    setColor(COLOR8_LIGHT_RED, COLOR8_BLACK);
+    print("\n*** KERNEL PANIC ***\n");
+    print(message);
+    print("\nSystem halted\n");
+    
+    // Infinite loop to halt execution
+    while(1) {
+        __asm__ __volatile__("hlt");
+    }
+}
 // -----------------------------
 // Hardware cursor helper funcs
 // -----------------------------

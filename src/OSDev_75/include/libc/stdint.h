@@ -12,7 +12,8 @@ typedef unsigned short uint16_t;
 typedef unsigned char uint8_t;
 typedef signed char int8_t;
 
+#ifndef __cplusplus
 typedef uint8_t bool;
 #define true 1
 #define false 0
-
+#endif

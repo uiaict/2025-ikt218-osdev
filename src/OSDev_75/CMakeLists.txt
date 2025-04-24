@@ -8,7 +8,7 @@
 set(CMAKE_C_COMPILER_WORKS 1)
 set(CMAKE_CXX_COMPILER_WORKS 1)
 
-# Minimum required CMake version
+# Minimum required CMake versionPPP
 cmake_minimum_required(VERSION 3.22.1)
 
 # Project name and languages used
@@ -59,40 +59,52 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 # Add executable target for the kernel
 add_executable(uiaos-kernel
     src/multiboot2.asm
+    src/drivers/PIT/pit.c
 
     # VGA text-mode driver
     src/drivers/VGA/vga.c
-
+    # Audio driver
+    src/drivers/audio/song.c
     # GDT: 32-bit i386
     src/arch/i386/GDT/gdt_flush.asm
     src/arch/i386/GDT/gdt.c       
     src/arch/i386/GDT/util.c  
     include/libc/string.c
 
+    # Memory management
+    src/arch/i386/memory/memory.c
+    src/arch/i386/memory/malloc.c
+    src/arch/i386/memory/memutils.c
+    src/arch/i386/memory/paging.c
+
     # Interrupts: in src/arch/i386/interrupts/
     src/arch/i386/interrupts/idt.c
     src/arch/i386/interrupts/idt.asm
-    src/arch/i386/interrupts/keyboard.c   # <-- Add this line
+    src/arch/i386/interrupts/keyboard.c
 
     # Kernel entry point
     src/kernel.c
+    src/kernel.cpp
 )
-
 
 # Include directories for the kernel target
 target_include_directories(uiaos-kernel PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/libc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/libc"  # Add this line - it was missing
     "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/i386/GDT"  
     "${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/VGA"   
     "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/i386/interrupts"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/i386"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/i386/memory"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/PIT"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/audio"
 )
 
 # Specify compile options for C and C++
+# Specify compile options for C and C++
 target_compile_options(uiaos-kernel PRIVATE
     $<$<COMPILE_LANGUAGE:C>:-Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g>
-    $<$<COMPILE_LANGUAGE:CXX>:-Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -g>
+    $<$<COMPILE_LANGUAGE:CXX>:-Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -g -fpermissive>
     $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-m32 -march=i386 -Wno-unused-variable -Wno-unused-parameter>
 )
 
