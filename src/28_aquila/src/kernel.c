@@ -8,10 +8,9 @@
 #include <multiboot2.h>
 #include "kernel/memory.h"
 #include "kernel/pit.h"
+#include "song.h"
 
 extern uint32_t end;
-
-// extern uint32_t end; // Task 1 - define
 
 int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
 
@@ -48,9 +47,9 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     // malloc something and print the address
     printf("malloc(0x1000) = 0x%x\n", malloc(0x1000));
   
+    play_music("\n");
     printf("Hello, Aquila!\n");
     printf("aquila: ");
-
 
     while (1) {
         asm volatile("hlt"); 
