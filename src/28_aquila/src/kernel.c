@@ -56,28 +56,22 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     printf("[%d]: Slept using interrupts.\n", counter++);
 
     printf("\n");
+    
+    int sleep_time = 1;
 
-    printf("Clearing screen in 5...");
-    sleep_busy(1000);
-    printf("\b\b\b\b");
-    printf("4...");
-    sleep_busy(1000);
-    printf("\b\b\b\b");
-    printf("3...");
-    sleep_busy(1000);
-    printf("\b\b\b\b");
-    printf("2...");
-    sleep_busy(1000);
-    printf("\b\b\b\b");
-    printf("1...");
-    sleep_busy(1000);
-
-
+    printf("Clearing screen in ");
+    for (int i = sleep_time; i > 0; i--) {
+        printf("%d...", i);
+        sleep_busy(1000);
+        printf("\b\b\b\b");
+    }
     clear_screen();
+
     play_music("\n");
 
     printf("Hello, Aquila!\n");
     printf("aquila: ");
+
     input_start = cursor; // prevent deletion of "aquila: "
 
     while (1) {

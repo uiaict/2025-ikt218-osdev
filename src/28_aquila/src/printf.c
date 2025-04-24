@@ -18,6 +18,7 @@ void clear_screen() {
     }
     cursor = 0;
     update_cursor(0, 0);
+    printf("Hello, Aquila!\n");
 }
 
 
