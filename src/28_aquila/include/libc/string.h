@@ -1,4 +1,8 @@
 #pragma once
 
+#ifndef STRING_H
+#define STRING_H
 
-size_t strlen(const char* str);
+int strcmp(const char* a, const char* b);
+
+#endif

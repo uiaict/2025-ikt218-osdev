@@ -2,12 +2,18 @@
 #include "libc/stdbool.h"
 #include "libc/stddef.h"
 #include "libc/stdint.h"
+#include "libc/string.h"
+
 #include "printf.h" 
+#include "kernel/pit.h"
 #include <multiboot2.h>
+#include "buffer.h"
+
 
 bool left_shift_pressed = false;
 bool right_shift_pressed = false;
 bool caps_lock_on = false;
+
  
 
 extern void isr0(); 
@@ -81,6 +87,8 @@ typedef struct registers {
 extern int input_start = 0;
 
 
+
+
 void irq_handler(registers_t *regs) {
     if (regs->int_no == 33) { // Keyboard interrupt IRQ 1
         uint8_t scancode = inb(0x60);
@@ -118,8 +126,8 @@ void irq_handler(registers_t *regs) {
                 // Enter handling, with prefix aquila, terminal look
                 if (scancode == 0x1C) { // Enter key
                     printf("\n");
-                    printf("aquila: ");
                     input_start = cursor;
+                    buffer_handler(4, 0); // Enter key pressed
                 }
 
                 if (scancode == 0x53) { // Delete key
@@ -139,8 +147,11 @@ void irq_handler(registers_t *regs) {
                         int last = (row * VGA_WIDTH + (VGA_WIDTH - 1)) * 2;
                         vga[last] = ' ';
                         vga[last + 1] = 0x07;
+                        
                 
                         update_cursor(col, row); // Keep cursor in same place
+                        buffer_handler(3, 0); // move buffer cursor to right
+                        buffer_handler(1, 0); // Remove character from buffer
                     }
                 } else if (scancode == 0x4B) { // Left arrow
                     if (cursor > input_start) {
@@ -148,6 +159,7 @@ void irq_handler(registers_t *regs) {
                         int x = cursor % 80;
                         int y = cursor / 80;
                         update_cursor(x, y);
+                        buffer_handler(2, 0); // Move buffer cursor to left
                     }
                 } else if (scancode == 0x4D) { // Right arrow
                     if (cursor < VGA_WIDTH * VGA_HEIGHT) {
@@ -155,6 +167,7 @@ void irq_handler(registers_t *regs) {
                         int x = cursor % 80;
                         int y = cursor / 80;
                         update_cursor(x, y);
+                        buffer_handler(3, 0); // Move buffer cursor to right
                     }
                 } else
 
@@ -180,6 +193,7 @@ void irq_handler(registers_t *regs) {
                 
                         // Update cursor
                         update_cursor(col, row);
+                        buffer_handler(1, 0); // Remove character from buffer
                     }
                 }
                 else if (ascii != 0) {
@@ -194,14 +208,12 @@ void irq_handler(registers_t *regs) {
                             vga[curr] = vga[prev];
                             vga[curr + 1] = vga[prev + 1];
                         }
-                
-                        // Insert character at current cursor position
-                        int pos = (row * VGA_WIDTH + col) * 2;
-                        vga[pos] = (char)ascii;
-                        vga[pos + 1] = 0x07;
+                    
                         
-                        cursor++; // Move cursor forward
-                
+                        char msg[2] = {(char)ascii, '\0'};
+                        printf(msg);
+                        buffer_handler(0, ascii); // Update buffer
+                                        
                         // Update hardware cursor
                         update_cursor(cursor % VGA_WIDTH, cursor / VGA_WIDTH);
                     }

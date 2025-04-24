@@ -9,7 +9,6 @@
 
 void clear_screen();
 
-
 // Viser tekst til skjermen
 void printf(const char *message, ...);
 
