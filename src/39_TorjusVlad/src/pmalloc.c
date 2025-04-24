@@ -1,5 +1,6 @@
 #include "pmalloc.h"
 #include "libc/stdio.h"
+#include "libc/memory.h"
 #define PHEAP_SIZE (MAX_PAGE_ALIGNED_ALLOCS * 4096)  // 32 pages = 128KB
 
 
@@ -37,6 +38,9 @@ void init_kernel_memory(void* kernel_end) {
     for (int i = 0; i < MAX_PAGE_ALIGNED_ALLOCS; i++) {
         pheap_desc[i] = 0;
     }
+
+    size_t heap_size = heap_end - heap_begin;
+    heap_init((void*)heap_begin, heap_size);
 
     printf("Kernel memory initialized\n");
 }
