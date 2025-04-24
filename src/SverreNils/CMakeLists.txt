@@ -72,6 +72,10 @@ add_executable(uiaos-kernel
     src/arch/irq.asm
     src/devices/keyboard.c
 	src/shell.c
+	src/paging.c
+	src/pit.c
+	src/kernel_memory.c
+
 	include/libc/string.c
 
 )

@@ -1,4 +1,3 @@
-
 #include "multiboot2.h"
 #include "arch/idt.h"
 #include "arch/isr.h"
@@ -6,14 +5,16 @@
 #include "shell.h"
 #include "devices/keyboard.h"
 #include "arch/gdt.h"
+#include "kernel_memory.h"
+#include "paging.h"
+#include "pit.h"
 
 #include "printf.h"
 #include "stdint.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 
-
-
+extern uint32_t end; // Definert av linker.ld
 
 struct multiboot_info {
     uint32_t size;
@@ -30,24 +31,36 @@ void putc_raw(char c) {
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     idt_init();          
     isr_install();       
-    irq_install();   
-      
-    gdt_init();       
+    irq_install();       
+    init_keyboard();     // Kall den faktiske init-funksjonen, ikke definer den her
 
-    __asm__ volatile("sti");  
+    gdt_init();          
 
-    
+    __asm__ volatile("sti");  // Aktiver maskinavbrudd
+
+    init_kernel_memory(&end);  // ✅ Memory management
+    init_paging();             // ✅ Paging
+    print_memory_layout();     // ✅ Vis minnelayout
+    init_pit();                // ✅ PIT-timer
 
     printf("Hello, Nils!\n");
 
+    void* some_memory = malloc(12345); 
+    void* memory2 = malloc(54321); 
+    void* memory3 = malloc(13331);
+
     shell_prompt();
 
-    // asm volatile("int $0x21");  // 🔍 Manuelt kall til IRQ1 for testing
-    
-
-    
-
+    int counter = 0;
     while (1) {
+        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+        sleep_busy(1000);
+        printf("[%d]: Slept using busy-waiting.\n", counter++);
+
+        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+        sleep_interrupt(1000);
+        printf("[%d]: Slept using interrupts.\n", counter++);
+
         __asm__ volatile ("hlt");
     }
 }

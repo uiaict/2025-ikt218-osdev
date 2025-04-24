@@ -2,6 +2,7 @@
 #include "printf.h"
 #include "libc/io.h"
 #include "shell.h"
+#include "arch/irq.h"
 
 #define MAX_INPUT_LEN 128
 static char input_buffer[MAX_INPUT_LEN];
@@ -12,23 +13,22 @@ char scancode_ascii[128] = {
     '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n', 0,
     'a','s','d','f','g','h','j','k','l',';','\'','`',  0,'\\',
     'z','x','c','v','b','n','m',',','.','/',  0, '*', 0,' ',
-    // resten 0
+    // resten fylles implicit med 0
 };
 
 void keyboard_handler(uint8_t scancode) {
-    
+    if (scancode >= 128) return;
 
     char c = scancode_ascii[scancode];
-    if (scancode >= 128) return;
     if (!c) return;
 
     if (c == '\n') {
         putc('\n');
         input_buffer[input_pos] = '\0';
-        printf("Du skrev: %s\n", input_buffer);  // ← debug
-        shell_handle_input(input_buffer);        // ✅ viktig!
+        printf("Du skrev: %s\n", input_buffer);
+        shell_handle_input(input_buffer);
         input_pos = 0;
-        shell_prompt();                          // ✅ vis ny prompt
+        shell_prompt();
         return;
     }
 
@@ -46,4 +46,13 @@ void keyboard_handler(uint8_t scancode) {
         input_buffer[input_pos++] = c;
         putc(c);
     }
+}
+
+static void keyboard_wrapper() {
+    uint8_t scancode = inb(0x60);
+    keyboard_handler(scancode);
+}
+
+void init_keyboard() {
+    irq_register_handler(1, keyboard_wrapper);
 }
