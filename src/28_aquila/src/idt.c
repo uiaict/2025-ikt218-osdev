@@ -8,6 +8,7 @@
 bool left_shift_pressed = false;
 bool right_shift_pressed = false;
 bool caps_lock_on = false;
+ 
 
 extern void isr0(); 
 extern void isr1();
@@ -77,6 +78,8 @@ typedef struct registers {
     uint32_t eip, cs, eflags; 
 } registers_t;
 
+extern int input_start = 0;
+
 
 void irq_handler(registers_t *regs) {
     if (regs->int_no == 33) { // Keyboard interrupt IRQ 1
@@ -116,23 +119,94 @@ void irq_handler(registers_t *regs) {
                 if (scancode == 0x1C) { // Enter key
                     printf("\n");
                     printf("aquila: ");
+                    input_start = cursor;
                 }
 
-                if (scancode == 0x0E) { // Backspace
-                    if (cursor > 0) {
+                if (scancode == 0x53) { // Delete key
+                    int row = cursor / VGA_WIDTH;
+                    int col = cursor % VGA_WIDTH;
+                
+                    // Only delete if there are characters after the cursor on the line
+                    if (col < VGA_WIDTH - 1) {
+                        for (int x = col; x < VGA_WIDTH - 1; x++) {
+                            int current = (row * VGA_WIDTH + x) * 2;
+                            int next = (row * VGA_WIDTH + (x + 1)) * 2;
+                            vga[current] = vga[next];
+                            vga[current + 1] = vga[next + 1];
+                        }
+                
+                        // Clear last character on line
+                        int last = (row * VGA_WIDTH + (VGA_WIDTH - 1)) * 2;
+                        vga[last] = ' ';
+                        vga[last + 1] = 0x07;
+                
+                        update_cursor(col, row); // Keep cursor in same place
+                    }
+                } else if (scancode == 0x4B) { // Left arrow
+                    if (cursor > input_start) {
                         cursor--;
-                        vga[cursor * 2] = ' ';
-                        vga[cursor * 2 + 1] = 0x07;
                         int x = cursor % 80;
                         int y = cursor / 80;
                         update_cursor(x, y);
                     }
-                } else if (ascii != 0) {
-                     if (ascii >= ' ' || ascii >= 0x80) { // ext. chars øæå
-                       char msg[2] = {(char)ascii, '\0'};
-                       printf(msg);
+                } else if (scancode == 0x4D) { // Right arrow
+                    if (cursor < VGA_WIDTH * VGA_HEIGHT) {
+                        cursor++;
+                        int x = cursor % 80;
+                        int y = cursor / 80;
+                        update_cursor(x, y);
+                    }
+                } else
+
+                if (scancode == 0x0E) { // Backspace
+                    if (cursor > input_start) {
+                        cursor--; // Move left to the character to delete
+                
+                        int row = cursor / VGA_WIDTH;
+                        int col = cursor % VGA_WIDTH;
+                
+                        // Shift characters on the line one left from the cursor position
+                        for (int x = col; x < VGA_WIDTH - 1; x++) {
+                            int curr = (row * VGA_WIDTH + x) * 2;
+                            int next = (row * VGA_WIDTH + (x + 1)) * 2;
+                            vga[curr] = vga[next];
+                            vga[curr + 1] = vga[next + 1];
+                        }
+                
+                        // Clear the last character in the line
+                        int last = (row * VGA_WIDTH + (VGA_WIDTH - 1)) * 2;
+                        vga[last] = ' ';
+                        vga[last + 1] = 0x07;
+                
+                        // Update cursor
+                        update_cursor(col, row);
                     }
                 }
+                else if (ascii != 0) {
+                    if (ascii >= ' ' || ascii >= 0x80) { // ext. chars øæå
+                        int row = cursor / VGA_WIDTH;
+                        int col = cursor % VGA_WIDTH;
+                
+                        // Shift all characters one position to the right on the same line
+                        for (int x = VGA_WIDTH - 2; x >= col; x--) { // -2 to leave space at end
+                            int curr = (row * VGA_WIDTH + (x + 1)) * 2;
+                            int prev = (row * VGA_WIDTH + x) * 2;
+                            vga[curr] = vga[prev];
+                            vga[curr + 1] = vga[prev + 1];
+                        }
+                
+                        // Insert character at current cursor position
+                        int pos = (row * VGA_WIDTH + col) * 2;
+                        vga[pos] = (char)ascii;
+                        vga[pos + 1] = 0x07;
+                        
+                        cursor++; // Move cursor forward
+                
+                        // Update hardware cursor
+                        update_cursor(cursor % VGA_WIDTH, cursor / VGA_WIDTH);
+                    }
+                }
+                
             }
         }
     }
