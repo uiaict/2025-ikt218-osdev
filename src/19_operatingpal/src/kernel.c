@@ -1,9 +1,5 @@
+#include "libc/stdio.h"
 #include "libc/stdint.h"
-#include "libc/stddef.h"
-#include "libc/stdbool.h"
-#include <multiboot2.h>
-
-
 
 struct multiboot_info {
     uint32_t size;
@@ -11,9 +7,7 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
-
-int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-
-    return 0;
-
+void kmain(uint32_t magic, struct multiboot_info* mb_info_addr) {
+    printf("Hello World\n");
+    while (1);
 }

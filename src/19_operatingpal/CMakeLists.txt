@@ -56,10 +56,29 @@ set(CMAKE_ASM_NASM_COMPILE_OBJECT
 ########################################
 set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/linker.ld")
 
+# Put all .c files into the libc directory
+file(GLOB_RECURSE OS_LIBC_SOURCES
+    "src/19_operatingpal/src/libc/*.c"
+    "src/19_operatingpal/src/lib_src/*.c"
+)
+
+
+# Put all .c , .ccp and .asm files into the src directory
+file(GLOB_RECURSE OS_KERNEL_SOURCES "src/*.c" "src/*.cpp" "src/*.asm" "src/*s")
+
+
+
 # Add executable target for the kernel
 add_executable(uiaos-kernel 
-	# src/multiboot2.asm # TODO: Add multiboot2 support
+
+	src/multiboot2.asm # TODO: Add multiboot2 support
     src/kernel.c
+
+	${OS_LIBC_SOURCES}
+	${OS_KERNEL_SOURCES}
+
+
+
 )
 
 # Include directories for the kernel target

@@ -1,4 +1,4 @@
-extern main
+extern kmain
 
 global _start
 
@@ -37,7 +37,7 @@ _start:
 	push ebx
 	push eax
 
-    call main ; Jump main function
+    call kmain ; Jump main function
 
 section .bss
 stack_bottom:
