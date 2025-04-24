@@ -47,8 +47,6 @@ void idt_load();
 
 void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran);
 
-
-
 static struct idt_entry_t idt[IDT_ENTRIES];
 static struct idt_ptr_t idt_ptr;
 static struct gdt_entry_t gdt[GDT_ENTRIES];

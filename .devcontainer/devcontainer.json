@@ -36,12 +36,13 @@
 	////////////////////////////////////
 	// Windows Setup (WSL2)
 	////////////////////////////////////
-    //"mounts": [
-	//	"source=/mnt/wslg,target=/mnt/wslg,type=bind,consistency=cached"
-    //],
-	//"containerEnv": {
-	//	"PULSE_SERVER": "/mnt/wslg/PulseServer"
-	//},
+    "mounts": [
+		"source=/mnt/wslg,target=/mnt/wslg,type=bind,consistency=cached"
+    ],
+	"containerEnv": {
+		"PULSE_SERVER": "/mnt/wslg/PulseServer"
+		//"PULSE_SERVER": "/run/user/1000/pulse/native"
+	},
 
 
 	////////////////////////////////////

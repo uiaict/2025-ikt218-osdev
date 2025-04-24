@@ -37,4 +37,13 @@ SECTIONS
         *(COMMON)
         *(.bss)
     }
+
+  /* align up to page */
+  . = ALIGN(0x1000);
+
+  /* mark end of kernel image in memory */
+  end = .;
+  PROVIDE(end = .);
+
+
 }

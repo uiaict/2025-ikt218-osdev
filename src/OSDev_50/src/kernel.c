@@ -1,19 +1,13 @@
+
 #include <multiboot2.h>
-
-#include "libc/stdint.h"
-#include "libc/stddef.h"
-#include "libc/stdbool.h"
-#include "libc/system.h"
-
-
-// #include "terminal.h"
-
-#include "common.h"
-#include "interrupts.h"
-#include "descriptor_tables.h"
-#include "input.h"
 #include "monitor.h"
 #include "gdt.h"
+#include "descriptor_tables.h"
+#include "interrupts.h"
+#include "memory.h"
+#include "pit.h"
+#include "song.h"
+#include "libc/stdio.h"
 
 // Structure to hold multiboot information.
 struct multiboot_info {
@@ -22,38 +16,39 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
+// Symbol from linker script marking end of kernel image
+extern uint32_t end;
 
-
-void kernel_main(void) {
-    // Initialize monitor
-    monitor_initialize();
+// Entry point called by the multiboot2 bootloader
+void kernel_main(uint32_t magic, struct multiboot_tag* tags) {
     
-    // Initialize GDT
+
+    monitor_initialize();
     init_gdt();
-
-    // Initialize IDT
     init_idt();
-
-    // Initialize IRQ
     init_irq();
 
-    // Enable global interrupts
-    asm volatile("sti");
+    
+    printf("Hello, World!\n");
 
-    // Print Hello World
-    monitor_writestring("Hello World!\n");
+    // Memory management
+    init_kernel_memory(&end);
+    init_paging();
+    print_memory_layout();
 
-    // Test the outb function
-    test_outb();
+    // PIT timer for ms ticks
+    init_pit();
+    asm volatile("sti");  // enable interrupts
 
-    // Simulate some activity (e.g., wait for key presses)
-    for (volatile int i = 0; i < 1000000; i++);
+    // In your init code, before you do anything else:
+    play_sound(440);       // A4 tone
+    sleep_busy(500);       // half a second
+    disable_speaker();     // or stop_sound()
 
-    // Print the key log
-    print_key_log();
+    // Play predefined song
+    Song song = { music_1, music_1_length };
+    play_song_impl(&song);
 
-    // Halt the CPU
-    while (1) {
-        asm volatile("hlt");
-    }
+    // Halt forever
+    for (;;) asm volatile("hlt");
 }

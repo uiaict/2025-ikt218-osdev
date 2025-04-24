@@ -63,7 +63,7 @@ set(CMAKE_ASM_NASM_COMPILE_OBJECT
 # Add main kernel executable target
 add_executable(uiaos-kernel 
     src/multiboot2.asm
-    src/kernel.c
+    
     src/gdt.c
     src/terminal/terminal.c
     src/descriptor_table.asm
@@ -81,7 +81,17 @@ add_executable(uiaos-kernel
 	src/isr.c
 	src/isr_asm.asm
 
+    src/kernel.c
+    src/song_player.cpp
+
     src/input.c
+
+    src/memory/malloc.c
+	src/memory/paging.c
+	src/memory/memutils.c
+	src/pit.c
+
+    src/song.c
 
 
 )
