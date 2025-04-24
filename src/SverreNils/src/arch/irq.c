@@ -4,6 +4,8 @@
 #include "printf.h"
 #include "devices/keyboard.h"
 
+
+
 extern void* irq_stub_table[16];
 
 // Remap PIC to avoid conflicts with CPU exceptions
@@ -41,10 +43,11 @@ void irq_install() {
 }
 
 void irq_handler(struct registers* regs) {
-    printf("INT: %d\n", regs->int_no);  // <- Debug line 1
-
+    // Debug prints — kan kommenteres ut nå
+    // printf("INT: %d\n", regs->int_no);
+    // printf("IRQ1 fired!\n");
+    
     if (regs->int_no == 0x21) {
-        printf("IRQ1 fired!\n");        // <- Debug line 2
         uint8_t scancode = inb(0x60);
         keyboard_handler(scancode);
     }
@@ -53,4 +56,5 @@ void irq_handler(struct registers* regs) {
         outb(0xA0, 0x20);
     outb(0x20, 0x20);
 }
+
 

@@ -13,3 +13,4 @@ void isr_install() {
 void isr_handler(struct registers* regs) {
     printf("Interrupt %d (0x%x) triggered\n", regs->int_no, regs->int_no);
 }
+

@@ -71,6 +71,9 @@ add_executable(uiaos-kernel
 	src/arch/irq.c
     src/arch/irq.asm
     src/devices/keyboard.c
+	src/shell.c
+	include/libc/string.c
+
 )
 
 
@@ -79,7 +82,7 @@ target_include_directories(uiaos-kernel PUBLIC
     include
     include/libc
 	include/devices
-	src/arch 
+	include/arch
 )
 
 

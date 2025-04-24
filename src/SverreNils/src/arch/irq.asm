@@ -3,9 +3,11 @@ global irq%1
 irq%1:
     cli
     push 0              ; dummy error code
-    push (32 + %1)      ; IRQ = 0x20 + n
+    mov eax, 32 + %1    ; ✔️ legg inn int-nummer
+    push eax
     jmp irq_common_stub
 %endmacro
+
 
 section .text
 bits 32

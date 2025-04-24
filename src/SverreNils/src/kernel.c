@@ -1,12 +1,17 @@
-#include "arch/gdt.h"
-#include "printf.h"
-#include "libc/stdint.h"
-#include "libc/stddef.h"
-#include "libc/stdbool.h"
-#include <multiboot2.h>
+
+#include "multiboot2.h"
 #include "arch/idt.h"
 #include "arch/isr.h"
 #include "arch/irq.h"
+#include "shell.h"
+#include "devices/keyboard.h"
+#include "arch/gdt.h"
+
+#include "printf.h"
+#include "stdint.h"
+#include "libc/stddef.h"
+#include "libc/stdbool.h"
+
 
 
 
@@ -25,11 +30,22 @@ void putc_raw(char c) {
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     idt_init();          
     isr_install();       
-    irq_install();        
-    gdt_init();          
+    irq_install();   
+      
+    gdt_init();       
+
+    __asm__ volatile("sti");  
+
+    
+
     printf("Hello, Nils!\n");
 
-    asm volatile("int $0x21");  // 🔍 Manuelt kall til IRQ1 for testing
+    shell_prompt();
+
+    // asm volatile("int $0x21");  // 🔍 Manuelt kall til IRQ1 for testing
+    
+
+    
 
     while (1) {
         __asm__ volatile ("hlt");
