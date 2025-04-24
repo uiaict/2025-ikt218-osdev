@@ -11,7 +11,8 @@
 
 extern uint32_t end;
 
-// extern uint32_t end; // Task 1 - define
+extern int input_start; 
+
 
 int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
 
@@ -78,6 +79,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     
     printf("Hello, Aquila!\n");
     printf("aquila: ");
+    input_start = cursor; // prevent deletion of "aquila: "
 
 
     while (1) {
