@@ -12,6 +12,15 @@ int cursor = 0;
 
 extern void outb(uint16_t port, uint8_t value);
 
+void clear_screen() {
+    for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++) {
+        vga[i * 2] = ' ';
+        vga[i * 2 + 1] = 0x07;
+    }
+    cursor = 0;
+    update_cursor(0, 0);
+}
+
 
 void update_cursor(int x, int y) {
     uint16_t pos = y * VGA_WIDTH + x;
@@ -24,6 +33,13 @@ void update_cursor(int x, int y) {
 void putchar(char c) {
     if (c == '\n') {
         cursor += VGA_WIDTH - (cursor % VGA_WIDTH); // Move to start of next line
+    } else if (c == '\b') {
+        if (cursor > 0) {
+            cursor--;
+            vga[cursor * 2] = ' ';
+            vga[cursor * 2 + 1] = 0x07; // Default attribute
+        }
+
     } else {
         vga[cursor * 2] = c;
         vga[cursor * 2 + 1] = 0x07;

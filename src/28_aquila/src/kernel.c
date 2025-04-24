@@ -32,6 +32,15 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     while (inb(0x64) & 0x01) {
         inb(0x60); 
     }
+
+    printf("\n");
+    printf("Testing malloc\n");
+
+    // malloc something and print the address
+    printf("malloc(0x1000) = 0x%x\n", malloc(0x1000));
+
+    printf("\n");
+    printf("Testing sleeping\n");
   
     int counter = 0;
 
@@ -45,9 +54,28 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     sleep_interrupt(1000);
     printf("[%d]: Slept using interrupts.\n", counter++);
 
-    // malloc something and print the address
-    printf("malloc(0x1000) = 0x%x\n", malloc(0x1000));
-  
+    printf("\n");
+
+    printf("Clearing screen in 5...");
+    sleep_busy(1000);
+    printf("\b\b\b\b");
+    printf("4...");
+    sleep_busy(1000);
+    printf("\b\b\b\b");
+    printf("3...");
+    sleep_busy(1000);
+    printf("\b\b\b\b");
+    printf("2...");
+    sleep_busy(1000);
+    printf("\b\b\b\b");
+    printf("1...");
+    sleep_busy(1000);
+
+
+    clear_screen();
+
+
+    
     printf("Hello, Aquila!\n");
     printf("aquila: ");
 
