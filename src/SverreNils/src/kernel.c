@@ -65,6 +65,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_kernel_memory(&end);
     init_paging();
     print_memory_layout();
+    printf("[Memory] Kernel end: 0x%08X\n", &end);
+    printf("[Memory] Placement address: 0x%08X\n", get_placement_address());
     init_pit();
 
     printf("Hello, Nils!\n");  // ✅ vises ved oppstart
