@@ -9,6 +9,7 @@
 #include "programmableIntervalTimer.h"
 #include "menu.h"
 #include "display.h"
+#include "snake.h"
 
 // This is defined in the linker script
 extern uint32_t end;
@@ -23,6 +24,9 @@ static void startOS() {
     // Initialize terminal for output
     display_initialize();
     
+    // Initialize snake game
+    snake_init();
+    
     // Initialize system components and run tests first
     // This includes PIT and interrupt setup
     test_system_initialization();
@@ -34,7 +38,16 @@ static void startOS() {
     display_boot_logo();
     
     // Use sleep_interrupt which is more efficient than busy waiting
-    sleep_interrupt(3000);  // Wait for 3 seconds to view the logo
+    sleep_interrupt(1000);  // Increased from 500 to 1000ms for longer display time
+    
+    // Ask user to press a key to continue
+    display_write_color("\n\n            Press any key to continue...", COLOR_YELLOW);
+    
+    // Wait for keypress
+    while (!keyboard_data_available()) {
+        __asm__ volatile("hlt");
+    }
+    keyboard_getchar(); // Clear the keypress
     
     // Start menu system without overlapping the logo
     display_clear();  // Clear screen before showing menu

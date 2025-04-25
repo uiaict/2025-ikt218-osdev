@@ -51,4 +51,8 @@ void display_clear(void);
 void display_set_color(vga_color_t fg, vga_color_t bg);
 void display_boot_logo(void);  // Display the boot logo
 
+// Cursor positioning functions
+void display_set_cursor(size_t x, size_t y);
+void display_hide_cursor(void);
+
 #endif /* _DISPLAY_H */ 

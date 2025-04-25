@@ -58,9 +58,13 @@ void show_menu(void) {
     
     display_write_color("  ", COLOR_WHITE);
     display_write_color("4", COLOR_LIGHT_GREEN);
+    display_write_color(". Snake Game\n", COLOR_WHITE);
+    
+    display_write_color("  ", COLOR_WHITE);
+    display_write_color("5", COLOR_LIGHT_GREEN);
     display_write_color(". Shut Down\n", COLOR_WHITE);
     
-    display_write_color("\nSelect an option (1-4): ", COLOR_LIGHT_CYAN);
+    display_write_color("\nSelect an option (1-5): ", COLOR_LIGHT_CYAN);
 }
 
 // Shows the music menu
@@ -203,118 +207,174 @@ void handle_music_menu(void) {
     }
 }
 
-// Håndterer piano keyboard input og spiller noter
+// Handles piano keyboard input and plays notes
 void handle_piano_keyboard(void) {
     show_piano_menu();
+
+    // Flag to track if a key is currently pressed
+    bool key_pressed = false;
+    char current_key = 0;
     
-    display_write_color("\nPlaying in silent mode - no note display for minimum latency\n", COLOR_YELLOW);
+    // Enable interrupts for keyboard input
+    __asm__ volatile("sti");
     
-    // Tøm keyboard buffer før vi starter
+    // Clear any pending keyboard input
     while (keyboard_data_available()) {
         keyboard_getchar();
     }
-    
-    // Disable interrupts for direct keyboard access
-    __asm__ volatile("cli");
+
+    // Disable speaker initially to make sure it's off
+    disable_speaker();
     
     bool running = true;
-    // Track which key is currently playing
-    int current_key = -1;
-    // Track the last scancode processed to avoid repeat processing
-    uint8_t last_scancode = 0;
-    bool last_was_keyup = true;
+    uint32_t last_check_time = get_current_tick();
+    
+    // For tracking key release timing
+    uint32_t key_press_time = 0;
+    const uint32_t KEY_HOLD_TIMEOUT = 500; // Consider key released after 500ms
     
     while (running) {
-        // Les direkte fra keyboard porten for bedre responsivitet
-        if ((inb(KEYBOARD_STATUS_PORT) & 0x01)) {
-            uint8_t scancode = inb(KEYBOARD_DATA_PORT);
-            bool key_released = (scancode & 0x80);
-            uint8_t clean_scancode = scancode & ~0x80;  // Fjern release bit
+        // Get current time for periodic checks
+        uint32_t current_time = get_current_tick();
+        
+        // Process keyboard input
+        if (keyboard_data_available()) {
+            char key = keyboard_getchar();
             
-            // If this is the same scancode as last time (key held down)
-            // and it's not a key release event, skip it to avoid repeats
-            if (clean_scancode == last_scancode && !key_released && !last_was_keyup) {
+            if (key == 27) { // ESC key
+                running = false;
+                break;
+            }
+            
+            // Map keys to frequencies
+            uint32_t frequency = 0;
+            
+            // Check if this is a new key (not already pressed)
+            if (key == current_key) {
+                // This is the same key being held down, update press time
+                key_press_time = current_time;
                 continue;
             }
             
-            // Update tracking variables
-            last_scancode = clean_scancode;
-            last_was_keyup = key_released;
-            
-            // Håndter ESC-tasten spesielt
-            if (clean_scancode == 0x01) {  // ESC scancode
-                if (!key_released) {
-                    running = false;
-                    stop_sound();
-                    break;
-                }
-                continue;
+            // Main piano keys on the middle row
+            switch (key) {
+                case 'a': frequency = C4; break;
+                case 's': frequency = D4; break;
+                case 'd': frequency = E4; break;
+                case 'f': frequency = F4; break;
+                case 'g': frequency = G4; break;
+                case 'h': frequency = A4; break;
+                case 'j': frequency = B4; break;
+                case 'k': frequency = C5; break;
+                
+                // Sharp/flat notes on the top row
+                case 'w': frequency = Cs4; break;
+                case 'e': frequency = Ds4; break;
+                case 't': frequency = Fs4; break;
+                case 'y': frequency = Gs4; break;
+                case 'u': frequency = As4; break;
+                
+                // Octave change
+                case 'z': frequency = C3; break;
+                case 'x': frequency = D3; break;
+                case 'c': frequency = E3; break;
+                case 'v': frequency = F3; break;
+                case 'b': frequency = G3; break;
+                case 'n': frequency = A3; break;
+                case 'm': frequency = B3; break;
+                case ',': frequency = C4; break;
+                
+                default: frequency = 0; break;
             }
             
-            // Konverter scancode til piano-tast-indeks (1-9 for number keys)
-            int key_index = -1;
-            if (clean_scancode >= 0x02 && clean_scancode <= 0x0A) {  // Taster 1-9
-                key_index = clean_scancode - 0x02;
+            // Stop any previous note if a new one is played
+            if (key_pressed && frequency > 0) {
+                disable_speaker();
             }
             
-            if (key_index != -1) {
-                if (key_released) {
-                    // Key was released
-                    if (key_index == current_key) {
-                        stop_sound();
-                        current_key = -1;
-                    }
-                } else {
-                    // Tasten ble nettopp trykket ned
-                    current_key = key_index;
-                    
-                    // Stop any previous sound immediately
-                    stop_sound();
-                    
-                    // Bestem hvilken note som skal spilles
-                    uint32_t frequency = 0;
-                    
-                    switch (key_index) {
-                        case 0: frequency = C4; break;
-                        case 1: frequency = D4; break;
-                        case 2: frequency = E4; break;
-                        case 3: frequency = F4; break;
-                        case 4: frequency = G4; break;
-                        case 5: frequency = A4; break;
-                        case 6: frequency = B4; break;
-                        case 7: frequency = C5; break;
-                        case 8: frequency = D5; break;
-                    }
-                    
-                    // IMPORTANT: Play the note FIRST, before any other operations
-                    // This dramatically reduces latency
-                    enable_speaker();
-                    play_sound(frequency);
-                    
-                    // No note display to minimize latency
+            // Play note with direct speaker access for lowest latency
+            if (frequency > 0) {
+                // Update state for key press
+                key_pressed = true;
+                current_key = key;
+                key_press_time = current_time; // Record when this key was pressed
+                
+                // Calculate divisor directly
+                uint16_t divisor = 1193180 / frequency;
+                
+                // Disable interrupts while configuring PIT
+                __asm__ volatile("cli");
+                
+                // Configure PIT channel 2
+                outb(0x43, 0xB6);
+                outb(0x42, divisor & 0xFF);
+                outb(0x42, (divisor >> 8) & 0xFF);
+                
+                // Enable speaker
+                outb(0x61, inb(0x61) | 0x03);
+                
+                // Re-enable interrupts
+                __asm__ volatile("sti");
+                
+                // Display a visual indicator that a note is playing
+                display_set_cursor(40, 15);
+                display_write_color("♫ Playing: ", COLOR_LIGHT_GREEN);
+                
+                // Display the note name
+                char* note_name = "Unknown";
+                if (frequency == C3 || frequency == C4 || frequency == C5) note_name = "C";
+                else if (frequency == Cs3 || frequency == Cs4) note_name = "C#";
+                else if (frequency == D3 || frequency == D4) note_name = "D";
+                else if (frequency == Ds3 || frequency == Ds4) note_name = "D#";
+                else if (frequency == E3 || frequency == E4) note_name = "E";
+                else if (frequency == F3 || frequency == F4) note_name = "F";
+                else if (frequency == Fs3 || frequency == Fs4) note_name = "F#";
+                else if (frequency == G3 || frequency == G4) note_name = "G";
+                else if (frequency == Gs3 || frequency == Gs4) note_name = "G#";
+                else if (frequency == A3 || frequency == A4) note_name = "A";
+                else if (frequency == As3 || frequency == As4) note_name = "A#";
+                else if (frequency == B3 || frequency == B4) note_name = "B";
+                
+                display_write_color(note_name, COLOR_LIGHT_CYAN);
+                
+                // Show which octave
+                if (frequency >= C3 && frequency <= B3) {
+                    display_write_color("3", COLOR_LIGHT_CYAN);
+                } else if (frequency >= C4 && frequency <= B4) {
+                    display_write_color("4", COLOR_LIGHT_CYAN);
+                } else if (frequency >= C5) {
+                    display_write_color("5", COLOR_LIGHT_CYAN);
                 }
+                
+                display_write_color(" ♫", COLOR_LIGHT_GREEN);
             }
         }
         
-        // Reduce delay to improve responsiveness 
-        for (volatile int i = 0; i < 100; i++) {
-            __asm__ volatile("nop");
+        // Check for key release based on timing
+        if (key_pressed && (current_time - key_press_time >= KEY_HOLD_TIMEOUT)) {
+            // No keypress received for a while, assume key was released
+            disable_speaker();
+            key_pressed = false;
+            current_key = 0;
+            
+            // Clear the note display
+            display_set_cursor(40, 15);
+            display_write_color("                     ", COLOR_BLACK);
         }
+        
+        // Small sleep to reduce CPU usage but stay responsive
+        sleep_interrupt(1);
     }
     
-    // Stop any playing sounds and disable the speaker
-    stop_sound();
+    // Ensure speaker is off when exiting
     disable_speaker();
     
-    // Re-enable interrupts before returning
-    __asm__ volatile("sti");
-    
-    // Tøm keyboard buffer før vi går ut
+    // Clear keyboard buffer
     while (keyboard_data_available()) {
         keyboard_getchar();
     }
     
-    display_write_color("\nExiting piano mode...\n", COLOR_YELLOW);
+    display_clear();
 }
 
 // Handles the user's menu choice
@@ -336,6 +396,9 @@ void handle_menu_choice(char choice) {
             handle_piano_keyboard();
             break;
         case '4':
+            handle_snake_game();
+            break;
+        case '5':
             shutdown_system();
             break;
         default:

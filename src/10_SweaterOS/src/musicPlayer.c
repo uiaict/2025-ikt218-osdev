@@ -31,14 +31,8 @@ void play_song_impl(Song* song) {
 
     display_write_color("Playing song...\n", COLOR_GREEN);
     
-    // Disable interrupts during initialization
-    __asm__ volatile("cli");
-    
-    // Enable speaker and prepare PIT
-    enable_speaker();
-    
-    // Re-enable interrupts
-    __asm__ volatile("sti");
+    // Turn off speaker initially to ensure clean start
+    disable_speaker();
     
     // Play each note in sequence
     for (uint32_t i = 0; i < song->length; i++) {
@@ -67,37 +61,48 @@ void play_song_impl(Song* song) {
         display_write_color(note_name, COLOR_GREEN);
         display_write_color("\n", COLOR_GREEN);
         
-        // Disable interrupts while configuring sound
-        __asm__ volatile("cli");
-        
-        // Play the note
+        // Play the note with direct control for better performance
         if (current_note->frequency > 0) {
-            play_sound(current_note->frequency);
+            // Calculate divisor
+            uint16_t divisor = 1193180 / current_note->frequency;
+            
+            // Disable interrupts while configuring sound
+            __asm__ volatile("cli");
+            
+            // Configure PIT channel 2
+            outb(0x43, 0xB6);
+            outb(0x42, divisor & 0xFF);
+            outb(0x42, (divisor >> 8) & 0xFF);
+            
+            // Enable speaker
+            outb(0x61, inb(0x61) | 0x03);
+            
+            // Re-enable interrupts
+            __asm__ volatile("sti");
         } else {
-            stop_sound();  // Pause for rest notes (frequency = 0)
+            // Turn off speaker for rest
+            uint8_t tmp = inb(0x61);
+            outb(0x61, tmp & ~0x03);
         }
         
-        // Re-enable interrupts
-        __asm__ volatile("sti");
-        
-        // Wait for the duration using a combination of sleep and busy-wait
-        // This gives us better timing accuracy
-        uint32_t duration_remaining = current_note->duration;
-        while (duration_remaining > 0) {
-            uint32_t wait_time = (duration_remaining > 50) ? 50 : duration_remaining;
-            sleep_interrupt(wait_time);
-            duration_remaining -= wait_time;
+        // Wait for the duration of the note
+        // Use sleep_interrupt for longer notes and sleep_busy for very short notes
+        uint32_t duration = current_note->duration;
+        if (duration >= 20) {
+            sleep_interrupt(duration);
+        } else {
+            sleep_busy(duration);
         }
         
-        // Stop the sound
-        stop_sound();
+        // Stop the sound explicitly
+        uint8_t tmp = inb(0x61);
+        outb(0x61, tmp & ~0x03);
         
-        // Small gap between notes, using busy wait for precise timing
-        delay(20);  // 20ms gap between notes
+        // Add a very small gap between notes (5ms) for better sound separation
+        sleep_busy(5);
     }
     
-    // Cleanup
-    stop_sound();
+    // Ensure speaker is off at the end
     disable_speaker();
     
     display_write_color("Song finished\n", COLOR_GREEN);

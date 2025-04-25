@@ -9,6 +9,7 @@
 // Utility functions
 void hexToString(uint32_t num, char* str);
 void delay(uint32_t ms);
+void int_to_string(int num, char* str);
 
 // Boot verification
 bool verify_boot_magic(uint32_t magic);

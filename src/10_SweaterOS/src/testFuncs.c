@@ -270,8 +270,8 @@ void test_interrupt_status() {
     display_write_color("\nTest 2: PIC Configuration...\n", COLOR_WHITE);
     
     // Read the current PIC masks
-    uint8_t master_mask = inb(PIC1_DATA_PORT);
-    uint8_t slave_mask = inb(PIC2_DATA_PORT);
+    uint8_t master_mask = inb(PIC1_DATA);
+    uint8_t slave_mask = inb(PIC2_DATA);
     
     display_write_color("Master PIC mask: 0x", COLOR_GRAY);
     display_write_hex(master_mask);
@@ -289,11 +289,11 @@ void test_interrupt_status() {
         display_write_color("Enabling keyboard interrupt...\n", COLOR_YELLOW);
         
         // Enable keyboard interrupt by clearing bit 1
-        outb(PIC1_DATA_PORT, master_mask & ~0x02);
+        outb(PIC1_DATA, master_mask & ~0x02);
         io_wait();
         
         // Verify it was enabled
-        master_mask = inb(PIC1_DATA_PORT);
+        master_mask = inb(PIC1_DATA);
         if ((master_mask & 0x02) == 0) {
             display_write_color("RECOVERED: Keyboard interrupt now enabled ✓\n", COLOR_LIGHT_GREEN);
         } else {
@@ -646,11 +646,6 @@ void test_system_initialization(void) {
     // Enable interrupts now that PIT and PIC are set up
     display_write_color("Enabling interrupts...\n", COLOR_WHITE);
     enable_interrupts();
-    
-    // Initialize keyboard controller - CRITICAL for menu functionality
-    display_write_color("Initializing Keyboard Controller...\n", COLOR_WHITE);
-    keyboard_initialize();
-    display_write_color("PASSED: Keyboard initialized successfully!\n\n", COLOR_LIGHT_GREEN);
     
     // Initialize kernel memory manager
     display_write_color("Initializing Kernel Memory Manager...\n", COLOR_WHITE);

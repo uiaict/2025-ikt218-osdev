@@ -17,280 +17,165 @@
 #include "miscFuncs.h"
 #include "display.h"
 
-// External variables from display.c
-extern size_t terminal_column;
-extern size_t terminal_row;
-
-// External timer handler from programmableIntervalTimer.c
+// External timer handler
 extern void timer_handler(void);
 
-// PIC ports
-#define PIC1_COMMAND    0x20
-#define PIC1_DATA       0x21
-#define PIC2_COMMAND    0xA0
-#define PIC2_DATA       0xA1
+// Keyboard buffer - power of 2 size for fast modulo with bit masking
+#define KEYBOARD_BUFFER_SIZE 32
+#define KEYBOARD_BUFFER_MASK (KEYBOARD_BUFFER_SIZE - 1)
 
-// Keyboard ports
-#define KEYBOARD_DATA   0x60
-#define KEYBOARD_STATUS 0x64
-
-// Keyboard buffer
-#define KEYBOARD_BUFFER_SIZE 64
+// Keyboard buffer implementation
 static char keyboard_buffer[KEYBOARD_BUFFER_SIZE];
-static volatile int buffer_head = 0;
-static volatile int buffer_tail = 0;
+static volatile uint8_t buffer_read_index = 0;
+static volatile uint8_t buffer_write_index = 0;
 
-// Write a byte to a port
+// Direct scancode to ASCII mapping table
+static const char scancode_map[128] = {
+    0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',
+    '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',
+    0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', 0,
+    '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, '*', 0, ' ',
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+// Optimized I/O functions
 void outb(uint16_t port, uint8_t value) {
-    __asm__ volatile("outb %0, %1" : : "a"(value), "Nd"(port));
+    __asm__ volatile ("outb %0, %1" : : "a"(value), "Nd"(port));
 }
 
-// Write a word (16-bit) to a port
 void outw(uint16_t port, uint16_t value) {
-    __asm__ volatile("outw %0, %1" : : "a"(value), "Nd"(port));
+    __asm__ volatile ("outw %0, %1" : : "a"(value), "Nd"(port));
 }
 
-// Read a byte from a port
 uint8_t inb(uint16_t port) {
     uint8_t ret;
-    __asm__ volatile("inb %1, %0" : "=a"(ret) : "Nd"(port));
+    __asm__ volatile ("inb %1, %0" : "=a"(ret) : "Nd"(port));
     return ret;
 }
 
-// Read a word (16-bit) from a port
 uint16_t inw(uint16_t port) {
     uint16_t ret;
-    __asm__ volatile("inw %1, %0" : "=a"(ret) : "Nd"(port));
+    __asm__ volatile ("inw %1, %0" : "=a"(ret) : "Nd"(port));
     return ret;
 }
 
-// Small delay for I/O operations
+// Fast I/O delay
 void io_wait(void) {
+    // Use port 0x80 (unused port) for a short delay
     outb(0x80, 0);
 }
 
-// Define SCANCODE_ESC
-#define SCANCODE_ESC 0x01
+// Get ASCII character from scancode
+char scancode_to_ascii(uint8_t scancode) {
+    return (scancode < 128) ? scancode_map[scancode] : 0;
+}
 
-/**
- * Initializes the Programmable Interrupt Controller (PIC)
- * 
- * This function initializes the master and slave PICs, remapping IRQs 0-15
- * to interrupts 32-47 to avoid conflicts with CPU exceptions (0-31).
- * 
- * The initialization sequence consists of:
- *   1. Send ICW1 (Initialize + ICW4 needed) to both PICs
- *   2. Send ICW2 (Interrupt Vector Offset) to both PICs
- *   3. Send ICW3 (Master/Slave Wiring Info) to both PICs
- *   4. Send ICW4 (8086 Mode) to both PICs
- *   5. Mask unwanted interrupts
- */
+// Initialize the PIC
 void pic_initialize(void) {
-    // Save masks
-    uint8_t mask1 = inb(PIC1_DATA);
-    uint8_t mask2 = inb(PIC2_DATA);
-
-    // Start initialization sequence
+    // ICW1: Start initialization sequence
     outb(PIC1_COMMAND, 0x11);
-    io_wait();
     outb(PIC2_COMMAND, 0x11);
     io_wait();
-
-    // Set vector offsets
-    outb(PIC1_DATA, 32);    // IRQ 0-7: 32-39
+    
+    // ICW2: Set vector offsets
+    outb(PIC1_DATA, 0x20); // IRQs 0-7 use interrupts 0x20-0x27
+    outb(PIC2_DATA, 0x28); // IRQs 8-15 use interrupts 0x28-0x2F
     io_wait();
-    outb(PIC2_DATA, 40);    // IRQ 8-15: 40-47
+    
+    // ICW3: Set up cascading
+    outb(PIC1_DATA, 0x04); // Tell master PIC that slave is at IRQ2
+    outb(PIC2_DATA, 0x02); // Tell slave PIC its cascade identity
     io_wait();
-
-    // Set up cascading
-    outb(PIC1_DATA, 4);
-    io_wait();
-    outb(PIC2_DATA, 2);
-    io_wait();
-
-    // Set 8086 mode
+    
+    // ICW4: Set 8086 mode
     outb(PIC1_DATA, 0x01);
-    io_wait();
     outb(PIC2_DATA, 0x01);
     io_wait();
-
-    // Restore masks
-    outb(PIC1_DATA, mask1);
-    outb(PIC2_DATA, mask2);
-}
-
-/**
- * Sends End-of-Interrupt (EOI) signal to PIC
- * 
- * This function sends an EOI signal to the appropriate PIC(s) based on the IRQ number.
- * For IRQs 0-7, only the master PIC needs an EOI.
- * For IRQs 8-15, both the slave and master PICs need an EOI.
- * 
- * @param irq The IRQ number (0-15, NOT the interrupt number 32-47)
- */
-void pic_send_eoi(uint8_t irq) {
-    if (irq >= 8)
-        outb(PIC2_COMMAND, 0x20);
-    outb(PIC1_COMMAND, 0x20);
-}
-
-/**
- * Convert scancode to ASCII (simplified)
- * 
- * This function converts a keyboard scancode to an ASCII character,
- * taking into account the Shift key state for uppercase letters and symbols.
- * 
- * @param scancode The keyboard scancode
- * @return The ASCII character, or 0 if no mapping exists
- */
-char scancode_to_ascii(uint8_t scancode) {
-    // Handle special keys first
-    if (scancode == SCANCODE_ESC) {
-        return 27;  // ESC ASCII code
-    }
-
-    static const char ascii_table[] = {
-        0,    27,  '1',  '2',  '3',  '4',  '5',  '6',  '7',  '8',  '9',  '0',  '-',  '=',  '\b',
-        '\t', 'q',  'w',  'e',  'r',  't',  'y',  'u',  'i',  'o',  'p',  '[',  ']',  '\n',
-        0,    'a',  's',  'd',  'f',  'g',  'h',  'j',  'k',  'l',  ';',  '\'', '`',
-        0,    '\\', 'z',  'x',  'c',  'v',  'b',  'n',  'm',  ',',  '.',  '/',  0,
-        '*',  0,    ' '
-    };
-
-    // Only convert if the scancode is within our table range
-    if (scancode < sizeof(ascii_table)) {
-        return ascii_table[scancode];
-    }
-    return 0;
-}
-
-/**
- * Handle keyboard input
- * 
- * This function is called when a keyboard interrupt occurs.
- * It reads the scancode from the keyboard data port, converts
- * it to an ASCII character if possible, and adds it to the 
- * keyboard buffer for later retrieval.
- */
-void keyboard_handler(void) {
-    uint8_t scancode = inb(KEYBOARD_DATA);
     
-    // Only handle key press events (not releases)
-    if (!(scancode & 0x80)) {
-        char c = scancode_to_ascii(scancode);
-        if (c) {
-            int next = (buffer_head + 1) % KEYBOARD_BUFFER_SIZE;
-            if (next != buffer_tail) {
-                keyboard_buffer[buffer_head] = c;
-                buffer_head = next;
-                
-                // Echo the character to the screen for immediate feedback
-                if (c >= 32 || c == '\n' || c == '\t' || c == '\b') {
-                    display_write_char(c);
-                }
-            }
-        }
-    }
+    // OCW1: Set interrupt masks - enable only keyboard (IRQ1)
+    outb(PIC1_DATA, 0xFD); // Enable IRQ1 (keyboard)
+    outb(PIC2_DATA, 0xFF); // Disable all slave interrupts
 }
 
-/**
- * Check if keyboard data is available
- * 
- * This function checks if there is data available in the keyboard buffer.
- * 
- * @return 1 if data is available, 0 if empty
- */
-int keyboard_data_available(void) {
-    return buffer_head != buffer_tail;
-}
-
-/**
- * Get a character from the keyboard buffer
- * 
- * This function returns the next character from the keyboard buffer,
- * or 0 if the buffer is empty.
- * 
- * @return The next character from the keyboard buffer, or 0 if empty
- */
-char keyboard_getchar(void) {
-    if (buffer_head == buffer_tail)
-        return 0;
-    
-    char c = keyboard_buffer[buffer_tail];
-    buffer_tail = (buffer_tail + 1) % KEYBOARD_BUFFER_SIZE;
-    return c;
-}
-
-/**
- * Initialize interrupts
- * 
- * This function sets up the interrupt system by:
- * 1. Initializing the Interrupt Descriptor Table (IDT)
- * 2. Initializing the Programmable Interrupt Controller (PIC)
- * 3. Initializing the keyboard controller
- * 4. Enabling interrupts
- */
+// Initialize the interrupt system
 void interrupt_initialize(void) {
     pic_initialize();
     
-    // Enable keyboard and timer interrupts
-    outb(PIC1_DATA, 0xFC);  // Enable IRQ0 (timer) and IRQ1 (keyboard)
+    // Reset keyboard buffer
+    buffer_read_index = buffer_write_index = 0;
+    
+    // Clear any pending keyboard data
+    while (inb(KEYBOARD_STATUS) & 0x01)
+        inb(KEYBOARD_DATA);
     
     // Enable interrupts
     __asm__ volatile("sti");
 }
 
-// Initialize keyboard
-void keyboard_initialize(void) {
-    buffer_head = 0;
-    buffer_tail = 0;
+// Check if keyboard buffer has data
+int keyboard_data_available(void) {
+    return buffer_read_index != buffer_write_index;
+}
+
+// Get a character from the keyboard buffer
+char keyboard_getchar(void) {
+    // Return 0 if buffer is empty
+    if (buffer_read_index == buffer_write_index)
+        return 0;
     
-    // Clear keyboard buffer
-    for (int i = 0; i < KEYBOARD_BUFFER_SIZE; i++) {
-        keyboard_buffer[i] = 0;
-    }
+    // Get character and update read index
+    char c = keyboard_buffer[buffer_read_index];
+    buffer_read_index = (buffer_read_index + 1) & KEYBOARD_BUFFER_MASK;
     
-    // Sørg for at tastaturavbrudd er aktivert i PIC
-    uint8_t mask = inb(PIC1_DATA);
-    mask &= ~(1 << 1);  // Clear bit 1 to enable keyboard interrupt (IRQ1)
-    outb(PIC1_DATA, mask);
-    io_wait();
-    
-    // Tøm eventuelle ventende tastaturdataer
-    while (inb(KEYBOARD_STATUS) & 0x01) {
-        inb(KEYBOARD_DATA);
-    }
+    return c;
 }
 
 // Check if interrupts are enabled
 int interrupts_enabled(void) {
     uint32_t flags;
     __asm__ volatile("pushf; pop %0" : "=r"(flags));
-    return (flags & 0x200) != 0;  // Check IF bit
+    return (flags & 0x200) != 0;
 }
 
-// Handle CPU exceptions
+// Minimal CPU exception handler
 void isr_handler(uint32_t esp) {
-    // We don't need to handle exceptions for this minimal OS
     (void)esp;  // Avoid unused parameter warning
 }
 
-// Handle hardware interrupts
+// Optimized IRQ handler
 void irq_handler(uint32_t esp) {
-    // Get the interrupt number
-    uint32_t int_no = *((uint32_t*)(esp + 36));
-    uint8_t irq = int_no - 32;
+    // Get IRQ number using direct memory access for speed
+    uint8_t irq = *((uint8_t*)(esp + 36)) - 32;
     
-    // Handle specific IRQs
-    switch (irq) {
-        case 0:  // Timer
-            timer_handler();
-            break;
-        case 1:  // Keyboard
-            keyboard_handler();
-            break;
+    // Handle common interrupts with if/else for better branch prediction
+    if (irq == 0) {
+        // Timer interrupt - most frequent
+        timer_handler();
+    } 
+    else if (irq == 1) {
+        // Keyboard interrupt - second most common
+        uint8_t scancode = inb(KEYBOARD_DATA);
+        
+        // Only process key presses (not releases)
+        if (!(scancode & 0x80)) {
+            char c = scancode_to_ascii(scancode);
+            if (c) {
+                // Calculate next position with bit masking for fast modulo
+                uint8_t next = (buffer_write_index + 1) & KEYBOARD_BUFFER_MASK;
+                
+                // Only add if buffer not full
+                if (next != buffer_read_index) {
+                    keyboard_buffer[buffer_write_index] = c;
+                    buffer_write_index = next;
+                }
+            }
+        }
     }
     
-    // Send EOI
-    pic_send_eoi(irq);
+    // Send End-of-Interrupt signal
+    if (irq >= 8)
+        outb(PIC2_COMMAND, 0x20); // Send EOI to slave PIC
+    outb(PIC1_COMMAND, 0x20);     // Send EOI to master PIC
 } 

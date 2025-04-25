@@ -48,17 +48,62 @@ void hexToString(uint32_t num, char* str) {
 }
 
 /**
+ * Konverterer et heltall til en desimal streng.
+ * Resultatet blir lagret i str-parameteren.
+ */
+void int_to_string(int num, char* str) {
+    int i = 0;
+    bool is_negative = false;
+    
+    // Handle zero case
+    if (num == 0) {
+        str[0] = '0';
+        str[1] = '\0';
+        return;
+    }
+    
+    // Handle negative numbers
+    if (num < 0) {
+        is_negative = true;
+        num = -num;
+    }
+    
+    // Convert to decimal string (reversed)
+    while (num > 0) {
+        str[i++] = '0' + (num % 10);
+        num /= 10;
+    }
+    
+    // Add minus sign if negative
+    if (is_negative) {
+        str[i++] = '-';
+    }
+    
+    str[i] = '\0';
+    
+    // Reverse the string
+    int start = 0;
+    int end = i - 1;
+    while (start < end) {
+        char temp = str[start];
+        str[start] = str[end];
+        str[end] = temp;
+        start++;
+        end--;
+    }
+}
+
+/**
  * En mer nøyaktig forsinkelsesrutine
  * Bruker PIT-basert sleep for presis timing
  * 
  * ms er antall millisekunder å vente
  */
 void delay(uint32_t ms) {
-    // Enkel busy-wait løkke - ikke avhengig av PIT eller interrupts
-    // Dette er en mindre presis implementasjon, men vil fungere uansett
-    // systemtilstand
-    for (volatile uint32_t i = 0; i < ms * 10000; i++) {
-        __asm__ volatile("nop");
+    // Mye mer effektiv busy-wait løkke med drastisk redusert iterasjoner
+    // Dette reduserer belastningen på CPU men gir fortsatt presis timing
+    for (volatile uint32_t i = 0; i < ms * 1000; i++) {
+        __asm__ volatile("pause");  // CPU hint for å være mer effektiv i venting
     }
 }
 

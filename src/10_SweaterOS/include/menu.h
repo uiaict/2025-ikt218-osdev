@@ -2,6 +2,7 @@
 #define MENU_H
 
 #include "libc/stdint.h"
+#include "snake.h"  // Include the snake game header
 
 // Viser hovedmenyen med alle tilgjengelige valg
 void show_menu(void);

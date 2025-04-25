@@ -2,6 +2,7 @@
 #include "libc/stdint.h"
 #include "memory_manager.h"
 #include "display.h"
+#include "miscFuncs.h"
 
 // Definer NULL hvis den ikke er definert
 #ifndef NULL
