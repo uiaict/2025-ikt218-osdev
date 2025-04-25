@@ -1,6 +1,7 @@
 #include <descriptor_table.h>
 #include <interrupts.h>
 #include <libc/stddef.h>
+#include <utils.h>
 
 void idt_set_gate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags) {
     idt[num].base_low = base & 0xFFFF;
@@ -26,7 +27,7 @@ void init_idt(void) {
     // Load the IDT
     idt_load(&idt_ptr);
 
-    print(0x0E, "Interrupt Descriptor Table initialized...\n");
+    printf(0x0E, "Interrupt Descriptor Table initialized...\n");
 }
 
 void idt_load(struct idt_ptr *idt_ptr) {

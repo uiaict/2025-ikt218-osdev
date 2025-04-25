@@ -3,4 +3,5 @@
 
 int putchar(int ic);
 bool print(const char* data, size_t length);
-int printf(const char* __restrict__ format, ...);
+// int printf(int colour, const char* __restrict__ format, ...);
+void printf(int colour, const char* s, ...);

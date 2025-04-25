@@ -1,5 +1,6 @@
 #include <vga.h>
 #include <libc/stdarg.h>
+#include <libc/stdio.h>
 
 uint16_t coloumn = 0;
 uint16_t line = 0;
@@ -42,7 +43,7 @@ void scrollup() {
     }
 }
 
-void print(int colour, const char* s, ...) {
+void printf(int colour, const char* s, ...) {
     va_list args;
     va_start(args, s);
     

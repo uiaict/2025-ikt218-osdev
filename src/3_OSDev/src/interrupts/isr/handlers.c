@@ -1,4 +1,5 @@
 #include <interrupts.h>
+#include <utils.h>
 #include <descriptor_table.h>
 #include <pit.h>
 #include <libc/stdint.h>
@@ -50,22 +51,22 @@ void keyboard_handler(void) {
             
             // If Backspace is pressed
             if (ascii_char == '\b') {
-                print(0x0F, "\b \b");
+                printf(0x0F, "\b \b");
                 return;
             }
             // If Enter is pressed
             if (ascii_char == '\n') {
-                print(0x0F, "\n");
+                printf(0x0F, "\n");
                 return;
             }
             // If Tab is pressed
             if (ascii_char == '\t') {
-                print(0x0F, "\t");
+                printf(0x0F, "\t");
                 return;
             }
 
             // Finally print the ASCII character
-            print(0x0F, "%c", ascii_char);
+            printf(0x0F, "%c", ascii_char);
         }
     }
 }
@@ -107,11 +108,11 @@ void mouse_handler(void) {
 
     }
     // Print the mouse event
-    print(0x0F, "Mouse Event: %d\n", event_type);
+    printf(0x0F, "Mouse Event: %d\n", event_type);
 }
 
 void network_handler(void) {
-    print(0x0F, "Network Interrupt Triggered\n");
+    printf(0x0F, "Network Interrupt Triggered\n");
 }
 
 void init_irq_handlers(void) {

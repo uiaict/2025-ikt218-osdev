@@ -82,6 +82,9 @@ add_executable(uiaos-kernel
 
 	# VGA / printing
 	src/vga.c
+
+	# Music Player
+	src/SongPlayer.c
 )
 
 # Include directories for the kernel target

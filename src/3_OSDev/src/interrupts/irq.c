@@ -1,4 +1,5 @@
 #include <interrupts.h>
+#include <utils.h>
 #include <descriptor_table.h>
 #include <libc/stdio.h>
 #include <libc/stdio.h>

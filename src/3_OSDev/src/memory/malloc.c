@@ -1,6 +1,7 @@
 #include <memory/memory.h>
 #include <libc/stdint.h>
 #include <libc/stddef.h>
+#include <libc/stdio.h>
 
 alloc_t *heap_start = 0;
 alloc_t *heap_end = 0;
@@ -29,12 +30,12 @@ void init_kernel_memory(uint32_t *kernel_end) {
 
 void print_memory_layout() {
     alloc_t *curr = heap_start;
-    print(0x0F, "Memory Layout:\n");
+    printf(0x0F, "Memory Layout:\n");
     while (curr && curr != heap_end) {
-        print(0x0F, "Block at %p: size = %u, free = %d, next: %p\n", curr, curr->size, curr->free, curr->next);
+        printf(0x0F, "Block at %p: size = %u, free = %d, next: %p\n", curr, curr->size, curr->free, curr->next);
         curr = curr->next;
     }
-    print(0x0F, "End of Memory Layout\n");
+    printf(0x0F, "End of Memory Layout\n");
 }
 
 void *malloc(size_t size) {
@@ -128,6 +129,6 @@ void pfree(void *mem) {
         }
     }
     else {
-        print(0x0F, "Invalid address to free: %p\n", mem);
+        printf(0x0F, "Invalid address to free: %p\n", mem);
     }
 }

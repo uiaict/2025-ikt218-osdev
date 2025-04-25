@@ -1,3 +1,5 @@
+#pragma once
+
 #include <libc/stdint.h>
 
 #define COLOUR_BLACK 00
@@ -7,7 +9,7 @@
 #define width 80
 #define height 25
 
-void print(int colour, const char* s, ...);
+// void printf(int colour, const char* s, ...);
 void scrollup();
 void newLine();
 void Reset();

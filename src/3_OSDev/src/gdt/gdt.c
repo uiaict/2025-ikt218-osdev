@@ -18,7 +18,7 @@ void init_gdt() {
   // Flush GDT pointer
   gdt_flush((uint32_t)&gdt_ptr);
 
-  print(0x0E, "Global Descriptor Table initialized...\n");
+  printf(0x0E, "Global Descriptor Table initialized...\n");
 }
 
 void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran)

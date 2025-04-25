@@ -1,3 +1,5 @@
+#pragma once
+
 #include <libc/stdint.h> 
 #include <libc/stddef.h> 
 
@@ -20,3 +22,4 @@ void print_memory_layout();
 void init_paging();
 extern void load_page_dir(unsigned int*);
 extern void enable_paging();
+

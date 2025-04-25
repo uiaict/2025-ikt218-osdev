@@ -1,3 +1,6 @@
+#ifndef DESCRIPTOR_TABLE_H
+#define DESCRIPTOR_TABLE_H
+
 #include <libc/stdint.h>
 #include <libc/stdint.h>
 #include <libc/stddef.h>
@@ -63,3 +66,5 @@ void int_handler(int num);
 static struct int_handler int_handlers[IDT_ENTRIES];
 static struct idt_entry idt[IDT_ENTRIES];
 static struct idt_ptr idt_ptr;
+
+#endif /* DESCRIPTOR_TABLE_H */

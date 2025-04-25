@@ -1,4 +1,4 @@
-#define PIT_H
+#pragma once
 
 #include <libc/stdint.h>
 #include <libc/stdbool.h>

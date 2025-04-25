@@ -1,4 +1,5 @@
 #include <pit.h>
+#include <utils.h>
 #include <interrupts.h>
 #include <libc/stdint.h>
 
