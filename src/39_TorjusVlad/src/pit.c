@@ -6,8 +6,8 @@
 
 
 
-uint32_t ticks;
-const uint32_t freq = 100;
+uint32_t volatile ticks;
+const uint32_t freq = 1000;
 
 void on_irq0(struct interrupt_registers *regs){
 
@@ -15,6 +15,10 @@ void on_irq0(struct interrupt_registers *regs){
 
     //printf("Timer tick tocks!!");
 
+}
+
+void reset_ticker() {
+    ticks = 0;
 }
 
 void init_pit(){
@@ -36,15 +40,19 @@ uint32_t get_current_tick() {
 
 void sleep_busy(uint32_t milliseconds) {
     uint32_t start = get_current_tick();
-    uint32_t ticks_to_wait = milliseconds; // since you're using 1000 Hz later
-
+    uint32_t ticks_to_wait = milliseconds;
+    //uint32_t ticks_to_wait = (freq * milliseconds) / 1000; // since you're using 1000 Hz later
     while ((get_current_tick() - start) < ticks_to_wait);
 }
 
 void sleep_interrupt(uint32_t milliseconds) {
-    uint32_t end = get_current_tick() + milliseconds;
+    //uint32_t end = get_current_tick() + (freq * milliseconds) / 1000;
+    uint32_t start = get_current_tick();
+    uint32_t end = start + milliseconds;
 
     while (get_current_tick() < end) {
         asm volatile("sti\nhlt");
     }
+    printf("[%d] ticks have passed\n", (end - start));
+    printf("\nCurrent tict is: %d\n", get_current_tick());
 }

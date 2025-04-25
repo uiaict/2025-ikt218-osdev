@@ -54,21 +54,21 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     play_music();
 
-    while (1)
+    /*while (1)
     {
         /* code */
-    }
+    //}
     
-     
-while (1) {
-    printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-    sleep_busy(1000);
-    printf("[%d]: Slept using busy-waiting.\n", counter++);
+   /*
+    while (1) {
+        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+        sleep_busy(1000);
+        printf("[%d]: Slept using busy-waiting.\n", counter++);
 
-    printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-    sleep_interrupt(1000);
-    printf("[%d]: Slept using interrupts.\n", counter++);
-}
+        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+        sleep_interrupt(1000);
+        printf("[%d]: Slept using interrupts.\n", counter++);
+    }*/
 
    /* heap_init((void*)&end, HEAP_SIZE);
     print_heap();*/
