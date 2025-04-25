@@ -1,6 +1,10 @@
 #include "interrupt.h"
 #include "io.h"
 
+#define MAX_INTERRUPTS 256
+
+static void (*interrupt_handlers[MAX_INTERRUPTS])(registers_t*);
+
 static struct idt_entry idt[256];
 static struct idt_ptr idtp;
 
@@ -77,20 +81,37 @@ void init_irq(void) {
     outb(0xA1, 0x01);
 
     // Mask IRQ0 (PIT timer), enable IRQ1 (keyboard), mask others
-    outb(0x21, 0xFD); // 0xFD = 11111101 (IRQ0 masked, IRQ1 enabled)
+    outb(0x21, 0xFC); // 0xFD = 11111101 (IRQ0 masked, IRQ1 enabled)
     outb(0xA1, 0xFF); // 0xFF = 11111111 (all slave IRQs masked)
 
     puts("IRQs initialized.\n");
 }
 
 void isr_handler(uint8_t interrupt) {
-    printf("ISR: Interrupt %d triggered.\n", interrupt);
+    if (interrupt_handlers[interrupt]) {
+        registers_t r; // fake registers if needed
+        interrupt_handlers[interrupt](&r);
+    } else {
+        printf("Unhandled ISR: Interrupt %d\n", interrupt);
+    }
 }
 
 void irq_handler(uint8_t irq) {
-    // Send End of Interrupt (EOI)
-    if (irq >= 8) outb(0xA0, 0x20); // Slave PIC EOI
-    outb(0x20, 0x20);               // Master PIC EOI
+    if (irq >= 8) {
+        outb(0xA0, 0x20); // Send EOI to slave
+    }
+    outb(0x20, 0x20);     // Send EOI to master
 
-    printf("IRQ: IRQ%d triggered.\n", irq);
+    if (interrupt_handlers[irq + 32]) { // IRQs start at interrupt 32
+        registers_t r; // fake registers if needed
+        interrupt_handlers[irq + 32](&r);
+    } else {
+        printf("Unhandled IRQ: IRQ%d\n", irq);
+    }
+}
+
+
+
+void register_interrupt_handler(uint8_t n, void (*handler)(registers_t* r)) {
+    interrupt_handlers[n] = handler;
 }

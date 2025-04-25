@@ -12,6 +12,7 @@ SECTIONS {
     . = ALIGN(4K);
     .text :
     {
+        start = .;
         *(.text .text.*)
     }
 

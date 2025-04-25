@@ -18,9 +18,25 @@ struct idt_ptr {
     uint32_t base;       // Base address of IDT
 } __attribute__((packed));
 
+typedef struct registers {
+    uint32_t ds;         // Data segment selector
+    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax; // General-purpose registers
+    uint32_t int_no;     // Interrupt number
+    uint32_t err_code;   // Error code (if applicable)
+    uint32_t eip;        // Instruction pointer
+    uint32_t cs;         // Code segment selector
+    uint32_t eflags;     // Flags register
+    uint32_t useresp;    // User stack pointer (if applicable)
+    uint32_t ss;         // Stack segment selector
+} registers_t;
+
+#define IRQ0 32
+
 void init_idt(void);
 void init_irq(void);
 void isr_handler(uint8_t interrupt);
 void irq_handler(uint8_t irq);
+
+void register_interrupt_handler(uint8_t n, void (*handler)(registers_t* r));
 
 #endif

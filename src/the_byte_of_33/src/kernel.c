@@ -1,12 +1,21 @@
 #include "libc/stdint.h"
 #include "libc/stddef.h"
-#include "libc/stdbool.h"
+#include <libc/stdbool.h>
+#include "libc/stdio.h"
 
 #include "gdt.h"        /* our new GDT setup */
 #include "io.h"         /* VGA text helpers  */
+#include "kernel_memory.h" /* kernel memory management */
+#include "memory_layout.h" /* memory layout printing */
+#include "pit.h"
+#include "paging.h"
 #include <multiboot2.h> /* keep your existing boot header */
 #include "interrupt.h"
 #include "keyboard.h"
+#include "kernel_main.h"
+
+
+extern uint32_t end;
 
 struct multiboot_info {
     uint32_t size;
@@ -24,10 +33,15 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
 
     /* 1. Install the Global Descriptor Table and switch segments */
     gdt_init();
+
+    init_kernel_memory(&end);
+    init_paging();
+    print_memory_layout();
+    init_pit();
     /* 2. Use VGA text mode to say hello */
     set_color(0x0A);            /* light-green on black                */
     puts("The byte of 33: GDT loaded!\n");
-    puts("Hello from your brand-new kernel.\n");
+    puts("Penis\n");
 
     init_idt();
     init_irq();
@@ -44,9 +58,5 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
     puts("Type on the keyboard to see characters....\n");
 
     /* 3. Halt CPU in an idle loop */
-    for (;;)
-        __asm__ volatile ("hlt");
-
-    /* never reached, but keep the prototype happy */
-    return 0;
+    return kernel_main();
 }
