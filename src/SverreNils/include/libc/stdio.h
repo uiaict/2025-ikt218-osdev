@@ -1,4 +1,5 @@
 
+#include <stddef.h> // ✅ For size_t
 
 #include <stdbool.h>
 

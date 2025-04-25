@@ -1,44 +1,51 @@
 #include "pit.h"
+#include "arch/isr.h"
+#include "arch/irq.h"
 #include "libc/io.h"
 
-#define PIT_FREQUENCY 1193180
-#define PIT_COMMAND_PORT 0x43
+#define PIT_FREQUENCY     1193180
+#define PIT_COMMAND_PORT  0x43
 #define PIT_CHANNEL0_PORT 0x40
-#define PIT_IRQ 0
-#define TARGET_HZ 1000
+#define TARGET_HZ         1000 // 1 ms per tick
+#define PIT_IRQ           0
 
-static volatile uint32_t tick = 0;
+static volatile uint32_t timer_ticks = 0;
 
-uint32_t get_tick() {
-    return tick;
+uint32_t get_tick(void) {
+    return timer_ticks;
 }
 
-static void pit_callback() {
-    tick++;
+static void pit_callback(struct registers* regs) {
+    (void)regs;
+    timer_ticks++;
 }
 
-void init_pit() {
+void init_pit(void) {
     uint32_t divisor = PIT_FREQUENCY / TARGET_HZ;
 
-    outb(PIT_COMMAND_PORT, 0x36); // Mode 3, square wave
-    outb(PIT_CHANNEL0_PORT, (uint8_t)(divisor & 0xFF));        // Low byte
-    outb(PIT_CHANNEL0_PORT, (uint8_t)((divisor >> 8) & 0xFF)); // High byte
+    outb(PIT_COMMAND_PORT, 0x36);
+    outb(PIT_CHANNEL0_PORT, (uint8_t)(divisor & 0xFF));
+    outb(PIT_CHANNEL0_PORT, (uint8_t)((divisor >> 8) & 0xFF));
 
-    // Registrer IRQ0 handler
-    extern void irq_register_handler(int irq, void (*handler)());
     irq_register_handler(PIT_IRQ, pit_callback);
 }
 
 void sleep_busy(uint32_t milliseconds) {
     uint32_t start = get_tick();
     while ((get_tick() - start) < milliseconds) {
-        // Busy wait
+        // Busy-wait
     }
 }
 
 void sleep_interrupt(uint32_t milliseconds) {
+    if (milliseconds == 0) milliseconds = 1;
     uint32_t end = get_tick() + milliseconds;
+
+    __asm__ volatile("sti"); // ✅ aktiver interrupts først!
+
     while (get_tick() < end) {
-        __asm__ volatile("sti\nhlt");
+        __asm__ volatile("hlt");
     }
+
+    __asm__ volatile("cli"); // (valgfritt) slå av igjen etterpå
 }

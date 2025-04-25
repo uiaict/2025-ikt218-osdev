@@ -67,27 +67,19 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     print_memory_layout();
     init_pit();
 
-    printf("Hello, Nils!\n");
+    printf("Hello, Nils!\n");  // ✅ vises ved oppstart
 
-    // 🎵 Spill musikk ved oppstart
-    play_music();
+    // 🎵 Fjernet play_music()
 
     void* some_memory = malloc(12345);
     void* memory2 = malloc(54321);
     void* memory3 = malloc(13331);
 
-    shell_prompt();
+    shell_prompt(); // vis "UiAOS> "
 
     int counter = 0;
     while (1) {
-        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-        sleep_busy(1000);
-        printf("[%d]: Slept using busy-waiting.\n", counter++);
-
-        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);
-
+  
         __asm__ volatile("hlt");
     }
 }
