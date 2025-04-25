@@ -78,6 +78,8 @@ add_executable(uiaos-kernel
 	src/keyboard.h
 	src/pic.h
 	src/pic.c
+	src/apps/shell.h
+	src/apps/shell.c
 )
 
 # Include directories for the kernel target

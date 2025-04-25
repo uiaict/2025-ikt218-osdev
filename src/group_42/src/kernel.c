@@ -8,6 +8,8 @@
 #include "print.h"
 #include "system.h"
 
+#include "apps/shell.h"
+
 struct multiboot_info {
   uint32_t size;
   uint32_t reserved;
@@ -39,6 +41,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   asm volatile("sti");
   print("Interrupts enabled.\n");
 
+  shell_init();
   while (true) {
   }
 
