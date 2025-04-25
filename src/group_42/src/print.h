@@ -23,6 +23,9 @@ typedef enum {
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25
 
+extern int cursorPositionX_;
+extern int cursorPositionY_;
+
 /**
  * @brief Proper print function.
  *
@@ -31,6 +34,10 @@ typedef enum {
 void print(const char *string);
 
 void printc(const char *string, VideoColour colour);
+
+void incrementCursorPosition();
+
+char *cursorPosToAddress(int x, int y);
 
 void clear_line(int line);
 

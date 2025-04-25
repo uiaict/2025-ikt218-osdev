@@ -3,6 +3,7 @@
 #include "keyboard.h"
 #include "print.h"
 #include "system.h"
+#include "apps/shell.h"
 
 void default_interrupt_handler() {
 
@@ -38,10 +39,9 @@ void keyboard_handler() {
     // Convert scancode to ASCII
     if (scancode < SCANCODE_MAX) {
       char ascii = scancode_to_ascii[scancode];
-      if (ascii != 0) { // Only display printable characters
-	video_memory[0] = ascii;
-	video_memory[1] = VIDEO_WHITE;
-      }
+      if(shell_active){
+        shell_input(ascii);
+    } 
     }
   }
 

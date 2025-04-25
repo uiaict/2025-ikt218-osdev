@@ -1,13 +1,13 @@
 #include "print.h"
 
-static int cursorPositionX_ = 0;
-static int cursorPositionY_ = 0;
+int cursorPositionX_ = 0;
+int cursorPositionY_ = 0;
 
-char *cursorPosToAddress_(int x, int y) {
+char *cursorPosToAddress(int x, int y) {
   return (char *)(0xB8000 + ((x + y * SCREEN_WIDTH) * 2));
 }
 
-void incrementCursorPosition_() {
+void incrementCursorPosition() {
   cursorPositionX_++;
   if (cursorPositionX_ >= SCREEN_WIDTH) {
     cursorPositionY_++;
@@ -34,19 +34,19 @@ void printc(const char *string, VideoColour colour) {
       str_i++;
       continue;
     }
-    video = cursorPosToAddress_(cursorPositionX_, cursorPositionY_);
+    video = cursorPosToAddress(cursorPositionX_, cursorPositionY_);
     *video = string[str_i];
     video++;
     *video = colour;
 
     str_i++;
-    incrementCursorPosition_();
+    incrementCursorPosition();
   }
 }
 
 void clear_line(int line) {
   for (int x = 0; x < SCREEN_WIDTH; x++) {
-    volatile char *video = cursorPosToAddress_(x, line);
+    volatile char *video = cursorPosToAddress(x, line);
     *video = ' ';
   }
 }
