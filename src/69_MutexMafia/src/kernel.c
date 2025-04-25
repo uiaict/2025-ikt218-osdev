@@ -9,6 +9,7 @@
 #include "io/keyboard.h"
 #include "memory/malloc.h"
 #include "memory/paging.h"
+#include "pit/pit.h"
 
 
 
@@ -30,12 +31,15 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     initIdt();
     init_kernel_memory(&end);
     init_paging();
+    init_pit();
+    test_pit();
     
     //init_Pit
 
     initKeyboard();
     mafiaPrint("Wadiyatalkinabeet\n");
     mafiaPrint("\n");
+
     
     void* some_memory = malloc(12345); 
     void* memory2 = malloc(54321); 

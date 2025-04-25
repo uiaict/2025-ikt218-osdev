@@ -70,6 +70,7 @@ add_executable(uiaos-kernel
 	src/io/keyboard.c
 	src/memory/malloc.c
 	src/memory/paging.c
+	src/pit/pit.c
 	
 	
 	
