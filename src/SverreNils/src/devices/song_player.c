@@ -52,5 +52,7 @@ void play_song_impl(Song* song) {
         play_sound(note.frequency);
         for (volatile uint32_t j = 0; j < note.duration_ms * 1000; j++) {} // Fake sleep'
         stop_sound();
+        printf("Note: %d Hz, duration: %d ms\n", (int)note.frequency, (int)note.duration_ms);
+
     }
 }

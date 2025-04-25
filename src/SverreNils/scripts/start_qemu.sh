@@ -1,39 +1,39 @@
 #!/bin/bash
+
 KERNEL_PATH=$1
 DISK_PATH=$2
 
-echo "Starting QEMU without GDB..."
-qemu-system-i386 -boot d -hda $KERNEL_PATH -hdb $DISK_PATH -m 64 -serial stdio -k en-us
+if [[ ! -f "$KERNEL_PATH" ]]; then
+    echo "❌ KERNEL_PATH not found: $KERNEL_PATH"
+    exit 1
+fi
+
+if [[ ! -f "$DISK_PATH" ]]; then
+    echo "❌ DISK_PATH not found: $DISK_PATH"
+    exit 1
+fi
+
+echo "✅ Starting QEMU with PC-speaker support..."
+qemu-system-i386 \
+    -boot d \
+    -hda "$KERNEL_PATH" \
+    -hdb "$DISK_PATH" \
+    -m 64 \
+    -audiodev sdl,id=sdl1,out.buffer-length=40000 \
+    -machine pcspk-audiodev=sdl1 \
+    -serial stdio \
+    -k en-us &
 
 QEMU_PID=$!
 
-# Function to check if gdb is running
-is_gdb_running() {
-    pgrep -f "gdb-multiarch" > /dev/null
-}
-
-# Function to handle termination signals
+# Function to handle Ctrl+C or kill
 cleanup() {
-    echo "Stopping QEMU..."
-    kill $QEMU_PID
+    echo "🛑 Stopping QEMU..."
+    kill $QEMU_PID 2>/dev/null
     exit 0
 }
 
-# Trap SIGINT and SIGTERM signals
 trap cleanup SIGINT SIGTERM
 
-# Wait for gdb to start
-echo "Waiting for gdb to start..."
-while ! is_gdb_running; do
-    sleep 1
-done
-echo "gdb started."
-
-# Wait for gdb to stop
-echo "Monitoring gdb connection..."
-while is_gdb_running; do
-    sleep 1
-done
-
-# Cleanup after gdb stops
-cleanup
+# Wait until QEMU exits
+wait $QEMU_PID
