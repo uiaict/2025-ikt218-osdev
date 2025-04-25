@@ -16,7 +16,7 @@ void keyboard_handler(void) {
 
     // Ignore key release (bit 7 set)
     if (scancode & 0x80) {
-        outb(0xA0, 0x20); // EOI to slave PIC (if needed)
+        outb(0xA0, 0x20); 
         outb(0x20, 0x20); // EOI to master PIC
         return;
     }
@@ -28,5 +28,6 @@ void keyboard_handler(void) {
     }
 
     // Send EOI
+    outb(0xA0, 0x20); // Slave PIC
     outb(0x20, 0x20); // Master PIC
 }
