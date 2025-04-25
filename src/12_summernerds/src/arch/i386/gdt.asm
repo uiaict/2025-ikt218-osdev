@@ -1,7 +1,7 @@
 ;This file contains the assembly code for the Global Descriptor Table (GDT) and Interrupt Descriptor Table (IDT) management.
 
 
-    [GLOBAL gdt_flush]    ; Allows the C code to call gdt_flush().
+[GLOBAL gdt_flush]    ; Allows the C code to call gdt_flus.
 
 gdt_flush:
     mov eax, [esp+4]  ; Get the pointer to the GDT, passed as a parameter.
@@ -17,7 +17,7 @@ gdt_flush:
 .flush:
     ret
 
-[GLOBAL idt_flush]    ; Allows the C code to call idt_flush().
+[GLOBAL idt_flush]    ; Allows the C code to call idt_flush.
 
 idt_flush:
     mov eax, [esp+4]  ; Get the pointer to the IDT, passed as a parameter.

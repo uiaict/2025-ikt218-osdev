@@ -17,7 +17,7 @@
 
 extern uint32_t end; // Linker symbol marking the end of kernel
 
-int kernel_main_c(uint32_t magic, uint32_t mb_info_addr)
+int main(uint32_t magic, uint32_t mb_info_addr)
 {
 
     // initializing basic systems

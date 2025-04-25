@@ -64,7 +64,7 @@ add_executable(uiaos-kernel
     src/screen.c
     #src/song.c
     src/common.c
-
+    src/multiboot2.s
     # SYSTEM
     src/arch/i386/IRQ.c
     src/arch/i386/ISR.c
@@ -77,6 +77,7 @@ add_executable(uiaos-kernel
     src/arch/i386/system.c
     src/arch/i386/pit.c
     src/arch/i386/string.c
+    #src/arch/i386/gdt.asm
 
     # MEMORY
     src/memory/malloc.c
