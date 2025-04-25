@@ -113,31 +113,23 @@ void show_piano_menu(void) {
     
     display_write_color("Use the following keys to play notes:\n\n", COLOR_WHITE);
     
+    // Letter keys (QWERTY keyboard layout)
+    display_write_color("  Main piano keys (middle row):\n", COLOR_YELLOW);
     display_write_color("  ", COLOR_WHITE);
-    display_write_color("1", COLOR_LIGHT_GREEN);
-    display_write_color(" - C4    ", COLOR_WHITE);
-    display_write_color("2", COLOR_LIGHT_GREEN);
-    display_write_color(" - D4    ", COLOR_WHITE);
-    display_write_color("3", COLOR_LIGHT_GREEN);
-    display_write_color(" - E4\n", COLOR_WHITE);
+    display_write_color("A-S-D-F-G-H-J-K", COLOR_LIGHT_CYAN);
+    display_write_color(" - C4 through C5 (white keys)\n", COLOR_WHITE);
     
+    display_write_color("\n  Black keys (top row):\n", COLOR_YELLOW);
     display_write_color("  ", COLOR_WHITE);
-    display_write_color("4", COLOR_LIGHT_GREEN);
-    display_write_color(" - F4    ", COLOR_WHITE);
-    display_write_color("5", COLOR_LIGHT_GREEN);
-    display_write_color(" - G4    ", COLOR_WHITE);
-    display_write_color("6", COLOR_LIGHT_GREEN);
-    display_write_color(" - A4\n", COLOR_WHITE);
+    display_write_color("W-E---T-Y-U", COLOR_LIGHT_MAGENTA);
+    display_write_color("   - C#4, D#4, F#4, G#4, A#4\n", COLOR_WHITE);
     
+    display_write_color("\n  Lower octave (bottom row):\n", COLOR_YELLOW);
     display_write_color("  ", COLOR_WHITE);
-    display_write_color("7", COLOR_LIGHT_GREEN);
-    display_write_color(" - B4    ", COLOR_WHITE);
-    display_write_color("8", COLOR_LIGHT_GREEN);
-    display_write_color(" - C5    ", COLOR_WHITE);
-    display_write_color("9", COLOR_LIGHT_GREEN);
-    display_write_color(" - D5\n", COLOR_WHITE);
+    display_write_color("Z-X-C-V-B-N-M", COLOR_LIGHT_BLUE);
+    display_write_color("    - C3 through B3\n\n", COLOR_WHITE);
     
-    display_write_color("\nPress ", COLOR_WHITE);
+    display_write_color("Press ", COLOR_WHITE);
     display_write_color("ESC", COLOR_LIGHT_RED);
     display_write_color(" to return to the main menu\n", COLOR_WHITE);
 }
@@ -258,30 +250,30 @@ void handle_piano_keyboard(void) {
             
             // Main piano keys on the middle row
             switch (key) {
-                case 'a': frequency = C4; break;
-                case 's': frequency = D4; break;
-                case 'd': frequency = E4; break;
-                case 'f': frequency = F4; break;
-                case 'g': frequency = G4; break;
-                case 'h': frequency = A4; break;
-                case 'j': frequency = B4; break;
-                case 'k': frequency = C5; break;
+                case 'a': case 'A': frequency = C4; break;
+                case 's': case 'S': frequency = D4; break;
+                case 'd': case 'D': frequency = E4; break;
+                case 'f': case 'F': frequency = F4; break;
+                case 'g': case 'G': frequency = G4; break;
+                case 'h': case 'H': frequency = A4; break;
+                case 'j': case 'J': frequency = B4; break;
+                case 'k': case 'K': frequency = C5; break;
                 
                 // Sharp/flat notes on the top row
-                case 'w': frequency = Cs4; break;
-                case 'e': frequency = Ds4; break;
-                case 't': frequency = Fs4; break;
-                case 'y': frequency = Gs4; break;
-                case 'u': frequency = As4; break;
+                case 'w': case 'W': frequency = Cs4; break;
+                case 'e': case 'E': frequency = Ds4; break;
+                case 't': case 'T': frequency = Fs4; break;
+                case 'y': case 'Y': frequency = Gs4; break;
+                case 'u': case 'U': frequency = As4; break;
                 
                 // Octave change
-                case 'z': frequency = C3; break;
-                case 'x': frequency = D3; break;
-                case 'c': frequency = E3; break;
-                case 'v': frequency = F3; break;
-                case 'b': frequency = G3; break;
-                case 'n': frequency = A3; break;
-                case 'm': frequency = B3; break;
+                case 'z': case 'Z': frequency = C3; break;
+                case 'x': case 'X': frequency = D3; break;
+                case 'c': case 'C': frequency = E3; break;
+                case 'v': case 'V': frequency = F3; break;
+                case 'b': case 'B': frequency = G3; break;
+                case 'n': case 'N': frequency = A3; break;
+                case 'm': case 'M': frequency = B3; break;
                 case ',': frequency = C4; break;
                 
                 default: frequency = 0; break;
@@ -324,9 +316,9 @@ void handle_piano_keyboard(void) {
                 char* note_name = "Unknown";
                 if (frequency == C3 || frequency == C4 || frequency == C5) note_name = "C";
                 else if (frequency == Cs3 || frequency == Cs4) note_name = "C#";
-                else if (frequency == D3 || frequency == D4) note_name = "D";
+                else if (frequency == D3 || frequency == D4 || frequency == D5) note_name = "D";
                 else if (frequency == Ds3 || frequency == Ds4) note_name = "D#";
-                else if (frequency == E3 || frequency == E4) note_name = "E";
+                else if (frequency == E3 || frequency == E4 || frequency == E5) note_name = "E";
                 else if (frequency == F3 || frequency == F4) note_name = "F";
                 else if (frequency == Fs3 || frequency == Fs4) note_name = "F#";
                 else if (frequency == G3 || frequency == G4) note_name = "G";

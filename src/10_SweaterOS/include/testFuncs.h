@@ -21,6 +21,9 @@ void test_idt(void);
 // Test keyboard interrupt handling
 void test_keyboard_interrupt(void);
 
+// Interactive keyboard test - allows user to type and see characters on screen
+void test_keyboard_interactive(void);
+
 // Test software interrupts ved å manuelt utløse CPU exceptions
 void test_software_interrupt(void);
 

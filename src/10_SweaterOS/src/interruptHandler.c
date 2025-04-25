@@ -21,7 +21,7 @@
 extern void timer_handler(void);
 
 // Keyboard buffer - power of 2 size for fast modulo with bit masking
-#define KEYBOARD_BUFFER_SIZE 32
+#define KEYBOARD_BUFFER_SIZE 64
 #define KEYBOARD_BUFFER_MASK (KEYBOARD_BUFFER_SIZE - 1)
 
 // Keyboard buffer implementation
@@ -29,8 +29,12 @@ static char keyboard_buffer[KEYBOARD_BUFFER_SIZE];
 static volatile uint8_t buffer_read_index = 0;
 static volatile uint8_t buffer_write_index = 0;
 
-// Direct scancode to ASCII mapping table
-static const char scancode_map[128] = {
+// Add flag to track SHIFT key state
+static volatile uint8_t shift_pressed = 0;
+
+// Direct scancode to ASCII mapping table for US keyboard layout
+// Index is the scancode, value is the ASCII character
+static const char scancode_map_lower[128] = {
     0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',
     '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',
     0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', 0,
@@ -39,6 +43,22 @@ static const char scancode_map[128] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
+
+// Shift key pressed mapping for uppercase and special characters
+static const char scancode_map_upper[128] = {
+    0, 27, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\b',
+    '\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '\n',
+    0, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', '~', 0,
+    '|', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', 0, '*', 0, ' ',
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+// Define scancode values for modifier keys
+#define SCANCODE_LEFT_SHIFT  0x2A
+#define SCANCODE_RIGHT_SHIFT 0x36
+#define SCANCODE_CAPS_LOCK   0x3A
 
 // Optimized I/O functions
 void outb(uint16_t port, uint8_t value) {
@@ -69,7 +89,20 @@ void io_wait(void) {
 
 // Get ASCII character from scancode
 char scancode_to_ascii(uint8_t scancode) {
-    return (scancode < 128) ? scancode_map[scancode] : 0;
+    // Get raw scancode without the release bit
+    uint8_t raw_scancode = scancode & 0x7F;
+    
+    // Check if it's a valid scancode
+    if (raw_scancode >= 128) {
+        return 0;
+    }
+    
+    // Use appropriate mapping based on shift state
+    if (shift_pressed) {
+        return scancode_map_upper[raw_scancode];
+    } else {
+        return scancode_map_lower[raw_scancode];
+    }
 }
 
 // Initialize the PIC
@@ -94,8 +127,8 @@ void pic_initialize(void) {
     outb(PIC2_DATA, 0x01);
     io_wait();
     
-    // OCW1: Set interrupt masks - enable only keyboard (IRQ1)
-    outb(PIC1_DATA, 0xFD); // Enable IRQ1 (keyboard)
+    // OCW1: Set interrupt masks - enable timer (IRQ0) and keyboard (IRQ1)
+    outb(PIC1_DATA, 0xFC); // Enable IRQ0 (timer) and IRQ1 (keyboard)
     outb(PIC2_DATA, 0xFF); // Disable all slave interrupts
 }
 
@@ -103,8 +136,9 @@ void pic_initialize(void) {
 void interrupt_initialize(void) {
     pic_initialize();
     
-    // Reset keyboard buffer
+    // Reset keyboard buffer and state
     buffer_read_index = buffer_write_index = 0;
+    shift_pressed = 0;
     
     // Clear any pending keyboard data
     while (inb(KEYBOARD_STATUS) & 0x01)
@@ -112,6 +146,9 @@ void interrupt_initialize(void) {
     
     // Enable interrupts
     __asm__ volatile("sti");
+    
+    // Debug message to confirm initialization
+    display_write_color("Keyboard initialized and ready\n", COLOR_LIGHT_GREEN);
 }
 
 // Check if keyboard buffer has data
@@ -158,9 +195,16 @@ void irq_handler(uint32_t esp) {
         // Keyboard interrupt - second most common
         uint8_t scancode = inb(KEYBOARD_DATA);
         
-        // Only process key presses (not releases)
-        if (!(scancode & 0x80)) {
+        // Check for shift key press/release
+        if (scancode == SCANCODE_LEFT_SHIFT || scancode == SCANCODE_RIGHT_SHIFT) {
+            shift_pressed = 1;
+        } else if (scancode == (SCANCODE_LEFT_SHIFT | 0x80) || scancode == (SCANCODE_RIGHT_SHIFT | 0x80)) {
+            shift_pressed = 0;
+        }
+        // Regular key press (bit 7 not set means key press, bit 7 set means key release)
+        else if (!(scancode & 0x80)) {
             char c = scancode_to_ascii(scancode);
+            
             if (c) {
                 // Calculate next position with bit masking for fast modulo
                 uint8_t next = (buffer_write_index + 1) & KEYBOARD_BUFFER_MASK;

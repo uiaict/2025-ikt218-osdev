@@ -198,16 +198,32 @@ void test_hardware_interrupts() {
         if (keyboard_data_available()) {
             char c = keyboard_getchar();
             
-            // Exit if ESC is pressed
-            if (c == 27) {  // ESC key
+            // Display the key that was pressed
+            display_write_color("Key pressed: '", COLOR_GREEN);
+            if (c >= 32 && c <= 126) {  // Printable ASCII characters
+                display_write_char(c);
+            } else if (c == '\n') {
+                display_write("\\n");
+            } else if (c == '\t') {
+                display_write("\\t");
+            } else if (c == 27) {  // ESC key
+                display_write("ESC");
                 running = 0;
+            } else {
+                display_write_color("0x", COLOR_WHITE);
+                char hex[3];
+                hex[0] = "0123456789ABCDEF"[(c >> 4) & 0xF];
+                hex[1] = "0123456789ABCDEF"[c & 0xF];
+                hex[2] = '\0';
+                display_write(hex);
             }
+            display_write_color("'\n", COLOR_GREEN);
+            
+            // Small delay to prevent display flicker
+            delay(50);
         }
-        
-        // Small delay to prevent CPU hogging
-        for (volatile int i = 0; i < 100000; i++) {
-            __asm__ volatile("nop");
-        }
+        // Use hlt to wait for next interrupt instead of busy waiting
+        __asm__ volatile("hlt");
     }
     
     display_write_color("\nKeyboard test completed.\n", COLOR_GREEN);
@@ -304,7 +320,6 @@ void test_interrupt_status() {
     // Test 3: Keyboard interrupt test
     display_write_color("\nTest 3: Keyboard Interrupt Test\n", COLOR_WHITE);
     display_write_color("Please press a key on the keyboard...\n", COLOR_YELLOW);
-    display_write_color("(Test will wait 20 seconds for keyboard input)\n", COLOR_GRAY);
     
     // Reset keyboard buffer
     while (keyboard_data_available()) {
@@ -316,8 +331,6 @@ void test_interrupt_status() {
     int seconds_waited = 0;
     int key_received = 0;
     
-    display_write_string("Waiting for key press: ");
-    
     // Loop until we get a key or timeout
     while (seconds_waited < MAX_WAIT && !key_received) {
         // Check for keyboard input
@@ -327,72 +340,18 @@ void test_interrupt_status() {
             display_write_char(c);
             display_write_string("'\n");
             key_received = 1;
-            break;
         }
         
-        // Delay approximately 1 second
-        for (volatile int i = 0; i < 1000000; i++) {
-            __asm__ volatile("nop");
-        }
-        
-        // Show progress
-        display_write_char('.');
+        // Wait for 1 second without printing periods
+        sleep_interrupt(1000);
         seconds_waited++;
-        
-        // Show seconds count every 5 seconds
-        if (seconds_waited % 5 == 0) {
-            display_write_string(" ");
-            display_write_decimal(seconds_waited);
-            display_write_string("s ");
-        }
     }
     
     if (!key_received) {
-        display_write_string("\nTIMEOUT: No keyboard interrupt received!\n");
-        display_write_string("Troubleshooting suggestions:\n");
-        display_write_string("1. Check that the PIC is correctly initialized\n");
-        display_write_string("2. Verify the keyboard controller initialization\n");
-        display_write_string("3. Ensure that IRQ1 is properly mapped in the IDT\n");
-        display_write_string("4. Make sure keyboard_handler is adding characters to the buffer\n");
+        display_write_color("\nTIMEOUT: No keyboard input detected in 20 seconds!\n", COLOR_LIGHT_RED);
     }
     
-    // Show test summary
-    display_write_color("\nInterrupt System Test Summary:\n", COLOR_LIGHT_CYAN);
-    display_write_color("- CPU Interrupts: ", COLOR_WHITE);
-    
-    if (interrupts_enabled()) {
-        display_write_color("ENABLED ✓\n", COLOR_LIGHT_GREEN);
-    } else {
-        display_write_color("DISABLED ✗\n", COLOR_LIGHT_RED);
-    }
-    
-    display_write_color("- Keyboard Interrupts: ", COLOR_WHITE);
-    
-    if (key_received) {
-        display_write_color("WORKING ✓\n", COLOR_LIGHT_GREEN);
-    } else {
-        display_write_color("NOT WORKING ✗\n", COLOR_LIGHT_RED);
-    }
-    
-    display_write_color("\nPress any key to continue...\n", COLOR_YELLOW);
-    
-    // Reset keyboard buffer
-    while (keyboard_data_available()) {
-        keyboard_getchar();
-    }
-    
-    // Wait for keypress to continue
-    display_write_string("Waiting for key press: ");
-    while (!keyboard_data_available()) {
-        for (volatile int i = 0; i < 100000; i++) {
-            __asm__ volatile("nop");
-        }
-        display_write_char('.');
-    }
-    
-    // Clear the pressed key
-    keyboard_getchar();
-    display_write_string("\n\n");
+    display_write_color("Keyboard interrupt test completed.\n", COLOR_GREEN);
 }
 
 /**
@@ -643,9 +602,21 @@ void test_system_initialization(void) {
     init_programmable_interval_timer();
     display_write_color("PASSED: PIT initialized successfully!\n\n", COLOR_LIGHT_GREEN);
     
+    // Initialize keyboard interrupt handler
+    display_write_color("Initializing Keyboard Handler...\n", COLOR_WHITE);
+    interrupt_initialize();
+    display_write_color("PASSED: Keyboard handler initialized successfully!\n\n", COLOR_LIGHT_GREEN);
+    
     // Enable interrupts now that PIT and PIC are set up
     display_write_color("Enabling interrupts...\n", COLOR_WHITE);
     enable_interrupts();
+    
+    // Verify interrupts are enabled
+    if (interrupts_enabled()) {
+        display_write_color("PASSED: Interrupts are enabled!\n\n", COLOR_LIGHT_GREEN);
+    } else {
+        display_write_color("FAILED: Interrupts could not be enabled!\n\n", COLOR_LIGHT_RED);
+    }
     
     // Initialize kernel memory manager
     display_write_color("Initializing Kernel Memory Manager...\n", COLOR_WHITE);
@@ -658,6 +629,130 @@ void test_system_initialization(void) {
     display_write_color("PASSED: Paging initialized successfully!\n\n", COLOR_LIGHT_GREEN);
     
     display_write_color("System initialization completed!\n", COLOR_YELLOW);
+}
+
+/**
+ * Interactive keyboard test
+ * 
+ * This test allows the user to type characters and see them displayed on screen.
+ * It's a simple way to verify that keyboard input is working correctly.
+ */
+void test_keyboard_interactive(void) {
+    display_clear();
+    display_write_color("\n=== Interactive Keyboard Test ===\n", COLOR_LIGHT_CYAN);
+    display_write_color("Type any keys to see them appear on screen.\n", COLOR_YELLOW);
+    display_write_color("Both key presses and releases will be detected.\n", COLOR_YELLOW);
+    display_write_color("Press ESC to exit the test.\n\n", COLOR_YELLOW);
+    
+    // Make sure interrupts are enabled
+    __asm__ volatile("sti");
+    
+    // Clear any existing keyboard input
+    while (keyboard_data_available()) {
+        keyboard_getchar();
+    }
+    
+    // Debug area - show key press/release status
+    display_write_color("Key status: ", COLOR_WHITE);
+    size_t status_row = terminal_row;
+    size_t status_col = terminal_column;
+    
+    // Input line
+    display_write_color("\nInput: ", COLOR_LIGHT_GREEN);
+    size_t input_row = terminal_row;
+    size_t input_col = terminal_column;
+    int line_pos = 0;
+    const int MAX_LINE_LENGTH = 60;  // Keep some margin from screen edge
+    
+    // Setup direct scan code checking
+    uint8_t last_scancode = 0;
+    
+    // Testing loop
+    int running = 1;
+    while (running) {
+        // Check keyboard port directly for both press and release
+        if (inb(KEYBOARD_STATUS) & 0x01) {
+            uint8_t scancode = inb(KEYBOARD_DATA);
+            last_scancode = scancode;
+            
+            // Update status area
+            display_set_cursor(status_col, status_row);
+            if (scancode & 0x80) {
+                display_write_color("Key released: 0x", COLOR_LIGHT_RED);
+                char hex[3];
+                hex[0] = "0123456789ABCDEF"[(scancode & 0x7F) >> 4];
+                hex[1] = "0123456789ABCDEF"[(scancode & 0x7F) & 0xF];
+                hex[2] = '\0';
+                display_write(hex);
+                display_write_color("         ", COLOR_LIGHT_RED);
+            } else {
+                display_write_color("Key pressed: 0x", COLOR_LIGHT_GREEN);
+                char hex[3];
+                hex[0] = "0123456789ABCDEF"[scancode >> 4];
+                hex[1] = "0123456789ABCDEF"[scancode & 0xF];
+                hex[2] = '\0';
+                display_write(hex);
+                display_write_color("          ", COLOR_LIGHT_GREEN);
+            }
+        }
+        
+        // Process keys in buffer (regular input)
+        if (keyboard_data_available()) {
+            char c = keyboard_getchar();
+            
+            // Handle ESC key to exit
+            if (c == 27) {  // ESC key
+                running = 0;
+                continue;
+            }
+            
+            // Move cursor to input area
+            display_set_cursor(input_col + line_pos, input_row);
+            
+            // Handle special keys
+            if (c == '\n' || c == '\r') {  // Enter key
+                line_pos = 0;
+                display_write_char('\n');
+                display_write_color("Input: ", COLOR_LIGHT_GREEN);
+                input_row++;
+                // Update input position reference
+                input_col = terminal_column;
+            } else if (c == '\b') {  // Backspace
+                if (line_pos > 0) {
+                    display_write_char('\b');
+                    display_write_char(' ');
+                    display_write_char('\b');
+                    line_pos--;
+                }
+            } else if (c == '\t') {  // Tab
+                int spaces = 4 - (line_pos % 4);
+                for (int i = 0; i < spaces && line_pos < MAX_LINE_LENGTH; i++) {
+                    display_write_char(' ');
+                    line_pos++;
+                }
+            } else {  // Regular printable character
+                if (line_pos < MAX_LINE_LENGTH) {
+                    display_write_char(c);
+                    line_pos++;
+                }
+            }
+            
+            // Update cursor position
+            display_move_cursor();
+        }
+        
+        // Wait for next interrupt using hlt instruction
+        __asm__ volatile("hlt");
+    }
+    
+    display_write_color("\n\nKeyboard test completed.\n", COLOR_LIGHT_GREEN);
+    display_write_color("Press any key to continue...\n", COLOR_YELLOW);
+    
+    // Wait for keypress to continue
+    while (!keyboard_data_available()) {
+        __asm__ volatile("hlt");
+    }
+    keyboard_getchar();  // Clear the keypress
 }
 
 /**
@@ -676,7 +771,7 @@ void run_all_tests() {
     test_gdt();
     test_idt();
     test_interrupt_status();
-    test_hardware_interrupts();
+    test_keyboard_interactive();  // Interactive keyboard test
     test_software_interrupt();
     test_memory_management();
     test_programmable_interval_timer();
