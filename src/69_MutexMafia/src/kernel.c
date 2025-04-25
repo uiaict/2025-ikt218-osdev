@@ -7,6 +7,10 @@
 #include "io/printf.h"
 #include "idt/idt.h"
 #include "io/keyboard.h"
+#include "memory/malloc.h"
+#include "memory/paging.h"
+
+
 
 
 
@@ -16,15 +20,29 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
+int kernel_main();
+extern uint32_t end;
+
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
+
     initGdt();
     initIdt();
-    mafiaPrint("Yeeeee drugga\n");
-    initKeyboard();
+    init_kernel_memory(&end);
+    init_paging();
     
-    //asm("int $0x0"); //testing av division by zero exception
-    while (1){}
-    return 0;
+    //init_Pit
+
+    initKeyboard();
+    mafiaPrint("Wadiyatalkinabeet\n");
+    mafiaPrint("\n");
+    
+    void* some_memory = malloc(12345); 
+    void* memory2 = malloc(54321); 
+    void* memory3 = malloc(13331);
+    print_memory_layout();
+
+    
+    return kernel_main(); 
 
 }
