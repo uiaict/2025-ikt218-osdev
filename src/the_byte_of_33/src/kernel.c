@@ -5,6 +5,8 @@
 #include "gdt.h"        /* our new GDT setup */
 #include "io.h"         /* VGA text helpers  */
 #include <multiboot2.h> /* keep your existing boot header */
+#include "interrupt.h"
+#include "keyboard.h"
 
 struct multiboot_info {
     uint32_t size;
@@ -22,11 +24,24 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
 
     /* 1. Install the Global Descriptor Table and switch segments */
     gdt_init();
-
     /* 2. Use VGA text mode to say hello */
     set_color(0x0A);            /* light-green on black                */
     puts("The byte of 33: GDT loaded!\n");
     puts("Hello from your brand-new kernel.\n");
+
+    init_idt();
+    init_irq();
+
+    // Enable interrupts
+    __asm__ volatile ("sti");
+
+    // Test ISRs
+    puts("Triggering ISR tests....\n");
+    __asm__ volatile ("int $0"); // Trigger interrupt 0
+    __asm__ volatile ("int $1"); // Trigger interrupt 1
+    __asm__ volatile ("int $2"); // Trigger interrupt 2
+
+    puts("Type on the keyboard to see characters....\n");
 
     /* 3. Halt CPU in an idle loop */
     for (;;)
