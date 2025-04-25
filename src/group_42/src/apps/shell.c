@@ -4,6 +4,13 @@
 
 bool shell_active = false;
 
+char input_buffer[SCREEN_WIDTH];
+
+void parse(char *input){
+    print(input);
+    print("\n");
+}
+
 void shell_init(){
     shell_active = true;
     // Clear the screen
@@ -20,10 +27,11 @@ void shell_init(){
 
 void shell_input(char character){
     if(character != '\n' && character != 0x08){
-    volatile char *video = cursorPosToAddress(cursorPositionX_, cursorPositionY_);
-    *video = character;
-    video++;
-    *video = VIDEO_WHITE;
+        volatile char *video = cursorPosToAddress(cursorPositionX_, cursorPositionY_);
+        *video = character;
+        video++;
+        *video = VIDEO_WHITE;
+        input_buffer[cursorPositionX_] = character;
 
     incrementCursorPosition();
     update_cursor(cursorPositionX_,cursorPositionY_+1);
@@ -37,5 +45,17 @@ void shell_input(char character){
         *video = 0;
         video++;
         *video = VIDEO_WHITE;
+        input_buffer[cursorPositionX_-1] = 0;
+    } else if (character == '\n'){
+        //for(int i = 0; i < SCREEN_WIDTH*2; i+=2){
+        //    input[i] = cursorPosToAddress(i, cursorPositionY_)[0];
+        //}
+        cursorPositionY_++;
+        cursorPositionX_ = 0;
+        parse(input_buffer);
+        for(int i = 0; i < SCREEN_WIDTH; i++){
+            input_buffer[i] = 0;
+        }
+        update_cursor(cursorPositionX_,cursorPositionY_+1);
     }
 }
