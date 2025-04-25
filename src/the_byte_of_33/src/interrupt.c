@@ -75,8 +75,10 @@ void init_irq(void) {
     outb(0xA1, 0x02); // Tell slave PIC its cascade identity
     outb(0x21, 0x01); // 8086 mode
     outb(0xA1, 0x01);
-    outb(0x21, 0x0);  // Enable all IRQs (unmask)
-    outb(0xA1, 0x0);
+
+    // Mask IRQ0 (PIT timer), enable IRQ1 (keyboard), mask others
+    outb(0x21, 0xFD); // 0xFD = 11111101 (IRQ0 masked, IRQ1 enabled)
+    outb(0xA1, 0xFF); // 0xFF = 11111111 (all slave IRQs masked)
 
     puts("IRQs initialized.\n");
 }
