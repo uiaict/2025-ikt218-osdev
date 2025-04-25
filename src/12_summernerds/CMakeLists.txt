@@ -60,6 +60,7 @@ enable_language(ASM)  #  Fortell CMake at vi bruker Assembly
 
 # Legg til eksekverbar kernel, men IKKE gdt.s her!
 add_executable(uiaos-kernel 
+    src/multiboot2.s # TODO: Add multiboot2 support
     src/kernel.c
     src/menu.c
     src/matrix_effect/matrix.c

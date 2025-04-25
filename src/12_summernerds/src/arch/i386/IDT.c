@@ -1,40 +1,12 @@
-/*
-#include "libc/stdint.h"
-#include "../i386/IDT.h"
-#include "../i386/print.h"
-#include "../src/screen.h"
-#include "../src/arch/i386/ISR.h"
-#include "../src/arch/i386/IRQ.h"
-#include "libc/string.h"
-#include "../src/arch/i386/io.h"
-#include "../src/arch/i386/IDT.h"
-#include "../src/screen.h"
-#include "libc/stddef.h"
+#include "i386/descriptorTables.h"
+#include "i386/IRQ.h"
+#include "common.h"
 
-struct int_handler int_handlers[IDT_ENTRIES];
-struct idt_entry idt[IDT_ENTRIES];
-struct idt_ptr idt_ptr;
+extern void idt_flush(uint32_t);
 
-// Function to register an interrupt handler
-void register_int_handler(int num, void (*handler)(void *data), void *data) {
-  int_handlers[num].num = num;
-  int_handlers[num].handler = handler;
-  int_handlers[num].data = data;
-}
-
-void default_int_handler(void *data) {
-  write_to_terminal("Default interrupt handler triggered", 8);
-}
-
-void int_handler(int num) {
-  if (int_handlers[num].handler != NULL) {
-    int_handlers[num].handler(int_handlers[num].data);
-  } else {
-    default_int_handler(NULL);
-  }
-}
-
-void init_idt() {
+void init_idt()
+{
+  idt_ptr.limit = sizeof(struct IDTEntry) * IDT_entries - 1;
   idt_ptr.base = (uint32_t)&idt;
   idt_ptr.limit = sizeof(struct idt_entry) * IDT_ENTRIES - 1;
 
