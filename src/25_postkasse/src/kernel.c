@@ -11,6 +11,7 @@
 #include "arch/i386/idt/idt.h"
 #include "libc/frequencies.h"
 #include "libc/song.h"
+#include "matrix/matrix_rain.h"
 
 extern uint32_t end;
 
@@ -35,20 +36,45 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     __asm__ volatile ("sti");
 
     //Interupt 0 test 
-    asm("int $0x0");
+    //asm("int $0x0");
 
-    init_kernel_memory(&end); // <------ THIS IS PART OF THE ASSIGNMENT
+    init_kernel_memory(&end);
 
     init_paging();
 
-    print_memory_layout();
+
+    init_pit(); 
+
+
+
+    while (1)
+    {
+        monitor_write("==== Knut OS ====\n");
+        monitor_write("[1] Matrix Rain\n");
+        monitor_write("[2] Play Music\n");
+        monitor_write("[3] Print memory layout\n");
+        monitor_write("[Q] Quit\n");
+        monitor_write("===========================\n");
+        monitor_write("Press a key: ");
     
-    init_pit(); // <------ THIS IS PART OF THE ASSIGNMENT
-
-
-    play_song(music_1, MUSIC_1_LENGTH);
-
-
+        char choice = keyboard_get_key();
+    
+        if (choice == '1') {
+            clear_screen();
+            run_matrix_rain();
+        } else if (choice == '2') {
+            clear_screen();
+            play_song(music_1, MUSIC_1_LENGTH);
+            clear_screen();
+        } else if (choice == '3') {
+            print_memory_layout();
+        } else if (choice == 'q' || choice == 'Q') {
+            return 0;
+        }  else {
+            monitor_write("Invalid choice. Halting...\n");
+            while (1) { __asm__ volatile ("hlt"); }
+        }
+    }
     
     //infinite loop to keep the kernel running
     while (1) {

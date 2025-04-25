@@ -1,13 +1,15 @@
 #include "libc/monitor.h"
 
- volatile uint16_t* video_memory = (volatile uint16_t*)0xB8000;
+ volatile uint16_t* video_memory = (volatile uint16_t*)VGA_ADDR;
  
  uint8_t cursor_x = 0;
  uint8_t cursor_y = 0;
  
- #define VGA_WIDTH  80
- #define VGA_HEIGHT 25
- #define WHITE_ON_BLACK 0x0F
+ void monitor_put_for_matrix(char c, int x, int y, uint8_t color) {
+    if (x < 0 || x >= VGA_WIDTH || y < 0 || y >= VGA_HEIGHT) return;
+
+    video_memory[y * VGA_WIDTH + x] = (color << 8) | c;
+}
  
 void monitor_put(char c){
 

@@ -6,6 +6,7 @@
 #define KEYBOARD_BUFFER_SIZE 256
 static char keyboard_buffer[KEYBOARD_BUFFER_SIZE];
 static uint8_t buffer_index = 0;
+volatile char last_key = 0;
 
 //Table converts key presses (scancodes) into letters
 static const char scancode_to_ascii[128] = {
@@ -25,6 +26,7 @@ void keyboard_callback(registers_t* regs) {
 
     char c = scancode_to_ascii[scancode];
     if (c){
+        last_key = c;
         if (c == '\b') { // Handle backspace
             if (buffer_index > 0) {
                 buffer_index--;
@@ -50,4 +52,13 @@ void init_keyboard() {
     // IRQ1 is the keyboard interrupt
     // The function keyboard_callback will be called when a key is pressed
     register_interrupt_handler(IRQ1, &keyboard_callback);
+}
+
+char keyboard_get_key() {
+    while (last_key == 0) {
+        __asm__ volatile ("hlt"); // Sleep until next interrupt (very efficient)
+    }
+    char key = last_key;
+    last_key = 0; // Reset after reading
+    return key;
 }

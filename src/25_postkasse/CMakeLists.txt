@@ -70,6 +70,7 @@ add_executable(uiaos-kernel
 	src/pit.c
 	src/music.c
 	src/song.c
+	src/matrix/matrix_rain.c
 	src/memory/malloc.c
 	src/memory/paging.c
 	src/memory/memutils.c

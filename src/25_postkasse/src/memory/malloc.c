@@ -80,7 +80,7 @@ void* malloc(size_t size)
 
 void print_memory_layout()
 {
-    monitor_write("Memory used: ");
+    monitor_write("\nMemory used: ");
     monitor_write_dec(memory_used);
     monitor_write(" bytes\n");
 
