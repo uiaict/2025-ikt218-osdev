@@ -79,6 +79,7 @@ add_executable(uiaos-kernel
     src/arch/i386/system.c
     src/arch/i386/pit.c
     src/arch/i386/string.c
+    #src/arch/i386/gdt.asm
 
     # MEMORY
     src/memory/malloc.c
