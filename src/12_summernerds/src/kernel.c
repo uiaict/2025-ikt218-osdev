@@ -17,7 +17,7 @@
 
 extern uint32_t end; // Linker symbol marking the end of kernel
 
-int kernel_main_c(uint32_t magic, uint32_t mb_info_addr)
+int main(uint32_t magic, uint32_t mb_info_addr)
 {
 
     // initializing basic systems
@@ -48,7 +48,7 @@ int kernel_main_c(uint32_t magic, uint32_t mb_info_addr)
 
     // Test PIT sleep
     int counter = 0;
-    /* while (true)
+     while (true)
     {
         printf("[%d]: Sleeping with busy-waiting (HIGH CPU)...\n", counter);
         sleep_busy(1000);
@@ -57,7 +57,9 @@ int kernel_main_c(uint32_t magic, uint32_t mb_info_addr)
         printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);
         sleep_interrupt(1000);
         printf("[%d]: Slept using interrupts.\n", counter++);
-    }*/
+    }
+
+    while(1) {}
 
     // Usually shouldnt get here, since it then quits kernel main.
     return 0;

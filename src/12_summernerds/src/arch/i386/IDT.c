@@ -7,6 +7,8 @@
 #include "../src/arch/i386/IRQ.h"
 */
 
+//IDT.c
+
 #include "../src/arch/i386/interuptRegister.h"
 #include "../src/common.h"
 #include "../i386/gdt.h"
