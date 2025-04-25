@@ -47,9 +47,6 @@ void shell_input(char character){
         *video = VIDEO_WHITE;
         input_buffer[cursorPositionX_-1] = 0;
     } else if (character == '\n'){
-        //for(int i = 0; i < SCREEN_WIDTH*2; i+=2){
-        //    input[i] = cursorPosToAddress(i, cursorPositionY_)[0];
-        //}
         cursorPositionY_++;
         cursorPositionX_ = 0;
         parse(input_buffer);
