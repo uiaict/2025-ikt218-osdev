@@ -10,7 +10,5 @@
 	],
 	"settings": {}
 }
-{
-	"cmake.useCMakePresets": "always"
-}
+// Removed the extra JSON object to fix the error
   

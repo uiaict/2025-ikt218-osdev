@@ -14,13 +14,38 @@
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 
-extern uint32_t end; // Definert av linker.ld
+#include "song/song.h"
+#include "song/note.h"
 
-struct multiboot_info {
-    uint32_t size;
-    uint32_t reserved;
-    struct multiboot_tag *first;
-};
+extern uint32_t end; // Definert av linker.ld
+extern Note music_1[];                 // Fra music_1.c
+extern const size_t music_1_len;       // 🔧 lagt til
+extern void play_song_impl(Song* song); // Fra song_player.c
+
+// Enkel SongPlayer-struct hvis malloc ikke brukes
+typedef struct {
+    void (*play_song)(Song* song);
+} SongPlayer;
+
+SongPlayer* create_song_player() {
+    static SongPlayer player;
+    player.play_song = play_song_impl;
+    return &player;
+}
+
+void play_music() {
+    Song songs[] = {
+        {music_1, music_1_len} // 🔧 riktig måte å hente lengde på
+    };
+
+    SongPlayer* player = create_song_player();
+
+    for (size_t i = 0; i < sizeof(songs)/sizeof(Song); i++) {
+        printf("🎵 Spiller sang...\n");
+        player->play_song(&songs[i]);
+        printf("✅ Ferdig!\n");
+    }
+}
 
 void putc_raw(char c) {
     volatile char* video = (volatile char*)(0xB8000 + 160 * 23); // linje 24
@@ -29,24 +54,26 @@ void putc_raw(char c) {
 }
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-    idt_init();          
-    isr_install();       
-    irq_install();       
-    init_keyboard();     // Kall den faktiske init-funksjonen, ikke definer den her
+    idt_init();
+    isr_install();
+    irq_install();
+    init_keyboard();
 
-    gdt_init();          
+    gdt_init();
+    __asm__ volatile("sti"); // Aktiver maskinavbrudd
 
-    __asm__ volatile("sti");  // Aktiver maskinavbrudd
-
-    init_kernel_memory(&end);  // ✅ Memory management
-    init_paging();             // ✅ Paging
-    print_memory_layout();     // ✅ Vis minnelayout
-    init_pit();                // ✅ PIT-timer
+    init_kernel_memory(&end);
+    init_paging();
+    print_memory_layout();
+    init_pit();
 
     printf("Hello, Nils!\n");
 
-    void* some_memory = malloc(12345); 
-    void* memory2 = malloc(54321); 
+    // 🎵 Spill musikk ved oppstart
+    play_music();
+
+    void* some_memory = malloc(12345);
+    void* memory2 = malloc(54321);
     void* memory3 = malloc(13331);
 
     shell_prompt();
@@ -61,6 +88,6 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
         sleep_interrupt(1000);
         printf("[%d]: Slept using interrupts.\n", counter++);
 
-        __asm__ volatile ("hlt");
+        __asm__ volatile("hlt");
     }
 }

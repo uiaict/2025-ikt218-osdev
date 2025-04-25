@@ -75,7 +75,8 @@ add_executable(uiaos-kernel
 	src/paging.c
 	src/pit.c
 	src/kernel_memory.c
-
+	src/devices/song_player.c
+    src/song/music_1.c
 	include/libc/string.c
 
 )
@@ -87,6 +88,7 @@ target_include_directories(uiaos-kernel PUBLIC
     include/libc
 	include/devices
 	include/arch
+	include/song
 )
 
 

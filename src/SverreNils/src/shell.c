@@ -3,6 +3,13 @@
 #include <stddef.h>
 #include "libc/string.h"
 #include <string.h>
+#include "song/song.h"   // 🎵 musikk
+#include "song/note.h"   // 🎵 noter
+
+// Eksterne musikk-variabler
+extern Note music_1[];
+extern const size_t music_1_len;
+extern void play_song_impl(Song* song);
 
 void shell_prompt() {
     printf("UiAOS> ");
@@ -21,7 +28,7 @@ void shutdown() {
 void shell_handle_input(const char* input) {
     if (strcmp(input, "help") == 0) {
         printf("Tilgjengelige kommandoer:\n");
-        printf(" - help\n - clear\n - echo [tekst]\n - shutdown\n");
+        printf(" - help\n - clear\n - echo [tekst]\n - shutdown\n - play\n");
     } else if (strncmp(input, "echo ", 5) == 0) {
         printf("%s\n", input + 5);
     } else if (strcmp(input, "clear") == 0) {
@@ -30,6 +37,11 @@ void shell_handle_input(const char* input) {
     } else if (strcmp(input, "shutdown") == 0) {
         printf("Shutting down...\n");
         shutdown();
+    } else if (strcmp(input, "play") == 0) {
+        Song song = {music_1, music_1_len};
+        printf("🎵 Spiller musikk...\n");
+        play_song_impl(&song);
+        printf("✅ Ferdig!\n");
     } else {
         printf("Ukjent kommando: %s\n", input);
     }
