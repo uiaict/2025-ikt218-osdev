@@ -16,6 +16,6 @@ void monitor_newline();
 void monitor_backspace();
 void monitor_write_hex(uint32_t n);
 void monitor_write_dec(uint32_t n);
-void monitor_put_for_matrix(char c, int x, int y, uint8_t color);
+void monitor_put_with_color(char c, int x, int y, uint8_t color);
 
 #endif

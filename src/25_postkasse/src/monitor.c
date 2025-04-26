@@ -5,7 +5,7 @@
  uint8_t cursor_x = 0;
  uint8_t cursor_y = 0;
  
- void monitor_put_for_matrix(char c, int x, int y, uint8_t color) {
+void monitor_put_with_color(char c, int x, int y, uint8_t color) {
     if (x < 0 || x >= VGA_WIDTH || y < 0 || y >= VGA_HEIGHT) return;
 
     video_memory[y * VGA_WIDTH + x] = (color << 8) | c;

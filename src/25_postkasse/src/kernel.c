@@ -59,6 +59,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
         if (choice == '1') {
             clear_screen();
             run_matrix_rain();
+            
         } else if (choice == '2') {
             monitor_write("\n==================\n");
             monitor_write("[1] Happy birthday\n");
@@ -66,6 +67,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
             monitor_write("[3] Fur Elise\n");
             monitor_write("Choose a song: \n");
             char choice = keyboard_get_key();
+
             clear_screen();
 
             if (choice == '1') {
@@ -77,20 +79,12 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
             } else if (choice == '3') {
                 monitor_write("Playing Fur Elise...\n");
                 play_song(fur_elise, FUR_ELISE_LENGTH);
-            }
-            
-            else {
+            } else {
                 monitor_write("Invalid choice. Halting...\n");
                 while (1) { __asm__ volatile ("hlt"); }
             }
-
-            {
-                /* code */
-            }
-            
-
-            
             clear_screen();
+
         } else if (choice == '3') {
             print_memory_layout();
         } else if (choice == 'q' || choice == 'Q') {
