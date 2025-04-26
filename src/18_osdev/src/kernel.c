@@ -18,13 +18,11 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
-
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_descriptor_tables();
 
-    // asm volatile ("int $0x1");
-    // asm volatile ("int $0x3");
-
+    asm volatile ("int $0x1");
+    asm volatile ("int $0x3");
     // init_timer(50); used this to check that irq works
     init_keyboard();
 
@@ -45,5 +43,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     sleep_busy(500);       // sleep 0.5 second using busy waiting
     monitor_write("Slept 0.5 second!\n");
 
+    while (1);
+    
     return 0;
 }

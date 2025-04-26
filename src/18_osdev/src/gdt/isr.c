@@ -13,9 +13,9 @@ void register_interrupt_handler(uint8_t n, isr_t handler)
 // function to handle interrupts, gets called from the interrupt.asm in the common stub
 void isr_handler(registers_t regs)
 {
-   // monitor_write("recieved interrupt: ");
-   // monitor_write_dec(regs.int_no);
-   // monitor_put('\n');
+   monitor_write("recieved interrupt: ");
+   monitor_write_dec(regs.int_no);
+   monitor_put('\n');
 }
 
 // function to handle interrupt requests, gets called from the interrupt.asm in the common stub
