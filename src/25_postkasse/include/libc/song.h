@@ -11,6 +11,19 @@ typedef struct {
     uint32_t duration;
 } Note;
 
-extern Note music_1[];
-extern const size_t MUSIC_1_LENGTH;
+extern Note happy_birthday[];
+extern Note star_wars_theme[];
+extern Note fur_elise[];
+
+
+extern const size_t HAPPY_BIRTHDAY_LENGTH;
+extern const size_t STAR_WARS_THEME_LENGTH;
+extern const size_t FUR_ELISE_LENGTH;
+
+
+
+
+
+
+
 #endif

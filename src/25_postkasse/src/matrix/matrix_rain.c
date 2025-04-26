@@ -64,16 +64,12 @@ void draw_title() {
     
     int title_col = (VGA_WIDTH - titleLen) / 2;
     
-    
     // Draw title at row 0
     for (int i = 0; i < titleLen; i++) {
         monitor_put_for_matrix(title[i], title_col + i, 0, WHITE_ON_BLACK);
     }
 
 }
-
-
-
 
 //Inifitirte loop that runs the matrix rain
 void run_matrix_rain() {
