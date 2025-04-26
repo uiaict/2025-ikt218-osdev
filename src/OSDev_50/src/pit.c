@@ -1,12 +1,20 @@
 #include "pit.h"
 #include "interrupts.h"
 #include "common.h"
+#include "matrix_rain.h"
 
 static uint32_t ticks = 0;
+
+static uint32_t pit_ticks = 0;
 
 // Define the IRQ handler function
 void pit_irq_handler(registers_t* regs, void* context) {
     ticks++;
+    pit_ticks++;
+
+    if (pit_ticks % 10 == 0) {
+        rain_update();
+    }
 }
 
 void init_pit() {

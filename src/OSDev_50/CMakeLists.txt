@@ -93,6 +93,8 @@ add_executable(uiaos-kernel
 
     src/song.c
 
+    src/matrix_rain.c
+
 
 )
 
