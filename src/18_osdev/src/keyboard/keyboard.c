@@ -1,4 +1,4 @@
-// http://www.osdever.net/bkerndev/Docs/keyboard.htm (brans kernel dev)
+// http://www.osdever.nsavet/bkerndev/Docs/keyboard.htm (brans kernel dev)
 #include "keyboard.h"
 
 // denne kan kanskje flyttes til header filen...
@@ -65,11 +65,19 @@ void keyboard_handler(registers_t regs)
         /* You can use this one to see if the user released the
         *  shift, alt, or control keys... */
     }
+
     else
     {
         mychar = kbdus[scancode];
 
-        monitor_put(mychar);
+        if (scancode==0x0e)
+        {
+          monitor_remove_char();
+        }
+        
+        else{
+          monitor_put(mychar);
+        }
         /* Here, a key was just pressed. Please note that if you
         *  hold a key down, you will get repeated key press
         *  interrupts. */
