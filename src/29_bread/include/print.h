@@ -8,6 +8,7 @@
 // Only declare the functions here, don't define them
 int print_string(const char* str);
 int print_int(int num);
+int print_hex(unsigned int num);  // Add this line
 int printf(const char* format, ...);
 
 #endif

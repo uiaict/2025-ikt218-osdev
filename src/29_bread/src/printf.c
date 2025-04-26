@@ -46,6 +46,34 @@ int print_int(int num) {
     return print_string(str);
 }
 
+// Add this function to print hexadecimal numbers
+int print_hex(unsigned int num) {
+    char hex_chars[] = "0123456789abcdef";
+    char buffer[32];
+    int i = 0;
+    int count = 0;
+    
+    // Handle 0 case specially
+    if (num == 0) {
+        putchar('0');
+        return 1;
+    }
+    
+    // Convert number to hex string (in reverse)
+    while (num > 0) {
+        buffer[i++] = hex_chars[num % 16];
+        num /= 16;
+    }
+    
+    // Print the hex digits in correct order
+    while (i > 0) {
+        putchar(buffer[--i]);
+        count++;
+    }
+    
+    return count;
+}
+
 // Implementation of printf function
 int printf(const char* format, ...) {
     int printed_chars = 0;
@@ -65,6 +93,11 @@ int printf(const char* format, ...) {
                 case 'd': {  // integer specifier
                     int int_arg = va_arg(args, int);
                     printed_chars += print_int(int_arg);
+                    break;
+                }
+                case 'x': {  // hexadecimal specifier (new case)
+                    unsigned int hex_arg = va_arg(args, unsigned int);
+                    printed_chars += print_hex(hex_arg);
                     break;
                 }
                 case '%': {  // percent sign

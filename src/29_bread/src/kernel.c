@@ -29,8 +29,9 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     terminal_initialize();
 
     printf("initializing kernel memory...\n");
-    init_kernel_memory((uint32_t*)&end); // You'll need to define 'end' as extern
+    init_kernel_memory((uint32_t*)&end);
     printf("Kernel memory initialized\n");
+    
     // Set up GDT before IDT
     printf("Initializing GDT...\n");
     gdt_install();
@@ -45,34 +46,35 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Make sure interrupts are disabled while setting up handlers
     asm volatile("cli");
     
-    
+    // Initialize keyboard
     init_keyboard();
     
-    // Manual test for keyboard handler
-    registers_t dummy_regs;
-    dummy_regs.int_no = 33; // IRQ 1 = INT 33
-    printf("Manually triggering keyboard IRQ handler...\n");
-    handle_irq(dummy_regs);
+    // Initialize paging
+    printf("Initializing paging...\n");
+    init_paging();
+    print_memory_layout();
+    
+    // Initialize PIT before enabling interrupts
+    printf("Initializing PIT...\n");
+    init_pit();
     
     printf("----------------------------------\n");
     printf("DEBUG: About to enable interrupts\n");
     
-
-    
     // Enable interrupts after all handlers are registered
     asm volatile("sti");
     printf("Interrupts enabled\n");
-    
-   init_kernel_memory(&end);
-   init_paging();
-   print_memory_layout();
 
-
-    printf("System is running. Type on the keyboard...\n");
-
-    // Safe infinite loop to prevent CPU from executing random memory
+    int counter = 0;
+    printf("Testing PIT with sleep functions...\n");
     while(1) {
-        asm volatile("hlt");
+        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+        sleep_busy(1000);
+        printf("[%d]: Slept using busy-waiting.\n", counter++);
+
+        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+        sleep_interrupt(1000);
+        printf("[%d]: Slept using interrupts.\n", counter++);
     }
 
     return 0;

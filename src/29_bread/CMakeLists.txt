@@ -74,6 +74,7 @@ add_executable(uiaos-kernel
 	src/malloc.c
 	src/memory.c
 	src/memutils.c
+	src/pit.c
 )
 
 # Include directories for the kernel target
