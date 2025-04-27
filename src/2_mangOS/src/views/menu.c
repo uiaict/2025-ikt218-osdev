@@ -51,6 +51,7 @@ int menu()
     printf("Welcome to the MangOS menu!\n");
     printf("1. Song App\n");
     printf("2. Memory Overview\n");
+    printf("3. Terminal\n");
     printf("4. Exit\n");
     printf("> ");
     int choice = take_input();

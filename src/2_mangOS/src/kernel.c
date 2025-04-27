@@ -12,6 +12,7 @@
 #include "pit.h"
 #include "music/songplayer.h"
 #include "view.h"
+#include "dev/cli.h"
 
 struct multiboot_info
 {
@@ -51,7 +52,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
     init_paging();
     printf("Kernel memory initialized & paging\n");
 
-    print_memory_layout();
+    // print_memory_layout();
     init_pit();
 
     asm volatile("sti");
@@ -73,14 +74,15 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
 
     SongPlayer *player = create_song_player();
 
+    Song victorySong = {victory, sizeof(victory) / sizeof(Note), "Victory Theme"};
+    Song starWars = {starwars_theme, sizeof(starwars_theme) / sizeof(Note), "Star Wars Theme"};
+
     // for (uint32_t i = 0; i < n_songs; i++)
     // {
     //     printf("Playing song...\n");
     //     player->play_song(songs[i]);
     //     printf("Done!\n");
     // }
-
-    int counter = 0;
     int choice;
     do
     {
@@ -89,14 +91,18 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
         {
         case 1:
             printf("Playing song...\n");
-            Song customSong = {victory, sizeof(victory) / sizeof(Note)};
-            player->play_song(&customSong);
+
+            player->play_song(&victorySong);
             break;
 
         case 2:
             print_memory_layout();
             printf("Press any key to continue...\n");
             getChar();
+            break;
+
+        case 3:
+            start_cli();
             break;
 
         default:

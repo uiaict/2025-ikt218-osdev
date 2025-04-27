@@ -48,7 +48,7 @@ static void scroll()
 // Updates the hardware cursor.
 static void move_cursor()
 {
-    // The screen is 80 characters wide...
+    // The screen is 80 characters wide
     uint16_t pos = terminal_row * 80 + terminal_column;
 
     outb(0x3D4, 0x0F);

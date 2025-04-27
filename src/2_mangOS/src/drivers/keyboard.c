@@ -30,11 +30,11 @@ static void keyboard_callback(registers_t *regs, void *ctx)
 {
     uint8_t scancode = inb(0x60);
     if (scancode & 0x80)
-        return; // ignore break codes
+        return; // break codes
 
     char c = scancode_ascii[scancode];
     if (!c)
-        return; // ignore non-printables
+        return; // non-printables
 
     uint16_t next = (kbd_head + 1) % KBD_BUF_SIZE;
     if (next != kbd_tail)
@@ -42,8 +42,6 @@ static void keyboard_callback(registers_t *regs, void *ctx)
         kbd_buffer[kbd_head] = c;
         kbd_head = next;
     }
-    // optionally echo:
-    // terminal_put(c);
 }
 
 // Call this once after your PIC is remapped and STI is done

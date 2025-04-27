@@ -59,6 +59,7 @@ void stop_sound()
 
 void play_song_impl(Song *song)
 {
+    printf("Playing song: %s\n", song->name);
     enable_speaker();
     for (uint32_t i = 0; i < song->length; i++)
     {

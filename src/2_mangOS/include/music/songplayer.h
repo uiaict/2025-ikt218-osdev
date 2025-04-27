@@ -16,6 +16,7 @@ typedef struct
 {
     Note *notes;     // Pointer to an array of Note structs representing the song
     uint32_t length; // The number of notes in the song
+    char *name;      // The name of the song
 } Song;
 
 // Define a struct to represent a song player
