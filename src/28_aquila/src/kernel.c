@@ -9,6 +9,7 @@
 #include "kernel/memory.h"
 #include "kernel/pit.h"
 #include "song.h"
+#include "filesystem.h"
 
 extern uint32_t end;
 
@@ -26,6 +27,8 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     print_memory_layout(); // Print the current memory layout
 
     init_pit();
+
+    fs_init();
 
     asm volatile("sti");
   
@@ -57,8 +60,13 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
 
     printf("\n");
     
-    int sleep_time = 1;
+    int sleep_time = 0;
+    bool play_music_on_startup = true;
 
+    if (play_music_on_startup) {
+        play_music("\n");
+    }
+    
     printf("Clearing screen in ");
     for (int i = sleep_time; i > 0; i--) {
         printf("%d...", i);
@@ -66,9 +74,6 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
         printf("\b\b\b\b");
     }
     clear_screen();
-
-    play_music("\n");
-
     printf("Hello, Aquila!\n");
     printf("aquila: ");
 

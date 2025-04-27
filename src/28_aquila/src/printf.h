@@ -11,6 +11,7 @@ void clear_screen();
 
 // Viser tekst til skjermen
 void printf(const char *message, ...);
+void error_message(const char *message, ...);
 
 void update_cursor(int x, int y);
 

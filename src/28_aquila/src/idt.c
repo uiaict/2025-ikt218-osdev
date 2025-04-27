@@ -13,6 +13,8 @@
 bool left_shift_pressed = false;
 bool right_shift_pressed = false;
 bool caps_lock_on = false;
+bool left_ctrl_pressed = false;
+
 
  
 
@@ -36,6 +38,10 @@ extern void irq12();
 extern void irq13(); 
 extern void irq14(); 
 extern void irq15(); 
+
+extern int input_cursor;
+extern int input_len;
+extern int in_nano; // 0 = aquila, 1 = program mode
 
 extern volatile uint32_t tick;
 
@@ -90,6 +96,7 @@ extern int input_start = 0;
 
 
 void irq_handler(registers_t *regs) {
+
     if (regs->int_no == 33) { // Keyboard interrupt IRQ 1
         uint8_t scancode = inb(0x60);
 
@@ -98,11 +105,17 @@ void irq_handler(registers_t *regs) {
         else if (scancode == 0xAA) { left_shift_pressed = false; }   // relased=false
         else if (scancode == 0x36) { right_shift_pressed = true; }
         else if (scancode == 0xB6) { right_shift_pressed = false; }
+        else if (scancode == 0x1D) { left_ctrl_pressed = true; }       // Left Ctrl down
+        else if (scancode == 0x9D) { left_ctrl_pressed = false; } // Left Ctrl up
         else if (scancode == 0x3A) { // caps lock
             caps_lock_on = !caps_lock_on;
         }
-        else if (!(scancode & 0x80)) { 
-            if (scancode < 128) { // Ensure scancode is within bounds
+        else if (!(scancode & 0x80)) {
+            if (scancode == 0x2D && (left_ctrl_pressed)) {
+                in_nano = 0;
+                close_nano(); // Close nano editor
+            } 
+            else if (scancode < 128) { // Ensure scancode is within bounds
 
                 bool shift_held = left_shift_pressed || right_shift_pressed;
                 unsigned char ascii_raw = scancode_ascii[scancode];
@@ -126,9 +139,10 @@ void irq_handler(registers_t *regs) {
                 // Enter handling, with prefix aquila, terminal look
                 if (scancode == 0x1C) { // Enter key
                     printf("\n");
-                    input_start = cursor;
                     buffer_handler(4, 0); // Enter key pressed
                 }
+
+                
 
                 if (scancode == 0x53) { // Delete key
                     int row = cursor / VGA_WIDTH;
@@ -150,8 +164,10 @@ void irq_handler(registers_t *regs) {
                         
                 
                         update_cursor(col, row); // Keep cursor in same place
-                        buffer_handler(3, 0); // move buffer cursor to right
-                        buffer_handler(1, 0); // Remove character from buffer
+                        if (input_cursor < input_len) {
+                            buffer_handler(3, 0); // move buffer cursor to right
+                            buffer_handler(1, 0); // Remove character from buffer
+                        }
                     }
                 } else if (scancode == 0x4B) { // Left arrow
                     if (cursor > input_start) {

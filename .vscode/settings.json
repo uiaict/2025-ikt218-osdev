@@ -18,7 +18,11 @@
         "limits.h": "c",
         "printf.h": "c",
         "stdarg.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "buffer.h": "c",
+        "filesystem.h": "c",
+        "song.h": "c",
+        "pit.h": "c"
     }
 
 }

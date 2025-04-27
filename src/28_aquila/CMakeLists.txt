@@ -72,6 +72,8 @@ add_executable(uiaos-kernel
 	src/buffer.c
 	src/song.c
 	src/pcspeaker.c
+	src/filesystem.c
+	src/nano.c
 )
 
 # Include directories for the kernel target
