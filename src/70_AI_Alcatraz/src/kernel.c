@@ -7,7 +7,8 @@
 #include "keyboard.h"
 #include "memory.h"
 #include "pit.h"
-#include "song.h" // Include the song header
+#include "song.h"    // Include the song header
+#include "matrix.h"  // Include the matrix animation header
 #include <multiboot2.h>
 
 // End of kernel - defined in linker script
@@ -116,6 +117,44 @@ void play_music() {
     }
 }
 
+// Function to run the Matrix rain animation
+void run_matrix_animation() {
+    printf("Initializing Matrix rain animation...\n");
+    sleep_interrupt(1000);
+    
+    // Start the Matrix animation (this function contains the animation loop)
+    matrix_start();
+}
+
+// Global flag for feature selection
+volatile int selected_feature = 0;
+
+// Handle keyboard input for feature selection
+void handle_key_press(char key) {
+    if (key == '1') {
+        selected_feature = 1;  // Music player
+        printf("Selected feature: Music Player\n");
+    } else if (key == '2') {
+        selected_feature = 2;  // Matrix rain animation
+        printf("Selected feature: Matrix Rain Animation\n");
+    } else if (key == '0') {
+        selected_feature = 0;  // Return to menu
+        printf("Returning to menu...\n");
+    }
+}
+
+// Show feature selection menu
+void show_menu() {
+    clear_screen();
+    printf("========================================\n");
+    printf("       AI Alcatraz OS Feature Menu      \n");
+    printf("========================================\n");
+    printf("Please select a feature:\n\n");
+    printf("1. Music Player\n");
+    printf("2. Matrix Rain Animation\n");
+    printf("\nPress the number key to select...\n");
+}
+
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialize GDT
     gdt_init();
@@ -139,13 +178,37 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialize PIT
     init_pit();
     
-    // Clear screen again after all the initialization messages
-    clear_screen();
-    printf("Hello, Kernel!\n");
-    printf("System initialized with Memory Management and PIT\n");
+    // Set up keyboard callback for feature selection
+    register_keyboard_callback(handle_key_press);
     
-    // Start playing music instead of the old continuous test loop
-    play_music();
+    // Main program loop
+    while (1) {
+        // Display menu and wait for selection
+        show_menu();
+        
+        // Wait for user input
+        selected_feature = 0;
+        while (selected_feature == 0) {
+            sleep_interrupt(100);
+        }
+        
+        // Run the selected feature
+        switch (selected_feature) {
+            case 1:
+                play_music();
+                break;
+            case 2:
+                run_matrix_animation();
+                break;
+            default:
+                // Should never reach here, but just in case
+                selected_feature = 0;
+                continue;
+        }
+        
+        // Reset selection when returning from feature
+        selected_feature = 0;
+    }
     
     return 0;
 }

@@ -68,6 +68,7 @@ set(KERNEL_SOURCES
     src/memory.c
     src/pit.c
     src/song.c
+    src/matrix.c
 )
 
 # Add executable target for the kernel

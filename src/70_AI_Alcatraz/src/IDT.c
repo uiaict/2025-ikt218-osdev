@@ -176,6 +176,10 @@ void keyboard_handler(registers_t* regs) {
                 
                 if (c != 0) {
                     add_to_buffer(c);
+                    
+                    // Call the keyboard callback if a key is pressed
+                    extern void notify_key_pressed(char);
+                    notify_key_pressed(c);
                 }
             }
             break;

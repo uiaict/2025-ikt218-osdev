@@ -4,11 +4,18 @@
 #include "libc/stdint.h"
 #include "libc/stdbool.h"
 
+// Keyboard callback function type
+typedef void (*keyboard_callback_t)(char);
+
 // Keyboard buffer functions
 char* get_keyboard_buffer();
 void clear_keyboard_buffer();
 bool is_key_pressed(uint8_t scancode);
 void handle_backspace();
+
+// Keyboard callback functions
+void register_keyboard_callback(keyboard_callback_t callback);
+void notify_key_pressed(char c);
 
 // Special key scancodes
 #define KEY_ESC         0x01
