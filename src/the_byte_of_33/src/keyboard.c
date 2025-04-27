@@ -1,5 +1,6 @@
 #include "keyboard.h"
 #include "io.h"
+#include "libc/stdio.h"
 
 // Simple scancode to ASCII lookup table (US QWERTY, non-shifted)
 static const char scancode_to_ascii[] = {
@@ -10,13 +11,14 @@ static const char scancode_to_ascii[] = {
     // Add more as needed
 };
 
+static char last_char = 0; // Store the last character pressed
+
 void keyboard_handler(void) {
     // Read scancode from keyboard port (0x60)
     uint8_t scancode = inb(0x60);
 
     // Ignore key release (bit 7 set)
     if (scancode & 0x80) {
-        outb(0xA0, 0x20); 
         outb(0x20, 0x20); // EOI to master PIC
         return;
     }
@@ -25,9 +27,17 @@ void keyboard_handler(void) {
     char c = (scancode < sizeof(scancode_to_ascii)) ? scancode_to_ascii[scancode] : 0;
     if (c) {
         putchar(c); // Print character
+        last_char = c; // Store the last character
     }
 
     // Send EOI
-    outb(0xA0, 0x20); // Slave PIC
     outb(0x20, 0x20); // Master PIC
+}
+
+char keyboard_get_last_char(void) {
+    return last_char;
+}
+
+void keyboard_clear_last_char(void) {
+    last_char = 0;
 }

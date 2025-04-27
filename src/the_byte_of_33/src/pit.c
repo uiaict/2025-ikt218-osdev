@@ -10,6 +10,7 @@ static volatile uint32_t pit_ticks = 0;
 
 static void pit_callback(registers_t *regs) {
     pit_ticks++;
+    outb(0x20, 0x20); // Send EOI to Master PIC
     (void)regs;
 }
 

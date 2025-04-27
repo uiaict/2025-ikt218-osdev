@@ -28,3 +28,9 @@ uintptr_t get_kernel_heap_start() {
 uintptr_t get_kernel_heap_end() {
     return kernel_heapE;
 }
+
+void free(void* ptr) {
+    // For simplicity, this implementation does nothing
+    // A real implementation would mark the memory as free
+    (void)ptr;
+}

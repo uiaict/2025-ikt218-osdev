@@ -71,6 +71,7 @@ add_executable(uiaos-kernel
 	src/keyboard.c
 	src/kernel_main.c
 	src/interrupt.asm
+	src/song.cpp
 )
 
 # Include directories for the kernel target
@@ -80,6 +81,7 @@ target_include_directories(uiaos-kernel PUBLIC include)
 target_include_directories(uiaos-kernel PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/the_byte_of_33/include   # <gdt.h>, <io.h>, …
     ${CMAKE_CURRENT_SOURCE_DIR}/src/the_byte_of_33           # lets <libc/stdint.h> resolve
+	${CMAKE_CURRENT_SOURCE_DIR}/src/the_byte_of_33/include/song
 )
 
 # Specify compile options for C and C++

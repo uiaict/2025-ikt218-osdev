@@ -23,12 +23,24 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
-/* --------------------------------------------------------------------- */
-/*  Kernel entry point – called from multiboot2.asm / Limine            */
-/* --------------------------------------------------------------------- */
-int main(uint32_t magic, struct multiboot_info *mb_info_addr)
-{
-    (void)magic;        /* we’re not using them yet, silence warnings   */
+// Define ISR handlers
+static void isr0_handler(registers_t* r) {
+    (void)r; // Ignore the dummy registers
+    puts("Interrupt 0 (Divide by Zero) handled\n");
+}
+
+static void isr1_handler(registers_t* r) {
+    (void)r;
+    puts("Interrupt 1 (Debug) handled\n");
+}
+
+static void isr2_handler(registers_t* r) {
+    (void)r;
+    puts("Interrupt 2 (NMI) handled\n");
+}
+
+int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
+    (void)magic;
     (void)mb_info_addr;
 
     /* 1. Install the Global Descriptor Table and switch segments */
@@ -39,12 +51,16 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
     print_memory_layout();
     init_pit();
     /* 2. Use VGA text mode to say hello */
-    set_color(0x0A);            /* light-green on black                */
+    set_color(0x0A);  /* light-green on black                */
     puts("The byte of 33: GDT loaded!\n");
-    puts("Penis\n");
 
     init_idt();
     init_irq();
+
+    // Register ISR handlers for test interrupts
+    register_interrupt_handler(0, isr0_handler);
+    register_interrupt_handler(1, isr1_handler);
+    register_interrupt_handler(2, isr2_handler);
 
     // Enable interrupts
     __asm__ volatile ("sti");
@@ -55,8 +71,11 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
     __asm__ volatile ("int $1"); // Trigger interrupt 1
     __asm__ volatile ("int $2"); // Trigger interrupt 2
 
+    // Ensure IRQ1 is enabled after ISR tests
+    outb(0x21, 0xFC); // 0xFC = 11111110, enable IRQ0 and IRQ1
+
     puts("Type on the keyboard to see characters....\n");
 
-    /* 3. Halt CPU in an idle loop */
+    /* Call kernel_main (idk why) */
     return kernel_main();
 }

@@ -5,10 +5,20 @@
 #ifndef KERNEL_MEMORY_H
 #define KERNEL_MEMORY_H
 
-void init_kernel_memory(void* kernel_end);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void* malloc(size_t size);
+void free(void* ptr);
+
+#ifdef __cplusplus
+}
+#endif
+
+void init_kernel_memory(void* kernel_end);
 uintptr_t get_kernel_heap_start();
 uintptr_t get_kernel_heap_end();
 
-#endif // KERNEL_MEMORY_H
+
+#endif
