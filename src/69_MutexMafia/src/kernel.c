@@ -41,10 +41,10 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     mafiaPrint("\n");
 
     
-    void* some_memory = malloc(12345); 
-    void* memory2 = malloc(54321); 
-    void* memory3 = malloc(13331);
-    print_memory_layout();
+    //void* some_memory = malloc(12345); 
+    //void* memory2 = malloc(54321); 
+    //void* memory3 = malloc(13331);
+    //print_memory_layout();
 
     
     return kernel_main(); 

@@ -2,51 +2,48 @@
 #include "libc/stdint.h"
 #include "../io/printf.h"
 
-static uint32_t* page_directory = 0;   // Define a pointer to the page directory and initialize it to zero
-static uint32_t page_dir_loc = 0;      // Define the location of the page directory and initialize it to zero
-static uint32_t* last_page = 0;        // Define a pointer to the last page and initialize it to zero
+//Denne fila er hentet fra solution guide til Per Arne Andersen, med små endringer.
 
-/* Paging now will be really simple
- * we reserve 0-8MB for kernel stuff
- * heap will be from approx 1mb to 4mb
- * and paging stuff will be from 4mb
- */
+static uint32_t* page_directory = 0;
+static uint32_t page_dir_loc = 0;      
+static uint32_t* last_page = 0;       
 
-// Function to map virtual addresses to physical addresses
-void paging_map_virtual_to_phys(uint32_t virt, uint32_t phys)
+//heap vil være fra 1mb til 4mb
+//Paging vil være fra 4mb 
+
+
+void map_virt_to_phys(uint32_t virt, uint32_t phys)
 {
-    uint16_t id = virt >> 22;        // Get the upper 10 bits of the virtual address to use as index in the page directory
-    for(int i = 0; i < 1024; i++)   // Loop through all 1024 page table entries
+    uint16_t id = virt >> 22;       
+    for(int i = 0; i < 1024; i++)   
     {
-        last_page[i] = phys | 3;    // Set the page table entry to the physical address with the present and write permissions set
-        phys += 4096;               // Increment the physical address by the page size of 4 KB
+        last_page[i] = phys | 3;   
+        phys += 4096;               
     }
-    page_directory[id] = ((uint32_t)last_page) | 3;  // Set the page directory entry for the virtual address to the physical address of the page table with present and write permissions set
-    last_page = (uint32_t *)(((uint32_t)last_page) + 4096); // Move to the next page in memory
+    page_directory[id] = ((uint32_t)last_page) | 3;  
+    last_page = (uint32_t *)(((uint32_t)last_page) + 4096); 
 }
 
-// Function to enable paging
-void paging_enable()
+void enable_paging()
 {
-    asm volatile("mov %%eax, %%cr3": :"a"(page_dir_loc)); // Load the physical address of the page directory into the CR3 register
-    asm volatile("mov %cr0, %eax");         // Load the CR0 register into the EAX register
-    asm volatile("orl $0x80000000, %eax");  // Set the paging enable bit in the EAX register
-    asm volatile("mov %eax, %cr0");         // Load the EAX register into the CR0 register to enable paging
+    asm volatile("mov %%eax, %%cr3": :"a"(page_dir_loc));  // laster pageDir addresse til eax, deretter cr3
+    asm volatile("mov %cr0, %eax");                        // laster cr0 register til eax
+    asm volatile("orl $0x80000000, %eax");                 // setter bit 31 i cr0 registeret
+    asm volatile("mov %eax, %cr0");                        // laster eax (oppdatert cr0) tilbake til cr0 registeret
 }
 
-// Function to initialize paging
 void init_paging()
 {
     mafiaPrint("Setting up paging\n");
-    page_directory = (uint32_t*)0x400000;      // Set the page directory to start at 4 MB
-    page_dir_loc = (uint32_t)page_directory;  // Set the physical address of the page directory
-    last_page = (uint32_t *)0x404000;         // Set the last page to start at 4 MB + 4 KB
-    for(int i = 0; i < 1024; i++)             // Loop through all 1024 page directory entries
+    page_directory = (uint32_t*)0x400000;      // Setter page directory til å starte på 4 MB
+    page_dir_loc = (uint32_t)page_directory;  // Setter fysisk addresse til page directory
+    last_page = (uint32_t *)0x404000;         // Setter last_page til å starte på   4 MB + 4 KB
+    for(int i = 0; i < 1024; i++)             // Looper gjennom alle
     {
-        page_directory[i] = 0 | 2;            // Set the page directory entry to not present with supervisor level read/write permissions
+        page_directory[i] = 0 | 2;            // Setter alle entries i page table adressene til 0 og setter read/write bit. 
     }
-    paging_map_virtual_to_phys(0, 0);         // Map the first 4 MB of virtual memory to the first 4 MB of physical memory
-    paging_map_virtual_to_phys(0x400000, 0x400000); // Map the next 4 MB of virtual memory to the next 4 MB of physical memory
-    paging_enable();                          // Enable paging
+    map_virt_to_phys(0, 0);         // Mapper de første 4MB av virtuell til fysisk minne
+    map_virt_to_phys(0x400000, 0x400000); // Mapper de neste 4MB av virtuell til fysisk minne
+    enable_paging();                         
     mafiaPrint("Paging was successfully enabled!\n");
 }
