@@ -10,6 +10,7 @@
 #include <libc/irq.h>
 #include <keyboard.h>
 #include "memory.h"  // Changed from <memory.h>
+#include "libc/song.h"
 
 extern uint32_t end; // Linker-provided symbol for end of kernel
 
@@ -22,7 +23,34 @@ struct multiboot_info {
 // A simple test handler for IRQ debugging
 void test_irq_handler(registers_t regs) {
     printf("TEST IRQ HANDLER CALLED FOR IRQ %d\n", regs.int_no - 32);
+    
 }
+
+SongPlayer* create_song_player() {
+    SongPlayer* player = (SongPlayer*)malloc(sizeof(SongPlayer));
+    player->play_song = play_song_impl;
+    return player;
+}
+
+void play_music() {
+    // How to play music
+    Song songs[] = {
+        {starwars_theme, sizeof(starwars_theme) / sizeof(Note)}
+    };
+    uint32_t n_songs = sizeof(songs) / sizeof(Song);
+
+    SongPlayer* player = create_song_player();
+
+    
+    for(uint32_t i = 0; i < n_songs; i++) {
+        printf("Playing Song...\n");
+        player->play_song(&songs[i]);
+        printf("Finished playing the song.\n");
+    }
+    
+    free(player);
+}
+
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialize terminal for output
@@ -64,6 +92,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Enable interrupts after all handlers are registered
     asm volatile("sti");
     printf("Interrupts enabled\n");
+
+    play_music();
 
     int counter = 0;
     printf("Testing PIT with sleep functions...\n");

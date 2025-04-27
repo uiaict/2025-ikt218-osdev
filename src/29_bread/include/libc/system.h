@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include "print.h"
 
 // Function to halt system execution
 static inline void panic(const char* message) {
