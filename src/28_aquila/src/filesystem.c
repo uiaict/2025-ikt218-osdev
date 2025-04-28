@@ -96,3 +96,17 @@ void fs_add_file_to_buffer(char filename[]) {
         }
     }
 }
+
+void fs_remove(char filename[]) {
+    for (int i = 0; i < file_count; i++) {
+        if (strcmp(files[i].name, filename) == 0) {
+            for (int j = i; j < file_count - 1; j++) {
+                files[j] = files[j + 1];
+            }
+            file_count--;
+            printf("File removed: %s\n", filename);
+            return;
+        }
+    }
+    printf("File not found: %s\n", filename);
+}

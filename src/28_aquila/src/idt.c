@@ -240,7 +240,6 @@ void irq_handler(registers_t *regs) {
     }
     else if (regs->int_no == 32) {
         tick++;
-
     } 
 
     if (regs->int_no >= 40) { // If IRQ involved the slave PIC (IRQ 8-15)

@@ -66,6 +66,10 @@ void cmd_cat(char *filename) {
     fs_cat(filename);
 }
 
+void cmd_remove(char *filename) {
+    fs_remove(filename);
+}
+
 void cmd_nano(char *filename) {
     // if filename is empty, return
     if (filename == NULL) {
@@ -169,6 +173,11 @@ void buffer_handler(int action, char ascii) {
                     // cat function with parameter
                     char *filename = buffer + 4; // skip "cat "
                     cmd_cat(filename); // call cat function with filename
+                } else if (startsWith(buffer, "rm") == 0) {
+                    // cat function with parameter
+                    char *filename = buffer + 3; // skip "cat "
+                    cmd_remove(filename); // call cat function with filename
+                    
                 } else if (startsWith(buffer, "nano") == 0) {
                     // cat function with parameter
                     char *raw_filename = buffer + 4;
