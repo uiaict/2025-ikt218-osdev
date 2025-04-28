@@ -4,50 +4,108 @@
 #include "libc/string.h"
 #include "libc/stdbool.h"
 
-void start_cli(void)
-{
-    terminal_clear();
-    printf("Entering terminal mode. Type 'exit' to leave.\n");
-    printf("> ");
+#define CLI_BUF_SIZE 128
 
-    char buffer[256];
-    int index = 0;
+// Trim leading/trailing whitespace in place
+static void trim(char *s)
+{
+    // Trim front
+    char *p = s;
+    while (*p == ' ' || *p == '\t')
+        p++;
+    if (p != s)
+        memmove(s, p, strlen(p) + 1);
+
+    // Trim back
+    int len = strlen(s);
+    while (len > 0 && (s[len - 1] == ' ' || s[len - 1] == '\t' || s[len - 1] == '\r'))
+    {
+        s[--len] = '\0';
+    }
+}
+
+// Read a line into buf (including handling backspace), returns when Enter pressed
+static void read_line(char *buf, int max)
+{
+    int idx = 0;
     while (1)
     {
         char c = getChar();
 
-        if (c == '\n') // user pressed Enter
+        if (c == '\r' || c == '\n')
         {
-            buffer[index] = '\0';
-            if (strcmp(buffer, "exit") == 0)
-            {
-                printf("Exiting terminal mode...\n");
-                break;
-            }
-            else
-            {
-                printf("\nYou typed: %s\n", buffer);
-            }
-            index = 0; // reset buffer for next line
-            printf("> ");
+            terminal_put('\n');
+            buf[idx] = '\0';
+            return;
         }
-        else if (c == '\b') // user pressed Backspace
+        else if (c == '\b')
         {
-            if (index > 0)
+            if (idx > 0)
             {
-                index--;
+                idx--;
                 terminal_put('\b');
                 terminal_put(' ');
                 terminal_put('\b');
             }
         }
+        else if (c >= 32 && idx < max - 1)
+        {
+            buf[idx++] = c;
+            terminal_put(c);
+        }
+        // ignore other control chars
+    }
+}
+
+void start_cli(void)
+{
+    char line[CLI_BUF_SIZE];
+
+    terminal_setcolor(VGA_COLOR_YELLOW);
+    terminal_clear();
+    printf("Entering terminal mode. Type 'help' for commands, 'exit' to leave.\n");
+
+    while (1)
+    {
+        printf("mangOS> ");
+        read_line(line, CLI_BUF_SIZE);
+        trim(line);
+        if (line[0] == '\0')
+            continue; // empty
+
+        // Split into command + args
+        char *cmd = strtok(line, " ");
+        char *args = strtok(NULL, "");
+
+        // Dispatch
+        if (strcmp(cmd, "exit") == 0)
+        {
+            printf("Exiting terminal mode...\n");
+            break;
+        }
+        else if (strcmp(cmd, "help") == 0)
+        {
+            printf("Available commands:\n");
+            printf("  help        - show this message\n");
+            printf("  clear       - clear the screen\n");
+            printf("  echo <text> - echo text\n");
+            printf("  exit        - exit CLI\n");
+            // add your own here: snake, play, meminfo, etc.
+        }
+        else if (strcmp(cmd, "clear") == 0)
+        {
+            terminal_clear();
+        }
+        else if (strcmp(cmd, "echo") == 0)
+        {
+            if (args)
+                printf("%s\n", args);
+            else
+                printf("\n");
+        }
         else
         {
-            if ((long unsigned int)index < sizeof(buffer) - 1)
-            {
-                buffer[index++] = c;
-                terminal_put(c); // Echo the character
-            }
+            printf("Unknown command: '%s'  (type 'help')\n", cmd);
         }
     }
 }

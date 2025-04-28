@@ -2,7 +2,7 @@
 #include "idt.h"
 #include "common.h"
 
-static uint32_t ticks = 0;
+uint32_t ticks = 0;
 
 // Define the IRQ handler function
 void pit_irq_handler(registers_t *regs, void *context)

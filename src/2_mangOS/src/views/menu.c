@@ -9,7 +9,7 @@ int take_input()
     int choice = 0;
     input[0] = getChar();
     input[1] = '\0';
-    if (input[0] >= '1' && input[0] <= '4')
+    if (input[0] >= '1' && input[0] <= '5')
     {
         choice = input[0] - '0';
     }
@@ -48,13 +48,25 @@ int menu()
         printf("%s", mango_logo[i]);
         terminal_put('\n');
     }
-    printf("Welcome to the MangOS menu!\n");
-    printf("1. Song App\n");
-    printf("2. Memory Overview\n");
-    printf("3. Terminal\n");
-    printf("4. Exit\n");
-    printf("> ");
+    // print title
+    printf("\n");
+    printf("           mangOS\n\n");
+
+    // menu options
+    terminal_setcolor(VGA_COLOR_LIGHT_GREY);
+    printf("       1. Song App\n");
+    printf("       2. Memory Overview\n");
+    printf("       3. Terminal\n");
+    printf("       4. Snake Game\n");
+    printf("       5. Exit\n\n");
+
+    // prompt
+    terminal_setcolor(VGA_COLOR_YELLOW);
+    printf("       > ");
     int choice = take_input();
-    printf("------------------------------------------\n");
+
+    // separator
+    terminal_setcolor(VGA_COLOR_DARK_GREY);
+    printf("\n       ----------------------------\n\n");
     return choice;
 }

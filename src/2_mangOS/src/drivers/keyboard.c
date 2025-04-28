@@ -2,6 +2,7 @@
 
 #include "libc/stdint.h"
 #include "libc/terminal.h"
+#include "keyboard.h"
 #include "idt.h"
 #include "common.h"
 #include "input.h"
@@ -61,4 +62,21 @@ char getChar(void)
     char c = kbd_buffer[kbd_tail];
     kbd_tail = (kbd_tail + 1) % KBD_BUF_SIZE;
     return c;
+}
+
+void clearBuffer(void)
+{
+    while (kbd_head != kbd_tail)
+    {
+        getChar();
+    }
+}
+
+char peekChar(void)
+{
+    if (kbd_head == kbd_tail)
+    {
+        return 0; // no key waiting
+    }
+    return kbd_buffer[kbd_tail];
 }

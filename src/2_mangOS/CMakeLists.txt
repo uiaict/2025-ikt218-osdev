@@ -68,6 +68,7 @@ add_executable(uiaos-kernel
 	src/libc/stdlib.c
 	src/libc/system.c
 	src/libc/panic.c
+	src/libc/rand.c
 	src/isr.asm
 	src/idt.asm
 	src/isr.c
@@ -85,6 +86,7 @@ add_executable(uiaos-kernel
 	src/apps/music/songplayer.c
 	src/views/menu.c
 	src/apps/dev/cli.c
+	src/apps/games/snake.c
 )
 
 # Include directories for the kernel target

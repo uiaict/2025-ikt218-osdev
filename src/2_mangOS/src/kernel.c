@@ -13,6 +13,7 @@
 #include "music/songplayer.h"
 #include "view.h"
 #include "dev/cli.h"
+#include "games/snake.h"
 
 struct multiboot_info
 {
@@ -68,7 +69,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
     asm volatile("int $0x4");
     asm volatile("int $0x5");
     printf("Sleeping for 5 seconds...\n");
-    sleep_interrupt(5000);
+    // sleep_interrupt(5000);
     // Uncomment to cause panic
     // asm volatile("int $0x6");
 
@@ -105,10 +106,14 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
             start_cli();
             break;
 
+        case 4:
+            start_snake_game();
+            break;
+
         default:
             break;
         }
-    } while (choice != 4);
+    } while (choice != 5);
 
     printf("Exiting...\n");
 
