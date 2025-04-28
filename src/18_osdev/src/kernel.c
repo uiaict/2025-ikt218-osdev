@@ -9,8 +9,20 @@
 #include "libc/monitor.h"
 #include "PIT/pit.h"
 #include <multiboot2.h>
+#include "song/song.h"
+#include "song/SongPlayer.h"
 
 extern uint32_t end;
+
+// Song mario_theme = {
+//     .notes = music_1,
+//     .length = sizeof(music_1) / sizeof(Note)
+// };
+
+Song wii_theme = {
+    .notes = music_wii_theme,
+    .length = sizeof(music_wii_theme)/sizeof(Note)
+};
 
 struct multiboot_info {
     uint32_t size;
@@ -29,7 +41,6 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_kernel_memory(&end);
     init_paging();
     
-
     void* mem1 = malloc(20);
     void* mem2 = malloc(50);
 
@@ -42,6 +53,11 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     sleep_busy(500);       // sleep 0.5 second using busy waiting
     monitor_write("Slept 0.5 second!\n");
+
+
+    // play_song(&mario_theme);
+    play_song(&wii_theme);
+    
 
     while (1);
     
