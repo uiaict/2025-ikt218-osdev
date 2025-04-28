@@ -10,6 +10,9 @@
 
 #include "apps/shell.h"
 
+#include "kernel/memory.h"
+#include "kernel/pit.h"
+
 extern uint32_t end; // This is defined in arch/i386/linker.ld
 
 struct multiboot_info {
@@ -17,6 +20,7 @@ struct multiboot_info {
   uint32_t reserved;
   struct multiboot_tag *first;
 };
+
 
 int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   cursor_disable();
@@ -42,6 +46,20 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   print("Enabling interrupts...\n");
   asm volatile("sti");
   print("Interrupts enabled.\n");
+
+  // Initialize the kernel's memory manager using the end address of the kernel.
+  init_kernel_memory(&end); // <------ THIS IS PART OF THE ASSIGNMENT
+
+  // Initialize paging for memory management.
+  init_paging(); // <------ THIS IS PART OF THE ASSIGNMENT
+
+  // Print memory information.
+  print_memory_layout(); // <------ THIS IS PART OF THE ASSIGNMENT
+
+  // Initialize PIT
+  //init_pit(); // <------ THIS IS PART OF THE ASSIGNMENT
+
+  // Print a hello world message.
 
   shell_init();
   while (true) {

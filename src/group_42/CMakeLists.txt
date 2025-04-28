@@ -67,8 +67,8 @@ add_executable(uiaos-kernel
 	src/gdt.asm
 	src/print.h
 	src/print.c
-	src/malloc.h
-	src/malloc.c
+	#src/malloc.h
+	#src/malloc.c
 	src/idt.h
 	src/idt.c
 	src/interrupt_wrappers.asm
@@ -80,6 +80,9 @@ add_executable(uiaos-kernel
 	src/pic.c
 	src/apps/shell.h
 	src/apps/shell.c
+	src/memory/memory.c
+	src/memory/malloc.c
+	src/memory/memutils.c
 )
 
 # Include directories for the kernel target
