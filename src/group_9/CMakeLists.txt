@@ -58,14 +58,21 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 
 set(SOURCES
     src/kernel.c
+	src/serial.c 
     src/gdt.c
     src/terminal.c
     src/string.c
+	src/idt.c
+    src/isr.c
+    src/irq.c
+    src/keyboard.c
+	src/port_io.c
 )
 
 set(ASM_SOURCES
     src/gdt.asm
     src/multiboot2.asm
+	src/isr.asm
 )
 
 add_executable(uiaos-kernel ${SOURCES} ${ASM_SOURCES})
@@ -75,8 +82,6 @@ add_executable(uiaos-kernel ${SOURCES} ${ASM_SOURCES})
 target_include_directories(uiaos-kernel PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libc
-	${CMAKE_CURRENT_SOURCE_DIR}/src/group_9/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/group_9/include/libc
 )
 
 

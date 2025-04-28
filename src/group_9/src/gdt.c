@@ -1,7 +1,7 @@
 #include "gdt.h"
 
 // Global Descriptor Table entries and pointer
-struct gdt_entry gdt[3];
+struct gdt_entry gdt[5];
 struct gdt_ptr gp;
 
 // Set a descriptor in the GDT
@@ -19,7 +19,7 @@ static void gdt_set_gate(int num, uint32_t base, uint32_t limit, uint8_t access,
 
 // Install the GDT
 void gdt_install() {
-    gp.limit = (sizeof(struct gdt_entry) * 3) - 1;
+    gp.limit = (sizeof(struct gdt_entry) * 5) - 1;
     gp.base = (uint32_t)&gdt;
 
     // Set up GDT entries
