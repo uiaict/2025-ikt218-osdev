@@ -2,7 +2,7 @@
 #define INTERRUPTS_H
 
 #include "libc/stdint.h"
-#include "../i386/gdt.h"
+#include "i386/gdt.h"
 
 #define ISR1 1
 #define ISR2 2

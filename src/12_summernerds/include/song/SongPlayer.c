@@ -1,5 +1,5 @@
-#include <../include/song/song.h>
-#include "../include/kernel/pit.h"
+#include <song/song.h>
+#include "kernel/pit.h"
 #include <libc/stdio.h>
 #include "common.h"
 

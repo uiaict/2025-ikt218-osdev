@@ -10,7 +10,7 @@
 // #include "i386/ISR.h"
 #include "i386/interuptRegister.h"
 #include "i386/monitor.h"
-#include "../include/kernel/pit.h"
+#include "kernel/pit.h"
 #include "kernel/memory.h"
 // #include <kheap.h>
 // #include <paging.h>
@@ -35,7 +35,7 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     // primt memory layout to screen
     print_memory_layout();
 
-    // Initialize PIT (programable interval timer)
+    // Initialize PIT (programmable interval timer)
     init_pit();
 
     // Here we test the memory allocation

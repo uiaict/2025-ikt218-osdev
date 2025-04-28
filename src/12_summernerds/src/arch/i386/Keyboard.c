@@ -4,14 +4,14 @@
 
 // #include "libc/stdint.h"
 // #include "libc/stddef.h"
-// #include "../src/arch/i386/ISR.h"
-// #include "../src/arch/i386/IRQ.h"
+// #include "i386/ISR.h"
+// #include "i386/IRQ.h"
 // #include "libc/stdbool.h"
 
 /*
-#include "../src/arch/i386/io.h"
-#include "../src/screen.h"
-#include "../src/arch/i386/print.h"
+#include "i386/io.h"
+#include "screen.h"
+#include "i386/print.h"
 */
 
 #include "i386/keyboard.h"

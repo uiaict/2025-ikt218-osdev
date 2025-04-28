@@ -1,10 +1,10 @@
 /*
 #include "libc/stdint.h"
-#include "../i386/IDT.h"
-#include "../i386/print.h"
-#include "../src/screen.h"
-#include "../src/arch/i386/ISR.h"
-#include "../src/arch/i386/IRQ.h"
+#include "i386/IDT.h"
+#include "i386/print.h"
+#include "screen.h"
+#include "i386/ISR.h"
+#include "i386/IRQ.h"
 */
 
 #include "i386/interuptRegister.h"
