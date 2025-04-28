@@ -1,4 +1,4 @@
-#include "i386/gdt.h"
+#include "i386/descriptorTables.h"
 // #include "libc/stdint.h"
 
 //////////////////////////////////100%gp  fra nå...

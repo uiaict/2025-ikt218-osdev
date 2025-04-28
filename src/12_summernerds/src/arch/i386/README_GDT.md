@@ -26,7 +26,7 @@ base_low, base_middle og base_high
 
 GDTPointer:
 - Holder adressen til GDT og størrelsen på tabellen
-- gdt_flush((uint32_t)&gdt_ptr); som ligger i static void init_gdt() i gdt.c. filen, henger sammen med pointeren i gdt.h filen, GDTPointer bruker funksjonen flush() for å laste opp GDT tabellen i CPU-en.
+- gdt_flush((uint32_t)&gdt_ptr); som ligger i static void init_gdt() i gdt.c. filen, henger sammen med pointeren i descriptorTables.h filen, GDTPointer bruker funksjonen flush() for å laste opp GDT tabellen i CPU-en.
 
 9A = 1001 1010  (i gdt.c filen i void initGDT filen) er access permission
 

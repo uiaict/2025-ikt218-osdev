@@ -1,5 +1,4 @@
 #include "i386/dictionary.h"
-#include "/"
 
 int strcmp(const char *str1, const char *str2)
 {

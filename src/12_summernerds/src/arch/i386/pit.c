@@ -3,7 +3,7 @@
 #include <libc/stdio.h>
 #include "i386/ISR.h"
 #include "i386/IRQ.h"
-#include "i386/gdt.h"
+#include "i386/descriptorTables.h"
 #include "common.h"
 #include "i386/IRQ.h"
 // #include <kernel/io.c>

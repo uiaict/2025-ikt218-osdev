@@ -5,7 +5,7 @@
 #include "i386/keyboard.h"
 // #include "i386/print.h"
 #include "common.h"
-#include "i386/gdt.h"
+#include "i386/descriptorTables.h"
 // #include "i386/IDT.h"
 // #include "i386/ISR.h"
 #include "i386/interuptRegister.h"

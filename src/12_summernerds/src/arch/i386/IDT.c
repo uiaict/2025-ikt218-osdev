@@ -9,7 +9,7 @@
 
 #include "i386/interuptRegister.h"
 #include "common.h"
-#include "i386/gdt.h"
+#include "i386/descriptorTables.h"
 
 extern void idt_flush(uint32_t);
 
