@@ -1,9 +1,7 @@
 #pragma once
 
-
 #ifndef IRQ_H
 #define IRQ_H
-
 
 #define IRQ_COUNT 16
 
@@ -24,7 +22,6 @@
 #define IRQ14 46
 #define IRQ15 47
 #define IRQ_COUNT 16
-
 
 typedef void (*isr_t)(registers_t);
 

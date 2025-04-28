@@ -54,16 +54,16 @@
 #define IRQ_COUNT 16
 
 // ISR and IRQ handlers
-extern void isr0 ();
-extern void isr1 ();
-extern void isr2 ();
-extern void isr3 ();
-extern void isr4 ();
-extern void isr5 ();
-extern void isr6 ();
-extern void isr7 ();
-extern void isr8 ();
-extern void isr9 ();
+extern void isr0();
+extern void isr1();
+extern void isr2();
+extern void isr3();
+extern void isr4();
+extern void isr5();
+extern void isr6();
+extern void isr7();
+extern void isr8();
+extern void isr9();
 extern void isr10();
 extern void isr11();
 extern void isr12();
@@ -103,7 +103,6 @@ extern void irq13();
 extern void irq14();
 extern void irq15();
 
-
 // Initialize the interrupt request handlers
 void init_irq();
 
@@ -113,14 +112,14 @@ void init_interrupts();
 // Struct to hold register values pushed by the processor
 typedef struct InterruptRegisters
 {
-    uint32_t ds;                  // Data segment selector
+    uint32_t ds;                                     // Data segment selector
     uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax; // Pushed by pusha.
-    uint32_t int_no, err_code;    // Interrupt number and error code (if applicable)
-    uint32_t eip, cs, eflags, useresp, ss; // Pushed by the processor automatically.
+    uint32_t int_no, err_code;                       // Interrupt number and error code (if applicable)
+    uint32_t eip, cs, eflags, useresp, ss;           // Pushed by the processor automatically.
 } registers_t;
 
 // Enables registration of callbacks for interrupts or IRQs
-typedef void (*isr_t)(registers_t*, void*);
+typedef void (*isr_t)(registers_t *, void *);
 
 // Struct to hold information about an interrupt handler
 struct int_handler_t
@@ -131,8 +130,8 @@ struct int_handler_t
 };
 
 // Define an interrupt handler
-void register_irq_handler(int irq, isr_t handler, void* ctx);
-void register_interrupt_handler(uint8_t, isr_t handler, void*);
+void register_irq_handler(int irq, isr_t handler, void *ctx);
+void register_interrupt_handler(uint8_t, isr_t handler, void *);
 
 static struct int_handler_t int_handlers[IDT_entries];
 static struct int_handler_t irq_handlers[IRQ_COUNT];

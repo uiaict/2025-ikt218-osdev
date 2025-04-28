@@ -5,7 +5,8 @@
 #define MAX_INTERRUPTS 256
 #define MAX_LISTENERS_PER_ISR 4
 
-typedef struct registers {
+typedef struct registers
+{
     uint32_t ds;
     uint32_t edi, esi, ebp, esp;
     uint32_t ebx, edx, ecx, eax;
@@ -13,12 +14,12 @@ typedef struct registers {
     uint32_t eip, cs, eflags, useresp, ss;
 } registers_t;
 
-typedef void (*interrupt_listener_t)(registers_t* regs);
+typedef void (*interrupt_listener_t)(registers_t *regs);
 
 void isr_init();
 void subscribe_interrupt(uint8_t interrupt_number, interrupt_listener_t handler);
 void subscribe_global(interrupt_listener_t handler);
-void isr_dispatch(registers_t* regs);
+void isr_dispatch(registers_t *regs);
 
 // ISR stubs fra isr.asm
 extern void isr0();

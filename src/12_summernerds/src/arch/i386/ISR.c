@@ -22,7 +22,7 @@ void isr_handler(registers_t regs)
         /*monitor_write("Unhandled interrupt: ");
         monitor_write_hex(int_no);
         monitor_put('\n');*/
-        for (;;)
+        while (true)
             ; // Infinite loop if no handler is registered
     }
 }
