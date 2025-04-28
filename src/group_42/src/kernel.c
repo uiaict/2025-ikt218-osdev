@@ -10,6 +10,8 @@
 
 #include "apps/shell.h"
 
+extern uint32_t end; // This is defined in arch/i386/linker.ld
+
 struct multiboot_info {
   uint32_t size;
   uint32_t reserved;
