@@ -85,6 +85,7 @@ add_executable(uiaos-kernel
 	src/memory/memutils.c
 	src/apps/music/songplayer.c
 	src/views/menu.c
+	src/views/splash.c
 	src/apps/dev/cli.c
 	src/apps/games/snake.c
 )

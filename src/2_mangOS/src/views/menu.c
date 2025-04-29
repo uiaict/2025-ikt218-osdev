@@ -2,6 +2,7 @@
 #include "libc/stdio.h"
 #include "libc/terminal.h"
 #include "keyboard.h"
+#include "pit.h"
 
 int take_input()
 {
@@ -16,6 +17,7 @@ int take_input()
     else
     {
         printf("Invalid choice. Please try again.\n");
+        printf("       > ");
         return take_input();
     }
     return choice;
@@ -25,31 +27,9 @@ int menu()
 {
     terminal_clear();
     terminal_setcolor(VGA_COLOR_YELLOW);
-    const char *mango_logo[] = {
-        "             .-''''''-.",
-        "           .'        '.",
-        "          /            \\",
-        "         /              \\",
-        "        |                |",
-        "        |                |",
-        "         \\              /",
-        "          \\            /",
-        "           '.        .'",
-        "             '------'",
-        "                                            ,-----.   ,---.   ",
-        "      ,--,--,--.  ,--,--. ,--,--,   ,---.  '  .-.  ' '   .-'  ",
-        "      |        | ' ,-.  | |      \ | .-. | |  |  |  | `.  `-.  ",
-        "      |  |  |  | \ '-'  | |  ||  | ' '-' ' '  '-'  ' .-'    | ",
-        "      `--`--`--'  `--`--' `--''--' .`-  /   `-----'  `-----'  ",
-        "                                    `---'                      "};
 
-    for (size_t i = 0; i < sizeof(mango_logo) / sizeof(mango_logo[0]); i++)
-    {
-        printf("%s", mango_logo[i]);
-        terminal_put('\n');
-    }
     // print title
-    printf("\n");
+    printf("\n\n\n\n\n\n\n\n");
     printf("           mangOS\n\n");
 
     // menu options

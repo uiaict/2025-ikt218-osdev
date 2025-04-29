@@ -68,10 +68,10 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
     asm volatile("int $0x3");
     asm volatile("int $0x4");
     asm volatile("int $0x5");
-    printf("Sleeping for 5 seconds...\n");
-    // sleep_interrupt(5000);
     // Uncomment to cause panic
     // asm volatile("int $0x6");
+    splash_screen();
+    sleep_interrupt(2000);
 
     SongPlayer *player = create_song_player();
 
