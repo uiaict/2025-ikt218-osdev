@@ -62,7 +62,6 @@ enable_language(ASM)  #  Fortell CMake at vi bruker Assembly
 add_executable(uiaos-kernel 
     src/kernel.c
     src/screen.c
-    #src/song.c
     src/common.c
     src/multiboot2.s
     # SYSTEM
@@ -85,7 +84,7 @@ add_executable(uiaos-kernel
     src/memory/memutils.c
 
     # SONG
-    include/song/SongPlayer.c
+    src/song/songPlayer.c
 
 )
 

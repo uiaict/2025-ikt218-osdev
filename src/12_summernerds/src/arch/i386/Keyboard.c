@@ -1,5 +1,4 @@
 
-
 // keyboard.c
 
 // #include "libc/stdint.h"
@@ -7,18 +6,10 @@
 // #include "i386/ISR.h"
 // #include "i386/IRQ.h"
 // #include "libc/stdbool.h"
-
-/*
-#include "i386/io.h"
-#include "screen.h"
-#include "i386/print.h"
-*/
+// #include "screen.h"
 
 #include "i386/keyboard.h"
 #include "libc/system.h"
-
-// void print(const char* fmt, ...);
-// void write_line_to_terminal(const char* str, int line);
 
 bool shiftPressed = false;
 bool capsEnabled = false;

@@ -1,17 +1,16 @@
-#include <libc/stdint.h>
-#include <libc/stddef.h>
-#include "libc/stdbool.h"
-#include <screen.h>
 #include "i386/keyboard.h"
-// #include "i386/print.h"
-#include "common.h"
 #include "i386/descriptorTables.h"
-// #include "i386/IDT.h"
-// #include "i386/ISR.h"
 #include "i386/interuptRegister.h"
 #include "i386/monitor.h"
 #include "kernel/pit.h"
 #include "kernel/memory.h"
+#include <libc/stdint.h>
+#include <libc/stddef.h>
+#include "libc/stdbool.h"
+#include "common.h"
+#include <screen.h>
+// #include "i386/IDT.h"
+// #include "i386/ISR.h"
 // #include <kheap.h>
 // #include <paging.h>
 
@@ -19,7 +18,6 @@ extern uint32_t end; // Linker symbol marking the end of kernel
 
 int main(uint32_t magic, uint32_t mb_info_addr)
 {
-
     // initializing basic systems
     monitor_initialize();
     init_gdt();
@@ -51,7 +49,7 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     while (true)
     {
         printf("[%d]: Sleeping with busy-waiting (HIGH CPU)...\n", counter);
-        // sleep_busy(1000);
+        sleep_busy(1000);
         printf("[%d]: Slept using busy-waiting.\n", counter++);
 
         printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);

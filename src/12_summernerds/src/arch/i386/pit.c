@@ -1,12 +1,10 @@
+#include "i386/descriptorTables.h"
+#include "i386/ISR.h"
+#include "i386/IRQ.h"
 #include <kernel/pit.h>
 #include <libc/stdint.h>
 #include <libc/stdio.h>
-#include "i386/ISR.h"
-#include "i386/IRQ.h"
-#include "i386/descriptorTables.h"
 #include "common.h"
-#include "i386/IRQ.h"
-// #include <kernel/io.c>
 
 static volatile uint32_t pit_tickets = 0;
 
