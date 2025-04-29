@@ -25,7 +25,7 @@ void init_pit()
     outb(PIT_CHANNEL0_PORT, (uint8_t)((divisor >> 8) & 0xFF));
 
     pit_tickets = 0;
-    print("Initialize PIT with %d Hz\n", TARGET_FREQUENCY);
+    printf("Initialize PIT with %d Hz\n", TARGET_FREQUENCY);
 }
 
 uint32_t get_current_ticket()

@@ -1,13 +1,3 @@
-
-// keyboard.c
-
-// #include "libc/stdint.h"
-// #include "libc/stddef.h"
-// #include "i386/ISR.h"
-// #include "i386/IRQ.h"
-// #include "libc/stdbool.h"
-// #include "screen.h"
-
 #include "i386/keyboard.h"
 #include "libc/system.h"
 

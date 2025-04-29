@@ -1,11 +1,3 @@
-/*
-#include "libc/stdint.h"
-#include "i386/IDT.h"
-#include "i386/ISR.h"
-#include "i386/IRQ.h"
-#include "screen.h"
-*/
-
 #include "i386/descriptorTables.h"
 #include "i386/interuptRegister.h"
 #include "common.h"

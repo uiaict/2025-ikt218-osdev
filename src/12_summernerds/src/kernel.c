@@ -9,7 +9,6 @@
 #include "libc/stdbool.h"
 #include "common.h"
 #include <screen.h>
-// #include "i386/IDT.h"
 // #include "i386/ISR.h"
 // #include <kheap.h>
 // #include <paging.h>
@@ -37,12 +36,12 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     init_pit();
 
     // Here we test the memory allocation
-    void *mem1 = malloc(12345);
-    void *mem2 = malloc(54321);
-    void *mem3 = malloc(13331);
+    void *mem1 = malloc(2345);
+    void *mem2 = malloc(4321);
+    void *mem3 = malloc(3331);
 
     // print if we get any problem with allocating memory
-    printf("Allocated memory blocks at: %p, %p, %p\n", mem1, mem2, mem3);
+    printf("Allocated memory blocks at: 0x%x, 0x%x, 0x%x\n", mem1, mem2, mem3);
 
     // Test PIT sleep
     int counter = 0;

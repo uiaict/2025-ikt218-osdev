@@ -26,3 +26,9 @@ void isr_handler(registers_t regs)
             ; // Infinite loop if no handler is registered
     }
 }
+__attribute__((noreturn)) void exception_handler(void);
+
+void exception_handler()
+{
+    asm volatile("cli; hlt");
+}
