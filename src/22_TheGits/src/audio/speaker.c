@@ -55,28 +55,3 @@ void play_note(uint32_t freq, uint32_t duration_ms) {
 
     sleep_busy(8); // pause etter tone
 }
-
-// Start melody
-void play_start_melody() {
-    play_note(262, 120); // C4
-    play_note(330, 120); // E4
-    play_note(392, 150); // G4
-    play_note(523, 200); // C5
-}
-
-// Victory melody
-void play_victory_melody() {
-    play_note(262, 150); // C4
-    play_note(330, 150); // E4
-    play_note(392, 150); // G4
-    play_note(523, 250); // C5
-    play_note(523, 250); // C5 
-}
-
-// Failure melody
-void play_failure_melody() {
-    play_note(523, 200); // C5
-    play_note(392, 150); // G4
-    play_note(330, 150); // E4
-    play_note(262, 300); // C4
-}

@@ -5,6 +5,8 @@
 #include "libc/stdbool.h"
 #include "audio/speaker.h"
 #include "pit/pit.h"
+#include "audio/tracks.h"
+
 
 #define MAX_WORDS 50
 #define MAX_WORD_LENGTH 32
@@ -220,7 +222,8 @@ void start_word_game() {
     collect_words();
     highscore = 0;
 
-    play_start_melody();
+    play_song(start_melody, sizeof(start_melody) / sizeof(Note));
+
     printf("\nStarting the game...\n\n");
 
     uint32_t start_time = pit_get_tick(); // Start tidtaking
@@ -230,13 +233,15 @@ void start_word_game() {
 
         if (result == -1) {
             printf("Game aborted.\n");
-            play_failure_melody();
+            play_song(victory_melody, sizeof(victory_melody) / sizeof(Note));
+
             break;
         }
 
         if (result == 0) {
             printf("Game over!\n");
-            play_failure_melody();
+            play_song(failure_melody, sizeof(failure_melody) / sizeof(Note));
+
             break;
         }
     }
@@ -245,7 +250,7 @@ void start_word_game() {
     uint32_t total_ms = end_time - start_time;
 
     if (highscore == word_count) {
-        play_victory_melody();
+        play_song(victory_melody, sizeof(victory_melody) / sizeof(Note));
     }
 // Spillerens poengsum og tid vises
     printf("\n=== Game Summary ===\n");

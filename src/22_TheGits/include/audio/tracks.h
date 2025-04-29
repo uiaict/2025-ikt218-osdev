@@ -100,4 +100,17 @@ static Note music_6[] = {
 };
 
 
+static Note start_melody[] = {
+    {262, 120}, {330, 120}, {392, 150}, {523, 200}, {R, 300}
+};
+
+static Note victory_melody[] = {
+    {262, 150}, {330, 150}, {392, 150}, {523, 250}, {523, 250}, {R, 300}
+};
+
+static Note failure_melody[] = {
+    {523, 200}, {392, 150}, {330, 150}, {262, 300}, {R, 300}
+};
+
+
 #endif
