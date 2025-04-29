@@ -72,6 +72,8 @@ add_executable(uiaos-kernel
 	src/memory/paging.c
 	src/pit/pit.c
 	src/music/songplayer.c
+	src/monitor/monitor.c
+	src/game/game.cpp
 	
 )
 

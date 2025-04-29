@@ -16,7 +16,8 @@ void initGdt(){
     setGdtGate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF); // User code
     setGdtGate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF); // User data
 
-    gdt_flush(&gdt_ptr); 
+    gdt_flush(&gdt_ptr);
+    mafiaPrint("GDT Initialized\n"); 
 
 }
 void setGdtGate(uint32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran){

@@ -4,12 +4,15 @@
 
 //Denne fila er hentet fra solution guide til Per Arne Andersen, med små endringer.
 
+
+
+//heap vil være fra 1mb til 4mb
+//Paging vil være fra 4mb 
 static uint32_t* page_directory = 0;
 static uint32_t page_dir_loc = 0;      
 static uint32_t* last_page = 0;       
 
-//heap vil være fra 1mb til 4mb
-//Paging vil være fra 4mb 
+
 
 
 void map_virt_to_phys(uint32_t virt, uint32_t phys)
@@ -34,16 +37,15 @@ void enable_paging()
 
 void init_paging()
 {
-    mafiaPrint("Setting up paging\n");
-    page_directory = (uint32_t*)0x400000;      // Setter page directory til å starte på 4 MB
-    page_dir_loc = (uint32_t)page_directory;  // Setter fysisk addresse til page directory
-    last_page = (uint32_t *)0x404000;         // Setter last_page til å starte på   4 MB + 4 KB
-    for(int i = 0; i < 1024; i++)             // Looper gjennom alle
+    page_directory = (uint32_t*)0x400000;                   // Setter page directory til å starte på 4 MB
+    page_dir_loc = (uint32_t)page_directory;                // Setter fysisk addresse til page directory
+    last_page = (uint32_t *)0x404000;                       // Setter last_page til å starte på   4 MB + 4 KB
+    for(int i = 0; i < 1024; i++)                           // Looper gjennom alle
     {
-        page_directory[i] = 0 | 2;            // Setter alle entries i page table adressene til 0 og setter read/write bit. 
+        page_directory[i] = 0 | 2;                          // Setter alle entries i page table adressene til 0 og setter read/write bit. 
     }
-    map_virt_to_phys(0, 0);         // Mapper de første 4MB av virtuell til fysisk minne
-    map_virt_to_phys(0x400000, 0x400000); // Mapper de neste 4MB av virtuell til fysisk minne
+    map_virt_to_phys(0, 0);                                 // Mapper de første 4MB av virtuell til fysisk minne
+    map_virt_to_phys(0x400000, 0x400000);                   // Mapper de neste 4MB av virtuell til fysisk minne
     enable_paging();                         
-    mafiaPrint("Paging was successfully enabled!\n");
+    mafiaPrint("Paging initialized\n");
 }

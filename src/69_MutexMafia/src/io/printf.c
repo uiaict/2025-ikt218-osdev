@@ -10,14 +10,7 @@
 volatile char *video_memory = (volatile char *)0xB8000; //minneadresse til VGA tekstbuffer
 int cursor = 0;
 
-/*printer i VGA text mode
-void terminal_write(const char str) {
-    while (*str) {
-        video_memory[cursor++] = *str++;   
-        video_memory[cursor++] = 0x07;     
-    }
-}
-*/
+
 void putc(char c) {
     if (c == '\n'){
         cursor = (cursor / 160 + 1) * 160; 

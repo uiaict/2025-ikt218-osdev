@@ -31,15 +31,10 @@ void irq_handler(struct InterruptRegisters *regs){
     if (handler){
     handler(regs);
     }
-
-    //else{
-    //    mafiaPrint("Unhandled IRQ %d\n", regs->int_no);
-    //}
-
     if (regs->int_no >= 40){
-        outPortB(0xA0, 0x20); // sender end of interrupt (EoI) til slave PIC
+        outPortB(0xA0, 0x20);       // sender end of interrupt (EoI) til slave PIC
     }
-outPortB(0x20, 0x20); // sender end of interrupt (EoI) til master PIC
+outPortB(0x20, 0x20);               // sender end of interrupt (EoI) til master PIC
 };
 
 void setIdtGate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags){
@@ -98,20 +93,20 @@ void initIdt(){
     idt_ptr.base = (uint32_t)&idt_entries;
     idt_ptr.limit = (uint16_t)(sizeof(idt_entry_struct) * 256 - 1);
 
-    //  nullstille IDT
+    // nullstiller IDT
     memset(&idt_entries, 0, sizeof(idt_entry_struct) * 256);
 
-    outPortB(0x20, 0x11); // Init master PIC
-    outPortB(0xA0, 0x11); // Init slave PIC
-    outPortB(0x21, 0x20); // Remap master PIC til 0x20 (IRQ 0)
-    outPortB(0xA1, 0x28); // Remap slave PIC til 0x28 (IRQ 8)
-    outPortB(0x21, 0x04); // Fortell master PIC at slave er på IRQ2
-    outPortB(0xA1, 0x02); // Fortell slave PIC at den er koblet til IRQ2
-    outPortB(0x21, 0x01); // Aktiver 8086 mode
-    outPortB(0xA1, 0x01); // Aktiver 8086 mode
-    outPortB(0x21, 0x00); // Unmask alle IRQ-er på master
-    outPortB(0xA1, 0x00); // Unmask alle IRQ-er på slave
-    outPortB(0x21, inPortB(0x21) & 0x02); // Unmask IRQ1 (tastatur)
+    outPortB(0x20, 0x11);                   // Init master PIC
+    outPortB(0xA0, 0x11);                   // Init slave PIC
+    outPortB(0x21, 0x20);                   // Remap master PIC til 0x20 (IRQ 0)
+    outPortB(0xA1, 0x28);                   // Remap slave PIC til 0x28 (IRQ 8)
+    outPortB(0x21, 0x04);                   // Fortell master PIC at slave er på IRQ2
+    outPortB(0xA1, 0x02);                   // Fortell slave PIC at den er koblet til IRQ2
+    outPortB(0x21, 0x01);                   // Aktiver 8086 mode
+    outPortB(0xA1, 0x01);                   // Aktiver 8086 mode
+    outPortB(0x21, 0x00);                   // Unmask alle IRQ-er på master
+    outPortB(0xA1, 0x00);                   // Unmask alle IRQ-er på slave
+    outPortB(0x21, inPortB(0x21) & 0x02);   // Unmask IRQ1 (tastatur)
 
     setIdtGate( 0, (uint32_t)isr0 , 0x08, 0x8E);
     setIdtGate( 1, (uint32_t)isr1 , 0x08, 0x8E);
@@ -165,5 +160,6 @@ void initIdt(){
     //setIdtGate(128, (uint32_t)isr128, 0x08, 0x8E); //for systemkall, ikke implementert i asm
     //setIdtGate(177, (uint32_t)isr177, 0x08, 0x8E); //for systemkall, ikke implementert i asm
 
-    idt_flush((uint32_t)&idt_ptr); // laster inn IDT
-}
+    idt_flush((uint32_t)&idt_ptr);          // laster inn IDT
+    mafiaPrint("IDT Initialized\n");
+}                   

@@ -5,16 +5,7 @@
 #include "../idt/idt.h"
 #include "libc/stdbool.h"
 
-/*
-- sjekke hva jeg skal gjøre med bit7
-- kun buffer fungerer med backspace, ikke vanlig print
-- legg til tab og escape
-
-- sjekk error handling om det er bra nok
-*/
-
-
-
+//tab og esc?
 
 bool capsEnabled = false;
 bool shiftEnabled = false;
@@ -55,13 +46,13 @@ const char capsAscii[] ={
 
 
 void toggle_caps_lock(){
-    capsEnabled = !capsEnabled;  // Bytt tilstand på capsEnabled
+    capsEnabled = !capsEnabled;  
 }
 
 
 char scancode_to_ascii(unsigned char scancode){
     
-    unsigned char scancode_without_bit7 = scancode & 0x7F; // Fjerner bit 7 for å få den faktiske scancode
+    unsigned char scancode_without_bit7 = scancode & 0x7F; // Fjerner bit 7 for å få den faktiske scancode uten status på om det er tastetrykk eller slipp
     if (scancode_without_bit7 < sizeof(smallAscii)){
         return (capsEnabled || shiftEnabled)  ? capsAscii[scancode_without_bit7]:smallAscii[scancode_without_bit7];
     }
@@ -75,7 +66,7 @@ unsigned char* read_keyboard_data_from_buffer(void)
     return &scancode;
 }
 
-// Funksjon for å sjekke for tastaturfeil
+
 int check_keyboard_errors(unsigned char* scancode)
 {
     
@@ -87,7 +78,7 @@ int check_keyboard_errors(unsigned char* scancode)
     return KEYBOARD_OK;
 }
 
-// Funksjon for å hente typen tastaturhendelse
+
 
 int get_keyboard_event_type(unsigned char* scancode)
 {
@@ -109,7 +100,7 @@ void log_buffer(char terminalBuffer[], int* index) {
 
 
 
-// Funksjon som håndterer et tastetrykk
+
 void handle_key_press(unsigned char* scancode, char terminalBuffer[], int* index)
 {
     //mafiaPrint("Scancode: 0x%x\n", *scancode);
@@ -165,14 +156,14 @@ void handle_key_press(unsigned char* scancode, char terminalBuffer[], int* index
         terminalBuffer[*index] = keyValue;
         (*index)++;
     }
-        log_key_press(keyValue); //logger kun tastetrykk
+        //log_key_press(keyValue); //logger kun tastetrykk
         break;
     }
     //log_buffer(terminalBuffer,keyValue);
     
 }
 
-// Funksjon som håndterer en tastutløsing
+
 void handle_key_release(unsigned char* scancode)
 {
     unsigned char scancode_without_bit7 = *scancode & 0x7F;

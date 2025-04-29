@@ -32,20 +32,21 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_kernel_memory(&end);
     init_paging();
     init_pit();
-    test_pit();
+    //test_pit();
     
-    //init_Pit
-
     initKeyboard();
+
+    /*while (1){}
+
     mafiaPrint("Wadiyatalkinabeet\n");
     mafiaPrint("\n");
 
     
-    //void* some_memory = malloc(12345); 
-    //void* memory2 = malloc(54321); 
-    //void* memory3 = malloc(13331);
-    //print_memory_layout();
-
+    void* some_memory = malloc(12345); 
+    void* memory2 = malloc(54321); 
+    void* memory3 = malloc(13331);
+    print_memory_layout();
+*/
     
     return kernel_main(); 
 

@@ -3,17 +3,17 @@
 #include "libc/stdint.h"
 #include "libc/stdbool.h"
 
-typedef struct memoryBlock
+#define MAX_HEAP_SIZE (64 * 1024 * 1024) // 64MB
+
+typedef struct
 {
     uint32_t size;
-    bool isFree;
-    struct memoryBlock* next;
-    struct memoryBlock* prev;
-} __attribute__((packed)) memoryBlock_t;
+    uint8_t status;
+} alloc_t;
 
-void* malloc(uint32_t size);
 void init_kernel_memory(uint32_t* endAddr);
-void free(void* ptr);
+void* malloc(size_t size);
+void free(void *mem);
 void print_memory_layout();
 
 #endif

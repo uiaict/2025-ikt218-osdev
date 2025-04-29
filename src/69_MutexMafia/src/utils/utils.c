@@ -19,3 +19,19 @@ uint8_t inPortB(uint16_t port){
     asm volatile ("inb %1, %0" : "=a" (value) : "dN" (port));
     return value;
 }
+
+char get_input(char* buffer, int max_length)
+{
+  int index = 0;
+  char c;
+
+  while(1){
+    unsigned char* scancode = read_keyboard_data_from_buffer();
+    handle_key_press(scancode, buffer, &index);
+
+    if (buffer[index-1] == '\n' || index >= max_length - 1) {
+        buffer[index-1] = '\0'; 
+        break;
+    }
+  }
+}

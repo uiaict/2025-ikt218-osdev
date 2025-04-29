@@ -62,6 +62,8 @@ void play_song_impl(Song *song) {
 }
 
 void play_song(Song *song) {
+
+    
     play_song_impl(song);
 }
 
