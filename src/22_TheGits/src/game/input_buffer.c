@@ -13,6 +13,7 @@ extern char scancode_to_ascii_shift[128];
 void get_input(char* buffer, int max_len) {
     int index = 0;
     bool done = false;
+    bool shift_pressed = false;
 
     while (!done && index < max_len - 1) {
         uint8_t scancode = 0;
@@ -20,7 +21,23 @@ void get_input(char* buffer, int max_len) {
         // Vent på ny tastetrykk
         do {
             scancode = inb(0x60);
-        } while (scancode == 0 || (scancode & 0x80)); // ignorer break codes
+        } while (scancode == 0);
+
+        // === SHIFT-NED ===
+        if (scancode == 0x2A || scancode == 0x36) {
+            shift_pressed = true;
+            continue;
+        }
+        // === SHIFT-OPP ===
+        else if (scancode == 0xAA || scancode == 0xB6) {
+            shift_pressed = false;
+            continue;
+        }
+
+        // === IGNORER BREAK-CODES ===
+        if (scancode & 0x80) {
+            continue;
+        }
 
         // === ENTER ===
         if (scancode == 0x1C) {
@@ -32,18 +49,16 @@ void get_input(char* buffer, int max_len) {
         else if (scancode == 0x0E) {
             if (index > 0) {
                 index--;
-
-                // Visuelt slett ett tegn fra skjermen
-                terminal_write("\b \b", VGA_COLOR(15, 0));
+                printf("\b \b");
             }
         }
-        // === VANLIG TEGN ===
+        // === TEGN ===
         else {
-            char c = scancode_to_ascii[scancode];
+            char c = shift_pressed ? scancode_to_ascii_shift[scancode] : scancode_to_ascii[scancode];
             if (c) {
                 buffer[index++] = c;
                 char str[2] = {c, '\0'};
-                terminal_write(str, VGA_COLOR(15, 0));
+                printf(str);
             }
         }
 
@@ -52,9 +67,9 @@ void get_input(char* buffer, int max_len) {
             __asm__ volatile("hlt");
         }
 
-        // Debounce pause: pause for å hindre dobbelregistrering
+        // Debounce
         sleep_interrupt(30);
     }
 
-    buffer[index] = '\0'; // Sikre at streng alltid avsluttes riktig
+    buffer[index] = '\0';
 }
