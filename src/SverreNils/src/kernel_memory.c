@@ -37,3 +37,6 @@ void print_memory_layout() {
     putc('\n');
 }
 
+uint32_t get_placement_address() {
+    return placement_address;
+}

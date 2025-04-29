@@ -69,9 +69,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("[Memory] Placement address: 0x%08X\n", get_placement_address());
     init_pit();
 
-    printf("Hello, Nils!\n");  // ✅ vises ved oppstart
-
-    // 🎵 Fjernet play_music()
+    printf("Hello, Nils!\n");
 
     void* some_memory = malloc(12345);
     void* memory2 = malloc(54321);
@@ -79,9 +77,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     shell_prompt(); // vis "UiAOS> "
 
-    int counter = 0;
     while (1) {
-  
-        __asm__ volatile("hlt");
+        __asm__ volatile("hlt"); // ✅ bare vent på interrupt!
     }
 }
+

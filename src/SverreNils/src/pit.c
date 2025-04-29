@@ -47,5 +47,5 @@ void sleep_interrupt(uint32_t milliseconds) {
         __asm__ volatile("hlt");
     }
 
-    __asm__ volatile("cli"); // (valgfritt) slå av igjen etterpå
+    __asm__ volatile("sti"); // ✅ behold interrupts aktivert etterpå!
 }

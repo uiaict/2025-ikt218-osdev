@@ -1,10 +1,12 @@
 #include "printf.h"
 #include <stdint.h>
 #include <stddef.h>
-#include "libc/string.h"
-#include <string.h>
-#include "song/song.h"   // 🎵 musikk
-#include "song/note.h"   // 🎵 noter
+#include <string.h>               // 👈 MÅ være her tidlig!!
+#include "song/song.h"
+#include "song/note.h"
+#include "piano.h"
+#include "pit.h"
+#include "devices/keyboard.h"
 
 // Eksterne musikk-variabler
 extern Note music_1[];
@@ -25,10 +27,24 @@ void shutdown() {
     outw(0x604, 0x2000);
 }
 
+void run_sleep_demo() {
+    int counter = 0;
+    for (int i = 0; i < 3; i++) {
+        printf("[%d]: Sleeping busy...\n", counter);
+        sleep_busy(1000);
+        printf("[%d]: Done busy.\n", counter++);
+
+        printf("[%d]: Sleeping interrupt...\n", counter);
+        sleep_interrupt(1000);
+        printf("[%d]: Done interrupt.\n", counter++);
+    }
+}
+
 void shell_handle_input(const char* input) {
     if (strcmp(input, "help") == 0) {
         printf("Tilgjengelige kommandoer:\n");
-        printf(" - help\n - clear\n - echo [tekst]\n - shutdown\n - play\n");
+        printf(" - help\n - clear\n - echo [tekst]\n - shutdown\n - play\n - piano\n");
+        printf(" - sleep\n");
     } else if (strncmp(input, "echo ", 5) == 0) {
         printf("%s\n", input + 5);
     } else if (strcmp(input, "clear") == 0) {
@@ -42,6 +58,15 @@ void shell_handle_input(const char* input) {
         printf("🎵 Spiller musikk...\n");
         play_song_impl(&song);
         printf("✅ Ferdig!\n");
+    } else if (strcmp(input, "piano") == 0) {
+        printf("🎹 Starter piano...\n");
+        init_piano();
+    } else if (strcmp(input, "sleep") == 0) {
+        run_sleep_demo();
+        __asm__ volatile("sti");
+        restore_keyboard_handler();
+        reset_input_buffer();
+        return;  // ✅ VIKTIG! Ellers kjører videre og forstyrrer input
     } else {
         printf("Ukjent kommando: %s\n", input);
     }

@@ -49,10 +49,20 @@ void keyboard_handler(uint8_t scancode) {
 }
 
 static void keyboard_wrapper() {
+    __asm__ volatile("sti");  // ✅ aktiver interrupts eksplisitt
     uint8_t scancode = inb(0x60);
     keyboard_handler(scancode);
 }
 
+
 void init_keyboard() {
     irq_register_handler(1, keyboard_wrapper);
+}
+void restore_keyboard_handler() {
+    irq_register_handler(1, keyboard_wrapper);
+}
+void reset_input_buffer() {
+    input_pos = 0;
+    input_buffer[0] = '\0';
+    shell_prompt();  // ✅ viser "UiAOS> "
 }
