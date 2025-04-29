@@ -6,6 +6,7 @@
 #include "audio/speaker.h"
 #include "pit/pit.h"
 #include "audio/tracks.h"
+#include "audio/player.h"
 
 
 #define MAX_WORDS 50
@@ -222,7 +223,7 @@ void start_word_game() {
     collect_words();
     highscore = 0;
 
-    play_song(start_melody, sizeof(start_melody) / sizeof(Note));
+    play_music(start_melody, sizeof(start_melody) / sizeof(Note));
 
     printf("\nStarting the game...\n\n");
 
@@ -233,14 +234,14 @@ void start_word_game() {
 
         if (result == -1) {
             printf("Game aborted.\n");
-            play_song(victory_melody, sizeof(victory_melody) / sizeof(Note));
+            play_music(victory_melody, sizeof(victory_melody) / sizeof(Note));
 
             break;
         }
 
         if (result == 0) {
             printf("Game over!\n");
-            play_song(failure_melody, sizeof(failure_melody) / sizeof(Note));
+            play_music(failure_melody, sizeof(failure_melody) / sizeof(Note));
 
             break;
         }
@@ -250,7 +251,7 @@ void start_word_game() {
     uint32_t total_ms = end_time - start_time;
 
     if (highscore == word_count) {
-        play_song(victory_melody, sizeof(victory_melody) / sizeof(Note));
+        play_music(victory_melody, sizeof(victory_melody) / sizeof(Note));
     }
 // Spillerens poengsum og tid vises
     printf("\n=== Game Summary ===\n");
