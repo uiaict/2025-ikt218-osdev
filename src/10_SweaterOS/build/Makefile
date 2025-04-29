@@ -443,6 +443,30 @@ src/pcSpeaker.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/pcSpeaker.c.s
 .PHONY : src/pcSpeaker.c.s
 
+src/piano.o: src/piano.c.o
+.PHONY : src/piano.o
+
+# target to build an object file
+src/piano.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/piano.c.o
+.PHONY : src/piano.c.o
+
+src/piano.i: src/piano.c.i
+.PHONY : src/piano.i
+
+# target to preprocess a source file
+src/piano.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/piano.c.i
+.PHONY : src/piano.c.i
+
+src/piano.s: src/piano.c.s
+.PHONY : src/piano.s
+
+# target to generate assembly for a file
+src/piano.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/piano.c.s
+.PHONY : src/piano.c.s
+
 src/programmableIntervalTimer.o: src/programmableIntervalTimer.c.o
 .PHONY : src/programmableIntervalTimer.o
 
@@ -466,6 +490,30 @@ src/programmableIntervalTimer.s: src/programmableIntervalTimer.c.s
 src/programmableIntervalTimer.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/programmableIntervalTimer.c.s
 .PHONY : src/programmableIntervalTimer.c.s
+
+src/snake.o: src/snake.c.o
+.PHONY : src/snake.o
+
+# target to build an object file
+src/snake.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/snake.c.o
+.PHONY : src/snake.c.o
+
+src/snake.i: src/snake.c.i
+.PHONY : src/snake.i
+
+# target to preprocess a source file
+src/snake.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/snake.c.i
+.PHONY : src/snake.c.i
+
+src/snake.s: src/snake.c.s
+.PHONY : src/snake.s
+
+# target to generate assembly for a file
+src/snake.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/snake.c.s
+.PHONY : src/snake.c.s
 
 src/storage.o: src/storage.c.o
 .PHONY : src/storage.o
@@ -562,9 +610,15 @@ help:
 	@echo "... src/pcSpeaker.o"
 	@echo "... src/pcSpeaker.i"
 	@echo "... src/pcSpeaker.s"
+	@echo "... src/piano.o"
+	@echo "... src/piano.i"
+	@echo "... src/piano.s"
 	@echo "... src/programmableIntervalTimer.o"
 	@echo "... src/programmableIntervalTimer.i"
 	@echo "... src/programmableIntervalTimer.s"
+	@echo "... src/snake.o"
+	@echo "... src/snake.i"
+	@echo "... src/snake.s"
 	@echo "... src/storage.o"
 	@echo "... src/storage.i"
 	@echo "... src/storage.s"

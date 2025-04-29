@@ -77,9 +77,6 @@ void test_gdt() {
         display_write_color("Error - unexpected memory value\n", COLOR_RED);
     }
     
-    // For en mer omfattende GDT-test ville vi testet segmentgrenser
-    // og privilegienivåer, men det er utenfor omfanget av denne testen
-    
     display_write_color("GDT appears to be configured correctly!\n", COLOR_GREEN);
 }
 
@@ -92,20 +89,6 @@ void test_gdt() {
  */
 void test_idt() {
     display_write_color("\nTesting IDT functionality:\n", COLOR_YELLOW);
-    
-    // Vi kommenterer ut den faktiske divisjon-med-null testen for sikkerhet
-    // En faktisk test ville utløse exception 0 (division by zero)
-    /*
-    display_write_color("- Triggering division by zero... ", COLOR_WHITE);
-    
-    // Dette vil trigge interrupt 0 (divide by zero)
-    volatile int a = 10;
-    volatile int b = 0;
-    volatile int c = a / b;  // Dette vil utløse unntaket
-    
-    // Hvis vi kommer hit uten å håndtere unntaket, fungerer ikke IDT
-    display_write_color("ERROR - IDT not working!\n", COLOR_RED);
-    */
     
     // Sjekk i stedet debug-tegnene som vises når IDT lastes
     display_write_color("- IDT loaded: ", COLOR_WHITE);
@@ -121,112 +104,61 @@ void test_idt() {
 }
 
 /* 
- * Tester at tastatur-interrupt og tastaturdriver fungerer
- * 
- * Denne testen aktiverer interrupts, venter på tastetrykk, og
- * viser tegnet som ble tastet inn sammen med ASCII-verdien.
- * Testen bekrefter at både hardware-interrupt og tastatur-driveren virker.
+ * Tester tastatur-input med en interaktiv test
+ * Viser alle tastetrykk direkte på skjermen
  */
-void test_keyboard_interrupt(void) {
-    display_write_color("\nTesting keyboard interrupt (IRQ1)...\n", COLOR_WHITE);
-    display_write_color("Press keys to test keyboard. Press ESC to exit.\n", COLOR_YELLOW);
-    
-    // Enable interrupts
-    __asm__ volatile("sti");
-    
-    // Simple loop to wait for keyboard input
-    int running = 1;
-    while (running) {
-        // Check if a key has been pressed
-        if (keyboard_data_available()) {
-            char c = keyboard_getchar();
-            
-            // Display the key that was pressed
-            display_write_color("Key pressed: '", COLOR_GREEN);
-            if (c >= 32 && c <= 126) {  // Printable ASCII characters
-                display_write_char(c);
-            } else if (c == '\n') {
-                display_write("\\n");
-            } else if (c == '\t') {
-                display_write("\\t");
-            } else if (c == 27) {  // ESC key
-                display_write("ESC");
-                running = 0;
-            } else {
-                display_write_color("0x", COLOR_WHITE);
-                char hex[3];
-                hex[0] = "0123456789ABCDEF"[(c >> 4) & 0xF];
-                hex[1] = "0123456789ABCDEF"[c & 0xF];
-                hex[2] = '\0';
-                display_write(hex);
-            }
-            display_write_color("'\n", COLOR_GREEN);
-            
-            // Small delay to prevent display flicker
-            delay(50);
-        }
-        __asm__ volatile("hlt");  // Wait for next interrupt
-    }
-    
-    display_write_color("Keyboard test completed.\n", COLOR_GREEN);
-}
-
-/**
- * Test hardware interrupts (IRQs) - spesielt tastatur-input
- * 
- * Denne funksjonen aktiverer hardware interrupts ved å sette interrupt
- * flag (IF) i EFLAGS-registeret, og venter deretter på tastatur-input.
- * Når tastetrykk kommer, blir IRQ1 utløst, som kjører vår keyboard_handler.
- */
-void test_hardware_interrupts() {
-    // Clear the screen and position cursor properly
-    display_initialize();
-    
-    display_write_color("\n=== Testing Keyboard Interrupts ===\n", COLOR_LIGHT_CYAN);
-    display_write_color("Press keys to see keyboard input working.\n", COLOR_YELLOW);
-    display_write_color("You should see both scancode values and ASCII characters.\n", COLOR_YELLOW);
+void test_keyboard_interactive(void) {
+    display_clear();
+    display_write_color("\n=== Interactive Keyboard Test ===\n", COLOR_LIGHT_CYAN);
+    display_write_color("Type any keys to see them appear on screen.\n", COLOR_YELLOW);
     display_write_color("Press ESC to exit the test.\n\n", COLOR_YELLOW);
     
     // Make sure interrupts are enabled
     __asm__ volatile("sti");
     
-    // Simple loop to wait for keyboard input
-    int running = 1;
+    // Clear any existing keyboard input
+    while (keyboard_data_available()) {
+        keyboard_getchar();
+    }
     
+    int running = 1;
     while (running) {
-        // Check if a key has been pressed
         if (keyboard_data_available()) {
             char c = keyboard_getchar();
             
-            // Display the key that was pressed
-            display_write_color("Key pressed: '", COLOR_GREEN);
-            if (c >= 32 && c <= 126) {  // Printable ASCII characters
-                display_write_char(c);
-            } else if (c == '\n') {
-                display_write("\\n");
-            } else if (c == '\t') {
-                display_write("\\t");
-            } else if (c == 27) {  // ESC key
-                display_write("ESC");
+            // Handle ESC key to exit
+            if (c == 27) {  // ESC key
                 running = 0;
-            } else {
-                display_write_color("0x", COLOR_WHITE);
-                char hex[3];
-                hex[0] = "0123456789ABCDEF"[(c >> 4) & 0xF];
-                hex[1] = "0123456789ABCDEF"[c & 0xF];
-                hex[2] = '\0';
-                display_write(hex);
+                continue;
             }
-            display_write_color("'\n", COLOR_GREEN);
             
-            // Small delay to prevent display flicker
-            delay(50);
+            // Handle special keys
+            if (c == '\n' || c == '\r') {  // Enter key
+                display_write_char('\n');
+            } else if (c == '\b') {  // Backspace
+                display_write_char('\b');
+                display_write_char(' ');
+                display_write_char('\b');
+            } else if (c == '\t') {  // Tab
+                display_write_char(' ');
+                display_write_char(' ');
+                display_write_char(' ');
+                display_write_char(' ');
+            } else {  // Regular printable character
+                display_write_char(c);
+            }
         }
-        // Use hlt to wait for next interrupt instead of busy waiting
         __asm__ volatile("hlt");
     }
     
-    display_write_color("\nKeyboard test completed.\n", COLOR_GREEN);
+    display_write_color("\n\nKeyboard test completed.\n", COLOR_LIGHT_GREEN);
+    display_write_color("Press any key to continue...\n", COLOR_YELLOW);
+    
+    // Wait for keypress to continue
+    while (!keyboard_data_available()) {
+        __asm__ volatile("hlt");
+    }
+    keyboard_getchar();  // Clear the keypress
 }
 
 /* 
@@ -234,7 +166,6 @@ void test_hardware_interrupts() {
  * 
  * Denne funksjonen tester at software interrupts fungerer ved å
  * utløse noen sikre interrupts som ikke vil krasje systemet.
- * Vi unngår bevisst division by zero som kan forårsake problemer.
  */
 void test_software_interrupt() {
     display_write_color("\nTesting software interrupts (ISRs):\n", COLOR_YELLOW);
@@ -247,118 +178,7 @@ void test_software_interrupt() {
 }
 
 /**
- * Test if interrupts are correctly activated and functioning
- *
- * This test verifies:
- * 1. If the Interrupt Flag (IF) is set in the EFLAGS register
- * 2. If the PIC is configured correctly 
- * 3. If keyboard interrupts are being received
- */
-void test_interrupt_status() {
-    display_initialize();
-    
-    display_write_color("\n=== Interrupt System Test ===\n", COLOR_LIGHT_CYAN);
-    
-    // Test 1: Check if interrupt flag is set in EFLAGS register
-    display_write_color("Test 1: CPU Interrupt Flag...\n", COLOR_WHITE);
-    int if_enabled = interrupts_enabled();
-    
-    if (if_enabled) {
-        display_write_color("PASS: Interrupts are enabled in CPU ✓\n", COLOR_LIGHT_GREEN);
-    } else {
-        display_write_color("FAIL: Interrupts are NOT enabled in CPU ✗\n", COLOR_LIGHT_RED);
-        display_write_color("Attempting to enable interrupts...\n", COLOR_YELLOW);
-        
-        // Clear any pending interrupts first
-        __asm__ volatile("cli");
-        // Then enable interrupts
-        __asm__ volatile("sti");
-        
-        if (interrupts_enabled()) {
-            display_write_color("RECOVERED: Interrupts are now enabled ✓\n", COLOR_LIGHT_GREEN);
-        } else {
-            display_write_color("CRITICAL FAILURE: Cannot enable interrupts!\n", COLOR_LIGHT_RED);
-            return;
-        }
-    }
-    
-    // Test 2: Verify PIC configuration by reading mask registers
-    display_write_color("\nTest 2: PIC Configuration...\n", COLOR_WHITE);
-    
-    // Read the current PIC masks
-    uint8_t master_mask = inb(PIC1_DATA);
-    uint8_t slave_mask = inb(PIC2_DATA);
-    
-    display_write_color("Master PIC mask: 0x", COLOR_GRAY);
-    display_write_hex(master_mask);
-    display_write_color(" - bits set to 0 are enabled interrupts\n", COLOR_GRAY);
-    
-    display_write_color("Slave PIC mask: 0x", COLOR_GRAY);
-    display_write_hex(slave_mask);
-    display_write_color(" - bits set to 0 are enabled interrupts\n", COLOR_GRAY);
-    
-    // Check if IRQ1 (keyboard) is enabled
-    if ((master_mask & 0x02) == 0) {
-        display_write_color("PASS: Keyboard interrupt (IRQ1) is enabled ✓\n", COLOR_LIGHT_GREEN);
-    } else {
-        display_write_color("FAIL: Keyboard interrupt (IRQ1) is disabled ✗\n", COLOR_LIGHT_RED);
-        display_write_color("Enabling keyboard interrupt...\n", COLOR_YELLOW);
-        
-        // Enable keyboard interrupt by clearing bit 1
-        outb(PIC1_DATA, master_mask & ~0x02);
-        io_wait();
-        
-        // Verify it was enabled
-        master_mask = inb(PIC1_DATA);
-        if ((master_mask & 0x02) == 0) {
-            display_write_color("RECOVERED: Keyboard interrupt now enabled ✓\n", COLOR_LIGHT_GREEN);
-        } else {
-            display_write_color("FAILURE: Could not enable keyboard interrupt!\n", COLOR_LIGHT_RED);
-        }
-    }
-    
-    // Test 3: Keyboard interrupt test
-    display_write_color("\nTest 3: Keyboard Interrupt Test\n", COLOR_WHITE);
-    display_write_color("Please press a key on the keyboard...\n", COLOR_YELLOW);
-    
-    // Reset keyboard buffer
-    while (keyboard_data_available()) {
-        keyboard_getchar();
-    }
-    
-    // Wait for keypress with timeout
-    const int MAX_WAIT = 20;  // 20 seconds timeout
-    int seconds_waited = 0;
-    int key_received = 0;
-    
-    // Loop until we get a key or timeout
-    while (seconds_waited < MAX_WAIT && !key_received) {
-        // Check for keyboard input
-        if (keyboard_data_available()) {
-            char c = keyboard_getchar();
-            display_write_string("\nSUCCESS! Key received: '");
-            display_write_char(c);
-            display_write_string("'\n");
-            key_received = 1;
-        }
-        
-        // Wait for 1 second without printing periods
-        sleep_interrupt(1000);
-        seconds_waited++;
-    }
-    
-    if (!key_received) {
-        display_write_color("\nTIMEOUT: No keyboard input detected in 20 seconds!\n", COLOR_LIGHT_RED);
-    }
-    
-    display_write_color("Keyboard interrupt test completed.\n", COLOR_GREEN);
-}
-
-/**
  * Test memory management and allocation functionality
- * 
- * This function tests various memory allocation and freeing operations
- * using both malloc/free and new/delete operators.
  */
 void test_memory_management(void) {
     display_write_color("\n=== Testing Memory Management ===\n", COLOR_LIGHT_CYAN);
@@ -393,8 +213,6 @@ void test_memory_management(void) {
 
 /**
  * Test Programmable Interval Timer functions
- * 
- * This function tests both sleep methods - busy waiting and interrupt-based.
  */
 void test_programmable_interval_timer(void) {
     display_write_color("\n=== Testing Programmable Interval Timer Functions ===\n", COLOR_LIGHT_CYAN);
@@ -433,7 +251,9 @@ static Note test_melody[] = {
     {G4, 200}, {A4, 200}, {B4, 200}, {C5, 400}
 };
 
-// Test PC speaker music playback
+/**
+ * Test PC speaker music playback
+ */
 void test_music_player(void) {
     display_write_color("\n=== Music Player Test ===\n", COLOR_LIGHT_CYAN);
     
@@ -483,11 +303,13 @@ void test_music_player(void) {
     display_write_color("All music player tests completed successfully!\n", COLOR_LIGHT_GREEN);
 }
 
-// Test harddisk-funksjonalitet
+/**
+ * Test harddisk functionality
+ */
 void test_hard_drive(void) {
     display_write_color("\n=== Hard Drive Test ===\n", COLOR_LIGHT_CYAN);
     
-    // Test 1: Initialiser harddisken
+    // Test 1: Initialize hard drive
     display_write_color("Test 1: Initializing hard drive...\n", COLOR_WHITE);
     if (!harddisk_start()) {
         display_write_color("FAILED: Could not initialize hard drive!\n", COLOR_LIGHT_RED);
@@ -495,7 +317,7 @@ void test_hard_drive(void) {
     }
     display_write_color("PASSED: Hard drive initialized successfully\n", COLOR_LIGHT_GREEN);
     
-    // Test 2: Sjekk om harddisken er tilgjengelig
+    // Test 2: Check hard drive presence
     display_write_color("\nTest 2: Checking hard drive presence...\n", COLOR_WHITE);
     if (!harddisk_check()) {
         display_write_color("FAILED: Hard drive not detected!\n", COLOR_LIGHT_RED);
@@ -503,19 +325,19 @@ void test_hard_drive(void) {
     }
     display_write_color("PASSED: Hard drive detected and responding\n", COLOR_LIGHT_GREEN);
     
-    // Test 3: Skriv og les data
+    // Test 3: Write and read data
     display_write_color("\nTest 3: Testing read/write operations...\n", COLOR_WHITE);
     
-    // Lag testdata
-    uint8_t test_data[512];  // En sektor
+    // Create test data
+    uint8_t test_data[512];  // One sector
     uint8_t read_buffer[512];
     
-    // Fyll testdata med et enkelt mønster
+    // Fill test data with a simple pattern
     for (int i = 0; i < 512; i++) {
-        test_data[i] = 0xAA;  // Bruk et enkelt mønster (10101010 i binær)
+        test_data[i] = 0xAA;  // Use a simple pattern (10101010 in binary)
     }
     
-    // Debug: Vis de første bytene vi skal skrive
+    // Debug: Show first few bytes to write
     display_write_color("First 4 bytes to write: ", COLOR_YELLOW);
     for (int i = 0; i < 4; i++) {
         display_write_color("0x", COLOR_WHITE);
@@ -524,7 +346,7 @@ void test_hard_drive(void) {
     }
     display_write_char('\n');
     
-    // Skriv til sektor 1 (ikke 0, den er ofte reservert)
+    // Write to sector 1 (not 0, often reserved)
     display_write_color("Writing test pattern to sector 1...\n", COLOR_YELLOW);
     if (!harddisk_write(1, test_data, 1)) {
         display_write_color("FAILED: Could not write to hard drive!\n", COLOR_LIGHT_RED);
@@ -532,17 +354,17 @@ void test_hard_drive(void) {
     }
     display_write_color("PASSED: Write operation successful\n", COLOR_LIGHT_GREEN);
     
-    // Vent litt for å sikre at data er skrevet
+    // Wait a bit to ensure data is written
     delay(100);
     
-    // Les tilbake data
+    // Read back data
     display_write_color("Reading data from sector 1...\n", COLOR_YELLOW);
     if (!harddisk_read(1, read_buffer, 1)) {
         display_write_color("FAILED: Could not read from hard drive!\n", COLOR_LIGHT_RED);
         return;
     }
     
-    // Debug: Vis de første bytene vi leste
+    // Debug: Show first few bytes read
     display_write_color("First 4 bytes read: ", COLOR_YELLOW);
     for (int i = 0; i < 4; i++) {
         display_write_color("0x", COLOR_WHITE);
@@ -551,7 +373,7 @@ void test_hard_drive(void) {
     }
     display_write_char('\n');
     
-    // Verifiser data
+    // Verify data
     bool data_match = true;
     for (int i = 0; i < 512; i++) {
         if (read_buffer[i] != test_data[i]) {
@@ -573,210 +395,37 @@ void test_hard_drive(void) {
 }
 
 /**
- * Test system initialization and setup
- * 
- * This function initializes critical system components,
- * but avoids re-initializing components that might cause conflicts.
- */
-void test_system_initialization(void) {
-    // Disable interrupts during initialization
-    __asm__ volatile("cli");
-    
-    // Initialize GDT (Global Descriptor Table)
-    display_write_color("Initializing Global Descriptor Table (GDT)...\n", COLOR_WHITE);
-    initializer_GDT();
-    display_write_color("PASSED: GDT initialized successfully!\n\n", COLOR_LIGHT_GREEN);
-    
-    // Initialize IDT (Interrupt Descriptor Table)
-    display_write_color("Initializing Interrupt Descriptor Table (IDT)...\n", COLOR_WHITE);
-    initializer_IDT();
-    display_write_color("PASSED: IDT initialized successfully!\n\n", COLOR_LIGHT_GREEN);
-    
-    // Initialize PIC (Programmable Interrupt Controller)
-    display_write_color("Initializing Programmable Interrupt Controller (PIC)...\n", COLOR_WHITE);
-    pic_initialize();
-    display_write_color("PASSED: PIC initialized successfully!\n\n", COLOR_LIGHT_GREEN);
-    
-    // Initialize Programmable Interval Timer (PIT)
-    display_write_color("Initializing Programmable Interval Timer...\n", COLOR_WHITE);
-    init_programmable_interval_timer();
-    display_write_color("PASSED: PIT initialized successfully!\n\n", COLOR_LIGHT_GREEN);
-    
-    // Initialize keyboard interrupt handler
-    display_write_color("Initializing Keyboard Handler...\n", COLOR_WHITE);
-    interrupt_initialize();
-    display_write_color("PASSED: Keyboard handler initialized successfully!\n\n", COLOR_LIGHT_GREEN);
-    
-    // Enable interrupts now that PIT and PIC are set up
-    display_write_color("Enabling interrupts...\n", COLOR_WHITE);
-    enable_interrupts();
-    
-    // Verify interrupts are enabled
-    if (interrupts_enabled()) {
-        display_write_color("PASSED: Interrupts are enabled!\n\n", COLOR_LIGHT_GREEN);
-    } else {
-        display_write_color("FAILED: Interrupts could not be enabled!\n\n", COLOR_LIGHT_RED);
-    }
-    
-    // Initialize kernel memory manager
-    display_write_color("Initializing Kernel Memory Manager...\n", COLOR_WHITE);
-    init_kernel_memory(&end);
-    display_write_color("PASSED: Kernel Memory Manager initialized successfully!\n\n", COLOR_LIGHT_GREEN);
-    
-    // Initialize paging
-    display_write_color("Initializing Paging...\n", COLOR_WHITE);
-    init_paging();
-    display_write_color("PASSED: Paging initialized successfully!\n\n", COLOR_LIGHT_GREEN);
-    
-    display_write_color("System initialization completed!\n", COLOR_YELLOW);
-}
-
-/**
- * Interactive keyboard test
- * 
- * This test allows the user to type characters and see them displayed on screen.
- * It's a simple way to verify that keyboard input is working correctly.
- */
-void test_keyboard_interactive(void) {
-    display_clear();
-    display_write_color("\n=== Interactive Keyboard Test ===\n", COLOR_LIGHT_CYAN);
-    display_write_color("Type any keys to see them appear on screen.\n", COLOR_YELLOW);
-    display_write_color("Both key presses and releases will be detected.\n", COLOR_YELLOW);
-    display_write_color("Press ESC to exit the test.\n\n", COLOR_YELLOW);
-    
-    // Make sure interrupts are enabled
-    __asm__ volatile("sti");
-    
-    // Clear any existing keyboard input
-    while (keyboard_data_available()) {
-        keyboard_getchar();
-    }
-    
-    // Debug area - show key press/release status
-    display_write_color("Key status: ", COLOR_WHITE);
-    size_t status_row = terminal_row;
-    size_t status_col = terminal_column;
-    
-    // Input line
-    display_write_color("\nInput: ", COLOR_LIGHT_GREEN);
-    size_t input_row = terminal_row;
-    size_t input_col = terminal_column;
-    int line_pos = 0;
-    const int MAX_LINE_LENGTH = 60;  // Keep some margin from screen edge
-    
-    // Setup direct scan code checking
-    uint8_t last_scancode = 0;
-    
-    // Testing loop
-    int running = 1;
-    while (running) {
-        // Check keyboard port directly for both press and release
-        if (inb(KEYBOARD_STATUS) & 0x01) {
-            uint8_t scancode = inb(KEYBOARD_DATA);
-            last_scancode = scancode;
-            
-            // Update status area
-            display_set_cursor(status_col, status_row);
-            if (scancode & 0x80) {
-                display_write_color("Key released: 0x", COLOR_LIGHT_RED);
-                char hex[3];
-                hex[0] = "0123456789ABCDEF"[(scancode & 0x7F) >> 4];
-                hex[1] = "0123456789ABCDEF"[(scancode & 0x7F) & 0xF];
-                hex[2] = '\0';
-                display_write(hex);
-                display_write_color("         ", COLOR_LIGHT_RED);
-            } else {
-                display_write_color("Key pressed: 0x", COLOR_LIGHT_GREEN);
-                char hex[3];
-                hex[0] = "0123456789ABCDEF"[scancode >> 4];
-                hex[1] = "0123456789ABCDEF"[scancode & 0xF];
-                hex[2] = '\0';
-                display_write(hex);
-                display_write_color("          ", COLOR_LIGHT_GREEN);
-            }
-        }
-        
-        // Process keys in buffer (regular input)
-        if (keyboard_data_available()) {
-            char c = keyboard_getchar();
-            
-            // Handle ESC key to exit
-            if (c == 27) {  // ESC key
-                running = 0;
-                continue;
-            }
-            
-            // Move cursor to input area
-            display_set_cursor(input_col + line_pos, input_row);
-            
-            // Handle special keys
-            if (c == '\n' || c == '\r') {  // Enter key
-                line_pos = 0;
-                display_write_char('\n');
-                display_write_color("Input: ", COLOR_LIGHT_GREEN);
-                input_row++;
-                // Update input position reference
-                input_col = terminal_column;
-            } else if (c == '\b') {  // Backspace
-                if (line_pos > 0) {
-                    display_write_char('\b');
-                    display_write_char(' ');
-                    display_write_char('\b');
-                    line_pos--;
-                }
-            } else if (c == '\t') {  // Tab
-                int spaces = 4 - (line_pos % 4);
-                for (int i = 0; i < spaces && line_pos < MAX_LINE_LENGTH; i++) {
-                    display_write_char(' ');
-                    line_pos++;
-                }
-            } else {  // Regular printable character
-                if (line_pos < MAX_LINE_LENGTH) {
-                    display_write_char(c);
-                    line_pos++;
-                }
-            }
-            
-            // Update cursor position
-            display_move_cursor();
-        }
-        
-        // Wait for next interrupt using hlt instruction
-        __asm__ volatile("hlt");
-    }
-    
-    display_write_color("\n\nKeyboard test completed.\n", COLOR_LIGHT_GREEN);
-    display_write_color("Press any key to continue...\n", COLOR_YELLOW);
-    
-    // Wait for keypress to continue
-    while (!keyboard_data_available()) {
-        __asm__ volatile("hlt");
-    }
-    keyboard_getchar();  // Clear the keypress
-}
-
-/**
  * Run all tests
- * 
- * This function runs all the various tests to verify system functionality.
  */
 void run_all_tests() {
     display_write_color("Starting system tests...\n\n", COLOR_YELLOW);
     
-    // System initialization har allerede blitt kjørt i oppstart, men vi kjører en sjekk for å verifisere statusen
-    display_write_color("Verifying system initialization state...\n", COLOR_LIGHT_GREEN);
-    
-    // Kjør testene
     test_terminal_output();
+    sleep_interrupt(500);  // 0.5 second delay
+    
     test_gdt();
+    sleep_interrupt(500);
+    
     test_idt();
-    test_interrupt_status();
+    sleep_interrupt(500);
+    
     test_keyboard_interactive();  // Interactive keyboard test
+    sleep_interrupt(500);
+    
     test_software_interrupt();
+    sleep_interrupt(500);
+    
     test_memory_management();
+    sleep_interrupt(500);
+    
     test_programmable_interval_timer();
+    sleep_interrupt(500);
+    
     test_music_player();
+    sleep_interrupt(500);
+    
     test_hard_drive();
+    sleep_interrupt(500);
     
     display_write_color("\nAll tests completed!\n", COLOR_LIGHT_GREEN);
 } 

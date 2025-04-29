@@ -1,7 +1,14 @@
 #ifndef FREQUENCIES_H
 #define FREQUENCIES_H
 
-// Note frequencies (in Hz)
+/**
+ * Notefrekvenser
+ * 
+ * Definerer frekvenser (i Hz) for alle noter fra C0 til B8
+ * Brukes for å generere toner med PC høyttaleren
+ */
+
+// Notefrekvenser (i Hz)
 #define C0 16
 #define Cs0 17
 #define D0 18
@@ -119,9 +126,9 @@
 #define As8 7459
 #define B8 7902
 
-// Special aliases
-#define A_SHARP4 466
-#define G_SHARP4 415
-#define R 0 // Rest (no sound)
+// Spesielle aliaser
+#define A_SHARP4 466  // Alternativt navn for As4
+#define G_SHARP4 415  // Alternativt navn for Gs4
+#define R 0           // Pause (ingen lyd)
 
 #endif /* FREQUENCIES_H */ 

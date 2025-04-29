@@ -4,109 +4,85 @@
 #include "libc/stdint.h"
 #include "frequencies.h"
 
-// Musical note frequencies (in Hz)
-#define NOTE_C4  262
-#define NOTE_CS4 277
-#define NOTE_D4  294
-#define NOTE_DS4 311
-#define NOTE_E4  330
-#define NOTE_F4  349
-#define NOTE_FS4 370
-#define NOTE_G4  392
-#define NOTE_GS4 415
-#define NOTE_A4  440
-#define NOTE_AS4 466
-#define NOTE_B4  494
-#define NOTE_C5  523
-
-// Forward declare structures
+// Forhåndsdeklarasjon av strukturer
 struct Note;
 struct Song;
 struct SongPlayer;
 
-// Note structure
+/**
+ * Note struktur
+ * 
+ * Representerer en enkelt tone med frekvens og varighet
+ */
 typedef struct {
-    uint32_t frequency;  // Frequency in Hz
-    uint32_t duration;   // Duration in milliseconds
+    uint32_t frequency;  // Frekvens i Hz
+    uint32_t duration;   // Varighet i millisekunder
 } Note;
 
-// Song structure
+/**
+ * Sang struktur
+ * 
+ * Representerer en sang som en sekvens av noter
+ */
 typedef struct {
-    Note* notes;        // Pointer to array of notes
-    uint32_t length;    // Number of notes in the song
+    Note* notes;        // Peker til array av noter
+    uint32_t length;    // Antall noter i sangen
 } Song;
 
-// SongPlayer structure
+/**
+ * Sangavspiller struktur
+ * 
+ * Håndterer avspilling av sanger
+ */
 typedef struct {
-    void (*play_song)(Song* song); // Function pointer to play_song implementation
+    void (*play_song)(Song* song); // Funksjonspeker til play_song implementasjon
 } SongPlayer;
 
 /**
- * Create a new song player instance
- * @return Pointer to the new SongPlayer instance
+ * Sangavspiller funksjoner
+ * 
+ * Funksjoner for å håndtere sanger og avspilling
  */
-SongPlayer* create_song_player(void);
+SongPlayer* create_song_player(void);           // Oppretter ny sangavspiller
+Note* create_note(uint32_t frequency, uint32_t duration); // Oppretter ny note
+Song* create_song(Note* notes, uint32_t length); // Oppretter ny sang
+void free_song(Song* song);                     // Frigjør minne for sang
+void play_song(Song* song);                     // Spiller av sang
+void play_song_impl(Song* song);                // Intern implementasjon av avspilling
+void free_song_player(SongPlayer* player);      // Frigjør minne for sangavspiller
 
-/**
- * Create a new note
- * @param frequency The frequency of the note in Hz
- * @param duration The duration of the note in milliseconds
- * @return Pointer to the new Note instance
- */
-Note* create_note(uint32_t frequency, uint32_t duration);
+// Forhåndsdefinerte melodier
+static Note music_1[] = {
+    {E5, 250}, {R, 125}, {E5, 125}, {R, 125}, {E5, 125}, {R, 125},
+    {C5, 125}, {E5, 125}, {G5, 125}, {R, 125}, {G4, 125}, {R, 250},
 
-/**
- * Create a new song
- * @param notes Array of notes
- * @param length Number of notes in the song
- * @return Pointer to the new Song instance
- */
-Song* create_song(Note* notes, uint32_t length);
+    {C5, 125}, {R, 250}, {G4, 125}, {R, 125}, {E4, 125}, {R, 125},
+    {A4, 125}, {B4, 125}, {R, 125}, {A_SHARP4, 125}, {A4, 125}, {R, 125},
+    {G4, 125}, {E5, 125}, {G5, 125}, {A5, 125}, {F5, 125}, {G5, 125},
+    {R, 125}, {E5, 125}, {C5, 125}, {D5, 125}, {B4, 125}, {R, 125},
 
-/**
- * Free a song and its resources
- * @param song Pointer to the Song instance to free
- */
-void free_song(Song* song);
-
-/**
- * Play a song
- * @param song Pointer to the Song structure to play
- */
-void play_song(Song* song);
-
-/**
- * Implementation of play_song that handles the actual playing of notes
- * @param song Pointer to the Song structure to play
- */
-void play_song_impl(Song* song);
-
-/**
- * Free a song player instance
- * @param player Pointer to the SongPlayer instance to free
- */
-void free_song_player(SongPlayer* player);
-
-// Predefined melodies (shortened versions)
-static Note mario_melody[] = {
-    {E5, 200}, {E5, 200}, {E5, 200},
-    {C5, 200}, {E5, 200}, {G5, 400},
-    {G4, 400}
+    {C5, 125}, {R, 250}, {G4, 125}, {R, 125}, {E4, 125}, {R, 125},
+    {A4, 125}, {B4, 125}, {R, 125}, {A_SHARP4, 125}, {A4, 125}, {R, 125},
+    {G4, 125}, {E5, 125}, {G5, 125}, {A5, 125}, {F5, 125}, {G5, 125},
+    {R, 125}, {E5, 125}, {C5, 125}, {D5, 125}, {B4, 125}, {R, 125},
 };
 
-static Note twinkle_melody[] = {
-    {C4, 400}, {C4, 400}, {G4, 400}, {G4, 400},
-    {A4, 400}, {A4, 400}, {G4, 800}
+static Note music_3[] = {
+    {E4, 200}, {E4, 200}, {F4, 200}, {G4, 200}, {G4, 200}, {F4, 200}, {E4, 200}, {D4, 200},
+    {C4, 200}, {C4, 200}, {D4, 200}, {E4, 200}, {E4, 400}, {R, 200},
+    {D4, 200}, {D4, 200}, {E4, 200}, {F4, 200}, {F4, 200}, {E4, 200}, {D4, 200}, {C4, 200},
+    {A4, 200}, {A4, 200}, {A4, 200}, {G4, 400}
 };
 
-static Note jingle_bells[] = {
-    {E4, 300}, {E4, 300}, {E4, 600},
-    {E4, 300}, {E4, 300}, {E4, 600}
-};
-
-static Note imperial_march[] = {
-    {F4, 250}, {F4, 250}, {F4, 250},
-    {C5, 250}, {A_SHARP4, 250}, {F4, 500}
+static Note music_4[] = {
+    {C4, 500}, {D4, 500}, {E4, 500}, {C4, 500},
+    {C4, 500}, {D4, 500}, {E4, 500}, {C4, 500},
+    {E4, 500}, {F4, 500}, {G4, 1000},
+    {E4, 500}, {F4, 500}, {G4, 1000},
+    {G4, 250}, {A4, 250}, {G4, 250}, {F4, 250}, {E4, 500}, {C4, 500},
+    {G4, 250}, {A4, 250}, {G4, 250}, {F4, 250}, {E4, 500}, {C4, 500},
+    {C4, 500}, {G3, 500}, {C4, 1000},
+    {C4, 500}, {G3, 500}, {C4, 1000}
 };
 
 #endif /* MUSIC_PLAYER_H */ 

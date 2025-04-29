@@ -15,20 +15,16 @@
  * som håndterer det spesifikke interruptet.
  */
 
-// Størrelsen på IDT-tabellen (Interrupt Descriptor Table)
-// Vi definerer 256 innganger, som er maksimalt antall interrupts i x86
+// IDT size (256 entries - maximum number of interrupts in x86)
 #define IDT_SIZE 256
 
-// IDT-tabellen - array av IDT-entries
-// Hver entry inneholder informasjon om en interrupt handler
+// IDT table - array of IDT entries
 static struct idt_entries idt_entries[IDT_SIZE];
 
-// IDT-peker - forteller CPU hvor IDT er i minnet
-// Denne strukturen lastes inn i IDTR-registeret med lidt-instruksjonen
+// IDT pointer - tells CPU where IDT is in memory
 static struct idt_pointer idt_ptr;
 
-// Importerer funksjonen for å laste IDT inn i CPU-en
-// Denne er definert i assembly fordi vi trenger lidt-instruksjonen
+// Assembly function that loads IDT into CPU
 extern void idt_flush(uint32_t);
 
 /**
@@ -42,56 +38,56 @@ extern void idt_flush(uint32_t);
  */
 
 // CPU Exceptions (0-31)
-extern void isr0(void);  // Division by Zero - Divisjon med null
-extern void isr1(void);  // Debug Exception - Debugging-relatert exception
-extern void isr2(void);  // Non-maskable Interrupt - Kan ikke maskeres/ignoreres
-extern void isr3(void);  // Breakpoint - Brukt for debugging
-extern void isr4(void);  // Overflow - Aritmetisk overflow
-extern void isr5(void);  // Bound Range Exceeded - Array-indeks utenfor grenser
-extern void isr6(void);  // Invalid Opcode - Ugyldig instruksjon
-extern void isr7(void);  // Device Not Available - FPU/MMX/SSE ikke tilgjengelig
-extern void isr8(void);  // Double Fault - Feil under håndtering av en annen exception
-extern void isr9(void);  // Coprocessor Segment Overrun - Sjelden brukt
-extern void isr10(void); // Invalid TSS - Problem med Task State Segment
-extern void isr11(void); // Segment Not Present - Segment eksisterer ikke
-extern void isr12(void); // Stack-Segment Fault - Problem med stack segment
-extern void isr13(void); // General Protection Fault - Minnebeskyttelsesfeil
-extern void isr14(void); // Page Fault - Feil ved aksess til en side i minnet
-extern void isr15(void); // Reserved - Reservert av Intel
-extern void isr16(void); // x87 Floating-Point Exception - FPU-feil
-extern void isr17(void); // Alignment Check - Minneaksess ikke riktig justert
-extern void isr18(void); // Machine Check - Intern CPU-feil
-extern void isr19(void); // SIMD Floating-Point Exception - SSE/AVX-feil
-extern void isr20(void); // Reserved - Reservert av Intel
-extern void isr21(void); // Reserved - Reservert av Intel
-extern void isr22(void); // Reserved - Reservert av Intel
-extern void isr23(void); // Reserved - Reservert av Intel
-extern void isr24(void); // Reserved - Reservert av Intel
-extern void isr25(void); // Reserved - Reservert av Intel
-extern void isr26(void); // Reserved - Reservert av Intel
-extern void isr27(void); // Reserved - Reservert av Intel
-extern void isr28(void); // Reserved - Reservert av Intel
-extern void isr29(void); // Reserved - Reservert av Intel
-extern void isr30(void); // Reserved - Reservert av Intel
-extern void isr31(void); // Reserved - Reservert av Intel
+extern void isr0(void);  // Division by Zero
+extern void isr1(void);  // Debug Exception
+extern void isr2(void);  // Non-maskable Interrupt
+extern void isr3(void);  // Breakpoint
+extern void isr4(void);  // Overflow
+extern void isr5(void);  // Bound Range Exceeded
+extern void isr6(void);  // Invalid Opcode
+extern void isr7(void);  // Device Not Available
+extern void isr8(void);  // Double Fault
+extern void isr9(void);  // Coprocessor Segment Overrun
+extern void isr10(void); // Invalid TSS
+extern void isr11(void); // Segment Not Present
+extern void isr12(void); // Stack-Segment Fault
+extern void isr13(void); // General Protection Fault
+extern void isr14(void); // Page Fault
+extern void isr15(void); // Reserved
+extern void isr16(void); // x87 Floating-Point Exception
+extern void isr17(void); // Alignment Check
+extern void isr18(void); // Machine Check
+extern void isr19(void); // SIMD Floating-Point Exception
+extern void isr20(void); // Reserved
+extern void isr21(void); // Reserved
+extern void isr22(void); // Reserved
+extern void isr23(void); // Reserved
+extern void isr24(void); // Reserved
+extern void isr25(void); // Reserved
+extern void isr26(void); // Reserved
+extern void isr27(void); // Reserved
+extern void isr28(void); // Reserved
+extern void isr29(void); // Reserved
+extern void isr30(void); // Reserved
+extern void isr31(void); // Reserved
 
 // Hardware Interrupts (IRQ 0-15)
-extern void irq0(void);  // Timer (PIT) - Programmable Interval Timer
-extern void irq1(void);  // Keyboard - PS/2 tastatur
-extern void irq2(void);  // Cascade for 8259A Slave controller - Kobling til slave PIC
-extern void irq3(void);  // COM2 - Serieport 2
-extern void irq4(void);  // COM1 - Serieport 1
-extern void irq5(void);  // LPT2 - Parallellport 2
-extern void irq6(void);  // Floppy Disk - Diskettstasjon
-extern void irq7(void);  // LPT1 / Unreliable "spurious" interrupt - Parallellport 1
-extern void irq8(void);  // CMOS Real Time Clock - Sanntidsklokke
-extern void irq9(void);  // Free for peripherals - Ledig for periferienheter
-extern void irq10(void); // Free for peripherals - Ledig for periferienheter
-extern void irq11(void); // Free for peripherals - Ledig for periferienheter
-extern void irq12(void); // PS2 Mouse - PS/2 mus
-extern void irq13(void); // FPU / Coprocessor / Inter-processor - Flyttallsprosessor
-extern void irq14(void); // Primary ATA Hard Disk - Primær harddisk
-extern void irq15(void); // Secondary ATA Hard Disk - Sekundær harddisk
+extern void irq0(void);  // Timer (PIT)
+extern void irq1(void);  // Keyboard
+extern void irq2(void);  // Cascade for 8259A Slave controller
+extern void irq3(void);  // COM2
+extern void irq4(void);  // COM1
+extern void irq5(void);  // LPT2
+extern void irq6(void);  // Floppy Disk
+extern void irq7(void);  // LPT1 / Unreliable "spurious" interrupt
+extern void irq8(void);  // CMOS Real Time Clock
+extern void irq9(void);  // Free for peripherals
+extern void irq10(void); // Free for peripherals
+extern void irq11(void); // Free for peripherals
+extern void irq12(void); // PS2 Mouse
+extern void irq13(void); // FPU / Coprocessor / Inter-processor
+extern void irq14(void); // Primary ATA Hard Disk
+extern void irq15(void); // Secondary ATA Hard Disk
 
 /**
  * Legger til en inngang i IDT-tabellen
@@ -111,18 +107,16 @@ extern void irq15(void); // Secondary ATA Hard Disk - Sekundær harddisk
  */
 static void idt_add_entry(int index, uint32_t base, uint16_t selector, uint8_t type_attr) 
 {
-    // Valider parametrene for å unngå korrupsjon av IDT-tabellen
     if (index < 0 || index >= IDT_SIZE) {
         display_write_color("ERROR: Ugyldig IDT-indeks\n", COLOR_RED);
         return;
     }
     
-    // Sett opp IDT-inngangen
-    idt_entries[index].isr_address_low = base & 0xFFFF;          // Nedre 16 bit av handler-adressen
-    idt_entries[index].segment_selector = selector;              // Segment selector (vanligvis 0x08)
-    idt_entries[index].zero = 0;                                 // Alltid 0 (reservert felt)
-    idt_entries[index].type_and_flags = type_attr;               // Type og attributter
-    idt_entries[index].isr_address_high = (base >> 16) & 0xFFFF; // Øvre 16 bit av handler-adressen
+    idt_entries[index].isr_address_low = base & 0xFFFF;
+    idt_entries[index].segment_selector = selector;
+    idt_entries[index].zero = 0;
+    idt_entries[index].type_and_flags = type_attr;
+    idt_entries[index].isr_address_high = (base >> 16) & 0xFFFF;
 }
 
 /**
@@ -136,21 +130,15 @@ static void idt_add_entry(int index, uint32_t base, uint16_t selector, uint8_t t
  */
 void initializer_IDT() 
 {
-    // Sett opp IDT-pekeren
     idt_ptr.table_address = (uint32_t)&idt_entries;
     idt_ptr.table_size = (sizeof(struct idt_entries) * IDT_SIZE) - 1;
     
-    // Nullstill IDT-tabellen først
+    // Nullstill IDT-tabellen
     for (int i = 0; i < IDT_SIZE; i++) {
         idt_add_entry(i, 0, 0x08, 0x8E);
     }
     
-    // Legg til CPU exception handlers (0-31)
-    // Type 0x8E = 10001110b
-    // - Bit 7: P (Present) = 1 (handler er tilgjengelig)
-    // - Bit 6-5: DPL (Descriptor Privilege Level) = 00 (kernel-nivå)
-    // - Bit 4: S (Storage Segment) = 0 (ikke en storage segment)
-    // - Bit 3-0: Type = 1110 (32-bit interrupt gate)
+    // Legger til CPU exception handlers (0-31)
     idt_add_entry(0, (uint32_t)isr0, 0x08, 0x8E);
     idt_add_entry(1, (uint32_t)isr1, 0x08, 0x8E);
     idt_add_entry(2, (uint32_t)isr2, 0x08, 0x8E);
@@ -185,7 +173,6 @@ void initializer_IDT()
     idt_add_entry(31, (uint32_t)isr31, 0x08, 0x8E);
     
     // Legg til hardware interrupt handlers (32-47)
-    // Disse er mappet til IRQ 0-15 fra PIC
     idt_add_entry(32, (uint32_t)irq0, 0x08, 0x8E);
     idt_add_entry(33, (uint32_t)irq1, 0x08, 0x8E);
     idt_add_entry(34, (uint32_t)irq2, 0x08, 0x8E);
@@ -203,8 +190,7 @@ void initializer_IDT()
     idt_add_entry(46, (uint32_t)irq14, 0x08, 0x8E);
     idt_add_entry(47, (uint32_t)irq15, 0x08, 0x8E);
     
-    // Load IDT
     idt_flush((uint32_t)&idt_ptr);
     
-    display_write_color("IDT initialisert med 48 handlers\n", COLOR_GREEN);
+    display_write_color("IDT initialized with 48 handlers\n", COLOR_GREEN);
 }

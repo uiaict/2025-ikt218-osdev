@@ -4,13 +4,14 @@
 #include "memory_manager.h"
 #include "miscFuncs.h"
 #include "programmableIntervalTimer.h"
+#include "interruptHandler.h"
 
 #ifndef NULL
 #define NULL ((void*)0)
 #endif
 
 /**
- * Create a new song player instance
+ * Oppretter en ny sangavspiller
  */
 SongPlayer* create_song_player(void) {
     SongPlayer* player = (SongPlayer*)malloc(sizeof(SongPlayer));
@@ -21,102 +22,73 @@ SongPlayer* create_song_player(void) {
 }
 
 /**
- * Implementation of play_song that handles the actual playing of notes
+ * Implementasjon av sangavspilling som håndterer avspilling av noter
  */
 void play_song_impl(Song* song) {
     if (!song || !song->notes || song->length == 0) {
-        display_write_color("Invalid song data\n", COLOR_RED);
+        display_write_color("Ugyldige sangdata\n", COLOR_RED);
         return;
     }
-
-    display_write_color("Playing song...\n", COLOR_GREEN);
     
-    // Turn off speaker initially to ensure clean start
+    // Slå av høyttaler for å sikre ren start
     disable_speaker();
     
-    // Play each note in sequence
+    // Spill av hver note i sekvens
     for (uint32_t i = 0; i < song->length; i++) {
         const Note* current_note = &song->notes[i];
         
-        // Enklere output med mindre detaljert informasjon
-        display_write_color("Playing note: ", COLOR_GREEN);
-        
-        // Vis note-navn i stedet for frekvens
-        char* note_name = "?";
-        if (current_note->frequency == NOTE_C4) note_name = "C4";
-        else if (current_note->frequency == NOTE_CS4) note_name = "C#4";
-        else if (current_note->frequency == NOTE_D4) note_name = "D4";
-        else if (current_note->frequency == NOTE_DS4) note_name = "D#4";
-        else if (current_note->frequency == NOTE_E4) note_name = "E4";
-        else if (current_note->frequency == NOTE_F4) note_name = "F4";
-        else if (current_note->frequency == NOTE_FS4) note_name = "F#4";
-        else if (current_note->frequency == NOTE_G4) note_name = "G4";
-        else if (current_note->frequency == NOTE_GS4) note_name = "G#4";
-        else if (current_note->frequency == NOTE_A4) note_name = "A4";
-        else if (current_note->frequency == NOTE_AS4) note_name = "A#4";
-        else if (current_note->frequency == NOTE_B4) note_name = "B4";
-        else if (current_note->frequency == NOTE_C5) note_name = "C5";
-        else if (current_note->frequency == 0) note_name = "REST";
-        
-        display_write_color(note_name, COLOR_GREEN);
-        display_write_color("\n", COLOR_GREEN);
-        
-        // Play the note with direct control for better performance
+        // Spill av noten med direkte kontroll for bedre ytelse
         if (current_note->frequency > 0) {
-            // Calculate divisor
+            // Beregn divisor
             uint16_t divisor = 1193180 / current_note->frequency;
             
-            // Disable interrupts while configuring sound
+            // Deaktiver interrupts under lydkonfigurasjon
             __asm__ volatile("cli");
             
-            // Configure PIT channel 2
+            // Konfigurer PIT kanal 2
             outb(0x43, 0xB6);
             outb(0x42, divisor & 0xFF);
             outb(0x42, (divisor >> 8) & 0xFF);
             
-            // Enable speaker
+            // Aktiver høyttaler
             outb(0x61, inb(0x61) | 0x03);
             
-            // Re-enable interrupts
+            // Reaktiver interrupts
             __asm__ volatile("sti");
         } else {
-            // Turn off speaker for rest
-            uint8_t tmp = inb(0x61);
-            outb(0x61, tmp & ~0x03);
+            // Slå av høyttaler for pause
+            disable_speaker();
         }
         
-        // Wait for the duration of the note
-        // Use sleep_interrupt for longer notes and sleep_busy for very short notes
-        uint32_t duration = current_note->duration;
-        if (duration >= 20) {
-            sleep_interrupt(duration);
-        } else {
-            sleep_busy(duration);
+        // Vent i notens varighet
+        uint32_t start_time = get_current_tick();
+        while (get_current_tick() - start_time < current_note->duration) {
+            __asm__ volatile("pause");
         }
         
-        // Stop the sound explicitly
-        uint8_t tmp = inb(0x61);
-        outb(0x61, tmp & ~0x03);
+        // Stopp lyden eksplisitt
+        disable_speaker();
         
-        // Add a very small gap between notes (5ms) for better sound separation
-        sleep_busy(5);
+        // Legg til liten pause mellom noter (5ms) for bedre lydseparasjon
+        start_time = get_current_tick();
+        while (get_current_tick() - start_time < 5) {
+            __asm__ volatile("pause");
+        }
     }
     
-    // Ensure speaker is off at the end
+    // Sikre at høyttaler er avslått til slutt
     disable_speaker();
-    
-    display_write_color("Song finished\n", COLOR_GREEN);
 }
 
 /**
- * Play a song using the default implementation
+ * Spill av en sang med standard implementasjon
  */
 void play_song(Song* song) {
     play_song_impl(song);
 }
 
 /**
- * Free a song player instance
+ * Frigjør en sangavspiller
  */
 void free_song_player(SongPlayer* player) {
     if (player) {
@@ -125,7 +97,7 @@ void free_song_player(SongPlayer* player) {
 }
 
 /**
- * Free song resources
+ * Frigjør sangressurser
  */
 void free_song(Song* song) {
     if (song) {
@@ -137,7 +109,7 @@ void free_song(Song* song) {
 }
 
 /**
- * Create a new note
+ * Oppretter en ny note
  */
 Note* create_note(uint32_t frequency, uint32_t duration) {
     Note* note = (Note*)malloc(sizeof(Note));
@@ -149,7 +121,7 @@ Note* create_note(uint32_t frequency, uint32_t duration) {
 }
 
 /**
- * Create a new song
+ * Oppretter en ny sang
  */
 Song* create_song(Note* notes, uint32_t length) {
     Song* song = (Song*)malloc(sizeof(Song));

@@ -7,6 +7,10 @@
 #include "libc/stdbool.h"
 #include "multiboot2.h"
 #include "programmableIntervalTimer.h"
+#include "memory_manager.h"   // For memory management functions
+
+// Dette er definert i linker scriptet
+extern uint32_t end;
 
 // Multiboot2 magic number - dette er verdien multiboot2-kompatible bootloadere
 // vil sende som parameter til kernel_main()
@@ -127,20 +131,15 @@ void print_multiboot_memory_layout(struct multiboot_tag* tag) {
         display_write("Invalid memory map tag\n");
         return;
     }
-    
     struct multiboot_tag_mmap* mmap = (struct multiboot_tag_mmap*)tag;
     multiboot_memory_map_t* entry = mmap->entries;
-    
     display_write("Memory Map:\n");
     display_write("Address         Length          Type\n");
-    
     while ((uint8_t*)entry < (uint8_t*)mmap + mmap->size) {
         char addr_str[16];
         char len_str[16];
-        
         hexToString(entry->addr, addr_str);
         hexToString(entry->len, len_str);
-        
         const char* type;
         switch (entry->type) {
             case MULTIBOOT_MEMORY_AVAILABLE:
@@ -161,14 +160,12 @@ void print_multiboot_memory_layout(struct multiboot_tag* tag) {
             default:
                 type = "Unknown";
         }
-        
         display_write(addr_str);
         display_write("  ");
         display_write(len_str);
         display_write("  ");
         display_write(type);
         display_write("\n");
-        
         entry = (multiboot_memory_map_t*)((uint8_t*)entry + mmap->entry_size);
     }
 }
@@ -185,11 +182,41 @@ void halt(void) {
  * Dette setter opp segmentering og interrupt-håndtering, som er nødvendig for operativsystemet.
  */
 void initialize_system(void) {
-    // Initialize display
+    display_write_color("\n=== Initializing System Components ===\n", COLOR_LIGHT_CYAN);
+    
+    // Initialiser skjermen først for å vise meldinger
     display_initialize();
     
-    // Enable interrupts
+    // Initialiser Global Descriptor Table
+    display_write_color("Initializing Global Descriptor Table...\n", COLOR_WHITE);
+    initializer_GDT();
+    display_write_color("GDT initialized successfully\n", COLOR_LIGHT_GREEN);
+    
+    // Initialiser Interrupt Descriptor Table
+    display_write_color("Initializing Interrupt Descriptor Table...\n", COLOR_WHITE);
+    initializer_IDT();
+    display_write_color("IDT initialized successfully\n", COLOR_LIGHT_GREEN);
+    
+    // Initialiser interrupt-håndtering og tastatur
+    display_write_color("Initializing interrupt handling...\n", COLOR_WHITE);
+    interrupt_initialize();
+    display_write_color("Interrupt handling initialized successfully\n", COLOR_LIGHT_GREEN);
+    
+    // Initialiser timer
+    display_write_color("Initializing system timer (PIT)...\n", COLOR_WHITE);
+    init_programmable_interval_timer();
+    display_write_color("System timer initialized successfully\n", COLOR_LIGHT_GREEN);
+    
+    // Initialiser minnehåndtering
+    display_write_color("Initializing memory management...\n", COLOR_WHITE);
+    init_kernel_memory(&end);
+    display_write_color("Memory management initialized successfully\n", COLOR_LIGHT_GREEN);
+    
+    // Aktiver interrupts til slutt
     enable_interrupts();
+    display_write_color("Enabled interrupts\n", COLOR_LIGHT_GREEN);
+    
+    display_write_color("\nSystem initialization completed!\n", COLOR_LIGHT_GREEN);
 }
 
 /**

@@ -76,6 +76,7 @@ add_executable(uiaos-kernel
     src/storage.c
     src/filesystem.c
     src/snake.c
+    src/piano.c
 )
 
 # Include directories for the kernel target

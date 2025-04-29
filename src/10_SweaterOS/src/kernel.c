@@ -1,5 +1,5 @@
 #include "libc/stdint.h"
-// Sett en definisjon for å unngå typekonflikter med size_t
+// Definerer size_t for å unngå typekonflikter
 #define _SIZE_T_DEFINED
 #include "miscFuncs.h"
 #include "descriptorTables.h"
@@ -11,63 +11,49 @@
 #include "display.h"
 #include "snake.h"
 
-// This is defined in the linker script
+// Dette er definert i linker scriptet
 extern uint32_t end;
 
 /**
- * Starts the operating system
- * 
- * This function initializes all necessary components
- * and runs tests to verify that everything works.
+ * Starter operativsystemet og initialiserer alle komponenter
  */
 static void startOS() {
-    // Initialize terminal for output
-    display_initialize();
+    // Initialiserer alle systemkomponenter
+    initialize_system();
     
-    // Initialize snake game
+    // Initialiserer Snake-spillet
     snake_init();
     
-    // Initialize system components and run tests first
-    // This includes PIT and interrupt setup
-    test_system_initialization();
-    
-    // Clear the screen completely for the boot logo
+    // Tømmer skjermen og viser boot-logo
     display_clear();
-    
-    // Now that everything is initialized, we can show the boot logo
     display_boot_logo();
+    sleep_interrupt(1000);
     
-    // Use sleep_interrupt which is more efficient than busy waiting
-    sleep_interrupt(1000);  // Increased from 500 to 1000ms for longer display time
-    
-    // Ask user to press a key to continue
     display_write_color("\n\n            Press any key to continue...", COLOR_YELLOW);
     
-    // Wait for keypress
+    // Vent på tastetrykk
     while (!keyboard_data_available()) {
         __asm__ volatile("hlt");
     }
-    keyboard_getchar(); // Clear the keypress
-    
-    // Start menu system without overlapping the logo
-    display_clear();  // Clear screen before showing menu
+    keyboard_getchar();
+
+    display_clear();
     run_menu_loop();
 
-    // Halt the CPU
+    // Stanser CPU-en
     halt();
 }
 
 /**
- * Kernel entry point - called from boot.s
+ * magic: Multiboot magic number
+ * mb_info_addr: Adresse til Multiboot informasjonen
  */
 void main(uint32_t magic, void* mb_info_addr) {
-    // Verify multiboot magic number
     if (!verify_boot_magic(magic)) {
-        display_write_color("ERROR: Invalid multiboot magic number!\n", COLOR_LIGHT_RED);
+        display_write_color("ERROR: Invalid Multiboot magic number!\n", COLOR_LIGHT_RED);
         halt();
         return;
     }
     
-    // Start the operating system
     startOS();
 }
