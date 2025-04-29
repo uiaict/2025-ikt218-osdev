@@ -1,4 +1,4 @@
-#!/bin/bash
+
 
 KERNEL_PATH=$1
 DISK_PATH=$2
@@ -26,7 +26,7 @@ qemu-system-i386 \
 
 QEMU_PID=$!
 
-# Function to handle Ctrl+C or kill
+
 cleanup() {
     echo "🛑 Stopping QEMU..."
     kill $QEMU_PID 2>/dev/null
@@ -35,5 +35,5 @@ cleanup() {
 
 trap cleanup SIGINT SIGTERM
 
-# Wait until QEMU exits
+
 wait $QEMU_PID

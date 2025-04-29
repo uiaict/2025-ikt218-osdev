@@ -2,8 +2,8 @@
 global irq%1
 irq%1:
     cli
-    push 0              ; dummy error code
-    mov eax, 32 + %1    ; ✔️ legg inn int-nummer
+    push 0              
+    mov eax, 32 + %1    
     push eax
     jmp irq_common_stub
 %endmacro
@@ -38,20 +38,20 @@ irq_common_stub:
     sti
     iret
 
-; 16 IRQ-stubber
+
 %assign i 0
 %rep 16
     IRQ i
     %assign i i+1
 %endrep
 
-; IRQ stub table
+
 section .data
 global irq_stub_table
 irq_stub_table:
 %assign j 0
 %rep 16
-    dd irq %+ j      ; ✅ Korrekt NASM-syntaks
+    dd irq %+ j      
     %assign j j+1
 %endrep
 

@@ -6,7 +6,7 @@
 #define PIT_FREQUENCY     1193180
 #define PIT_COMMAND_PORT  0x43
 #define PIT_CHANNEL0_PORT 0x40
-#define TARGET_HZ         1000 // 1 ms per tick
+#define TARGET_HZ         1000 
 #define PIT_IRQ           0
 
 static volatile uint32_t timer_ticks = 0;
@@ -33,7 +33,7 @@ void init_pit(void) {
 void sleep_busy(uint32_t milliseconds) {
     uint32_t start = get_tick();
     while ((get_tick() - start) < milliseconds) {
-        // Busy-wait
+       
     }
 }
 
@@ -41,11 +41,11 @@ void sleep_interrupt(uint32_t milliseconds) {
     if (milliseconds == 0) milliseconds = 1;
     uint32_t end = get_tick() + milliseconds;
 
-    __asm__ volatile("sti"); // ✅ aktiver interrupts først!
+    __asm__ volatile("sti"); 
 
     while (get_tick() < end) {
         __asm__ volatile("hlt");
     }
 
-    __asm__ volatile("sti"); // ✅ behold interrupts aktivert etterpå!
+    __asm__ volatile("sti"); 
 }

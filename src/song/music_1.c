@@ -1,5 +1,5 @@
-#include <stddef.h>        // For size_t
-#include "song/note.h"     // Note-struktur
+#include <stddef.h>        
+#include "song/note.h"    
 
 // Imperial March - for PC speaker
 Note music_1[] = {

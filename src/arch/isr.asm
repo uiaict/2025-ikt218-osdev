@@ -2,8 +2,8 @@
 global isr%1
 isr%1:
     cli
-    push 0              ; dummy error code
-    push %1             ; interrupt number
+    push 0              
+    push %1             
     jmp isr_common_stub
 %endmacro
 
@@ -22,9 +22,9 @@ isr_common_stub:
     mov fs, ax
     mov gs, ax
 
-    push esp            ; <--- push struct registers*
+    push esp            
     call isr_handler
-    add esp, 4          ; <--- rydde opp etter call
+    add esp, 4          
 
     pop eax
     mov ds, ax
@@ -37,14 +37,14 @@ isr_common_stub:
     iret
 
 
-; Generate all 256 stubs
+
 %assign i 0
 %rep 256
     ISR_NOERR i
     %assign i i+1
 %endrep
 
-; Build pointer table (isr_stub_table)
+
 section .data
 global isr_stub_table
 isr_stub_table:

@@ -10,10 +10,10 @@
 
 static uint8_t cursor_x = 0;
 static uint8_t cursor_y = 0;
-static uint8_t color = 0x07; // light grey on black
+static uint8_t color = 0x07; 
 
 static void move_cursor() {
-    // Optional: Write to VGA cursor ports to update the hardware cursor
+    
 }
 
 void putc(char c) {
@@ -31,7 +31,7 @@ void putc(char c) {
     }
 
     if (cursor_y >= VGA_HEIGHT) {
-        cursor_y = 0; // Or implement scrolling
+        cursor_y = 0; 
     }
 
     move_cursor();
@@ -90,7 +90,7 @@ void printf(const char* fmt, ...) {
                 break;
             }
             case 'c': {
-                char c = (char)va_arg(args, int); // char is promoted to int in varargs
+                char c = (char)va_arg(args, int); 
                 putc(c);
                 break;
             }
