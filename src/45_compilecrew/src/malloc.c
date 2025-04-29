@@ -1,8 +1,5 @@
 #include "memory.h"
 #include "libc/system.h"
-#include "libc/printf.h"
-#include "libc/terminal.h"
-
 
 #define MAX_PAGE_ALIGNED_ALLOCS 32
 
@@ -17,7 +14,7 @@ uint32_t memory_used = 0;
 // Initialize the kernel memory manager
 void init_kernel_memory(uint32_t* kernel_end)
 {
-    last_alloc = (uint32_t)kernel_end + 0x1000;
+    last_alloc = kernel_end + 0x1000;
     heap_begin = last_alloc;
     pheap_end = 0x400000;
     pheap_begin = pheap_end - (MAX_PAGE_ALIGNED_ALLOCS * 4096);

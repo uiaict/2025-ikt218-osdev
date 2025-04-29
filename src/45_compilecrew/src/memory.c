@@ -47,8 +47,14 @@ void init_paging()
     {
         page_directory[i] = 0 | 2;            // Set the page directory entry to not present with supervisor level read/write permissions
     }
-    paging_map_virtual_to_phys(0, 0);         // Map the first 4 MB of virtual memory to the first 4 MB of physical memory
-    paging_map_virtual_to_phys(0x400000, 0x400000); // Map the next 4 MB of virtual memory to the next 4 MB of physical memory
+
+    // Map 0 MB up to 64 MB:
+    for (uint32_t addr = 0; addr < 0x04000000; addr += 0x00400000) {
+        paging_map_virtual_to_phys(addr, addr);
+    }
+    //paging_map_virtual_to_phys(0, 0);         // Map the first 4 MB of virtual memory to the first 4 MB of physical memory
+    //paging_map_virtual_to_phys(0x400000, 0x400000); // Map the next 4 MB of virtual memory to the next 4 MB of physical memory
+
     paging_enable();                          // Enable paging
     printf("Paging was successfully enabled!\n");
 }

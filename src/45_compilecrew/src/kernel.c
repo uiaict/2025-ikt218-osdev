@@ -11,6 +11,9 @@
 #include "libc/keyboard.h"
 #include "pit.h"
 #include "memory.h"   // include memory manager
+#include "song.h"
+#include "song_player.h"
+#include "frequencies.h"
 
 extern uint32_t end;
 
@@ -47,36 +50,49 @@ __attribute__((noreturn)) void exception_handler(uint32_t int_number) {
 }
 
 
+SongPlayer* create_song_player() {
+    SongPlayer* player = (SongPlayer*)malloc(sizeof(SongPlayer));
+    player->play_song = play_song_impl;
+    return player;
+}
+
+
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_gdt();
     idt_init();
-    
+
     init_kernel_memory(&end);
     init_paging();
     print_memory_layout();
-    
+
     init_pit();
     irq_install_handler(0, pit_callback);
     __asm__ volatile ("sti");
 
     printf("Hello World\n");
 
-    void* some_memory = malloc(12345);
-    void* memory2 = malloc(54321);
-    void* memory3 = malloc(13331);
+    //void* some_memory = malloc(12345);
+    //void* memory2 = malloc(54321);
+    //void* memory3 = malloc(13331);
 
-    int counter = 0;
-    while(true){
-        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-        sleep_busy(1000);
-        printf("[%d]: Slept using busy-waiting.\n", counter++);
+    Song song1 = { fur_elise, sizeof(fur_elise) / sizeof(Note) };
+    Song song2 = { happy_birthday, sizeof(happy_birthday) / sizeof(Note) };
+    Song song3 = { starwars_theme, sizeof(starwars_theme) / sizeof(Note) };
+    
+    Song* songs[] = { &song1, &song2, &song3 };
+    uint32_t n_songs = sizeof(songs) / sizeof(Song*);
 
-        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);
-    };
+    // Create a song player and play each song
+    SongPlayer* player = create_song_player();
+    for(uint32_t i = 0; i < n_songs; i++) {
+        printf("Playing Song...\n");
+        player->play_song(songs[i]);
+        printf("Finished playing the song.\n");
+    }
+
 
     while (1) {
         __asm__ volatile("hlt");
     }
 }
+
