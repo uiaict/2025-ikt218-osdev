@@ -32,3 +32,15 @@ void play_song(Song *song){
     play_song_impl(song);
     // This function serves as a wrapper around play_song_impl, allowing for consistent usage of the SongPlayer interface.
 }
+
+void play_music(Note* notes, uint32_t length) {
+
+    Song song = {notes, length}; // Create a song object with the provided notes and length
+    SongPlayer* player = create_song_player(); // Create a new song player
+
+    printf("Playing Song...\n");
+    player->play_song(&song);
+    printf("Finished playing the song.\n");
+
+    free(player); // Free the allocated memory for the player
+}
