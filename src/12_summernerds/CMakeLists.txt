@@ -61,7 +61,9 @@ enable_language(ASM)  #  Fortell CMake at vi bruker Assembly
 # Legg til eksekverbar kernel, men IKKE gdt.s her!
 add_executable(uiaos-kernel 
     src/kernel.c
+    src/menu.c
     src/screen.c
+    src/matrix_effect/matrix.c
     #src/song.c
     src/common.c
     src/multiboot2.s
