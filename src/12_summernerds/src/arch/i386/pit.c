@@ -35,6 +35,7 @@ uint32_t get_current_ticket()
     return pit_tickets;
 }
 
+// Infinite loop problem
 void sleep_busy(uint32_t wait_tickets)
 {
     uint32_t start_ticket = get_current_ticket();
@@ -43,6 +44,7 @@ void sleep_busy(uint32_t wait_tickets)
     }
 }
 
+// Reboots OS problem
 void sleep_interrupt(uint32_t wait_tickets)
 {
     uint32_t end_tick = get_current_ticket() + wait_tickets;

@@ -51,7 +51,7 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     while (true)
     {
         printf("[%d]: Sleeping with busy-waiting (HIGH CPU)...\n", counter);
-        sleep_busy(1000);
+        // sleep_busy(1000);
         printf("[%d]: Slept using busy-waiting.\n", counter++);
 
         printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);
