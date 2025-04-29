@@ -44,6 +44,7 @@ void play_music() {
 }
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
+
    
     // === SYSTEMINIT ===
     init_gdt();
@@ -54,6 +55,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_kernel_memory(&end);
     init_paging();
     init_pit();
+   // stop_sound();
 
     __asm__ volatile ("sti"); // Aktiver interrupts
 
