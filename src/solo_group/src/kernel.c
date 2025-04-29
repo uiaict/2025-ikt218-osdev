@@ -18,8 +18,9 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     initGdt();
     monitorInitialize();
     
+    printf("Hello World\n");
 
-    for (size_t i = 0; i < 25; i++)
+    for (size_t i = 0; i < 24; i++)
     {
         printf("%d: This is working\n", i);
     }
