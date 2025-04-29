@@ -7,7 +7,8 @@
 #include "descriptor_tables.h"
 #include "keyboard.h"
 #include "timer.h"
-#include "sound.h"
+#include "speaker.h"
+#include "song/song.h"
 
 
 
@@ -18,46 +19,45 @@ struct multiboot_info {
 };
 
 
-int main(uint32_t my_struct, uint32_t magic, struct multiboot_info *mb_info_addr) {
-    
+int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
+    set_vga_color(VGA_GREEN, VGA_BLACK);
     init_gdt();
     init_idt();
     init_keyboard();
-    init_pit(50); // 50Hz
-    enable_speaker();
-    play_sound(500);
-    busy_sleep(500);
-    stop_sound();
+    init_pit(500); // 50Hz
+    // enable_speaker();
+    // play_sound(500);
 
-
-    typedef struct{
-        uint8_t a;
-        uint8_t b;
-        uint8_t c;
-        uint8_t d;
-        uint8_t e[6];
-    } MyStruct;
-
-    MyStruct *abc = (MyStruct*)my_struct;
     
-    // const char *string = "xxx\rabc\ndef\r\nxyz\r\n";
-    // set_vga_color(VGA_RED, VGA_BLUE);
-    // printf(string);
-    // printf("dddd");
-    // char t = 'T';
-    // set_vga_color(VGA_WHITE, VGA_BLACK);
-    // putchar_at(&t, 10, 10);
-    // printf("1");
+
+    struct song songs[] = {
+        {SMB_1_1, sizeof(SMB_1_1) / sizeof(SMB_1_1[0])},
+        {imperial_march, sizeof(imperial_march) / sizeof(imperial_march[0])},
+        {battlefield_1942_theme, sizeof(battlefield_1942_theme) / sizeof(battlefield_1942_theme[0])},
+        {music_2, sizeof(music_2) / sizeof(music_2[0])},
+        {ode_to_joy, sizeof(ode_to_joy) / sizeof(ode_to_joy[0])},
+        {brother_john, sizeof(brother_john) / sizeof(brother_john[0])},
+        {music_5, sizeof(music_5) / sizeof(music_5[0])},
+        {music_6, sizeof(music_6) / sizeof(music_6[0])},
+        {megalovania, sizeof(megalovania) / sizeof(megalovania[0])}
+    };
+
+
+    struct song_player *player = create_song_player();
+    uint32_t n_songs = sizeof(songs) / sizeof(songs[0]);
     
-    // asm volatile ("int $0x01");
-    // asm volatile ("int $0x1F"); 
-    // asm volatile ("int $0x20");
-    // asm volatile ("int $0x21"); 
+    player->play_song(&songs[8]);
+
+    print("       _.---._    /\\\n\r"
+       "    ./'       \"--`\\//\n\r"
+       "  ./              o \\          .-----.\n\r"
+       " /./\\  )______   \\__ \\        ( help! )\n\r"
+       "./  / /\\ \\   | \\ \\  \\ \\       /`-----'\n\r"
+       "   / /  \\ \\  | |\\ \\  \\7--- ooo ooo ooo ooo ooo ooo\n\r");
 
 
 
-    while (true);
-    {
+    while (true){
         /* code */
     }
     

@@ -3,7 +3,7 @@
 #include "stdbool.h"
 #include "string.h"
 #include "stdlib.h"
-
+#include "speaker.h"
 
 size_t terminal_width = 80; // Not const as to allow possible resize in the future
 size_t terminal_height = 25;
@@ -94,7 +94,7 @@ void ctrlchar(int c){
             break;
             
         case '\a':
-            //TODO: BEEP
+            beep();
             break;
         
         default:

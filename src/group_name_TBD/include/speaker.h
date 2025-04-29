@@ -1,5 +1,5 @@
-#ifndef sound_H
-#define sound_H
+#ifndef SPEAKER_H
+#define SPEAKER_H
 
 #include "libc/stdint.h"
 
@@ -14,6 +14,6 @@ void enable_speaker();
 void disable_speaker();
 void play_sound(uint32_t);
 void stop_sound();
-void play_song();
+void beep();
 
-#endif // SOUND_H
+#endif // SPEAKER_H

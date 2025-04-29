@@ -36,7 +36,6 @@ header_end:
     ; Pointless? Only for visualisation
 
     %define MYSTRUCT_SIZE 10
-    mystruct_instance resb MYSTRUCT_SIZE ; Reserves memory for the "struct"
 
 section .text
 bits 32
@@ -46,22 +45,9 @@ _start:
 
     mov esp, stack_top
 
-    mov ecx, mystruct_instance ; Sets pointer to the base of allocated space
-    mov byte [ecx],    33
-    mov byte [ecx +1], 44
-    mov byte [ecx +2], 55
-    mov byte [ecx +3], 66
-    mov byte [ecx +4], 1
-    mov byte [ecx +5], 2
-    mov byte [ecx +6], 3
-    mov byte [ecx +7], 4
-    mov byte [ecx +8], 5
-    mov byte [ecx +9], 6
-
 
 	push ebx ; mb_info_addr
 	push eax ; magic
-    push ecx ; myStruct
 
     call main ; Jump main function
 
