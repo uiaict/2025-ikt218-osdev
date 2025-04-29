@@ -3,6 +3,7 @@
 #include "libc/terminal.h"
 #include "libc/stdbool.h"
 #include "libc/rand.h"
+#include "games/snake.h"
 #include "keyboard.h"
 #include "pit.h"
 
@@ -13,8 +14,7 @@ typedef struct
 {
     int x, y;
 } Point;
-Point snake[MAX_SNAKE_LEN];
-int snake_length;
+
 enum
 {
     UP,
@@ -23,10 +23,13 @@ enum
     RIGHT
 } direction;
 
+Point snake[MAX_SNAKE_LEN];
+int snake_length;
+
 Point food;
 int score;
 bool game_over;
-extern uint32_t ticks; // must be updated in your PIT timer interrupt!
+extern uint32_t ticks;
 
 bool position_on_snake(Point food)
 {
@@ -76,7 +79,6 @@ void handle_input(void)
     if (!c)
         return; // nothing pressed this tick
 
-    // consume it now
     getChar();
 
     // map to directions
@@ -94,8 +96,11 @@ void draw_frame()
 {
     terminal_clear();
 
-    uint8_t color = VGA_COLOR_GREEN;
+    terminal_setcolor(VGA_COLOR_YELLOW);
+    printf("Score: ");
+    terminal_write_dec(score);
 
+    uint8_t color = VGA_COLOR_GREEN;
     // Draw food
     terminal_putentryat('*', color, food.x, food.y);
 
@@ -147,6 +152,7 @@ void update_snake()
     if (head.x == food.x && head.y == food.y)
     {
         snake_length++;
+        score++;
         // Place new food somewhere not on the snake
         place_food();
     }
