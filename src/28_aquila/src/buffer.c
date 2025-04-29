@@ -14,16 +14,6 @@ int in_nano = 0; // 0 = aquila, 1 = program mode
 
 extern int input_start; // cursor position for aquila:
 
-// string startswith function
-int startsWith(const char *str, const char *prefix) {
-    while (*prefix) {
-        if (*str++ != *prefix++) {
-            return 1; // not a match
-        }
-    }
-    return 0; // match
-}
-
 
 void cmd_clear_screen() {
     printf("Clearing screen...\n");
@@ -33,19 +23,15 @@ void cmd_clear_screen() {
     // clear the screen
 }
 
-void cmd_exit() {
-    printf("Exiting...\n");
-    sleep_interrupt(1000);
-    clear_screen();
-    printf("Hello, Aquila!\n");
-    // clear the screen
-}
-
 void cmd_help() {
     printf("Available commands:\n");
     printf("clear - Clear the screen\n");
-    printf("exit - Exit the program\n");
     printf("help - Show this help message\n");
+    printf("test - Test command\n");
+    printf("ls - List files\n");
+    printf("cat <filename> - Print file content\n");
+    printf("rm <filename> - Remove file\n");
+    printf("nano <filename> - Open nano editor\n");
 }
 
 void cmd_test() {
@@ -54,12 +40,6 @@ void cmd_test() {
 
 void cmd_ls() {
     fs_ls(); 
-}
-
-void cmd_save() {
-    char filename[MAX_FILE_NAME_SIZE] = "elias.txt";
-    char data[MAX_FILE_SIZE] = "dette er en test fil";
-    fs_save(filename, data); 
 }
 
 void cmd_cat(char *filename) {
@@ -72,8 +52,13 @@ void cmd_remove(char *filename) {
 
 void cmd_nano(char *filename) {
     // if filename is empty, return
-    if (filename == NULL) {
+    if (strlen(filename) <= 0) {
         printf("Filename is empty\n");
+        buffer_handler(5, 0); // clear the buffer
+        printf("aquila: ");
+        input_len = 0; // reset buffer length after processing
+        input_cursor = 0; // reset cursor position
+        input_start = cursor; // prevent deletion of "aquila: "
         return;
     }
     // if filename is too long, return
@@ -159,8 +144,7 @@ void buffer_handler(int action, char ascii) {
                 buffer[input_len+1] = '\0'; // null-terminate the string
 
                 if (strcmp(buffer, "") == 0) {
-                } else if (strcmp(buffer, "exit") == 0) {
-                    cmd_exit();
+
                 } else if (strcmp(buffer, "help") == 0) {
                     cmd_help();
                 } else if (strcmp(buffer, "test") == 0) {

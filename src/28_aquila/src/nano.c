@@ -58,6 +58,9 @@ void close_nano() {
     in_nano = 0; // set in nano mode to 0
     buffer_handler(5, 0); // clear the buffer
 
+    printf("\n\nFile saved: %s\n", currently_editing);
+    sleep_interrupt(1000);
+
 
     clear_screen();
     // paste old vga

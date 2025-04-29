@@ -45,3 +45,13 @@ char *strncpy(char *dest, const char *src, int n) {
 
     return dest;
 }
+
+// string startswith function
+int startsWith(const char *str, const char *prefix) {
+    while (*prefix) {
+        if (*str++ != *prefix++) {
+            return 1; // not a match
+        }
+    }
+    return 0; // match
+}
