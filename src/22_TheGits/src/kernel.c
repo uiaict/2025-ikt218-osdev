@@ -23,12 +23,12 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
-extern uint32_t end; // End of kernel memory
+extern uint32_t end;
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
    
-    // === SYSTEMINIT ===
+// === SYSTEMINIT ===
     init_gdt();
     remap_pic();
     init_idt();
@@ -37,14 +37,16 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_paging();
     init_pit();
 
-    __asm__ volatile ("sti"); // Activate interrupts
+    __asm__ volatile ("sti");
 
-    // === SCREEN STARTUP ===
+// === SCREEN STARTUP ===
     print_os_greeting();
     char choice[5];    
 
-  while(choice[0] != '5') {
+
 // === MENU CHOICES===
+  while(choice[0] != '5') {
+
   printf("MENU:\n");
   printf("1: Play word game\n");
   printf("2: Play music\n");
@@ -73,7 +75,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     }
 }
 
-    // === REST ===
+
    while (1) {
         __asm__ volatile ("hlt");
     }

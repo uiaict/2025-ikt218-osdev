@@ -40,30 +40,30 @@ void terminal_write(const char* str, uint8_t color) {
         char c = str[i];
 
         if (c == '\n') {
-            // Gå til ny linje
+            // Go to new line
             row++;
             col = 0;
         } else if (c == '\b') {
-            // Backspace: flytt én kolonne tilbake og slett tegnet
+            // Backspace: more one column back and delete the character
             if (col > 0) {
                 col--;
                 size_t index = row * VGA_WIDTH + col;
-                vga_buffer[index] = VGA_ENTRY(' ', color); // Skriv blankt tegn
+                vga_buffer[index] = VGA_ENTRY(' ', color); // Write empty space
             }
         } else {
-            // Vanlig tegn – skriv det til VGA-minnet
+            // Regular character – write it to VGA memory
             size_t index = row * VGA_WIDTH + col;
             vga_buffer[index] = VGA_ENTRY(c, color);
             col++;
 
-            // Hvis vi går utenfor høyre kant, hopp til ny linje
+            // If we go beyond the right edge, move to the next line
             if (col >= VGA_WIDTH) {
                 col = 0;
                 row++;
             }
         }
 
-        // Hvis vi går utenfor nederste linje, scroll opp
+        // If we go beyond the bottom line, scroll up
         if (row >= VGA_HEIGHT) {
             for (size_t y = 1; y < VGA_HEIGHT; y++) {
                 for (size_t x = 0; x < VGA_WIDTH; x++) {
@@ -71,7 +71,7 @@ void terminal_write(const char* str, uint8_t color) {
                 }
             }
 
-            // Tøm siste linje
+            // Empty the last line
             for (size_t x = 0; x < VGA_WIDTH; x++) {
                 vga_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = VGA_ENTRY(' ', color);
             }
@@ -85,27 +85,27 @@ void itoa(int num, char* str, int base) {
     int i = 0;
     int is_negative = 0;
 
-    // Håndter negativt tall for base 10
+    // Handle negative numbers for base 10
     if (num < 0 && base == 10) {
         is_negative = 1;
         num = -num;
     }
 
-    // Konverter tall til streng
+    // Convert number to string
     do {
         char digit = "0123456789ABCDEF"[num % base];
         str[i++] = digit;
         num /= base;
     } while (num > 0);
 
-    // Legg til negativt tegn hvis nødvendig
+    // Addd negative sign if needed
     if (is_negative) {
         str[i++] = '-';
     }
 
     str[i] = '\0';
 
-    // Reverser strengen
+    // Reverse the string
     for (int j = 0, k = i - 1; j < k; j++, k--) {
         char temp = str[j];
         str[j] = str[k];
@@ -114,24 +114,6 @@ void itoa(int num, char* str, int base) {
 }
 
 
-/*void printf(const char* format, ...) {
-    va_list args;
-    va_start(args, format);
-
-    for (const char* ptr = format; *ptr != '\0'; ptr++) {
-        if (*ptr == '%' && *(ptr + 1) == 'c') {
-            char c = (char)va_arg(args, int);
-            terminal_write(&c, VGA_COLOR(15, 0));
-            ptr++; // Hopp over 'c'
-        } else {
-            // Skriv kun én karakter – unngå å skrive hele strengen igjen!
-            char ch = *ptr;
-            terminal_write(&ch, VGA_COLOR(15, 0));
-        }
-    }
-
-    va_end(args);
-}*/
 
 void printf(const char* format, ...) {
     va_list args;
@@ -218,11 +200,7 @@ void get_input(char* buffer, int max_len) {
 }
 
 
-//NORA LAGT TIL
-
-// Sammenligner to strenger tegn for tegn
-// Returnerer 0 hvis strengene er like, ellers forskjellen mellom første ulike tegn
-// Brukes i f.eks. "if (strcmp(guess, word) == 0)"
+// Compares two strings character by character
 int strcmp(const char *s1, const char *s2) {
     while (*s1 && (*s1 == *s2)) {
         s1++; s2++;
@@ -230,10 +208,7 @@ int strcmp(const char *s1, const char *s2) {
     return *(const unsigned char *)s1 - *(const unsigned char *)s2;
 }
 
-
-// Kopierer streng fra src til dest, inkludert '\0'
-// Returnerer en peker til dest
-// Brukes for å lagre navn og ord
+// Copies a string from src to dest, including '\0'
 char *strcpy(char *dest, const char *src) {
     char *ret = dest;
     while ((*dest++ = *src++));
