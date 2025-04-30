@@ -57,16 +57,33 @@ set(CMAKE_ASM_NASM_COMPILE_OBJECT
 set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/linker.ld")
 
 # Add executable target for the kernel
-add_executable(uiaos-kernel 
-	src/multiboot2.asm # TODO: Add multiboot2 support
+add_executable(uiaos-kernel
+    src/multiboot2.asm 
+
     src/kernel.c
-	src/Descriptor_tables/gdt.c
-	src/Descriptor_tables/idt.c
-	src/Descriptor_tables/gdt_idt.asm
-	src/Descriptor_tables/isr.c
-	src/Descriptor_tables/common.c
-	src/Descriptor_tables/print.c
-	src/Descriptor_tables/interrupt.asm
+    src/kernel.cpp
+
+    src/memory/memory.c
+    src/memory/malloc.c
+    src/memory/memutils.c
+
+    src/Descriptor_tables/gdt.c
+    src/Descriptor_tables/idt.c
+    src/Descriptor_tables/isr.c
+    src/Descriptor_tables/common.c
+    src/Descriptor_tables/print.c
+    src/Descriptor_tables/interrupts.c  
+    
+    src/Descriptor_tables/gdt_idt.asm
+    src/Descriptor_tables/interrupt.asm
+
+    src/libc/stdio.cpp
+    src/libc/panic.cpp
+    src/libc/io.c
+
+    src/input.c
+    src/Music/song.cpp
+    src/pit.c
 
 )
 

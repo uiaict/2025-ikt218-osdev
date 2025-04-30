@@ -1,4 +1,4 @@
-#include "common.h"
+#include "libc/common.h"
 
 void reverse(char str[], int length);  // Forward declaration of reverse
 

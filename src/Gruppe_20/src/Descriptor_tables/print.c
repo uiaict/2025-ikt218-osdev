@@ -1,5 +1,6 @@
-#include "print.h"
+#include "libc/print.h"
 #include "libc/stdbool.h"
+#include "libc/stdio.h"
 // Screen dimensions
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25
