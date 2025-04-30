@@ -9,6 +9,8 @@
 #include "timer.h"
 #include "speaker.h"
 #include "song/song.h"
+#include "io.h"
+#include "libc/stdlib.h"
 
 
 
@@ -24,10 +26,11 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     init_gdt();
     init_idt();
     init_keyboard();
-    init_pit(500); // 50Hz
-    // enable_speaker();
-    // play_sound(500);
+    init_pit(500);
+    enable_speaker();
 
+
+    printf("%.10f", 0.4294967295);
     
 
     struct song songs[] = {
@@ -46,15 +49,15 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     struct song_player *player = create_song_player();
     uint32_t n_songs = sizeof(songs) / sizeof(songs[0]);
     // player->play_song(&songs[8]);
-    
 
-    print("       _.---._    /\\\n\r"
-       "    ./'       \"--`\\//\n\r"
-       "  ./              o \\          .-----.\n\r"
-       " /./\\  )______   \\__ \\        ( help! )\n\r"
-       "./  / /\\ \\   | \\ \\  \\ \\       /`-----'\n\r"
-       "   / /  \\ \\  | |\\ \\  \\7--- ooo ooo ooo ooo ooo ooo\n\r");
 
+    // print("       _.---._    /\\\n\r"
+    //    "    ./'       \"--`\\//\n\r"
+    //    "  ./              o \\          .-----.\n\r"
+    //    " /./\\  )______   \\__ \\        ( help! )\n\r"
+    //    "./  / /\\ \\   | \\ \\  \\ \\       /`-----'\n\r"
+    //    "   / /  \\ \\  | |\\ \\  \\7--- ooo ooo ooo ooo ooo ooo\n\r");
+    // printf("%g%d",1,2);
 
 
     while (true){
@@ -63,7 +66,6 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     
     
 //TODO: 
-//scroll, verify if x or y negative
 //printf scanf
 //memory
 //malloc musicplayer

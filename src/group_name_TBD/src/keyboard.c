@@ -87,12 +87,12 @@ void keyboard_handler(struct registers reg){
     
     
     if ((int)c <= 255 && (int)c != 0){
-        putchar((int)c);
+        printf("%c", c);
     }
     
     if (!shift && scan_code == 0x1C){
         // Generally, we want CRLF when we hit enter
-        putchar('\r');
+        printf("%c", '\r');
     }   
     
 }

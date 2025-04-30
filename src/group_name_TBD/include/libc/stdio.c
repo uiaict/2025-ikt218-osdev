@@ -4,18 +4,74 @@
 #include "string.h"
 #include "stdlib.h"
 #include "speaker.h"
+#include "io.h"
+#include "libc/stdarg.h"
 
-size_t terminal_width = 80; // Not const as to allow possible resize in the future
-size_t terminal_height = 25;
-uint8_t terminal_color = 0x0f; // default white text black background
+extern uint8_t terminal_color;
+extern int cursor_xpos;
+extern int cursor_ypos;
+extern char *video_memory;
 
-size_t cursor_xpos = 0;
-size_t cursor_ypos = 0;
 
-char *video_memory = (char*)0x00b8000;
+void verify_cursor_pos(){
+    // Fix cursor if OoB
+    
+    if (cursor_xpos >= VGA_WIDTH){
+        cursor_xpos = 0;
+        cursor_ypos++;
+    }
+    if (cursor_ypos >= VGA_HEIGHT){
+        cursor_ypos = VGA_HEIGHT-1;        
+    }
+    if (cursor_xpos < 0 && cursor_ypos != 0){
+        cursor_ypos--;
+        cursor_xpos = VGA_WIDTH-1;
+    }
+    if (cursor_xpos < 0 && cursor_ypos == 0){
+        cursor_ypos = 0;
+        cursor_xpos = 0;
+    }
+    if (cursor_ypos < 0){
+        cursor_ypos = 0;
+        cursor_xpos = 0;
+    }
+}
 
-void set_vga_color(enum vga_color txt_color, enum vga_color bg_color){
-    terminal_color = txt_color | bg_color << 4;
+void ctrlchar(int c){
+    
+    switch (c){
+        case '\n':
+            cursor_ypos++;
+            break;
+            
+        case '\r':
+            cursor_xpos = 0;
+            break;
+            
+        case '\t':
+            cursor_xpos = (cursor_xpos / 8 + 1) * 8;
+            break;
+            
+        case '\b':
+            cursor_xpos--;
+            putchar(' ');
+            cursor_xpos--;
+            break; 
+            
+        case '\f':
+            cursor_ypos = (cursor_ypos / VGA_HEIGHT + 1) * VGA_HEIGHT;
+            cursor_xpos = 0;
+            break;
+            
+        case '\a':
+            // Speaker must be enabled
+            beep();
+            break;
+        
+        default:
+            break;
+    }
+    verify_cursor_pos();
 }
 
 
@@ -37,7 +93,7 @@ int putchar(const int c){
         return true;
     }
     
-    const size_t index = cursor_ypos * terminal_width + cursor_xpos;
+    const size_t index = cursor_ypos * VGA_WIDTH + cursor_xpos;
     video_memory[index*2] = (unsigned char)c;
     video_memory[index*2 +1] = terminal_color;
     
@@ -47,59 +103,109 @@ int putchar(const int c){
     return true;
 }
 
-void putint(const uint32_t num){
-    
-    unsigned char *string;
-    itoa(num, string);
-    print(string);
-}
+int printf(const char* __restrict__ format, ...) {
+	va_list parameters;
+	va_start(parameters, format);
+ 
+	int written = 0;
+ 
+	while (*format != '\0') {
 
+        if (*format != '%'){
+            format++;
+            written++;
+            putchar(*format);
+            continue;
+        }
 
+        //Char was '%', check what is next
+        format++;
 
-void verify_cursor_pos(){
-    // Fix cursor if OoB
-    
-    if (cursor_xpos > terminal_width){
-        cursor_xpos = 0;
-        cursor_ypos++;
-    }
-    if (cursor_ypos > terminal_height){
-        cursor_ypos = 0;
-    }
-    
-}
+        // %% prints %
+        if (*format == '%'){
+            format++;
+            written++;
+            putchar(*format);
+            continue;
+        }
 
-void ctrlchar(int c){
-    
-    switch (c){
-        case '\n':
-            cursor_ypos++;
-            break;
+        // %i and %d for int
+        if (*format == 'd' || *format == 'i'){
+            int num = va_arg(parameters, int);
+            unsigned char strnum[15] = {0};
+            itoa(num, (char*)strnum);
+            format++;
+            written += strlen((char*)strnum);
+            print(strnum);
+            continue;
+        }   
+
+        // %s for string (char*)
+        if(*format == 's'){
+            const unsigned char *string = va_arg(parameters, const unsigned char*);
+            format++;
+            written += strlen((char*)string);
+            print(string);
+            continue;
+        }
+
+        // %c for char
+        if (*format == 'c'){
+            const unsigned char c = va_arg(parameters, int); // const unsigned char is promoted to int, would abort as uchar
+            format++;
+            written++;
+            putchar((int)c);
+            continue;
+        }
+
+        if (*format == 'u'){
+            unsigned int num = va_arg(parameters, unsigned int);
+            unsigned char strnum[15] = {0};
+            utoa(num, (char*)strnum);
+            format++;
+            written += strlen((char*)strnum);
+            print(strnum);
+            continue;
+        } 
+
+        if (*format == 'f'){
+            double num = va_arg(parameters, double);
+            unsigned char strnum[15] = {0};
+            ftoa(num, (char*)strnum, 6);
+            format++;
+            written += strlen((char*)strnum);
+            print(strnum);
+            continue;
+        } 
+
+        if (*format == '.'){
+            int precision = 0;
+            format++;
+            // 32bit barely allows 10 digit precision, max would be 0.4294967296 (unsigned long int), 
+            // printf("%.10f", 0.4294967295); maxe due to floating point (non)precision
+            while (*format >= '0' && *format <= '9'){ // If charcode for format is within charcode for 0-9
+                precision = precision * 10 + (*format - '0'); // For every loop, a leading 0 is added, then format is appended
+                format++;
+            }
+            if (*format == 'f'){
+                double num = va_arg(parameters, double);
+                unsigned char strnum[15] = {0};
+                ftoa(num, (char*)strnum, precision);
+                format++;
+                written += strlen((char*)strnum);
+                print(strnum);
+                continue;
+            }
             
-        case '\r':
-            cursor_xpos = 0;
-            break;
             
-        case '\t':
-            cursor_xpos = (cursor_xpos / 8 + 1) * 8;
-            break;
-            
-        case '\b':
-            cursor_xpos--;
-            break; 
-            
-        case '\f':
-            cursor_ypos = (cursor_ypos / terminal_height + 1) * terminal_height;
-            cursor_xpos = 0;
-            break;
-            
-        case '\a':
-            beep();
-            break;
+        } 
+
+        //Invalid flag, skip over
+        format++;
         
-        default:
-            break;
-    }
-    verify_cursor_pos();
+	}
+ 
+	va_end(parameters);
+    update_cursor();
+	return written;
 }
-
