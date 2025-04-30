@@ -8,22 +8,22 @@
 void send_eoi(uint8_t irq);
 void remap_pic();
 
-// IDT Entry struktur
+// IDT Entry structure
 struct idt_entry {
-    uint16_t offset_low;  // Lavere 16 biter av ISR-adressen
-    uint16_t selector;    // Kode-segment selector i GDT
-    uint8_t zero;         // Må være null
-    uint8_t type_attr;    // Type og attributter
-    uint16_t offset_high; // Øvre 16 biter av ISR-adressen
+    uint16_t offset_low;  // Lower 16 bits of the ISR address
+    uint16_t selector;    // Code segment selector in GDT
+    uint8_t zero;         // Must be zero
+    uint8_t type_attr;    // Type and attributes
+    uint16_t offset_high; // Upper 16 bits of the ISR address
 } __attribute__((packed));
 
-// IDT Pointer struktur
+// IDT Pointer structure
 struct idt_ptr {
-    uint16_t limit; // Størrelsen på IDT - 1
-    uint32_t base;  // Baseadresse til IDT
+    uint16_t limit; // Size of the IDT - 1
+    uint32_t base;  // Base address of the IDT
 } __attribute__((packed));
 
-// Funksjonsprototyper
+
 void init_idt();
 void set_idt_entry(int index, uint32_t isr, uint16_t selector, uint8_t type_attr);
 void default_int_handler();
