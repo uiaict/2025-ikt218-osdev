@@ -160,3 +160,25 @@ void start_game_menu() {
         }
     }
 }
+
+void print_os_logo(){
+    printf(" _________  __               ______   _   _           ___     ______   \n");
+    printf("|  _   _  |[  |            .' ___  | (_) / |_       .'   `. .' ____ \\  \n");
+    printf("|_/ | | \\_| | |--.  .---. / .'   \\_| __ `| |-'.--. /  .-.  \\| (___ \\_| \n");
+    printf("    | |     | .-. |/ /__\\\\| |   ____[  | | | ( (`\\]| |   | | _.____`.  \n");
+    printf("   _| |_    | | | || \\__.,\\ `.___]  || | | |, `'.'.\\  `-'  /| \\____) | \n");
+    printf("  |_____|  [___]|__]'.__.' `._____.'[___]\\__/[\__) )`.___.'  \\______.' \n");
+}
+
+void print_os_greeting(){
+    print_os_logo();
+    printf("Welcome to TheGitsOS!\n");
+    printf("Use our interacive menu to navigate through the system.\n");
+    printf("\n");
+    
+}
+void print_os_farewell(){
+    print_os_logo();
+    printf("Thank you for using TheGitsOS...\n");
+    printf("We hope you enjoyed your experience.\n");
+}

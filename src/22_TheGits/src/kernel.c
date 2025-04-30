@@ -41,18 +41,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     // === SCREEN STARTUP ===
 
-    printf(" _________  __               ______   _   _           ___     ______   \n");
-    printf("|  _   _  |[  |            .' ___  | (_) / |_       .'   `. .' ____ \\  \n");
-    printf("|_/ | | \\_| | |--.  .---. / .'   \\_| __ `| |-'.--. /  .-.  \\| (___ \\_| \n");
-    printf("    | |     | .-. |/ /__\\\\| |   ____[  | | | ( (`\\]| |   | | _.____`.  \n");
-    printf("   _| |_    | | | || \\__.,\\ `.___]  || | | |, `'.'.\\  `-'  /| \\____) | \n");
-    printf("  |_____|  [___]|__]'.__.' `._____.'[___]\\__/[\__) )`.___.'  \\______.' \n");
-
-
-    printf("Welcome to TheGitsOS!\n");
-    printf("Use our interacive menu to navigate through the system.\n");
-    printf("\n");
-    
+    print_os_greeting();
     char choice[5];    
 
   while(choice[0] != '5') {
@@ -77,8 +66,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     } else if (choice[0] == '4') {
         pit_menu();
     } else if (choice[0] == '5') {
-        printf("Thank you for using our operating system...\n");
-        sleep_busy(2000);
+        print_os_farewell();
+        sleep_busy(3000);
         shutdown();
     }
     else {
