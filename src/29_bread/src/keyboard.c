@@ -2,6 +2,7 @@
 #include <libc/common.h>
 #include <print.h>
 #include <libc/irq.h>
+#include <libc/song.h>
 
 // Keyboard buffer
 static char keyboard_buffer[256];
@@ -72,6 +73,41 @@ char scancode_to_ascii(uint8_t scancode) {
     }
 }
 
+#define NOTE_C4 262
+#define NOTE_D4 294
+#define NOTE_E4 330
+#define NOTE_F4 349
+#define NOTE_G4 392
+#define NOTE_A4 440
+#define NOTE_B4 494
+#define NOTE_C5 523
+
+void play_key_note(char key) {
+    uint32_t frequency = 0;
+    uint32_t duration = 150; // Short duration for immediate feedback
+    
+    switch (key) {
+        case '1': frequency = NOTE_C4; break;
+        case '2': frequency = NOTE_D4; break;
+        case '3': frequency = NOTE_E4; break;
+        case '4': frequency = NOTE_F4; break;
+        case '5': frequency = NOTE_G4; break;
+        case '6': frequency = NOTE_A4; break;
+        case '7': frequency = NOTE_B4; break;
+        case '8': frequency = NOTE_C5; break;
+        default: return; // Not a piano key
+    }
+    
+    if (frequency > 0) {
+        // Use play_sound instead of play_tone
+        play_sound(frequency);
+        // Sleep briefly to let the sound play
+        sleep_interrupt(100); 
+        // Then stop the sound
+        stop_sound();
+    }
+}
+
 // Keyboard interrupt handler
 void keyboard_handler(registers_t regs) {
     // Read the scancode from the keyboard port
@@ -84,6 +120,10 @@ void keyboard_handler(registers_t regs) {
     if (ascii) {
         keyboard_buffer_add(ascii);
         putchar(ascii);
+
+        if (ascii >= '1' && ascii <= '8') {
+            play_key_note(ascii);
+        }
     }
 }
 

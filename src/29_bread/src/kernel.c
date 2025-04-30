@@ -93,18 +93,12 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     asm volatile("sti");
     printf("Interrupts enabled\n");
 
-    play_music();
+    //play_music();
 
     int counter = 0;
     printf("Testing PIT with sleep functions...\n");
     while(1) {
-        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-        sleep_busy(1000);
-        printf("[%d]: Slept using busy-waiting.\n", counter++);
-
-        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);
+        
     }
 
     return 0;

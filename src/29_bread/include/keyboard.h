@@ -11,5 +11,6 @@ char scancode_to_ascii(uint8_t scancode);
 void keyboard_buffer_add(char c);
 char keyboard_buffer_get();
 uint8_t keyboard_buffer_size();
+void play_key_note(char key);
 
 #endif
