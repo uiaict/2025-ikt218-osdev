@@ -18,7 +18,9 @@
         "limits.h": "c",
         "scrn.h": "c",
         "stdarg.h": "c",
-        "frequencies.h": "c"
+        "frequencies.h": "c",
+        "pit.h": "c",
+        "isr_handlers.h": "c"
     }
 
 }

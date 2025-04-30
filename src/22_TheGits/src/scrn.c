@@ -1,5 +1,35 @@
 #include "libc/scrn.h"
-#include "libc/stdarg.h"
+#include "libc/stdbool.h"
+#include "pit/pit.h"
+
+#define INPUT_BUFFER_SIZE 128
+
+static char input_buffer[INPUT_BUFFER_SIZE];
+static int input_head = 0;
+static int input_tail = 0;
+static bool shift_pressed = false;
+
+void scrn_init_input_buffer() {
+    input_head = 0;
+    input_tail = 0;
+    shift_pressed = false;
+}
+
+void scrn_set_shift_pressed(bool value) {
+    shift_pressed = value;
+}
+
+bool scrn_get_shift_pressed() {
+    return shift_pressed;
+}
+
+void scrn_store_keypress(char c) {
+    int next_head = (input_head + 1) % INPUT_BUFFER_SIZE;
+    if (next_head != input_tail) {
+        input_buffer[input_head] = c;
+        input_head = next_head;
+    }
+}
 
 void terminal_write(const char* str, uint8_t color) {
     static size_t row = 0; 
@@ -156,4 +186,33 @@ void panic(const char* message) {
     while (1) {
         __asm__ volatile ("cli; hlt");
     }
+}
+
+void get_input(char* buffer, int max_len) {
+    int index = 0;
+
+    while (index < max_len - 1) {
+        while (input_head == input_tail) {
+            //__asm__ volatile("hlt");
+        }
+
+        char c = input_buffer[input_tail];
+        input_tail = (input_tail + 1) % INPUT_BUFFER_SIZE;
+
+        if (c == '\n' || c == '\r') {
+            break;
+        } else if (c == '\b') {
+            if (index > 0) {
+                index--;
+                printf("\b \b");
+            }
+        } else {
+            buffer[index++] = c;
+            char str[2] = {c, '\0'};
+            printf(str);
+        }
+    }
+
+    buffer[index] = '\0';
+    printf("\n");
 }
