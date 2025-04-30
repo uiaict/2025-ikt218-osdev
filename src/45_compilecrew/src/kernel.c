@@ -60,9 +60,13 @@ SongPlayer* create_song_player() {
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_gdt();
     idt_init();
+    terminal_clear();
+
+
+
 
     init_kernel_memory(&end);
-    init_paging();
+    //init_paging();
     print_memory_layout();
 
     init_pit();
@@ -71,24 +75,22 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     printf("Hello World\n");
 
+    terminal_clear();
+
+    draw_front_page();
+    disable_cursor();
+
+
     //void* some_memory = malloc(12345);
     //void* memory2 = malloc(54321);
     //void* memory3 = malloc(13331);
 
+    
     Song song1 = { fur_elise, sizeof(fur_elise) / sizeof(Note) };
     Song song2 = { happy_birthday, sizeof(happy_birthday) / sizeof(Note) };
     Song song3 = { starwars_theme, sizeof(starwars_theme) / sizeof(Note) };
     
-    Song* songs[] = { &song1, &song2, &song3 };
-    uint32_t n_songs = sizeof(songs) / sizeof(Song*);
 
-    // Create a song player and play each song
-    SongPlayer* player = create_song_player();
-    for(uint32_t i = 0; i < n_songs; i++) {
-        printf("Playing Song...\n");
-        player->play_song(songs[i]);
-        printf("Finished playing the song.\n");
-    }
 
 
     while (1) {

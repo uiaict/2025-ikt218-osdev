@@ -62,14 +62,7 @@ void play_song_impl(Song *song) {
     for (uint32_t i = 0; i < song->length; i++) {
         Note* note = &song->notes[i];
         printf("Note: %d, Freq=%d, Sleep=%d\n", i, note->frequency, note->duration);
-        
-        // Added if loop to make audio less choppy (doesnt turn off and on speaker that often)
-        if (note->frequency == 0) {
-            stop_sound();
-        } else {
-            play_sound(note->frequency);
-        }
-        
+        play_sound(note->frequency);
         sleep_interrupt(note->duration);
         stop_sound();
 

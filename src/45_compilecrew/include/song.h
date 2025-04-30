@@ -23,6 +23,8 @@ static Note happy_birthday[] = {
     {G4, 400}, {G4, 400}, {G5, 800}, {E5, 800}, {C5, 800}, {B4, 800}, {A4, 1600},
     {F5, 400}, {F5, 400}, {E5, 800}, {C5, 800}, {D5, 800}, {C5, 1600}
 };
+static Song birthday = { happy_birthday, sizeof(happy_birthday) / sizeof(Note) };
+
 
 static Note starwars_theme[] = {
     {A4, 500}, {A4, 500}, {F4, 350}, {C5, 150},
@@ -31,6 +33,8 @@ static Note starwars_theme[] = {
     {E5, 500}, {E5, 500}, {E5, 500},
     {F5, 350}, {C5, 150}, {G4, 500}, {F4, 350}, {C5, 150}, {A4, 1000}
 };
+static Song starwars = { starwars_theme, sizeof(starwars_theme) / sizeof(Note) };
+
 
 static Note fur_elise[] = {
     {E5, 250}, {Ds5, 250}, {E5, 250}, {Ds5, 250}, {E5, 250},
@@ -45,5 +49,7 @@ static Note fur_elise[] = {
     {E4, 250}, {E5, 250}, {Ds5, 250}, {E5, 250}, {Ds5, 250}, {E5, 250},
     {B4, 250}, {D5, 250}, {C5, 250}, {A4, 500}
 };
+static Song furelise = { fur_elise, sizeof(fur_elise) / sizeof(Note) };
+
 
 #endif
