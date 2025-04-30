@@ -1,5 +1,4 @@
 #include "libc/scrn.h"
-#include "game/input_buffer.h"
 #include "memory/memory.h"
 #include "menu.h"
 #include "pit/pit.h"

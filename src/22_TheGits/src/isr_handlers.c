@@ -1,11 +1,21 @@
 #include "libc/scrn.h"
 #include "libc/isr_handlers.h"
 #include "pit/pit.h"
+#include "libc/io.h"
+#include "libc/irq.h"
+#include "libc/stdint.h"
 
 static int timer_ticks = 0;
 
+
 void handle_timer_interrupt() {
+    //timer_ticks++;
     pit_increment_tick();
+
+    if (timer_ticks % 500 == 0) {
+       // printf("Five second has passed\n");
+    }
+
     send_eoi(0);
 }
 
@@ -21,28 +31,34 @@ bool shift_pressed = false;
 void handle_keyboard_interrupt() {
     uint8_t scancode = inb(0x60);
 
-    // Shift-keys pressed
     if (scancode == 0x2A || scancode == 0x36) {
-        shift_pressed = true;
+        scrn_set_shift_pressed(true);
         send_eoi(1);
         return;
     }
 
-    // Shift-keys released (break codes)
     if (scancode == 0xAA || scancode == 0xB6) {
-        shift_pressed = false;
+        scrn_set_shift_pressed(false);
         send_eoi(1);
         return;
     }
 
-    // Ignorer break codes
     if (scancode & 0x80) {
         send_eoi(1);
         return;
     }
 
+    if (scancode < 128) {
+        bool shift = scrn_get_shift_pressed();
+        char c = shift ? scancode_to_ascii_shift[scancode] : scancode_to_ascii[scancode];
+        if (c) {
+            scrn_store_keypress(c);
+        }
+    }
     send_eoi(1);
 }
+
+
 
 void handle_div_zero() {
     printf("Divide by zero error triggered!\n");
