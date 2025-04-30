@@ -20,11 +20,11 @@ extern void isr_irq14();
 extern void isr_irq15();
 
 
-// IDT-tabellen og IDT-peker
+// The IDT table and IDT pointer
 struct idt_entry idt[IDT_SIZE];
 struct idt_ptr idt_descriptor;
 
-// Funksjon for å sette en IDT-oppføring
+// Function to set an IDT entry
 void set_idt_entry(int index, uint32_t isr, uint16_t selector, uint8_t type_attr) {
     idt[index].offset_low = isr & 0xFFFF;
     idt[index].selector = selector;
@@ -42,12 +42,12 @@ void init_idt() {
     idt_descriptor.limit = (sizeof(struct idt_entry) * IDT_SIZE) - 1;
     idt_descriptor.base = (uint32_t)&idt;
 
-    // 1. Nullstill IDT
+    // Clear IDT
     for (int i = 0; i < IDT_SIZE; i++) {
         set_idt_entry(i, 0, 0x08, 0x8E);
     }
 
-    // 2. Sett opp faktiske ISR-er (IRQ0–IRQ15)
+    // Set up actual ISRs (IRQ0–IRQ15)
     set_idt_entry(0x00, (uint32_t)isr_div_zero, 0x08, 0x8E);
     set_idt_entry(0x20, (uint32_t)isr_irq0,  0x08, 0x8E);
     set_idt_entry(0x21, (uint32_t)isr_irq1,  0x08, 0x8E);
@@ -68,14 +68,14 @@ void init_idt() {
     set_idt_entry(0x80, (uint32_t)isr_syscall, 0x08, 0xEE);
 
 
-    // 3. Sett default_isr for resterende oppføringer som fortsatt er 0
+    // Set default_isr for remaining entries that are still 0
     for (int i = 0; i < IDT_SIZE; i++) {
         if (idt[i].offset_low == 0 && idt[i].offset_high == 0) {
             set_idt_entry(i, (uint32_t)default_isr, 0x08, 0x8E);
         }
     }
 
-    // 4. Last IDT
+    // Load IDT
     __asm__ volatile ("lidt (%0)" : : "r"(&idt_descriptor));
 }
 

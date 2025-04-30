@@ -20,7 +20,7 @@ struct gdt_ptr {
     uint32_t base;  
 } __attribute__((packed));
 
-// Funksjonsdeklarasjoner
+
 void init_gdt();
 
 #endif // GDT_H

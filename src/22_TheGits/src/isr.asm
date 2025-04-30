@@ -1,5 +1,4 @@
-; === Egne ISRs for spesifikke interrupttyper ===
-
+;Custom ISRs for specific interrupt types
 extern handle_syscall
 extern handle_div_zero
 global isr_syscall
@@ -16,7 +15,7 @@ isr_syscall:
     sti
     iret
 
-; === Generiske IRQ ISR-er ===
+; Generic IRQ ISRs
 extern irq_handler
 
 %macro ISR_IRQ 1
@@ -49,7 +48,7 @@ ISR_IRQ 13
 ISR_IRQ 14
 ISR_IRQ 15
 
-; === Default handler for udefinerte interrupts ===
+;Default handler for undefined interrupts
 extern default_int_handler
 
 global default_isr

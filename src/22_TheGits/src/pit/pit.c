@@ -16,7 +16,6 @@ void init_pit(){
     outb(PIT_CMD_PORT, 0x36); // Set mode: channel 0, LSB+MSB, mode 3 (square wave)
     outb(PIT_CHANNEL0_PORT, divisor & 0xFF); // Send LSB
     outb(PIT_CHANNEL0_PORT, (divisor >> 8) & 0xFF); // Send MSB
-   // outb(PC_SPEAKER_PORT, inb(PC_SPEAKER_PORT) | 3); // Enable speaker
 }
 
 
@@ -40,7 +39,6 @@ void sleep_busy(uint32_t milliseconds){
 
     while (elapsed_ticks < ticks_to_wait) {
         while (get_current_tick() == start_tick + elapsed_ticks) {
-            // Do nothing (busy wait)
         }
         elapsed_ticks++;
     }

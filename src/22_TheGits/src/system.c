@@ -1,8 +1,6 @@
 #include "system.h"
 #include "libc/scrn.h"
 
-
-
 void shutdown() {
     printf("\nSlår av systemet...\n");
     outw(0x604, 0x2000);

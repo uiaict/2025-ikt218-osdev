@@ -45,7 +45,6 @@ void memory_menu() {
 void pit_menu() {
     char choice[3];
 
-
     while (1) {
         printf("\n==== PIT Management Menu ====\n");
         printf("1: Test sleep busy\n");
