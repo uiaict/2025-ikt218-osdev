@@ -27,30 +27,7 @@ char word_bank[MAX_WORDS][MAX_WORD_LENGTH];
 int word_count = 0;
 int highscore = 0;
 
-// Hovedmenyen, 3 forskjellige valg, start spill, se highscore og avslutte
-void start_game_menu() {
-    while (1) {
-        printf("\n==== Word Game Menu ====\n");
-        printf("1: Start game\n");
-        printf("2: Show highscores\n");
-        printf("q: Quit game\n");
-        printf("Your choice: ");
 
-        char choice[4];
-        get_input(choice, sizeof(choice));
-
-        if (choice[0] == '1') {
-            start_word_game();
-        } else if (choice[0] == '2') {
-            show_highscores();
-        } else if (choice[0] == 'q' || choice[0] == 'Q') {
-            printf("Exiting game...\n");
-            return;
-        } else {
-            printf("Invalid input. Try again.\n");
-        }
-    }
-}
 // Stokker bokstavene i ordet for å lage utfordringen
 // Bruker her Fisher-Yates-algoritmen for å stokke bokstavene, finn kilder!!
 // Bruker tick-teller som "random seed"

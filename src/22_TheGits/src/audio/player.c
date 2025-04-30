@@ -4,8 +4,6 @@
 #include "libc/scrn.h"
 #include "pit/pit.h"
 
-#include "audio/tracks.h"
-
 
 SongPlayer* create_song_player(){
     // Allokerer minne til en ny SongPlayer-struktur
@@ -51,39 +49,3 @@ void play_music(Note* notes, uint32_t length) {
     player = NULL;
 }
 
-void play_music_menu(){
-    while(1){
-        printf("\n==== Music Player Menu ====\n");
-        printf("1: Play Mario Theme Song\n");
-        printf("2: Play Star Wars Theme Song\n");
-        printf("3: Play Battlefield 1942 Theme Song\n");
-        printf("q: Go back to main menu....\n");
-
-        char choice[4];
-        get_input(choice, sizeof(choice));
-
-        if (choice[0] == '1') {
-            printf("Playing Mario Theme Song...\n");
-            play_music(music_6, sizeof(music_6) / sizeof(Note));
-            printf("Finished playing the song.\n");
-        } 
-        else if (choice[0] == '2') {
-            printf("Playing Star Wars Theme Song...\n");
-            play_music(music_5, sizeof(music_5) / sizeof(Note));
-            sleep_busy(2000); // Sleep for 1 second before stopping
-            printf("Finished playing the song.\n");
-        } 
-        else if (choice[0] == '3') {
-            printf("Playing Battlefield 1942 Theme Song...\n");
-            play_music(music_3, sizeof(music_3) / sizeof(Note));
-            sleep_busy(2000); // Sleep for 1 second before stopping
-            printf("Finished playing the song.\n");
-        } 
-        else if (choice[0] == 'q' || choice[0] == 'Q') {
-            printf("Exiting music player...\n");
-            return;
-        } else {
-            printf("Invalid input. Try again.\n");
-        }
-    }
-}

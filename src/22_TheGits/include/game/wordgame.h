@@ -1,7 +1,6 @@
 #ifndef WORDGAME_H
 #define WORDGAME_H
 
-void start_game_menu();
 void shuffle_word(const char* word, char* shuffled);
 int play_round(const char* original_word);
 void collect_words();

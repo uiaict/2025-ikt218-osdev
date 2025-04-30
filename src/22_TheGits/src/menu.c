@@ -2,6 +2,8 @@
 #include "memory/memory.h"
 #include "menu.h"
 #include "pit/pit.h"
+#include "audio/tracks.h"
+#include "game/wordgame.h"
 
 void memory_menu() {
     char choice[5];
@@ -39,8 +41,6 @@ void memory_menu() {
         }
     }
 }
-
-
 
 void pit_menu() {
     char choice[3];
@@ -95,6 +95,68 @@ void pit_menu() {
         
         else {
             printf("Invalid choice. Please try again.\n");
+        }
+    }
+}
+
+void play_music_menu(){
+    while(1){
+        printf("\n==== Music Player Menu ====\n");
+        printf("1: Play Mario Theme Song\n");
+        printf("2: Play Star Wars Theme Song\n");
+        printf("3: Play Battlefield 1942 Theme Song\n");
+        printf("q: Go back to main menu....\n");
+
+        char choice[4];
+        get_input(choice, sizeof(choice));
+
+        if (choice[0] == '1') {
+            printf("Playing Mario Theme Song...\n");
+            play_music(music_1, sizeof(music_1) / sizeof(Note));
+            sleep_busy(2000); // Sleep for 2 seconds before stopping
+            printf("Finished playing the song.\n");
+        } 
+        else if (choice[0] == '2') {
+            printf("Playing Star Wars Theme Song...\n");
+            play_music(starwars_theme, sizeof(starwars_theme) / sizeof(Note));
+            sleep_busy(2000); // Sleep for 2 seconds before stopping
+            printf("Finished playing the song.\n");
+        } 
+        else if (choice[0] == '3') {
+            printf("Playing Battlefield 1942 Theme Song...\n");
+            play_music(battlefield_1942_theme, sizeof(battlefield_1942_theme) / sizeof(Note));
+            sleep_busy(2000); // Sleep for 2 seconds before stopping
+            printf("Finished playing the song.\n");
+        } 
+        else if (choice[0] == 'q' || choice[0] == 'Q') {
+            printf("Exiting music player...\n");
+            return;
+        } else {
+            printf("Invalid input. Try again.\n");
+        }
+    }
+}
+
+void start_game_menu() {
+    while (1) {
+        printf("\n==== Word Game Menu ====\n");
+        printf("1: Start game\n");
+        printf("2: Show highscores\n");
+        printf("q: Quit game\n");
+        printf("Your choice: ");
+
+        char choice[4];
+        get_input(choice, sizeof(choice));
+
+        if (choice[0] == '1') {
+            start_word_game();
+        } else if (choice[0] == '2') {
+            show_highscores();
+        } else if (choice[0] == 'q' || choice[0] == 'Q') {
+            printf("Exiting game...\n");
+            return;
+        } else {
+            printf("Invalid input. Try again.\n");
         }
     }
 }
