@@ -1,4 +1,4 @@
-#include "i386/interuptRegister.h"
+#include "i386/IRQ.h"
 #include "common.h"
 
 // Initializing the IRQ handlers
@@ -31,7 +31,11 @@ void irq_handler(registers_t regs)
     outb(0x20, 0x20); // Send reset signal to master.
 
     // Call the IRQ handler
-    struct int_handler_t intrpt = irq_handlers[regs.int_no];
+    int irq = regs.int_no - 32;
+    if (irq < 0 || irq > IRQ_COUNT)
+        return;
+
+    struct int_handler_t intrpt = irq_handlers[irq];
     if (intrpt.handler != 0)
     {
         intrpt.handler(&regs, intrpt.data);

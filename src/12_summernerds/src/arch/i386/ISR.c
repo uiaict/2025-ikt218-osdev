@@ -1,4 +1,4 @@
-#include "i386/interuptRegister.h"
+#include "i386/IRQ.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 
@@ -30,5 +30,8 @@ __attribute__((noreturn)) void exception_handler(void);
 
 void exception_handler()
 {
-    asm volatile("cli; hlt");
+    while (true)
+    {
+        asm volatile("cli; hlt");
+    }
 }

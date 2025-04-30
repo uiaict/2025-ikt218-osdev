@@ -1,22 +1,22 @@
 #include "i386/descriptorTables.h"
-#include "i386/ISR.h"
 #include "i386/IRQ.h"
+#include "i386/ISR.h"
 #include <kernel/pit.h>
 #include <libc/stdint.h>
 #include <libc/stdio.h>
 #include "common.h"
 
-static volatile uint32_t pit_tickets = 0;
+static uint32_t pit_ticks = 0;
 
-void pit_callback(registers_t regs)
+void pit_callback(registers_t *regs, void *ctx)
 {
-    pit_tickets++;
+    pit_ticks++;
     outb(PIC1_CMD_PORT, PIC_EOI);
 }
 
 void init_pit()
 {
-    // register_irq_handler(0, pit_callback); // THIS IS NOT IMPLEMENTED
+    register_irq_handler(IRQ0, pit_callback, NULL); // THIS IS NOT IMPLEMENTED
 
     uint32_t divisor = PIT_BASE_FREQUENCY / TARGET_FREQUENCY;
 
@@ -24,62 +24,36 @@ void init_pit()
     outb(PIT_CHANNEL0_PORT, (uint8_t)(divisor & 0xFF));
     outb(PIT_CHANNEL0_PORT, (uint8_t)((divisor >> 8) & 0xFF));
 
-    pit_tickets = 0;
+    pit_ticks = 0;
     printf("Initialize PIT with %d Hz\n", TARGET_FREQUENCY);
 }
 
-uint32_t get_current_ticket()
+uint32_t get_current_tick()
 {
-    return pit_tickets;
+    return pit_ticks;
 }
 
 // Infinite loop problem
-void sleep_busy(uint32_t wait_tickets)
+void sleep_busy(uint32_t wait_ms)
 {
-    uint32_t start_ticket = get_current_ticket();
-    while ((get_current_ticket() - start_ticket) < wait_tickets)
-    { /* busy wait */
+    uint32_t start_tick = get_current_tick();
+    uint32_t wait_ticks = wait_ms * TICKS_PER_MS;
+    uint32_t waited_ticks = 0;
+    while ((waited_ticks) < wait_ticks)
+    {
+        // while (get_current_tick() == start_tick + waited_ticks)
+        ;
+        waited_ticks++;
     }
 }
 
 // Reboots OS problem
-void sleep_interrupt(uint32_t wait_tickets)
+void sleep_interrupt(uint32_t wait_ticks)
 {
-    uint32_t end_tick = get_current_ticket() + wait_tickets;
-    while (get_current_ticket() < end_tick)
+    uint32_t end_tick = get_current_tick() + wait_ticks;
+    while (get_current_tick() < end_tick)
     {
-        asm volatile("sti\nhlt");
+        asm volatile("sti");
+        asm volatile("hlt");
     }
 }
-
-/*
-static volatile uint32_t pit_tickets = 0;
-
-void pit_callback(registers_t regs)
-{pit_tickets++; outb(PIC1_CMD_PORT, PIC_EOI);}
-
-
-void init_pit ()
-{irq_register_handler(0, pit_callback);
-outb(PIT_CMD_PORT, 0x36); uint16_t divisor = DIVIDER;
-outb (PIT_CHANNEL0_PORT, (uint8_t)(divisor & 0xFF));
-outb (PIT_CHANNEL0_PORT, (uint8_t)(divisor >> 8) & 0xFF);
-pit_tickets = 0;
-print ("Initialize PIT with %d Hz\n", TARGET_FREQUENCY);
-}
-
-
-uint32_t get_current_ticket ()
-{return pit_tickets}
-
-
-void sleep_busy (uint32_t miliseconds) {
-    uint32_t start_ticket = get_current_ticket();
-    uint32_t wait_tickets = miliseconds * TICKS_PER_MS;
-while((get_current_tick() - start_tick) < wait_tickets)
-{
-void sleep_interrupt(uint32_t milliseconds)
-{uint32_t end_tick = get_current_tick() + (milliseconds * TICKS_PER_MS);
-while (get_current_tick() < end_tick){asm volatile("sti\nhlt");}}
-
-*/

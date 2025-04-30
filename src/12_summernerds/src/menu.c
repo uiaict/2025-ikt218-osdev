@@ -1,14 +1,19 @@
-#include "screen.h"
+#include "i386/keyboard.h"
+#include "kernel/pit.h"
+#include "kernel/memory.h"
+#include "libc/stdio.h"
+#include "matrix_effect/matrix.h"
 #include "song/song.h"
-#include "matrix.h"
 #include "common.h"
-#include "keyboard.h"
+#include "screen.h"
+char key_buffer[255];
+void reset_key_buffer();
 
 void shutdown()
 {
 
-    outw(0x604, 0x2000);
-    outb(0xB004, 0x2000);
+    outb(0x604, 0x20);
+    outb(0xB004, 0x20);
 
     asm volatile("cli");
     while (1)
@@ -19,48 +24,46 @@ void shutdown()
 
 void wait_for_keypress()
 {
+    reset_key_buffer();
     while (key_buffer[0] == '\0')
     {
-        // venter på at bruker trykker pa en knapp
-    }
-
-    for (int i = 0; i < 255; i++)
-    {
-        key_buffer[i] = key_buffer[i + 1];
-        if (key_buffer[i + 1] == '\0')
-            break;
+        // venter på at bruker trykker på en knapp
     }
 }
 
 char get_key()
 {
+    reset_key_buffer();
     while (key_buffer[0] == '\0')
     {
     }
     char key = key_buffer[0];
 
+    return key;
+}
+
+void reset_key_buffer()
+{
     for (int i = 0; i < 255; i++)
     {
-        key_buffer[i] = key_buffer[i + 1];
+        key_buffer[i] = '\0';
         if (key_buffer[i + 1] == '\0')
             break;
     }
-
-    return key;
 }
 
 void print_menu()
 {
-    clear_screen();
-    print("\n");
-    print("Welcome to the os for summernerds!\n");
-    print("\n");
-    print(" 1. Play Startup Song\n");
-    print(" 2. Matrix Rain Effect\n");
-    print(" 3. Play beep Sound\n");
-    print(" 4. Play pong (or some ganme)\n");
-    print(" 5. Turn of bye\n");
-    print("\n");
+    clear_the_screen();
+    printf("\n");
+    printf("Welcome to the os for summernerds!\n");
+    printf("\n");
+    printf(" 1. Play Startup Song\n");
+    printf(" 2. Matrix Rain Effect\n");
+    printf(" 3. Play beep Sound\n");
+    printf(" 4. Play pong (or some ganme)\n");
+    printf(" 5. Turn of bye\n");
+    printf("\n");
 }
 
 void handle_menu()
@@ -69,14 +72,14 @@ void handle_menu()
     {
         print_menu();
         char choice = get_key();
-        print_char(choice);
-        print("\n");
+        printf("%d", choice);
+        printf("\n");
 
         switch (choice)
         {
         case '1':
         {
-            print("Playing startup song...\n");
+            printf("Playing startup song...\n");
             Song song = {music_1, sizeof(music_1) / sizeof(Note)};
             play_song(&song);
             break;
@@ -84,7 +87,7 @@ void handle_menu()
 
         case '2':
         {
-            print("Starting Matrix Rain effect...\n");
+            printf("Starting Matrix Rain effect...\n");
             init_matrix();
             while (1)
             {
@@ -98,7 +101,7 @@ void handle_menu()
 
         case '3':
         {
-            print("Beep!\n");
+            printf("Beep!\n");
             beep();
             break;
         }
@@ -110,19 +113,19 @@ void handle_menu()
 
         case '5':
         {
-            print("Shutting down...\n");
+            printf("Shutting down...\n");
             shutdown();
             return;
         }
 
         default:
         {
-            print("Option not acceptable. Please try again...\n");
+            printf("Option not acceptable. Please try again...\n");
             break;
         }
         }
 
-        print("\nPress any key in order to return to get back to menu...");
+        printf("\nPress any key in order to return to get back to menu...");
         wait_for_keypress();
     }
 }

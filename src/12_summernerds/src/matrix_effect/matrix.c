@@ -1,5 +1,5 @@
-#include <stdint.h>
-#include <stdlib.h>
+#include "matrix_effect/matrix.h"
+#include <libc/stdint.h>
 #include "common.h"
 
 #define WIDTH 80
@@ -11,16 +11,30 @@ typedef struct
     int speed;
 } ColumnState;
 
+int next = -1;
+
+void setupRNG(int seed)
+{
+    next = seed;
+}
+// generates random number
+int rand(int max)
+{
+    next = next * 1584506493 + 69420;
+    return (unsigned)(next / 24947) % max;
+}
+
 static ColumnState columns[WIDTH];
 
 static uint8_t color_palette[] = {0x02, 0x04, 0x01, 0x0E};
 
 void init_matrix()
 {
+    setupRNG(947);
     for (int i = 0; i < WIDTH; i++)
     {
-        columns[i].y_pos = rand() % HEIGHT;
-        columns[i].speed = 1 + rand() % 3;
+        columns[i].y_pos = rand(100) % HEIGHT;
+        columns[i].speed = 1 + rand(100) % 3;
     }
 }
 
@@ -30,8 +44,8 @@ void draw_matrix_frame()
     {
         int y = columns[x].y_pos;
 
-        char ch = 33 + rand() % 94;
-        uint8_t color = color_palette[rand() % 4];
+        char ch = 33 + rand(1000) % 94;
+        uint8_t color = color_palette[rand(1000) % 4];
 
         if (y < HEIGHT)
         {
@@ -58,7 +72,7 @@ void draw_matrix_frame()
         if (columns[x].y_pos >= HEIGHT + 3)
         {
             columns[x].y_pos = 0;
-            columns[x].speed = 1 + rand() % 3;
+            columns[x].speed = 1 + rand(1000) % 3;
         }
     }
 }

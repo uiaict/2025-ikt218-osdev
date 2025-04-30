@@ -1,7 +1,6 @@
 #ifndef SONG_H
 #define SONG_H
 #include <song/frequencies.h>
-#include <song/song.h>
 #include <libc/stdint.h>
 
 // Define a struct to represent a single musical note
@@ -151,5 +150,8 @@ static Note music_6[] = {
     {C5, 250},
     {A_SHARP4, 500},
 };
+
+void beep();
+void play_song(Song *song);
 
 #endif

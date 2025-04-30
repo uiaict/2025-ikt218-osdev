@@ -1,6 +1,6 @@
-#include <song/song.h>
 #include "kernel/pit.h"
 #include <libc/stdio.h>
+#include <song/song.h>
 #include "common.h"
 
 void enable_speaker()
@@ -44,7 +44,7 @@ static void nosound()
 void beep()
 {
     play_sound(1000);
-    // timer_wait(10);
+    sleep_interrupt(10);
     nosound();
 }
 
