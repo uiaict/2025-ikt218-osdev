@@ -8,6 +8,7 @@
 #include "pit.h"
 #include "song.h"
 #include "libc/stdio.h"
+#include "matrix_rain.h"
 
 // Structure to hold multiboot information.
 struct multiboot_info {
@@ -28,6 +29,7 @@ void kernel_main(uint32_t magic, struct multiboot_tag* tags) {
     init_idt();
     init_irq();
 
+    rain_init();
     
     printf("Hello, World!\n");
 
@@ -48,6 +50,8 @@ void kernel_main(uint32_t magic, struct multiboot_tag* tags) {
     // Play predefined song
     Song song = { music_1, music_1_length };
     play_song_impl(&song);
+
+    rain_enabled = 1;   // START Matrix rain now!!
 
     // Halt forever
     for (;;) asm volatile("hlt");
