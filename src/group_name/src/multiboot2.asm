@@ -8,7 +8,6 @@ header_start:
     dd 0				                                            ; Architecture 0 (protected mode i386)
     dd header_end - header_start 	                                ; Header length
     dd 0x100000000 - (0xe85250d6 + 0 + (header_end - header_start)) ; Checksum
-
 ;align 8
 ;framebuffer_tag_start:
 ;    dw 5                                              ; type
