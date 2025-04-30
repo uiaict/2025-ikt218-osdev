@@ -67,6 +67,9 @@ set(SOURCES
     src/irq.c
     src/keyboard.c
 	src/port_io.c
+	src/memory.c
+	src/pit.c
+	src/paging.c
 )
 
 set(ASM_SOURCES

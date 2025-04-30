@@ -2,6 +2,7 @@
 #include "terminal.h"
 #include "port_io.h"
 #include "isr.h"
+#include <stdint.h>
 
 // Basic US QWERTY keyboard layout
 static const char keyboard_layout[128] = {
@@ -50,11 +51,7 @@ void keyboard_handler(struct regs* r) {
     outb(0x20, 0x20);
 }
 
-// Initialize the keyboard driver (IRQ1)
 void keyboard_install() {
-    extern void irq1();
-    idt_set_gate(33, (uint32_t)irq1, 0x08, 0x8E);
-
-    // Enable IRQ1 by clearing bit 1 in the PIC mask
-    outb(0x21, inb(0x21) & ~0x02);
+    irq_install_handler(1, keyboard_handler);
 }
+

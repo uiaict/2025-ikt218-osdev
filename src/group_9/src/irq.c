@@ -7,6 +7,9 @@
 
 static uint32_t timer_ticks = 0;
 
+// Array of IRQ handler function pointers
+static void (*irq_routines[16])(struct regs *r) = { 0 };
+
 // Extern IRQ function declarations (from irq.asm)
 extern void irq0();
 extern void irq1();
@@ -27,47 +30,52 @@ extern void irq15();
 
 // Low-level IRQ handler called by assembly
 void irq_handler(struct regs *r) {
+    // Send End of Interrupt (EOI) to the PICs
     if (r->int_no >= 40) {
-        // Send reset signal to slave PIC
-        outb(0xA0, 0x20);
+        outb(0xA0, 0x20); // Acknowledge slave PIC
     }
-    // Send reset signal to master PIC
-    outb(0x20, 0x20);
+    outb(0x20, 0x20);     // Acknowledge master PIC
 
-    if (r->int_no == 32) {  // IRQ0 (Timer interrupt)
-        timer_ticks++;
+    uint8_t irq = r->int_no - 32;
 
-        if (timer_ticks % 100 == 0) {
-            terminal_printf("Timer Tick: %d\n", timer_ticks);
+    // If a custom handler is installed, call it
+    if (irq_routines[irq]) {
+        irq_routines[irq](r);
+    } else {
+        // No custom handler, handle basic interrupts
+        if (irq == 0) { // Timer
+            timer_ticks++;
+
+            if (timer_ticks % 100 == 0) {
+                terminal_printf("Timer Tick: %d\n", timer_ticks);
+            }
+        } else if (irq == 1) { // Keyboard
+            keyboard_handler(r);
+        } else {
+            terminal_printf("Received IRQ: %d\n", irq);
         }
     }
-    else if (r->int_no == 33) {  // IRQ1 (Keyboard)
-        keyboard_handler(r);
-    } 
-    else {
-        terminal_printf("Received IRQ: %d\n", r->int_no - 32);
-    }
 }
 
-// Remap the PIC
+// Remap the PIC to avoid conflicts with CPU exceptions
 void irq_remap(void) {
-    outb(0x20, 0x11); // Start initialization sequence (master)
-    outb(0xA0, 0x11); // Start initialization sequence (slave)
+    outb(0x20, 0x11); // Start initialization (master)
+    outb(0xA0, 0x11); // Start initialization (slave)
 
-    outb(0x21, 0x20); // Master offset to 0x20 (32)
-    outb(0xA1, 0x28); // Slave offset to 0x28 (40)
+    outb(0x21, 0x20); // Master offset 0x20
+    outb(0xA1, 0x28); // Slave offset 0x28
 
-    outb(0x21, 0x04); // Tell master there is a slave at IRQ2
-    outb(0xA1, 0x02); // Tell slave its cascade identity
+    outb(0x21, 0x04); // Tell Master about Slave at IRQ2
+    outb(0xA1, 0x02); // Tell Slave its cascade identity
 
-    outb(0x21, 0x01); // Master: 8086/88 (MCS-80/85) mode
+    outb(0x21, 0x01); // Master: 8086/88 mode
     outb(0xA1, 0x01); // Slave: 8086/88 mode
 
-    outb(0x21, 0x0);  // Unmask all master IRQs
-    outb(0xA1, 0x0);  // Unmask all slave IRQs
+    outb(0x21, 0x0);  // Unmask all interrupts on Master
+    outb(0xA1, 0x0);  // Unmask all interrupts on Slave
 }
 
-// Install IRQ handlers to IDT
+// Install IRQ handlers into the IDT
 void irq_install() {
     irq_remap();
 
@@ -89,4 +97,9 @@ void irq_install() {
     idt_set_gate(47, (uint32_t)irq15, 0x08, 0x8E);
 
     __asm__ __volatile__("sti"); // Enable interrupts
+}
+
+// Install a custom IRQ handler
+void irq_install_handler(int irq, void (*handler)(struct regs *r)) {
+    irq_routines[irq] = handler;
 }

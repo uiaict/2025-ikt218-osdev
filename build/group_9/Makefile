@@ -315,6 +315,30 @@ src/keyboard.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/keyboard.c.s
 .PHONY : src/keyboard.c.s
 
+src/memory.o: src/memory.c.o
+.PHONY : src/memory.o
+
+# target to build an object file
+src/memory.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/memory.c.o
+.PHONY : src/memory.c.o
+
+src/memory.i: src/memory.c.i
+.PHONY : src/memory.i
+
+# target to preprocess a source file
+src/memory.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/memory.c.i
+.PHONY : src/memory.c.i
+
+src/memory.s: src/memory.c.s
+.PHONY : src/memory.s
+
+# target to generate assembly for a file
+src/memory.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/memory.c.s
+.PHONY : src/memory.c.s
+
 src/multiboot2.o: src/multiboot2.asm.o
 .PHONY : src/multiboot2.o
 
@@ -322,6 +346,54 @@ src/multiboot2.o: src/multiboot2.asm.o
 src/multiboot2.asm.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o
 .PHONY : src/multiboot2.asm.o
+
+src/paging.o: src/paging.c.o
+.PHONY : src/paging.o
+
+# target to build an object file
+src/paging.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/paging.c.o
+.PHONY : src/paging.c.o
+
+src/paging.i: src/paging.c.i
+.PHONY : src/paging.i
+
+# target to preprocess a source file
+src/paging.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/paging.c.i
+.PHONY : src/paging.c.i
+
+src/paging.s: src/paging.c.s
+.PHONY : src/paging.s
+
+# target to generate assembly for a file
+src/paging.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/paging.c.s
+.PHONY : src/paging.c.s
+
+src/pit.o: src/pit.c.o
+.PHONY : src/pit.o
+
+# target to build an object file
+src/pit.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/pit.c.o
+.PHONY : src/pit.c.o
+
+src/pit.i: src/pit.c.i
+.PHONY : src/pit.i
+
+# target to preprocess a source file
+src/pit.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/pit.c.i
+.PHONY : src/pit.c.i
+
+src/pit.s: src/pit.c.s
+.PHONY : src/pit.s
+
+# target to generate assembly for a file
+src/pit.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/pit.c.s
+.PHONY : src/pit.c.s
 
 src/port_io.o: src/port_io.c.o
 .PHONY : src/port_io.o
@@ -450,7 +522,16 @@ help:
 	@echo "... src/keyboard.o"
 	@echo "... src/keyboard.i"
 	@echo "... src/keyboard.s"
+	@echo "... src/memory.o"
+	@echo "... src/memory.i"
+	@echo "... src/memory.s"
 	@echo "... src/multiboot2.o"
+	@echo "... src/paging.o"
+	@echo "... src/paging.i"
+	@echo "... src/paging.s"
+	@echo "... src/pit.o"
+	@echo "... src/pit.i"
+	@echo "... src/pit.s"
 	@echo "... src/port_io.o"
 	@echo "... src/port_io.i"
 	@echo "... src/port_io.s"
