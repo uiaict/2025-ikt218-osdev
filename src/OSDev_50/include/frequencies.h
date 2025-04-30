@@ -132,7 +132,7 @@
 #define A9 14080
 #define As9 14917
 #define B9 15804
-
+#define DS5 622
 #define A_SHARP4 466
 #define G_SHARP4 415
 #define R 0 // R (no sound)
