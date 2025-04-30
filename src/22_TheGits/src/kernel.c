@@ -14,7 +14,6 @@
 #include "audio/player.h"
 #include "audio/tracks.h"
 #include "game/wordgame.h"
-#include "game/input_buffer.h"
 #include "menu.h"
 
 struct multiboot_info {

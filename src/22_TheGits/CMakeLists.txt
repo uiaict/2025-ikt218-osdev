@@ -73,7 +73,6 @@ src/pit/pit.c
 src/audio/player.c
 src/audio/speaker.c
 src/game/wordgame.c
-src/game/input_buffer.c
 src/menu.c
 )
 
