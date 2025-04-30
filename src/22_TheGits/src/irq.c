@@ -34,7 +34,7 @@ void init_irq() {
 
 void send_eoi(uint8_t irq) {
     if (irq >= 8) {
-        outb(0xA0, 0x20); // EOI til slave PIC
+        outb(0xA0, 0x20); // EOI to slave PIC
     }
-    outb(0x20, 0x20); // EOI til master PIC
+    outb(0x20, 0x20); // EOI to master PIC
 }

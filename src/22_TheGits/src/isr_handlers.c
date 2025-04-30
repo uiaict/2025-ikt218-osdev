@@ -9,22 +9,13 @@ static int timer_ticks = 0;
 
 
 void handle_timer_interrupt() {
-    //timer_ticks++;
     pit_increment_tick();
 
     if (timer_ticks % 500 == 0) {
-       // printf("Five second has passed\n");
     }
 
     send_eoi(0);
 }
-
-/* void timer_phase(int hz) {
-        int divisor = 1193180 / hz;       // 1.193180 MHz basefrekvens
-        outb(0x43, 0x36);                 // Kommando: kanal 0, LSB+MSB, mode 3 (square wave)
-        outb(0x40, divisor & 0xFF);       // Lav byte
-        outb(0x40, divisor >> 8);         // Høy byte
-    } Erstattes av init_pit(); */
 
 bool shift_pressed = false;
 
@@ -67,8 +58,8 @@ void handle_div_zero() {
 void test_div_zero(){
     int a = 1;
     int b = 0;
-    int c = a / b; // Dette vil utløse en divisjon med null-feil
-    printf("Result: %d\n", c); // Denne linjen vil ikke bli nådd
+    int c = a / b; // This will trigger a division by zero error
+    printf("Result: %d\n", c); 
 }
 
 void handle_syscall() {
@@ -78,7 +69,7 @@ void handle_syscall() {
 void default_int_handler() {
     printf("Unhandled interrupt triggered!\n");
     while (1) {
-        __asm__ volatile ("hlt"); // Stopp systemet
+        __asm__ volatile ("hlt"); // Stop the system
     }
 }
 
