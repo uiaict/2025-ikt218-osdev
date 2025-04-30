@@ -443,6 +443,54 @@ src/serial.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/serial.c.s
 .PHONY : src/serial.c.s
 
+src/song.o: src/song.c.o
+.PHONY : src/song.o
+
+# target to build an object file
+src/song.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/song.c.o
+.PHONY : src/song.c.o
+
+src/song.i: src/song.c.i
+.PHONY : src/song.i
+
+# target to preprocess a source file
+src/song.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/song.c.i
+.PHONY : src/song.c.i
+
+src/song.s: src/song.c.s
+.PHONY : src/song.s
+
+# target to generate assembly for a file
+src/song.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/song.c.s
+.PHONY : src/song.c.s
+
+src/speaker.o: src/speaker.c.o
+.PHONY : src/speaker.o
+
+# target to build an object file
+src/speaker.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/speaker.c.o
+.PHONY : src/speaker.c.o
+
+src/speaker.i: src/speaker.c.i
+.PHONY : src/speaker.i
+
+# target to preprocess a source file
+src/speaker.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/speaker.c.i
+.PHONY : src/speaker.c.i
+
+src/speaker.s: src/speaker.c.s
+.PHONY : src/speaker.s
+
+# target to generate assembly for a file
+src/speaker.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/speaker.c.s
+.PHONY : src/speaker.c.s
+
 src/string.o: src/string.c.o
 .PHONY : src/string.o
 
@@ -538,6 +586,12 @@ help:
 	@echo "... src/serial.o"
 	@echo "... src/serial.i"
 	@echo "... src/serial.s"
+	@echo "... src/song.o"
+	@echo "... src/song.i"
+	@echo "... src/song.s"
+	@echo "... src/speaker.o"
+	@echo "... src/speaker.i"
+	@echo "... src/speaker.s"
 	@echo "... src/string.o"
 	@echo "... src/string.i"
 	@echo "... src/string.s"

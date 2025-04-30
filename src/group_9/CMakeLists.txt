@@ -70,6 +70,8 @@ set(SOURCES
 	src/memory.c
 	src/pit.c
 	src/paging.c
+	src/speaker.c
+	src/song.c
 )
 
 set(ASM_SOURCES
