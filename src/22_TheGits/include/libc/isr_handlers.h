@@ -3,6 +3,7 @@
 
 #include "libc/idt.h"
 #include "libc/stdbool.h"
+
 void handle_timer_interrupt();
 void handle_keyboard_interrupt();
 void handle_syscall();

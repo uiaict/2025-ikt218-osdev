@@ -1,3 +1,6 @@
+#ifndef IRQ_H
+#define IRQ_H
+
 #include "libc/idt.h"
 #include "libc/scrn.h"
 #include "libc/stdint.h"
@@ -17,3 +20,5 @@ void irq_handler(int irq);
 void send_eoi(uint8_t irq);
 
 void init_irq();
+
+#endif // IRQ_H

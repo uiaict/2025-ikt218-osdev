@@ -11,10 +11,11 @@
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 
-// Fargekoder for tekst og bakgrunn
+// Color codes for text and background
 #define VGA_COLOR(fg, bg) ((bg << 4) | (fg))
 #define VGA_ENTRY(c, color) ((uint16_t)c | (uint16_t)color << 8)
-// VGA-minneadresse
+
+// VGA memory address
 #define VGA_MEMORY (uint16_t*)0xB8000
 #define VGA_WIDTH 80
 #define INPUT_BUFFER_SIZE 128
