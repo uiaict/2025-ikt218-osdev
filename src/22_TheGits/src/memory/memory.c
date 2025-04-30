@@ -1,4 +1,3 @@
-//#include <libc/system.h> //Trenger denne fila? 
 #include "memory/memory.h"
 #include "libc/scrn.h"
 
@@ -6,11 +5,6 @@ static uint32_t* page_directory = 0;   // Define a pointer to the page directory
 static uint32_t page_dir_loc = 0;      // Define the location of the page directory and initialize it to zero
 static uint32_t* last_page = 0;        // Define a pointer to the last page and initialize it to zero
 
-/* Paging now will be really simple
- * we reserve 0-8MB for kernel stuff
- * heap will be from approx 1mb to 4mb
- * and paging stuff will be from 4mb
- */
 
 // Function to map virtual addresses to physical addresses
 void paging_map_virtual_to_phys(uint32_t virt, uint32_t phys)
@@ -38,6 +32,7 @@ void paging_enable()
 void init_paging()
 {
     //printf("Setting up paging\n");
+    // Commented out to avoid printing on startup
     page_directory = (uint32_t*)0x400000;      // Set the page directory to start at 4 MB
     page_dir_loc = (uint32_t)page_directory;  // Set the physical address of the page directory
     last_page = (uint32_t *)0x404000;         // Set the last page to start at 4 MB + 4 KB
@@ -49,4 +44,5 @@ void init_paging()
     paging_map_virtual_to_phys(0x400000, 0x400000); // Map the next 4 MB of virtual memory to the next 4 MB of physical memory
     paging_enable();                          // Enable paging
     //printf("Paging was successfully enabled!\n");
+    // Commented out to avoid printing on startup
 }

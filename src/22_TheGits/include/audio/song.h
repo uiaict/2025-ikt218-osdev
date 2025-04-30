@@ -6,14 +6,14 @@
 
 // Define a struct to represent a single musical note
 typedef struct {
-    uint32_t frequency; // The frequency of the note in Hz (e.g., A4 = 440 Hz)
-    uint32_t duration;  // The duration of the note in milliseconds
+    uint32_t frequency;
+    uint32_t duration;  
 } Note;
 
-// Define a struct to represent a song
+// Define a struct to represent a song, which is an array of notes
 typedef struct {
-    Note* notes;        // Pointer to an array of Note structs representing the song
-    uint32_t length;    // The number of notes in the song
+    Note* notes;        
+    uint32_t length;    
 } Song;
 
 
