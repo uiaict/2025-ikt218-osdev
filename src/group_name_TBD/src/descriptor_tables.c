@@ -2,6 +2,7 @@
 #include "descriptor_tables.h"
 #include "isr.h"
 #include "io.h"
+#include "memory/memutils.h"
 
 struct gdt_entry gdt[GDT_ENTRIES];
 struct gdt_ptr gdt_ptr;
@@ -83,10 +84,7 @@ void init_idt() {
     
     
     // All IDT entries must be set for the CPU to not crash and burn.
-    // memset(&idt, 0, sizeof(struct idt_entry) * 256); 
-    for (size_t i = 0; i < IDT_ENTRIES; i++){
-        idt_set_gate(0, 0x00000000, 0x08, 0x8E); // Set all 256 entries as default
-    }
+    memset(&idt, 0, sizeof(struct idt_entry) * 256); // Set all 256 entries as 0
 
     // ISR used by CPU
     idt_set_gate(0, (uint32_t)isr0, 0x08, 0x8E);

@@ -45,8 +45,8 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
 
     struct song_player *player = create_song_player();
     uint32_t n_songs = sizeof(songs) / sizeof(songs[0]);
+    // player->play_song(&songs[8]);
     
-    player->play_song(&songs[8]);
 
     print("       _.---._    /\\\n\r"
        "    ./'       \"--`\\//\n\r"
@@ -62,6 +62,11 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     }
     
     
-//TODO: scroll, verify if x or y negative
+//TODO: 
+//scroll, verify if x or y negative
+//printf scanf
+//memory
+//malloc musicplayer
+//improv
     return 0;
 }
