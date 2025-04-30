@@ -8,6 +8,7 @@ void start_game_menu();
 void print_os_logo();
 void print_os_greeting();
 void print_os_farewell();
+void print_invalid_input();
 
 
 #endif

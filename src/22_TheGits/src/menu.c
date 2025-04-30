@@ -182,3 +182,7 @@ void print_os_farewell(){
     printf("Thank you for using TheGitsOS...\n");
     printf("We hope you enjoyed your experience.\n");
 }
+
+void print_invalid_input(){
+    printf("Invalid input, please try again..\n");
+}

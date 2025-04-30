@@ -40,22 +40,20 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     __asm__ volatile ("sti"); // Activate interrupts
 
     // === SCREEN STARTUP ===
-
     print_os_greeting();
     char choice[5];    
 
   while(choice[0] != '5') {
-    printf("MENU:\n");
-    printf("1: Play word game\n");
-    printf("2: Play music\n");
-    printf("3: Memory management menu\n");
-    printf("4: Check PIT functions\n");
-    printf("5: Shut down\n");
-    printf("Please choose an option (1-5): ");
-
-    // === MENU CHOICES===
-
-    get_input(choice, sizeof(choice));
+// === MENU CHOICES===
+  printf("MENU:\n");
+  printf("1: Play word game\n");
+  printf("2: Play music\n");
+  printf("3: Memory management\n");
+  printf("4: PIT management\n");
+  printf("5: Shutdown\n");
+  printf("Your choice: ");
+  
+  get_input(choice, sizeof(choice));
 
     if (choice[0] == '1') {
         start_game_menu();
@@ -71,7 +69,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
         shutdown();
     }
     else {
-        printf("Invalid input, please try again..\n");
+        print_invalid_input();
     }
 }
 
