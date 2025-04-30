@@ -40,8 +40,19 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     __asm__ volatile ("sti"); // Activate interrupts
 
     // === SCREEN STARTUP ===
-    printf("Welcome to TheGitsOS!\n Use our interacive menu to navigate through the system.\n");
 
+    printf(" _________  __               ______   _   _           ___     ______   \n");
+    printf("|  _   _  |[  |            .' ___  | (_) / |_       .'   `. .' ____ \\  \n");
+    printf("|_/ | | \\_| | |--.  .---. / .'   \\_| __ `| |-'.--. /  .-.  \\| (___ \\_| \n");
+    printf("    | |     | .-. |/ /__\\\\| |   ____[  | | | ( (`\\]| |   | | _.____`.  \n");
+    printf("   _| |_    | | | || \\__.,\\ `.___]  || | | |, `'.'.\\  `-'  /| \\____) | \n");
+    printf("  |_____|  [___]|__]'.__.' `._____.'[___]\\__/[\__) )`.___.'  \\______.' \n");
+
+
+    printf("Welcome to TheGitsOS!\n");
+    printf("Use our interacive menu to navigate through the system.\n");
+    printf("\n");
+    
     char choice[5];    
 
   while(choice[0] != '5') {
