@@ -15,6 +15,7 @@
 #include "audio/tracks.h"
 #include "game/wordgame.h"
 #include "menu.h"
+#include "system.h"
 
 struct multiboot_info {
     uint32_t size;
@@ -77,6 +78,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
         pit_menu();
     } else if (choice[0] == '5') {
         printf("Thank you for using our operating system...\n");
+        sleep_busy(2000);
+        shutdown();
     }
     else {
         printf("Invalid input, please try again..\n");

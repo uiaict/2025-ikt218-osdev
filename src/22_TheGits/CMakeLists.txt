@@ -74,6 +74,7 @@ src/audio/player.c
 src/audio/speaker.c
 src/game/wordgame.c
 src/menu.c
+src/system.c
 )
 
 # Include directories for the kernel target
