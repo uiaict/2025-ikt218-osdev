@@ -1,5 +1,6 @@
 #include <libc/stdint.h>
 #include "putchar.h"
+#include "terminal.h"
 
 // Hardware VGA text mode information
 const size_t VGA_WIDTH = 80;
@@ -67,6 +68,17 @@ void terminal_scroll() {
         
         terminal_row = VGA_HEIGHT - 1;
     }
+}
+
+// Set cursor position
+void terminal_set_cursor_position(uint16_t row, uint16_t col) {
+    // Set the internal cursor position variables
+    terminal_row = row;
+    terminal_column = col;
+    
+    // If your terminal has hardware cursor positioning, add that code here
+    // For VGA text mode, this might involve writing to I/O ports 0x3D4 and 0x3D5
+    // For now, we just set the internal position for the next write
 }
 
 // Put a single character

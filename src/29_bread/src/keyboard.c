@@ -110,9 +110,17 @@ void play_key_note(char key) {
 
 // Keyboard interrupt handler
 void keyboard_handler(registers_t regs) {
-    // Read the scancode from the keyboard port
-    uint8_t scancode = inb(KEYBOARD_DATA_PORT);
+    uint8_t scancode = inb(0x60);
     
+    // Handle key release (bit 7 set)
+    bool is_pressed = !(scancode & 0x80);
+    scancode = scancode & 0x7F; // Remove release bit
+    
+    // Call the piano visualization function
+    on_key_press(scancode, is_pressed);
+    
+    // Continue with existing keyboard functionality
+    // This should still handle the audio playing part
     // Translate the scancode to ASCII
     char ascii = scancode_to_ascii(scancode);
     
