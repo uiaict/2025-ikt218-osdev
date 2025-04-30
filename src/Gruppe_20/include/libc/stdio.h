@@ -1,8 +1,22 @@
-#pragma once
+#ifndef STDIO_H
+#define STDIO_H
 
-#include "libc/stdbool.h"
-#include "libc/stddef.h"
+#include "libc/stdint.h"
+#include "stdarg.h"
 
-int putchar(int ic);
-//bool print(const char* data, size_t length);
-void printf(const char* __restrict__ format, ...);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+
+
+void printf(const char* format, ...);
+void vprintf(const char* format, va_list ap);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // STDIO_H

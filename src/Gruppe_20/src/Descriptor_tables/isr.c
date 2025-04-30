@@ -1,88 +1,62 @@
-#include "isr.h"
-#include "common.h"
-//#include "keyboard.h"
+#include "libc/isr.h"
+#include "libc/common.h"
+#include "libc/stdio.h"
+#include "libc/system.h"
+#include "libc/stdint.h"
+#include "libc/print.h"
+#include "io.h"
 
-isr_t interrupt_handlers[256];
+// Array of registered interrupt handlers
+static isr_t interrupt_handlers[256];
+// Array to store context pointers for each handler
+static void* handler_contexts[256];
 
-void itoa(uint32_t n, char* buffer) {
-    int i = 0;
-    if (n == 0) {
-        buffer[i++] = '0';
-    } else {
-        while (n != 0) {
-            buffer[i++] = (n % 10) + '0'; // Get the last digit and convert it to char
-            n /= 10;
-        }
-    }
-
-    buffer[i] = '\0';
-
-    // Reverse the string since the digits are stored in reverse order
-    int start = 0;
-    int end = i - 1;
-    while (start < end) {
-        char temp = buffer[start];
-        buffer[start] = buffer[end];
-        buffer[end] = temp;
-        start++;
-        end--;
-    }
-}
-
-void printf_dec(uint32_t n) {
-    char buffer[12]; // Maximum of 10 digits for 32-bit integers + sign + null terminator
-    itoa(n, buffer); 
-    //printf(buffer);
-}
-
-
-// Interrupt service routine handler
-void isr_handler(registers_t regs) {
-    //printf("Received interrupt: ");
-    int temp = regs.int_no;
-    printf_dec(regs.int_no);
-
+void isr_handler(registers_t* regs) {
+    // Get the context for this interrupt if it exists
+    void* context = handler_contexts[regs->int_no];
     
-    // Additional specific interrupt handling code here
-   
-}
-
-void irq_handler(registers_t regs)
-{
-   // Send an EOI (end of interrupt) signal to the PICs.
-   // If this interrupt involved the slave.
-
-    uint8_t intno = regs.int_no & 0xFF;
-    if (intno == 33)
-    {
-        //printf("a");
-        //unsigned char scancode = inb(0x60);
-        //keyboard_handler();
+    if (interrupt_handlers[regs->int_no] != NULL) {
+        // Call the registered handler with context
+        interrupt_handlers[regs->int_no](regs, context);
+    } else {
+        printf("Unhandled interrupt: %d\n", regs->int_no);
+        // You might want to halt or handle unregistered interrupts here
     }
-
-
-   
-
-
-
-
-   if (regs.int_no >= 40)
-   {
-       // Send reset signal to slave.
-       outb(0xA0, 0x20);
-   }
-   // Send reset signal to master. (As well as slave, if necessary).
-   outb(0x20, 0x20);
-
-   if (interrupt_handlers[regs.int_no] != 0)
-   {
-       isr_t handler = interrupt_handlers[regs.int_no];
-       handler(regs);
-   }
 }
 
+void irq_handler(registers_t* regs) {
+    // Get the context for this IRQ if it exists
+    void* context = handler_contexts[regs->int_no];
+    
+    if (interrupt_handlers[regs->int_no] != NULL) {
+        // Call the registered handler with context
+        interrupt_handlers[regs->int_no](regs, context);
+    }
+    
+    // Send End of Interrupt (EOI) to PICs
+    if (regs->int_no >= 40) {
+        outb(0xA0, 0x20); // Send EOI to slave PIC
+    }
+    outb(0x20, 0x20); // Always send EOI to master PIC
+}
 
-void register_interrupt_handler(uint8_t n, isr_t handler)
-{
-  interrupt_handlers[n] = handler;
+void register_interrupt_handler(uint8_t n, isr_t handler, void* context) {
+    if (n >= 255) {  // Changed from >= 256
+        return;
+    }
+    interrupt_handlers[n] = handler;
+    handler_contexts[n] = context;
+}
+
+void register_irq_handler(uint8_t irq, isr_t handler, void* context) {
+    // IRQs 0-15 map to interrupts 32-47
+    uint8_t interrupt_num = irq + 32;
+    
+    // Validate the IRQ number
+    if (irq > 15) {
+        printf("Invalid IRQ number: %d\n", irq);
+        return;
+    }
+    
+    register_interrupt_handler(interrupt_num, handler, context);
 }

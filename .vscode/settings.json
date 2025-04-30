@@ -18,7 +18,8 @@
         "limits.h": "c",
         "print.h": "c",
         "gdt_idt_table.h": "c",
-        "gdt.h": "c"
+        "gdt.h": "c",
+        "idt.h": "c"
     }
 
 }
