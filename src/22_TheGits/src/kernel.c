@@ -14,6 +14,8 @@
 #include "audio/player.h"
 #include "audio/tracks.h"
 #include "game/wordgame.h"
+#include "game/input_buffer.h"
+#include "menu.h"
 
 struct multiboot_info {
     uint32_t size;
@@ -28,49 +30,51 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
    
     // === SYSTEMINIT ===
     init_gdt();
-    // timer_phase(100); denne erstattes av init_pit();
     remap_pic();
     init_idt();
     init_irq();
     init_kernel_memory(&end);
     init_paging();
     init_pit();
-   // stop_sound();
 
-    __asm__ volatile ("sti"); // Aktiver interrupts
+    __asm__ volatile ("sti"); // Activate interrupts
 
-    // === SKJERMSTART ===
-    printf("Hello, World!\n");
+    // === SCREEN STARTUP ===
+    printf("Welcome to TheGitsOS!\n Use our interacive menu to navigate through the system.\n");
 
-   
-   
-    // === TEST MALLOC ===
-    void* test = malloc(100);
-    printf("Malloc adresse: 0x%x\n", (uint32_t)test);
+    char choice[5];    
 
-    
-    sleep_busy(100);   // Kort delay (100ms)
+  while(choice[0] != '5') {
+    printf("MENU:\n");
+    printf("1: Play word game\n");
+    printf("2: Play music\n");
+    printf("3: Memory management menu\n");
+    printf("4: Check PIT functions\n");
+    printf("5: Shut down\n");
+    printf("Please choose an option (1-5): ");
 
-    // === SPILL ===
-    start_game_menu();
+    // === MENU CHOICES===
 
+    get_input(choice, sizeof(choice));
 
-    // === MUSIKK ===
-    play_music(music_1, sizeof(music_1) / sizeof(Note)); // Starter musikk etter spillet
+    if (choice[0] == '1') {
+        start_game_menu();
+    } else if (choice[0] == '2') {
+        play_music_menu();
+    } else if (choice[0] == '3') {
+        memory_menu();
+    } else if (choice[0] == '4') {
+        pit_menu();
+    } else if (choice[0] == '5') {
+        printf("Thank you for using our operating system...\n");
+    }
+    else {
+        printf("Invalid input, please try again..\n");
+    }
+}
 
-    /* int counter = 0;
-    while(true){
-        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-        sleep_busy(1000);
-        printf("[%d]: Slept using busy-waiting.\n", counter++);
-
-        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);
-    }; */
-
-    // === HVILE ===
-    while (1) {
+    // === REST ===
+   while (1) {
         __asm__ volatile ("hlt");
     }
 

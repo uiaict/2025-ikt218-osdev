@@ -13,5 +13,6 @@ typedef struct {
 SongPlayer* create_song_player();
 void play_song_impl(Song *song);
 void play_music(Note* notes, uint32_t length);
+void play_music_menu();
 
 #endif 

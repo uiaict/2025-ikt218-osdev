@@ -5,13 +5,7 @@
 static int timer_ticks = 0;
 
 void handle_timer_interrupt() {
-    //timer_ticks++;
     pit_increment_tick();
-
-    if (timer_ticks % 500 == 0) {
-       // printf("Five second has passed\n");
-    }
-
     send_eoi(0);
 }
 
@@ -47,15 +41,6 @@ void handle_keyboard_interrupt() {
         return;
     }
 
-    /*if (scancode < 128) {
-        char ascii = shift_pressed ? scancode_to_ascii_shift[scancode] : scancode_to_ascii[scancode];
-
-        if (ascii != 0) {
-            char str[2] = {ascii, '\0'}; // Lag en null-terminert streng
-            terminal_write(str, VGA_COLOR(15, 0));
-        }
-    }
-*/
     send_eoi(1);
 }
 

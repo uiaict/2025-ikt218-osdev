@@ -13,7 +13,7 @@ void enable_speaker() {
 
 void disable_speaker() {
     uint8_t state = inb(PC_SPEAKER_PORT); // Read the current state of the speaker control port
-    outb(PC_SPEAKER_PORT, state & 0xFC); // Write the new state back to the control port
+    outb(PC_SPEAKER_PORT, state & ~3); // Write the new state back to the control port
 }
 
 void play_sound(uint32_t frequency) {
@@ -40,18 +40,4 @@ void play_sound(uint32_t frequency) {
 void stop_sound() {
     uint8_t state = inb(PC_SPEAKER_PORT); // Read the current state of the speaker control port
     outb(PC_SPEAKER_PORT, state & ~0x03); // Write the new state back to the control port
-}
-
-// Game melodies
-void play_note(uint32_t freq, uint32_t duration_ms) {
-    stop_sound();
-    sleep_busy(2);
-
-    if (freq > 0) {
-        play_sound(freq); // Aktiverer tone via PC speaker
-        sleep_busy(duration_ms);
-        stop_sound();
-    }
-
-    sleep_busy(8); // pause etter tone
 }

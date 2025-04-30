@@ -23,7 +23,7 @@
 #define PIT_BASE_FREQUENCY 1193180
 #define TARGET_FREQUENCY 1000 // 1000 Hz
 #define DIVIDER (PIT_BASE_FREQUENCY / TARGET_FREQUENCY)
-#define TICKS_PER_MS (TARGET_FREQUENCY / TARGET_FREQUENCY)
+#define TICKS_PER_MS (TARGET_FREQUENCY / 1000)
 
 extern volatile uint32_t pit_ticks; 
 void pit_increment_tick();
