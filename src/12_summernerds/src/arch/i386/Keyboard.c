@@ -16,6 +16,23 @@
 
 #include "../src/arch/i386/keyboard.h"  
 #include "libc/system.h"
+#include "../src/common.h"
+#include "../src/arch/i386/interuptRegister.h"
+#include "../src/screen.h"
+
+void irq1_keyboard_handler(registers_t* regs, void* ctx) {
+    printf("IRQ1 handler triggered!\n");
+    uint8_t scancode = inb(0x60);
+    char ascii = scanCodeToASCII(&scancode);
+
+    if (ascii != 0 && ascii != 2 && ascii != 3) {
+        char msg[2] = { ascii, '\0' };
+        printf(msg);  // Eller bruk printf
+    }
+
+    (void)regs;
+    (void)ctx;
+}
 
 
 //void print(const char* fmt, ...);

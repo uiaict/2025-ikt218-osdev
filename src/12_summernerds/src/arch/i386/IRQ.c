@@ -27,6 +27,9 @@ void irq_handler(registers_t regs) {
     }
     outb(0x20, 0x20); // Send reset signal to master.
 
+    printf("IRQ %d triggered\n", regs.int_no);
+
+
     // Call the IRQ handler
     struct int_handler_t intrpt = irq_handlers[regs.int_no];
     if (intrpt.handler != 0) {

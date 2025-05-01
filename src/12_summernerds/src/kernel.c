@@ -26,6 +26,11 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     init_idt();
     init_irq();
 
+    asm volatile("sti");
+
+    register_irq_handler(IRQ1, irq1_keyboard_handler, 0);
+
+
     // Initializing the kernel memory manager
     init_kernel_memory(&end);
 
