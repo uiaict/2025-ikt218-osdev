@@ -16,7 +16,7 @@ void pit_callback(registers_t *regs, void *ctx)
 
 void init_pit()
 {
-    register_irq_handler(IRQ0, pit_callback, NULL); // THIS IS NOT IMPLEMENTED
+    register_irq_handler(IRQ0, pit_callback, NULL);
 
     uint32_t divisor = PIT_BASE_FREQUENCY / TARGET_FREQUENCY;
 
@@ -55,5 +55,6 @@ void sleep_interrupt(uint32_t wait_ticks)
     {
         asm volatile("sti");
         asm volatile("hlt");
+        printf("things happen");
     }
 }
