@@ -72,7 +72,8 @@ add_executable(uiaos-kernel
     src/Descriptor_tables/isr.c
     src/Descriptor_tables/common.c
     src/Descriptor_tables/print.c
-    src/Descriptor_tables/interrupts.c  
+    src/Descriptor_tables/interrupts.c   
+    src/Descriptor_tables/matrix_rain.c
     
     src/Descriptor_tables/gdt_idt.asm
     src/Descriptor_tables/interrupt.asm

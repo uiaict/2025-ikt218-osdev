@@ -17,6 +17,8 @@
 #include "input.h"
 #include "Music/song.h"
 #include "Music/frequencies.h"
+#include "libc/matrix_rain.h"
+
 
 // Add kernel_main prototype if it exists in another file
 int kernel_main();
@@ -40,6 +42,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     print_memory_layout();
     init_pit();
     printf("Hello %s", "World\n");
+    
 
     return kernel_main();
 

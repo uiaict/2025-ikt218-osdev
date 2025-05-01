@@ -11,6 +11,7 @@
 #include "memory/memory.h"
 #include "Music/frequencies.h"
 #include "Music/song.h"
+#include "libc/matrix_rain.h"
 
 #include "libc/stdlib.h"
 #include "libc/stddef.h"
@@ -79,8 +80,10 @@ extern "C" int kernel_main() {
     asm volatile("sti");
 
     printf("Kernel initialized successfully\n");
-
+    sleep_interrupt(50);
+   
     play_music();  // <- starts the loop and never returns
+    matrix_rain();
 
     while (true) {
         asm volatile("hlt");
@@ -96,6 +99,7 @@ extern "C" __attribute__((noreturn)) void kmain(uint32_t magic, uint32_t* mb_inf
     init_paging();
 
     kernel_main();
+    
 
     while (true) asm volatile("hlt");
 }
