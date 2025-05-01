@@ -77,9 +77,9 @@ void pit_menu() {
     
             while(1) {
                 
-                printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-                sleep_busy(1000);
-                printf("[%d]: Slept using busy-waiting.\n", counter++);
+                printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+                sleep_interrupt(1000);
+                printf("[%d]: Slept using interrupts.\n", counter++);
 
                 printf("Press 'q' to quit or Enter to continue\n");
                 get_input(input, sizeof(input));
