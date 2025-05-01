@@ -93,7 +93,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr)
         case 1:
             printf("Playing song...\n");
 
-            player->play_song(&victorySong);
+            player->play_song(&starWars);
             break;
 
         case 2:

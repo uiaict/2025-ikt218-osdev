@@ -184,5 +184,9 @@ void start_snake_game()
         update_snake();
         draw_frame();
     }
+    printf("\n\n\n\n\nGame Over! Your score: %d\n", score);
+    printf("Press any key to continue...\n");
+    while (!getChar())
+        asm volatile("hlt");
     return;
 }
