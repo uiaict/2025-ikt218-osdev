@@ -1,6 +1,7 @@
 #ifndef SONG_H
 #define SONG_H
 
+#include "libc/string.h"
 #include "frequencies.h"
 #include "libc/system.h"
 
@@ -12,6 +13,7 @@ typedef struct {
 
 // Define a struct to represent a song
 typedef struct {
+    char* name;
     Note* notes;        // Pointer to an array of Note structs representing the song
     uint32_t length;    // The number of notes in the song
 } Song;

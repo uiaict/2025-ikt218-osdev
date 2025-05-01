@@ -7,4 +7,5 @@
 
 void init_keyboard();
 void keyboard_handler(registers_t regs);
+void read_line(char* buffer);
 #endif
