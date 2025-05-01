@@ -55,5 +55,6 @@ void sleep_interrupt(uint32_t wait_ticks)
     {
         asm volatile("sti");
         asm volatile("hlt");
+        printf("things happen");
     }
 }
