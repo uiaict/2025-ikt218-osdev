@@ -24,15 +24,22 @@ void play_sound(uint32_t freq) {
     outb(PIT_CMD_PORT, 0xB6);
     outb(PIT_CHANNEL2_PORT, div & 0xFF);
     outb(PIT_CHANNEL2_PORT, (div >> 8) & 0xFF);
+    
+    uint8_t tmp = inb(PC_SPEAKER_PORT);
+    if ((tmp & 3) != 3) {
+        outb(PC_SPEAKER_PORT, tmp | 3); // Enable bits 0 (speaker data) and 1 (speaker gate)
+    }
 }
 
 void play_song_impl(Song* song) {
-    enable_speaker();
+    //enable_speaker();
     for (uint32_t i = 0; i < song->length; i++) {
         play_sound(song->notes[i].frequency);
         sleep_interrupt(song->notes[i].duration);
+        stop_sound();
+        sleep_interrupt(10); 
     }
-    disable_speaker();
+    //disable_speaker();
 }
 
 SongPlayer* create_song_player() {

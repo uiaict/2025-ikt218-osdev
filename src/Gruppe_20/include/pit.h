@@ -21,6 +21,9 @@ extern "C" {
 void init_pit();
 void sleep_interrupt(uint32_t milliseconds);
 void sleep_busy(uint32_t milliseconds);
+void play_sound(uint32_t freq);
+void stop_sound();
+
 
 // Hardware I/O
 //uint8_t inb(uint16_t port);

@@ -38,3 +38,9 @@ void sleep_busy(uint32_t milliseconds) {
         // Busy wait
     }
 }
+
+
+void stop_sound() {
+    uint8_t tmp = inb(PC_SPEAKER_PORT) & 0xFC;
+    outb(PC_SPEAKER_PORT, tmp);
+}
