@@ -1,4 +1,4 @@
-#include "i386/IRQ.h"
+#include "i386/interruptRegister.h"
 #include "common.h"
 
 // Initializing the IRQ handlers

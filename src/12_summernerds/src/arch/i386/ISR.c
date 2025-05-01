@@ -1,4 +1,4 @@
-#include "i386/IRQ.h"
+#include "i386/interruptRegister.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 

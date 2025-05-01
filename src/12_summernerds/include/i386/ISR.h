@@ -1,7 +1,7 @@
 #pragma once
 
 #include <libc/stdint.h>
-#include "IRQ.h"
+#include "interruptRegister.h"
 #define MAX_INTERRUPTS 256
 #define MAX_LISTENERS_PER_ISR 4
 

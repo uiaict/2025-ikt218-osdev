@@ -1,21 +1,8 @@
 #include "i386/descriptorTables.h"
-#include "i386/IRQ.h"
+#include "i386/interruptRegister.h"
 #include "common.h"
-/*
-#include "libc/stdint.h"
-#include "../i386/IDT.h"
-#include "../i386/print.h"
-#include "../src/screen.h"
-#include "../src/arch/i386/ISR.h"
-#include "../src/arch/i386/IRQ.h"
-*/
 
-//IDT.c
-#include "i386/IRQ.h"
-//#include "../src/common.h"
-//#include "../i386/gdt.h"
-
-
+// IDT.c
 
 extern void idt_flush(uint32_t);
 

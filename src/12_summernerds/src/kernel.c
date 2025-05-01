@@ -1,6 +1,6 @@
 #include "i386/keyboard.h"
 #include "i386/descriptorTables.h"
-#include "i386/IRQ.h"
+#include "i386/interruptRegister.h"
 #include "i386/monitor.h"
 #include "kernel/pit.h"
 #include "kernel/memory.h"
@@ -25,10 +25,8 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     init_idt();
     init_irq();
 
-    asm volatile("sti");
-
-    register_irq_handler(IRQ1, irq1_keyboard_handler, 0);
-
+    // register_irq_handler(IRQ1, irq1_keyboard_handler, 0);
+    // asm volatile("sti");
 
     // Initializing the kernel memory manager
     init_kernel_memory(&end);
@@ -53,16 +51,16 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     // Test PIT sleep
     int counter = 0;
 
-    /*while (true)
+    while (true)
     {
-        printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);
-
         printf("[%d]: Sleeping with busy-waiting (HIGH CPU)...\n", counter);
         sleep_busy(1000);
         printf("[%d]: Slept using busy-waiting.\n", counter++);
-    }*/
+
+        /*printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);
+        sleep_interrupt(1000);
+        printf("[%d]: Slept using interrupts.\n", counter++);*/
+    }
     handle_menu();
 
     // Usually shouldnt get here, since it then quits kernel main.
