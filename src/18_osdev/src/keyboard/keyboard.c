@@ -1,8 +1,12 @@
 // http://www.osdever.net/bkerndev/Docs/keyboard.htm (brans kernel dev)
 #include "keyboard.h"
+#include "libc/stdbool.h"
 
-// denne kan kanskje flyttes til header filen...
-// default lookup table for us qwerty keyboard.
+#define INPUT_BUFFER_SIZE 128
+static char input_buffer[INPUT_BUFFER_SIZE];
+static int buffer_index = 0;
+static bool line_ready = false;
+
 unsigned char kbdus[128] =
 {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
@@ -43,6 +47,25 @@ unsigned char kbdus[128] =
     0,	/* All other keys are undefined */
 };	
 
+
+void read_line(char* buffer) {
+  // Wait until a full line is entered (user pressed Enter)
+  while (!line_ready) {
+      // You can add a CPU halt or yield here if needed
+  }
+
+  // Copy input to provided buffer
+  int i;
+  for (i = 0; i <= buffer_index; i++) {
+      buffer[i] = input_buffer[i];
+  }
+  
+  // Reset for next line read
+  line_ready = false;
+  buffer_index = 0; // Reset buffer index for next line
+}
+
+
 // funksjon som initialiserer keyboard. keyboard er assigna til "irq1" så vi binder keyboard_handler funksjonen til den med register_interrupt_handler
 void init_keyboard() {
     monitor_write("Initializing keyboard\n");
@@ -52,35 +75,43 @@ void init_keyboard() {
 /* Handles the keyboard interrupt - kan legge til handling for andre ting som f.eks backspace ++ */
 void keyboard_handler(registers_t regs)
 {
-    char mychar;
-    unsigned char scancode;
-
     /* Read from the keyboard's data buffer*/
-    scancode = inb(0x60);
+    unsigned char scancode = inb(0x60);
 
     /* If the top bit of the byte we read from the keyboard is
     *  set, that means that a key has just been released */
     if (scancode & 0x80)
     {
-        /* You can use this one to see if the user released the
-        *  shift, alt, or control keys... */
+        /* We don't handle key releases right now */
+        return;
     }
     else
     {
-        mychar = kbdus[scancode];
+        /* Here, a key was just pressed */
+        char c = kbdus[scancode];
 
-        monitor_put(mychar);
-        /* Here, a key was just pressed. Please note that if you
-        *  hold a key down, you will get repeated key press
-        *  interrupts. */
-
-        /* Just to show you how this works, we simply translate
-        *  the keyboard scancode into an ASCII value, and then
-        *  display it to the screen. You can get creative and
-        *  use some flags to see if a shift is pressed and use a
-        *  different layout, or you can add another 128 entries
-        *  to the above layout to correspond to 'shift' being
-        *  held. If shift is held using the larger lookup table,
-        *  you would add 128 to the scancode when you look for it */
+        if (c) {
+            // Echo character to screen
+            monitor_put(c);
+            
+            // Handle special characters
+            if (c == '\n') {
+                // Enter key pressed - set line as ready
+                input_buffer[buffer_index] = '\0'; // Null-terminate the string
+                line_ready = true;
+            } 
+            else if (c == '\b') {
+                // Backspace handling
+                if (buffer_index > 0) {
+                    buffer_index--;
+                }
+            }
+            else {
+                // Regular character - add to buffer if there's space
+                if (buffer_index < INPUT_BUFFER_SIZE - 1) {
+                    input_buffer[buffer_index++] = c;
+                }
+            }
+        }
     }
 }
