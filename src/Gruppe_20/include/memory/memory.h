@@ -29,7 +29,7 @@ void* memset(void *ptr, int value, size_t num);
 void* memset16(void *ptr, uint16_t value, size_t num);
 
 /* Debugging */
-//void print_memory_layout();
+void print_memory_layout();
 
 #ifdef __cplusplus
 }

@@ -35,10 +35,10 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_irq();
     init_interrupts();
     init_kernel_memory(&end);
-    //init_paging();
-    //print_memory_layout();
+    init_paging();
+    print_memory_layout();
     init_pit();
-    printf("Hello %s", "World");
+    printf("Hello %s", "World\n");
 
     return kernel_main();
 

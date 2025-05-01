@@ -5,6 +5,7 @@
 #include "libc/stdint.h"
 #include "libc/print.h"
 #include "io.h"
+#include "interrupts.h"
 
 // Array of registered interrupt handlers
 static isr_t interrupt_handlers[256];

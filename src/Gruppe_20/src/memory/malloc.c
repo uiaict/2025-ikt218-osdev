@@ -55,7 +55,16 @@ void* malloc(size_t size) {
     memset((void*)((uint32_t)alloc + sizeof(alloc_t)), 0, size);
     return (void*)((uint32_t)alloc + sizeof(alloc_t));
 }
-
+// Print the current memory layout
+void print_memory_layout()
+{
+    printf("Memory used: %d bytes\n", memory_used);
+    printf("Memory free: %d bytes\n", heap_end - heap_begin - memory_used);
+    printf("Heap size: %d bytes\n", heap_end - heap_begin);
+    printf("Heap start: 0x%x\n", heap_begin);
+    printf("Heap end: 0x%x\n", heap_end);
+    printf("PHeap start: 0x%x\nPHeap end: 0x%x\n", pheap_begin, pheap_end);
+}
 void free(void *mem) {
     if (!mem) return;
     alloc_t *alloc = (alloc_t*)((uint8_t*)mem - sizeof(alloc_t));
