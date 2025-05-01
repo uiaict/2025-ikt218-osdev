@@ -1,3 +1,6 @@
+#include "i386/descriptorTables.h"
+#include "i386/IRQ.h"
+#include "common.h"
 /*
 #include "libc/stdint.h"
 #include "../i386/IDT.h"
@@ -17,12 +20,11 @@
 
 extern void idt_flush(uint32_t);
 
-void init_idt(
-
-){
-  idt_ptr.limit = sizeof(struct IDTEntry) * IDT_entries - 1; 
+void init_idt()
+{
+  idt_ptr.limit = sizeof(struct IDTEntry) * IDT_entries - 1;
   idt_ptr.base = (uint32_t)&idt;
-  
+
   for (int a = 0; a < IDT_entries /*eller idt_entries*/; a++)
   {
     idt[a].base_low = 0x0000;
@@ -34,29 +36,28 @@ void init_idt(
     int_handlers[a].handler = NULL; // Initialize the handler to NULL
   }
   init_interrupts(); // Initialize the interrupts
-  idt_flush((uint32_t)&idt_ptr); 
-  // Load the IDT
+  idt_flush((uint32_t)&idt_ptr);
+  idt_load();
 }
 
-void idt_load() 
+void idt_load()
 {
-  asm volatile("lidt (%0)" : : "r" (&idt_ptr));
+  asm volatile("lidt (%0)" : : "r"(&idt_ptr));
 }
 
-void set_idt_gate(uint8_t number, uint32_t base, uint16_t sel, uint8_t flags) 
+void set_idt_gate(uint8_t number, uint32_t base, uint16_t sel, uint8_t flags)
 {
-  idt[number].base_low = base & 0xFFFF; 
-  idt[number].base_high = (base >> 16) & 0xFFFF; 
-  idt[number].sel = sel; 
-  idt[number].zero = 0x00; 
+  idt[number].base_low = base & 0xFFFF;
+  idt[number].base_high = (base >> 16) & 0xFFFF;
+  idt[number].sel = sel;
+  idt[number].zero = 0x00;
   idt[number].flags = flags | 0x60; // Set present bit and DPL bits
 }
 
-
-void init_interrupts() 
+void init_interrupts()
 {
   outb(0x20, 0x11); // Start the PIC
-  outb(0xA0, 0x11); // Start the slave 
+  outb(0xA0, 0x11); // Start the slave
 
   outb(0x21, 0x20); // Set the offset for master PIC
   outb(0xA1, 0x28); // Set the offset for slave PIC
@@ -103,8 +104,8 @@ void init_interrupts()
   set_idt_gate(30, (uint32_t)isr30, 0x08, 0x8E);
   set_idt_gate(31, (uint32_t)isr31, 0x08, 0x8E);
 
-  //set_idt_gate(128, (uint32_t)isr128, 0x08, 0x8E);
-  //set_idt_gate(177, (uint32_t)isr177, 0x08, 0x8E);
+  // set_idt_gate(128, (uint32_t)isr128, 0x08, 0x8E);
+  // set_idt_gate(177, (uint32_t)isr177, 0x08, 0x8E);
 
   set_idt_gate(32, (uint32_t)irq0, 0x08, 0x8E);
   set_idt_gate(33, (uint32_t)irq1, 0x08, 0x8E);
@@ -121,6 +122,5 @@ void init_interrupts()
   set_idt_gate(44, (uint32_t)irq12, 0x08, 0x8E);
   set_idt_gate(45, (uint32_t)irq13, 0x08, 0x8E);
   set_idt_gate(46, (uint32_t)irq14, 0x08, 0x8E);
-  set_idt_gate(47, (uint32_t)irq15, 0x08, 0x8E); 
+  set_idt_gate(47, (uint32_t)irq15, 0x08, 0x8E);
 }
-

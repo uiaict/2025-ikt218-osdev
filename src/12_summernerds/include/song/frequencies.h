@@ -137,4 +137,4 @@
 #define G_SHARP4 415
 #define R 0 // R (no sound)
 
-#endif //UIAOS_FREQUENCIES_H
+#endif // UIAOS_FREQUENCIES_H

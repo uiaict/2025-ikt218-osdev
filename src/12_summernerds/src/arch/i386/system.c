@@ -1,11 +1,7 @@
 #include "libc/system.h"
 
-
-
-
-__attribute__((noreturn)) void panic(const char*);
-void* _impure_ptr = NULL;
-
+__attribute__((noreturn)) void panic(const char *);
+void *_impure_ptr = NULL;
 
 void __stack_chk_fail_local()
 {
@@ -14,13 +10,12 @@ void __stack_chk_fail_local()
 }
 __attribute__((used))
 
-
-void __stack_chk_fail()
+void
+__stack_chk_fail()
 {
     panic("Stack protector: Canary modified");
     __builtin_unreachable();
 }
-
 
 void _exit(int status)
 {

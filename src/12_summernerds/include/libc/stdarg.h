@@ -11,4 +11,3 @@ typedef __builtin_va_list va_list;
 
 // va_arg
 #define va_arg(v, l) __builtin_va_arg(v, l)
-

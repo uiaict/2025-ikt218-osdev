@@ -15,8 +15,7 @@
 // IRQ0 related macros
 #define PIC1_CMD_PORT 0x20
 #define PIC1_DATA_PORT 0x20
-#define PIC_EOI	0x20        /* End-of-interrupt command code */
- 
+#define PIC_EOI 0x20 /* End-of-interrupt command code */
 
 // Custom sleep function constants
 #define PIT_BASE_FREQUENCY 1193180
@@ -24,9 +23,7 @@
 #define DIVIDER (PIT_BASE_FREQUENCY / TARGET_FREQUENCY)
 #define TICKS_PER_MS (TARGET_FREQUENCY / TARGET_FREQUENCY)
 
-
 void init_pit();
 void sleep_interrupt(uint32_t milliseconds);
 void sleep_busy(uint32_t milliseconds);
 #endif
-

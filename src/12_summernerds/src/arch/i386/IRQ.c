@@ -1,8 +1,9 @@
-#include "../src/arch/i386/interuptRegister.h"
-#include "../src/common.h"
+#include "i386/IRQ.h"
+#include "common.h"
 
 // Initializing the IRQ handlers
-void init_irq() {
+void init_irq()
+{
     for (int i = 0; i < IRQ_COUNT; i++)
     {
         irq_handlers[i].data = NULL;
@@ -12,13 +13,15 @@ void init_irq() {
 }
 
 // Registering the interrupts
-void register_irq_handler(int irq, isr_t handler, void* ctx) {
+void register_irq_handler(int irq, isr_t handler, void *ctx)
+{
     irq_handlers[irq].handler = handler;
     irq_handlers[irq].data = ctx;
 }
 
 // Main IRQ handler
-void irq_handler(registers_t regs) {
+void irq_handler(registers_t regs)
+{
     // Send an EOI (end of interrupt) signal to the PICs.
     // If this interrupt involved the slave.
     if (regs.int_no >= 40)
@@ -31,8 +34,13 @@ void irq_handler(registers_t regs) {
 
 
     // Call the IRQ handler
-    struct int_handler_t intrpt = irq_handlers[regs.int_no];
-    if (intrpt.handler != 0) {
+    int irq = regs.int_no - 32;
+    if (irq < 0 || irq > IRQ_COUNT)
+        return;
+
+    struct int_handler_t intrpt = irq_handlers[irq];
+    if (intrpt.handler != 0)
+    {
         intrpt.handler(&regs, intrpt.data);
     }
 }
