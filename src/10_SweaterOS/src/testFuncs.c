@@ -113,6 +113,10 @@ void test_keyboard_interactive(void) {
     display_write_color("Type any keys to see them appear on screen.\n", COLOR_YELLOW);
     display_write_color("Press ESC to exit the test.\n\n", COLOR_YELLOW);
     
+    terminal_column = 0;
+    terminal_row++;
+    display_move_cursor();
+
     // Make sure interrupts are enabled
     __asm__ volatile("sti");
     
@@ -225,7 +229,7 @@ void test_programmable_interval_timer(void) {
         display_write_decimal(counter);
         display_write_color("]: Sleeping with busy-waiting (HIGH CPU).\n", COLOR_YELLOW);
         
-        sleep_busy(1000); // Sleep for 1 second
+        sleep_busy(1000);
         
         display_write_color("[", COLOR_WHITE);
         display_write_decimal(counter++);
@@ -235,7 +239,7 @@ void test_programmable_interval_timer(void) {
         display_write_decimal(counter);
         display_write_color("]: Sleeping with interrupts (LOW CPU).\n", COLOR_YELLOW);
         
-        sleep_interrupt(1000); // Sleep for 1 second
+        sleep_interrupt(1000);
         
         display_write_color("[", COLOR_WHITE);
         display_write_decimal(counter++);
