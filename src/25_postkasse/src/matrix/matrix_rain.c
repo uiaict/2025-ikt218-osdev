@@ -98,7 +98,7 @@ void run_matrix_rain() {
 
     while (1) {
         matrix_rain_step();
-        sleep_interrupt(50);
+        sleep_interrupt(30);
 
         if (last_key == 'q' || last_key == 'Q') {
             monitor_write("\nExiting Matrix Rain...\n");
