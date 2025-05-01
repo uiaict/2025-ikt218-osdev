@@ -35,32 +35,35 @@ extern "C" int kernel_main(void);
 
     switch (input[0]) {
         case '1':
-            mafiaPrint("Hello World!\n");
+            mafiaPrint("\nHello World!\n");
             break;
         case '2':
+            mafiaPrint("\n");
             print_memory_layout();
             break;
         case '3':
             {
                 int input_size = 0;
-                mafiaPrint("Enter the size of memory to allocate: ");
+                mafiaPrint("\nEnter the size of memory to allocate: ");
                 get_input(input, sizeof(input));
                 input_size = stoi(input);
                 void* address = malloc(input_size); 
                 break;
             }
         case '4':
-            mafiaPrint("play song\n");
+            mafiaPrint("\nplay song\n");
             song_menu();
             break;
         case '5':
-            mafiaPrint("Playing Mafia Bird...\n");
+            mafiaPrint("\nPlaying Mafia Bird...\n");
+            play_game();
             break;
         case '6':
-            mafiaPrint("Exiting...\n");
-            break;
+            mafiaPrint("\nExiting...\n");
+            return 0;
+            //break;
         default:
-            mafiaPrint("Invalid option. Please try again.\n");
+            mafiaPrint("\nInvalid option. Please try again.\n");
     }
 }
         

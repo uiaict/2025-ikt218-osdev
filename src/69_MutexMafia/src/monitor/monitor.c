@@ -43,8 +43,9 @@ void print_menu(){
     mafiaPrint("1. Print Hello World\n");
     mafiaPrint("2. Print memory Layout\n");
     mafiaPrint("3. Allocate some memory\n");
-    mafiaPrint("4. Play Mafia Bird\n");
-    mafiaPrint("5. Exit\n");
+    mafiaPrint("4. Play some music\n");
+    mafiaPrint("5. Play Mafia Bird\n");
+    mafiaPrint("6. Exit\n");
     //mafiaPrint("Press a number, then enter to select an option: ");
     //mafiaPrint("\n");
     //mafiaPrint("-------------------------------------------------\n");
@@ -94,3 +95,12 @@ void move_cursor(){
     outPortB(0x3D4, 15);
     outPortB(0x3D5, position & 0xFF);
 }
+
+void draw_char_at(int x, int y, char c, uint8_t color) {
+    if (x < 0 || x >= SCREEN_WIDTH || y < 0 || y >= SCREEN_HEIGHT) return;
+    int index = (y * SCREEN_WIDTH + x) * 2;
+    video_memory[index] = c;
+    video_memory[index + 1] = color;
+}
+
+
