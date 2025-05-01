@@ -8,6 +8,7 @@
 #include <libc/stddef.h>
 #include "libc/stdbool.h"
 #include "common.h"
+#include "menu.h"
 #include <screen.h>
 
 // #include "i386/ISR.h"
@@ -51,16 +52,18 @@ int main(uint32_t magic, uint32_t mb_info_addr)
 
     // Test PIT sleep
     int counter = 0;
-    while (true)
+
+    /*while (true)
     {
         printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);
-        // sleep_interrupt(1000);
+        sleep_interrupt(1000);
         printf("[%d]: Slept using interrupts.\n", counter++);
 
         printf("[%d]: Sleeping with busy-waiting (HIGH CPU)...\n", counter);
-        // sleep_busy(1000);
+        sleep_busy(1000);
         printf("[%d]: Slept using busy-waiting.\n", counter++);
-    }
+    }*/
+    handle_menu();
 
     // Usually shouldnt get here, since it then quits kernel main.
     return 0;

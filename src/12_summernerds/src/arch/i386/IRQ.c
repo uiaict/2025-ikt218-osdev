@@ -15,8 +15,8 @@ void init_irq()
 // Registering the interrupts
 void register_irq_handler(int irq, isr_t handler, void *ctx)
 {
-    irq_handlers[irq].handler = handler;
-    irq_handlers[irq].data = ctx;
+    irq_handlers[irq - 32].handler = handler;
+    irq_handlers[irq - 32].data = ctx;
 }
 
 // Main IRQ handler
@@ -39,7 +39,7 @@ void irq_handler(registers_t regs)
         return;
 
     struct int_handler_t intrpt = irq_handlers[irq];
-    if (intrpt.handler != 0)
+    if (intrpt.handler)
     {
         intrpt.handler(&regs, intrpt.data);
     }

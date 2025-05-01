@@ -22,8 +22,8 @@
     global irq%1
     irq%1:
       ;cli
-      push byte 0
-      push byte %2
+      push 0
+      push %2
       jmp irq_common_stub
 %endmacro
 
@@ -60,22 +60,13 @@ ISR_NOERRCODE 29
 ISR_NOERRCODE 30
 ISR_NOERRCODE 31
 ISR_NOERRCODE 128
-IRQ   0,    32
-IRQ   1,    33
-IRQ   2,    34
-IRQ   3,    35
-IRQ   4,    36
-IRQ   5,    37
-IRQ   6,    38
-IRQ   7,    39
-IRQ   8,    40
-IRQ   9,    41
-IRQ   10,   42
-IRQ   11,   43
-IRQ   12,   44
-IRQ   13,   45
-IRQ   14,   46
-IRQ   15,   47
+
+%assign i 0
+%rep 16
+    IRQ i, i+32
+%assign i i+1
+%endrep
+
 
 ; In isr.c
 extern isr_handler
@@ -120,7 +111,9 @@ irq_common_stub:
     mov fs, ax
     mov gs, ax
 
+    push esp
     call irq_handler
+    add esp, 4
 
     pop ebx
     mov ds, bx

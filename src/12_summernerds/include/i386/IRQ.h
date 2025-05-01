@@ -136,6 +136,4 @@ void register_interrupt_handler(uint8_t, isr_t handler, void *);
 static struct int_handler_t int_handlers[IDT_entries];
 static struct int_handler_t irq_handlers[IRQ_COUNT];
 
-#define IRQ_COUNT 16
-
 #endif // INTERRUPTS_H

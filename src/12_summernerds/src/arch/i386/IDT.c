@@ -36,7 +36,7 @@ void init_idt()
   }
   init_interrupts(); // Initialize the interrupts
   idt_flush((uint32_t)&idt_ptr);
-  idt_load();
+  // idt_load();
 }
 
 void idt_load()
@@ -102,9 +102,6 @@ void init_interrupts()
   set_idt_gate(29, (uint32_t)isr29, 0x08, 0x8E);
   set_idt_gate(30, (uint32_t)isr30, 0x08, 0x8E);
   set_idt_gate(31, (uint32_t)isr31, 0x08, 0x8E);
-
-  // set_idt_gate(128, (uint32_t)isr128, 0x08, 0x8E);
-  // set_idt_gate(177, (uint32_t)isr177, 0x08, 0x8E);
 
   set_idt_gate(32, (uint32_t)irq0, 0x08, 0x8E);
   set_idt_gate(33, (uint32_t)irq1, 0x08, 0x8E);

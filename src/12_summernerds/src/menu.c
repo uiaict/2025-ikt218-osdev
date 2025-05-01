@@ -92,7 +92,7 @@ void handle_menu()
             while (1)
             {
                 draw_matrix_frame();
-                sleep_interrupt(100);
+                //sleep_interrupt(100);
                 if (key_buffer[0] != '\0')
                     break;
             }
