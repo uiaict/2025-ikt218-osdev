@@ -11,34 +11,25 @@ bool capsEnabled = false;
 bool shiftEnabled = false;
 char terminalBuffer[250];
 int index = 0;
- //[0x1b] = '^',
-    //[0x2B] = '\'',
-//[0x56] = '<',
 
-//mangler æøå og ¨ og 
+
+//mangler ¨ og < 
+// ASCII maps
 const char smallAscii[] = {
-    
-   
-
-    '?', '?', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '\\', '\016', 
-    '?', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', '¨', '\034',
-    '?', 'a', 's', 'd', 'f', 'g','h', 'j', 'k', 'l', 'ø', 'æ','\'',
-    '?','<','z','x','c','v','b','n','m',',','.','-','?','?','?',' '
-
+    '?', '?', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '\\', 0x0E,
+    '?', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', (char)0x86, (char)0xF8, 0x1C,
+    '?', 'a', 's', 'd', 'f', 'g','h', 'j', 'k', 'l', (char)0x94, (char)0x91,'\'',
+    '?','<','z','x','c','v','b','n','m',',','.','-','>','?','?',' '
 };
-//mangler ¤, ^ og ÆØÅ 
-//[0x1b] = '¨',
-    //[0x2b] = '*',
-    //[0X5] = '¤',
-//[0x56] = '>',
-const char capsAscii[] ={
-    
-    
-    '?', '?', '!', '"', '#', '¤', '%', '&','/', '(', ')', '=', '?', '`', '\016', 
-    '?', 'Q', 'W', 'E', 'R', 'T', 'Y','U', 'I', 'O', 'P', 'Å', '^', '\034',
-    '?','A','S','D','F','G','H','J','K','L','Ø','Æ','*',
+
+
+const char capsAscii[] = {
+    '?', '?', '!', '"', '#', (char)0xA4, '%', '&','/', '(', ')', '=', '?', '`', '\016',
+    '?', 'Q', 'W', 'E', 'R', 'T', 'Y','U', 'I', 'O', 'P', (char)0x8F, '^', (char)0x1C,
+    '?','A','S','D','F','G','H','J','K','L',(char)0x99,(char)0x92,'*',
     '?','>','Z','X','C','V','B','N','M',';',':', '_', '?', '?'
 };
+
 
 //These ASCII tables are heavily based upon the ones from the solution guide, with some modifications.
 
@@ -63,6 +54,7 @@ unsigned char* read_keyboard_data_from_buffer(void)
 {
     static unsigned char scancode;
     scancode = inPortB(0x60);
+    //mafiaPrint("Scancode read: 0x%x\n", scancode);
     return &scancode;
 }
 
@@ -87,7 +79,7 @@ int get_keyboard_event_type(unsigned char* scancode)
 }
 
 void log_key_press(char input){
-    mafiaPrint("pressed key: %c \n", input);
+    mafiaPrint("%c", input);
 }
 
 void log_buffer(char terminalBuffer[], int* index) {
@@ -103,8 +95,7 @@ void log_buffer(char terminalBuffer[], int* index) {
 
 void handle_key_press(unsigned char* scancode, char terminalBuffer[], int* index)
 {
-    //mafiaPrint("Scancode: 0x%x\n", *scancode);
-    //*scancode = read_keyboard_data_from_buffer();
+    
     char keyValue = scancode_to_ascii(*scancode);
 
     switch (*scancode)
@@ -112,7 +103,7 @@ void handle_key_press(unsigned char* scancode, char terminalBuffer[], int* index
     case 0x1b: //ESC
        //IKKE IMPLEMENTERT ENDA
 
-    case 0x28: //ENTER - FUNGERER IKKE HELT RIKTIG ENDA
+    case 0x1C: //ENTER
     terminalBuffer[*index] = '\n';
          (*index)++;
          break;
@@ -156,7 +147,7 @@ void handle_key_press(unsigned char* scancode, char terminalBuffer[], int* index
         terminalBuffer[*index] = keyValue;
         (*index)++;
     }
-        //log_key_press(keyValue); //logger kun tastetrykk
+        log_key_press(keyValue); //logger kun tastetrykk
         break;
     }
     //log_buffer(terminalBuffer,keyValue);
@@ -180,24 +171,12 @@ void handle_key_release(unsigned char* scancode)
 }
 
 
-/*
-// Funksjon for å varsle operativsystemet om en tastaturhendelse
-void notify_os_keyboard_event(void)
-{
-    // 1. Utskriv en melding eller send et signal til operativsystemet om at en tastaturhendelse har funnet sted.
-    // 2. Dette kan være en enkel utskrift (f.eks. `mafiaPrint`) eller en mer kompleks handling som å sende en interrupt eller en hendelsessignal.
-}
-*/
-
-
-
-
-
 // Tastaturens ISR (Interrupt Service Routine)
 void keyboard_isr(struct InterruptRegisters* regs)
 {
-    //mafiaPrint("Keyboard ISR triggered\n");
+    
     unsigned char* input = read_keyboard_data_from_buffer();
+    
 
     if (check_keyboard_errors(input) == KEYBOARD_ERROR){
         return; 
@@ -211,9 +190,10 @@ void keyboard_isr(struct InterruptRegisters* regs)
     else if (event_type == KEY_RELEASE){
         handle_key_release(input);  
     }
-
-    // 6. Varsle operativsystemet om hendelsen.
-    //notify_os_keyboard_event();
+    if (regs->int_no >= 40) {
+        outPortB(0xA0, 0x20);  // Slave PIC EOI (IRQ 8-15)
+    }
+    outPortB(0x20, 0x20);  
 }
 
 // Funksjon for å initialisere tastaturinnstillinger eller ISR
@@ -227,4 +207,23 @@ void initKeyboard(void)
 
     mafiaPrint("Keyboard initialized\n");
 
+}
+
+bool keyboard_buffer_empty() {
+    return (index == 0);  // Sjekk at index er 0 og bufferet er tomt
+}
+
+
+
+char read_from_keyboard_buffer() {
+    if (index > 0) {
+        char input = terminalBuffer[0];  // Ta første tegn
+        // Skift tegnene i terminalBuffer en plass til venstre
+        for (int i = 0; i < index - 1; i++) {
+            terminalBuffer[i] = terminalBuffer[i + 1];
+        }
+        index--;  // Reduser indexen
+        return input;
+    }
+    return 0;  // Returner 0 hvis buffer er tom
 }

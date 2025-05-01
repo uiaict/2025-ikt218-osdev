@@ -8,6 +8,7 @@
 #define KEY_RELEASE 2
 
 #include "../idt/idt.h"
+#include "libc/stdbool.h"
 
 // Declare functions
 void toggle_caps_lock(void);
@@ -22,5 +23,11 @@ char terminalBuffer[], int* index);
 void handle_key_release(unsigned char* scancode);
 void keyboard_isr(struct InterruptRegisters* regs);
 void initKeyboard(void);
+
+
+
+bool keyboard_buffer_empty(void);
+char read_from_keyboard_buffer(void);
+void clear_keyboard_buffer(void);
 
 #endif // KEYBOARD_H
