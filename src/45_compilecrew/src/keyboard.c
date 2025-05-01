@@ -1,17 +1,5 @@
 #include "libc/keyboard.h"
-#include "libc/terminal.h"
-#include "libc/printf.h"
 #include "libc/stdint.h"
-
-typedef enum {
-    MODE_FRONT_PAGE,
-    MODE_MATRIX,
-    MODE_MUSIC,
-    MODE_MEMORY,
-    MODE_TERMINAL
-} InputMode;
-
-static InputMode current_mode = MODE_FRONT_PAGE;
 
 // Simplified US QWERTY scancode to ASCII table
 static const char scancode_table[128] = {
@@ -23,6 +11,8 @@ static const char scancode_table[128] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
+static volatile char last_key = 0;
+
 static inline uint8_t inb(uint16_t port) {
     uint8_t ret;
     __asm__ volatile ("inb %1, %0" : "=a"(ret) : "Nd"(port));
@@ -31,52 +21,21 @@ static inline uint8_t inb(uint16_t port) {
 
 void keyboard_handler(void) {
     uint8_t scancode = inb(0x60);
-
-    if (scancode & 0x80) return; // Ignore key releases
+    if (scancode & 0x80) return;
 
     char key = scancode_table[scancode];
-    if (!key) return;
 
-    if (current_mode == MODE_FRONT_PAGE) {
-        switch (key) {
-            case '1':
-                current_mode = MODE_MATRIX;
-                terminal_clear();
-                //draw_matrix();
-                return;
-            case '2':
-                current_mode = MODE_MUSIC;
-                terminal_clear();
-                draw_music_selection();
-                return;
-            case '3':
-                current_mode = MODE_MEMORY;
-                terminal_clear();
-                print_memory_layout();
-                printf("\nPress escape to return to main menu");
-                return;
-            case '4':
-                current_mode = MODE_TERMINAL;
-                terminal_clear();
-            case 'q':
-            case 'Q':
-                //shutdown();
-                return;
-        }
-    }
-    
+    if (key == '\b') {
+        terminal_backspace();
+    } 
 
-    // If you're in TERMINAL mode, allow normal typing
-    if (current_mode == MODE_TERMINAL) {
-        enable_cursor(14, 15);
-        printf("%c", key);
+    else {
+        last_key = key;
     }
+}
 
-    // Optional: ESC key returns to front page
-    if (key == 27) {
-        current_mode = MODE_FRONT_PAGE;
-        disable_cursor();
-        terminal_clear();
-        draw_front_page();
-    }
+char get_last_key(void) {
+    char key = last_key;
+    last_key = 0;
+    return key;
 }

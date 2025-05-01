@@ -27,6 +27,23 @@ static void move_cursor() {
     outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
 }
 
+void terminal_backspace(void) {
+    if (terminal_column > 0) {
+        terminal_column--;
+    } else if (terminal_row > 0) {
+        terminal_row--;
+        terminal_column = VGA_WIDTH - 1;
+    } else {
+        return; // Already at top-left corner, can't move back
+    }
+
+    // Overwrite current character with a space
+    vga_buffer[terminal_row * VGA_WIDTH + terminal_column] = vga_entry(' ', terminal_color);
+
+    // Update cursor
+    move_cursor();
+}
+
 // Scroll screen up by one line
 static void scroll() {
     uint8_t attributeByte = (0 << 4) | (7 & 0x0F); // Black bg, light grey text
@@ -103,7 +120,8 @@ void terminal_clear() {
 
 void draw_front_page() {
     terminal_clear();
-
+    
+    
     // Centered title
     const char* title = "Welcome to JooaOS";
     const size_t title_len = strlen(title);
@@ -126,11 +144,11 @@ void draw_front_page() {
         "[1] Matrix Rain",
         "[2] Music",
         "[3] Memory layout",
-        "[4] Empty terminal"
+        "[4] Empty terminal",
         "[Q] Quit"
     };
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         const char* line = lines[i];
         x = (80 - strlen(line)) / 2;
         y += 2;

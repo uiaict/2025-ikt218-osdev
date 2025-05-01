@@ -18,4 +18,6 @@ void disable_cursor();
 void enable_cursor(uint8_t start, uint8_t end);
 
 void draw_music_selection();
+
+void backspace_terminal();
 #endif // TERMINAL_H

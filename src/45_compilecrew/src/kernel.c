@@ -10,18 +10,21 @@
 #include "libc/irq.h"
 #include "libc/keyboard.h"
 #include "pit.h"
-#include "memory.h"   // include memory manager
+#include "memory.h"
 #include "song.h"
 #include "song_player.h"
 #include "frequencies.h"
+#include "matrix.h"
+
 
 extern uint32_t end;
 
-struct multiboot_info {
-    uint32_t size;
-    uint32_t reserved;
-    struct multiboot_tag *first;
-};
+typedef enum {
+    MODE_DEFAULT,
+    MODE_MUSIC,
+    MODE_MEMORY,
+    MODE_TERMINAL
+} InputMode;
 
 __attribute__((noreturn)) void exception_handler(uint32_t int_number) {
     if (int_number >= 32 && int_number <= 47) {
@@ -30,25 +33,23 @@ __attribute__((noreturn)) void exception_handler(uint32_t int_number) {
         if (irq == 0 && irq_handlers[irq]) {
             irq_handlers[irq]();
             irq_acknowledge(irq);
-            return; // ✅ just return, NO halt
+            return;
         }
 
         if (irq == 1) {
             keyboard_handler();
             irq_acknowledge(irq);
-            return; // ✅ just return, NO halt
+            return;
         }
 
         irq_acknowledge(irq);
-        return; // ✅ normal IRQ return
+        return;
     }
 
-    // 🛑 Only halt for real EXCEPTIONS (divide by zero, etc)
     printf("Exception: interrupt %d\n", (int)int_number);
     __asm__ volatile("cli; hlt");
     __builtin_unreachable();
 }
-
 
 SongPlayer* create_song_player() {
     SongPlayer* player = (SongPlayer*)malloc(sizeof(SongPlayer));
@@ -56,45 +57,92 @@ SongPlayer* create_song_player() {
     return player;
 }
 
-
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_gdt();
     idt_init();
     terminal_clear();
-
-
-
-
+    init_paging();
     init_kernel_memory(&end);
-    //init_paging();
-    print_memory_layout();
-
     init_pit();
     irq_install_handler(0, pit_callback);
     __asm__ volatile ("sti");
 
-    printf("Hello World\n");
 
-    terminal_clear();
-
-    draw_front_page();
     disable_cursor();
-
-
-    //void* some_memory = malloc(12345);
-    //void* memory2 = malloc(54321);
-    //void* memory3 = malloc(13331);
-
-    
-    Song song1 = { fur_elise, sizeof(fur_elise) / sizeof(Note) };
-    Song song2 = { happy_birthday, sizeof(happy_birthday) / sizeof(Note) };
-    Song song3 = { starwars_theme, sizeof(starwars_theme) / sizeof(Note) };
-    
-
-
+    InputMode current_mode = MODE_DEFAULT;
+    draw_front_page();
 
     while (1) {
+        char key = get_last_key();
+        if (key) {
+            switch (current_mode) {
+                case MODE_DEFAULT:
+                    switch (key) {
+                        case '1':
+                            terminal_clear();
+                            draw_matrix_rain();
+                            break;
+                        case '2':
+                            current_mode = MODE_MUSIC;
+                            terminal_clear();
+                            draw_music_selection();
+                            break;
+                        case '3':
+                            current_mode = MODE_MEMORY;
+                            terminal_clear();
+                            print_memory_layout();
+                            break;
+                        case '4':
+                            current_mode = MODE_TERMINAL;
+                            terminal_clear();
+                            break;
+                        case 'q'|'Q':
+                            terminal_clear();
+                            printf("Shutting down (stub).\n");
+                            while (1) __asm__ volatile("hlt");
+                    }
+                    break;
+
+                case MODE_MUSIC:
+                    switch (key) {
+                        case '1':
+                            terminal_clear();
+                            printf("Playing Fur Elise...\n");
+                            play_song(&furelise);
+                            draw_music_selection();
+                            break;
+                        case '2':
+                            terminal_clear();
+                            printf("Playing Happy Birthday...\n");
+                            play_song(&birthday);
+                            draw_music_selection();
+                            break;
+                        case '3':
+                            terminal_clear();
+                            printf("Playing Star Wars Theme...\n");
+                            play_song(&starwars);
+                            draw_music_selection();
+                            break;
+                    }
+                    break;
+
+                case MODE_TERMINAL:
+                    enable_cursor(14, 15);
+                    printf("%c", key);
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (key == 27) { // ESC
+                current_mode = MODE_DEFAULT;
+                disable_cursor();
+                terminal_clear();
+                draw_front_page();
+            }
+        }
+
         __asm__ volatile("hlt");
     }
 }
-

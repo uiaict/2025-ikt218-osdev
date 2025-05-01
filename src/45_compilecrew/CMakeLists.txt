@@ -76,6 +76,7 @@ add_executable(uiaos-kernel
 	src/memutils.c
 	src/panic.c
 	src/song_player.c
+	src/matrix.c
 )
 
 # Include directories for the kernel target
