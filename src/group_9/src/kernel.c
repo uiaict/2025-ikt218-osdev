@@ -10,6 +10,8 @@
 #include "pit.h"
 #include "speaker.h"
 #include "song.h"
+#include "adventure.h"
+
 
 extern uint32_t end;
 
@@ -53,6 +55,8 @@ int kernel_main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     terminal_printf("Hello from Group 9!\n");
 
     test_music_player(); // 🔊 Call music test here
+
+    start_adventure();
 
     while (1) {
         __asm__ __volatile__("hlt");

@@ -72,6 +72,7 @@ set(SOURCES
 	src/paging.c
 	src/speaker.c
 	src/song.c
+	src/adventure.c
 )
 
 set(ASM_SOURCES

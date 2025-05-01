@@ -155,6 +155,30 @@ uiaos-create-image/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-create-image.dir/build.make CMakeFiles/uiaos-create-image.dir/build
 .PHONY : uiaos-create-image/fast
 
+src/adventure.o: src/adventure.c.o
+.PHONY : src/adventure.o
+
+# target to build an object file
+src/adventure.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/adventure.c.o
+.PHONY : src/adventure.c.o
+
+src/adventure.i: src/adventure.c.i
+.PHONY : src/adventure.i
+
+# target to preprocess a source file
+src/adventure.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/adventure.c.i
+.PHONY : src/adventure.c.i
+
+src/adventure.s: src/adventure.c.s
+.PHONY : src/adventure.s
+
+# target to generate assembly for a file
+src/adventure.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/adventure.c.s
+.PHONY : src/adventure.c.s
+
 src/gdt.o: src/gdt.asm.o
 .PHONY : src/gdt.o
 
@@ -550,6 +574,9 @@ help:
 	@echo "... create-fat32-disk"
 	@echo "... uiaos-create-image"
 	@echo "... uiaos-kernel"
+	@echo "... src/adventure.o"
+	@echo "... src/adventure.i"
+	@echo "... src/adventure.s"
 	@echo "... src/gdt.o"
 	@echo "... src/gdt.o"
 	@echo "... src/gdt.i"

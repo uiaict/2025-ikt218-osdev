@@ -1,4 +1,4 @@
-.vscode
+.vscode/
 src/build_*/*
 venv
 !build_*/kernel.bin
@@ -12,6 +12,7 @@ iso
 .env
 build.ninja
 .ninja*
+*.log
 
 00_per_arne
 src/group_name/src/kernel.c
