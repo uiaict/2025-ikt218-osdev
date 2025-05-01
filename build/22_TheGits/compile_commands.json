@@ -1,87 +1,77 @@
 [
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o /workspaces/2025-ikt218-osdev/src/22_TheGits/src/multiboot2.asm",
-  "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/multiboot2.asm"
-},
-{
-  "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/kernel.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/kernel.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/kernel.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/gdt.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/gdt.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/gdt.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/gdt.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/gdt.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/scrn.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/scrn.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/scrn.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/scrn.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/scrn.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/idt.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/idt.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/idt.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/idt.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/idt.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/isr.asm.o /workspaces/2025-ikt218-osdev/src/22_TheGits/src/isr.asm",
-  "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/isr.asm"
-},
-{
-  "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/isr_handlers.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/isr_handlers.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/isr_handlers.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/isr_handlers.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/isr_handlers.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/irq.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/irq.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/irq.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/irq.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/irq.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/malloc.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/memory/malloc.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/malloc.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/memory/malloc.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/memory/malloc.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/memory.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/memory/memory.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/memory.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/memory/memory.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/memory/memory.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/memutils.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/memory/memutils.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/memutils.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/memory/memutils.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/memory/memutils.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/pit/pit.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/pit/pit.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/pit/pit.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/pit/pit.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/pit/pit.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/audio/player.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/audio/player.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/audio/player.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/audio/player.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/audio/player.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/audio/speaker.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/audio/speaker.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/audio/speaker.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/audio/speaker.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/audio/speaker.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/game/wordgame.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/game/wordgame.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/game/wordgame.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/game/wordgame.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/game/wordgame.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/menu.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/menu.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/menu.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/menu.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/menu.c"
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/22_TheGits",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/system.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/system.c",
+  "command": "/usr/local/bin/i686-elf-gcc  -I/workspaces/2025-ikt218-osdev/src/22_TheGits/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/system.c.o -c /workspaces/2025-ikt218-osdev/src/22_TheGits/src/system.c",
   "file": "/workspaces/2025-ikt218-osdev/src/22_TheGits/src/system.c"
 }
 ]
