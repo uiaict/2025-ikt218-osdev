@@ -1,0 +1,664 @@
+##Push 1 "Update build files and add instalation skript for 70_Ai_Alkatraz": -> Assignment 2 - Booting and Printing
+
+- Cmake.cmake (dette har vi laget):
+
+	Når den starter og bygge koden så passer den på at alt skal være der det skal, og den konfigurerer hvordan ting skal jobbe sammen. Dette trenger vi fordi headres og biblioteker skal snakke sammen og 	holde ordne på hvor filene ligger. Dette brukes spesifikk i installasjons prosessen når vi bygger prosjektet.
+
+
+- Compile_comands.json (dette har vi laget):
+	
+	Denne filen forteller oss plasseringen av mapper og andre filplasseringer. Dette hjelper systemet med å finne fram til riktige filer, med andre ord så skaper denne filen databasen og forteller oss 	hvordan hver fil er kompilert. 
+
+
+- Cmakelist.txt (denne var her):
+	
+	Denne skal bygge system konfigurasjonen for vår OS, den fjerner Cmake sine automat tester for å ikke ødelegge for andre språk. Den definerer språkene c, C++, og NASM Assembly. Den setter opp 	arkitekturen x86 for et 32 bit system. NASM forteller oss hvordan assembly filene skal behandles. 
+
+
+Vi har lagt til "multibut_2.asm" ved å fjærne '#' og det samme gjorde vi for "link_flags". Vi fjærener også '#' for "command sudo ...". Alt dette skal hjelpe systemet vårt og starte opp og kompileres. "command sudo .." rydder opp i temp filer mellom hver bygging av OS, den passer også på at det ikke skjer noen konflikter når temp filene endres mellom hver bygging. For "link_flags" har vi endret dette til det å bruke target link options, der vi spesifikt finner frem de ulike flagene og linker dem sammen.
+
+#Oppsumering fra copilot:
+
+-ffreestanding: 	Indicates the program doesn't use the standard C library
+-nostdlib: 		Prevents linking against standard system libraries
+-fno-builtin: 		Prevents compiler optimizations that assume standard library functions exist
+-static: 		Creates a completely static executable with no dynamic dependencies
+-pie: 			Creates a position-independent executable
+-T${OS_KERNEL_LINKER}: 	Uses your custom linker script for memory layout
+-g: 			Includes debugging information
+
+
+
+
+
+
+
+
+##Push 2 "Test legge til h": -> Assignment 2 - Booting and Printing
+
+I denne pushen ble "printf.h" laget. Denne filen ligger i "src/70_Ai_Alcatraz/include" mappen.
+
+
+
+
+
+
+
+
+##Push 3 "Git add": -> Assignment 2 - Booting and Printing
+
+I denne pushen ble "GDT.h" laget, denne ligger samme sted som "printf.h" i "src/70_Ai_Alcatraz/include" mappen. 
+
+
+
+
+
+
+
+
+##Push 4 "Første test av printf": -> Assignment 2 - Booting and Printing
+
+- print.h (denne har vi laget):
+	
+	Denne outputter tekst for "cernel.c". Dette er vår versjon av printf. Den håndterer vga tekst mode for å vise tekst på skjermen.
+		Vga -> 	Den bruker adressen for i/o 0xb8000 for å komme seg til tekst buffere. Den håndterer muspeker posisjon i/o port gjennom 0x3d4 og 0x3d5. Den har formaterings funksjoner som int til 				string og motsatt. Dette hjelper oss med å debugge OS. Den gir oss visuell tilbakemelding gjennom tekst siden standard c bibliotek er ikke tilgjengelig i cernel mode. Den håndterer 				80x35 karakterer eller bokstaver på skjermen med farger. 
+		Enkle tekst funksjoner: 
+			- Putchar -> skriver en enkel bokstav på skjermen.
+			- print -> spytter ut en streng.
+			- print int -> endrer integere til streng og viser dem.
+			- printf -> er en forenklet implementasjon av formatert output. 
+		Skjerm håndtering:
+			- Move cursor -> oppdaterer fastvare peker posisjon.
+			- clear screen -> sletter alt på skjermen. 
+
+- GDT.h (denne har vi laget):
+
+	Denne definerer data strukturen som x86 arkitekturen for å definere minne segmenter. Hovedoppgaven er å definere minne segmenter brukt av CPU, sette opp nivåer av rettigheter (Ring 0 for kernel og ring 	3 til bruker) Den  lagrer en veldig enkel minne beskyttelse. 
+	Nøkkel komponenter:
+		-> GDT entries (struct):
+			- 0 descripter er nødvendig for CPU arkitektur. 
+			- Kernel code segment (kjør bar)
+			- Kernel data segment (skriv bar)
+			- User kode segment (Hvis bruker modus er implementert)
+			- User data segment (----||----)
+		-> GDT descriptor (struct):
+			- Inneholder størrelse og adresser til GDT
+			- Laster det inn til GDT R register
+		-> Type aliases for disse strukturene
+		
+	Viktighet: 
+		-> GDT er viktig fordi det må være kjørt av x86 arkitektur for å fungere sikkerlig. 
+		-> Den gir et fundament for minne beskyttelse.
+		-> Det er viktig å implementere for å skape rettighets nivåer.
+		-> OG uten GDT hadde ikke CPU-en klart å se forskjeller mellom ulike typer minne tilganger. 
+
+- kernel.c (denne var her, men vi endra på den):
+	
+	Hoved punktet for et inngangs punkt for et OS, det er som en main / sentral hub. Vi lager alle komponentene ulikt og legger dem sammen i "kernel.c", vår executer. Hensikten med kernel.c er å 	initialisert fundamentale kernel sub-systemer. Den setter opp interupt handling, og gir hoved blokken en loop. 
+	Nøkkel komponenter:
+		-> initialisert sekvens:
+			- Starter med å sette opp GDT
+			- Så driver den med pc komponenter blir initialisert (PIC tastatur og mus). 
+			- Minne håndtering blir initialisert. 
+		-> Hoved kernel loop:
+			- Håndterer system hendelser
+			- Håndterer system stadier
+			- Kan implementere en lett skjell eller comand prosessor. 
+	Viktighet:
+		-> Dette er første c kode som kjøres etter boot loader. 
+		-> Kernel.c knytter alt sammen.
+		-> Den håndtere og kjører initiasjonen av alle sub-systemer. 
+		-> Den implementerer hoved kontroll strømmen av opperasjons systemet (OS).
+	
+
+Alle disse er viktige fordi:
+	1. Fundamental arkitektur nødvendigheter, GDT er nødvendig for x86 arkitektur for å fungere. Interupt håndtering (relatert for IDT setup i kernel.c er nødvendig for pc komponent interaksjon)
+	2. Utvikler verktøy, "printf.h" gir oss debugging muligheter og uten hadde det vært nesten umulig. En ting til er at uten konsoll output hadde vi utviklet blidt. 
+	3. Pc komponent abstraksjon, disse komponentene begynner prosessen av våre abstrakte pc komponenter detaljer. De gir et fundament for høy nivå OS attributter. 
+	4. Minne håndtering fundament, GDT skaper en enkel minne oppsett. Det er nødvendig for alle minne beskyttelse eller virtuell minne. 
+
+Konklusjon:
+Disse komponentene representerer nødvendige fundamenter for all x86 OS. De kan håndtere CPU konfigurasjon, en enkel i/o og gi struktur der all OS funksjonaliteter vil bli bygd på. 
+
+
+
+
+
+
+
+
+
+##Push 5 "oppdatert printf": -> Assignment 2 - Booting and Printing
+
+	
+-printf.h (endring):
+	
+	Forbedringene vi har gjort:
+		1. Bedre kode organisering
+			- Koden er nå sikkerlig encapsulated i en header gard. 
+			- Funksjoner er organisert logisk med dokumentasjon.
+		2. Forbedret implementasjon
+			- Vi har dirkete laget en port for i/o gjennom out b, istedenfor å repetere in line asebely. 
+			- Vi har fått en forbedre muse peker håndtering.
+			- Mer robust ny linje håndtering og skjerm rulling.
+		3. Forbedret printf funksjonalitet
+			- Forbedret støtte muligheter for formater, inkludert %s %d %c. 
+			- Mer effektivt karakter output
+			- Bedre håndtering av spesial karakterer som ny linje.
+		4. Ryddigere interface
+			- Vi har statiske funksjoner for å beholde endringer private.
+			- Veldefinerte konstanter for VGA parametere. 
+
+Alle disse endringene er viktig fordi:
+	1. Debugging muligheter
+		- Uten skikkelige output mekanismer er det umulig å debugge et OS. 
+	2. Fundament for andre sub-systemer
+		- andre OS komponenter som minne håndtering og prosess kontroll er avhening av consol output.
+		- All error rapportering fra blant annet IDT og exseption handlers er avhening av printf. 
+	3. Uavhengig implementasjon
+		- Standard c er ikke tilgjengelig i kernel.c plass.
+		- Bruk av nostdlib betyr at du trenger din egen implementasjon av standard funksjoner.
+	4. Pc komponenter abstraksjon
+		- Abstrakter lav nivå av pc komponent detaljer av VGA tekst modus. 
+		- Gir en ren interphace som andre koder kan bruke for output. 
+
+Sammenligning av endringer:
+	1. Funksjonene er enklere å forstå. 
+	2. Bedre encapsulation og implementering av detaljer.
+	3. Mer pålitelige pc komponent interaksjoner.
+	4. Direkte port i/o gjennom bruk av out b funksjonen og ordentlig VGA og muse peker håndtering. 
+	5. Forbedret funksjonalitet
+	6. Forbedret format håndtering
+	7. Forbedret skjerm håndtering, med skjerm rulling
+
+Konklusjon: 
+	Dette er et bra fundament for vårt OS tekst output muligheter. 
+
+
+
+
+
+
+
+
+
+##Push 6 "NY GDT": -> Assignment 2 - Booting and Printing
+
+- GDT.h (endring):
+	
+	- Vi gikk fra fast type uint til standard c integer typer. Vi har også forbedret og standardisert hvordan port i/o funksjoner er implementert. 
+	- Fordelen med usings, short int og char er forbedret kopiler kompatibilitet fordi vi bruker standard c typer.  
+	- Forbedret kros arkitektur tilgjengelighet. 
+	- Når vi bruker unsing trenger vi ikke å bruke headres som stdint.h der vi heller kan bruke standard libary. Dette fører til optimalisert kode og ikke nødvendigheten for biblioteker slik at programmet 	  kan skjøre feilfritt uten ekstern påvirkning. 
+
+
+
+
+
+
+
+
+
+##Push 7 "Booting and printing complete": -> Assignment 2 - Booting and Printing
+
+//
+gdt_flush.asm = LGDT
+#### Linje 30 - 31 må fjernes i printf.h -> some_function gjør ingen ting ####
+//
+
+	
+Implementering av GDT mekanisme: 
+	- Vi har implementert de nødvendige strukturene som GDT_entry_t, gdt_ptr_t i GDT.h fila. 
+	- Vi har inisjasjons logikk med gdt_z_gate og init_t i GDT.c fila
+	- LGDT er lagt til som for å loade GDT. Denne filen har vi kaldt gdt_flush.asm.  
+
+GDT.c (denne har vi laget):
+	- Den brukes til å gi faktisk kode for å lage og initisjere GDT tilganger. 
+
+Endringer i GDT.h ble gjort:
+	- Vi la til en void fiksjon inni for å initisjere tilganger. 
+	- Vi lager en array som heter gdt_entry_t med tre tilganger
+		-> tilgang 0 er null descriptor, nødvendig for CPU-en
+		-> tilgang 1 kode segment descriptor (base 0 limit 4 Gb, 32 bit ring 0)
+		-> tilgang 2 Data segment descriptor (base 0 limit 4 Gb, 32 bit ring 0)
+	- Vi har definert ny gdt pointer som heter gdt_ptr: inisjijerer med størrelse og adresse av gdt_entries array .
+	- Implementert gdt_set_gate som er en hjelpe funksjon som skal populisere en spesifikk GDT tilgang med riktig base, limit grense, tilgang til flagger og grandularity flag. 
+	- implementerte innit_gdt den setter opp:
+		-> gdt_ptr
+		-> den kaller på gdt_set_gate for å initsjalisere 0 kode og data segment descripters, altså tilgangene 0 1 og 2. 
+		- Kaller på amembely funksjonene gdt_flush med adressen av gdt_ptr for å laste inn ny gdt til prosessoren.
+
+gdt_flysh.asm (LGDT, denne har vi laget):
+	- Dette lagde vi for å laste inn GDT pointer (gdtr) og re-laste segment registeret som krever spesielle asembely funksjoner.
+	- Fordi dette kan ikke lages i c. 
+
+Endringer:
+	- Deklarert gdt_flush som en globalt symbol og kan hentes fra c. 
+	- Brukte LGDT instruksjon for å laste ned adressene og størrelsene av GDT til prosessorens GDTR register.
+	- Vi har hatt et stort steg (jmp 0x08:flush_cs)
+		-> 0x08 er vår nye selector for kode segmenter (andre tilgang i vårt GDT indeks 1 off set med 8 bits) laster dette ned til cs registeret som forteller CPU-en for å bruke vår nye kode segment 			descriptor. 
+		-> Hoppet i seg selv er å flush CPU-en instruksjons pipe-line, sub-secvent instruksjoner er hentet med ny segment regler. 
+	- Laster inn alt på nytt av all data segment registeret (DS,ES,FS,GS,SS) Med velger for ny data segment 0x10 som er tredje entry med index 2 med phace shift på 16 bits. 
+	- Returnerer kontroll tilbake til c kalleren (c caller som er init_gdt)
+
+
+GDT.h (oppdatering):
+	- her har vi lagt til en void funksjon inne gdt_init som initisjierer GDT.c. 
+
+printf.h (oppdatering):
+	- For å lettere de bugge go få feed back fra Os systemet vårt, lager vi en struct for multibut informasjonen (multibut_info) og vi lager en ny funksjon for out b for portene av VGA markørene for å 	  	  være mer tydelig.
+
+CmakeList.txt (oppdatering):
+	- Her har vi lagt til source pathene til de nye filene sånn at vi kan finne fram. Halleluja
+
+kernal.c (oppdatering):
+	- GDT initisjerer inint_gdt.
+
+Oppsummering:
+	- Vi har implementert GDT
+		-> lagd struktur og fuksjoner for gdt manipulasjon
+		-> implementert 0 data og tekst descriptors
+	- Printet hello wolrd med printf funksjonen.
+	- implementert GDT loading (LGDT)
+		-> Lagd gdt_flush.asm med asmebely kode for LGDT instruksjon 
+		-> Implementert segment register oppdateringer/ ny lasting gjennom bruk av "fare jump"
+	
+
+
+
+
+
+
+
+
+
+##Push 8 "Implement keyboard handling and IDT structure": -> Assignment 3 - Interrupts
+
+- IDT.h (lagt til og endret)
+	- Header filen IDT definerer:
+		-> IDT entry strukturen
+		-> IDT pointer strukturen
+		-> Funksjon deklarering for å sette opp og håndtere IDT
+		-> Og konstanter for interupt, tall og flagger
+	- Inneholder ISR funksjoner som vi har implementert i asembely.
+		-> Inneholder intereupt funskjoner som dukker opp i tilfeller av hendlesen og håndter det for oss
+	- ISR er prefiksa funksjoner for interrupt meldinger/ Error meldinger. 
+	- IRQ er funskjoner som ikke passer til c format men heller i asm. IRQ handler
+		-> Håndterer spesial tilfeller der vi mapper tall som vi får fra interrupten til en feil kdoe som programmet kan gjenkjenne feilen. 
+
+- IDT.c (lagt til og endret):
+	- Inneholder en IDT array med 256 innganger
+	- Filene inneholder en IDT pointer som henter idt_ptr
+	- Også har vi en array som inneholder alle funksjonene for IDT
+	- Tester frem et par av ISR funksjoner, interupt 0, 3 og 13. Disse setter vi opp individuelt. 	
+	- Vi re-maper med kode PIC funksjon som er programeble interupt controller.
+	- Så har vi en del handel interruptus funksjoner for spesifikke tilfeller for CPU og IRQ.
+	- Vi definerer keyboard size for å legge til alle tall bokstaver og tegn for å bli gjenkjent av programmet.
+	
+- Interrupt.asm (lagt til og endret)
+	- Utviklet instruksjoner for å laste opp IDT register (Lidt)
+	- Interrupthandleren stubber for alle definerte interrupt funksjoner som irq og isr. 
+	- Kode for å redde og gjennopprette tidligere av prossesor prosess når vi holder på med interrupts. 
+	- Vi har kode som kaller frem c håndterigns funskjoner for IDT.c og IDT.h
+	- Irq handling og eoi (end of interrupt) signal
+
+- Keyboard.h (lagt til) 
+	- Vi definerer i denne headeren: 
+		-> Konstanter for keyboard relaterte porter og kommander
+		-> Vi har implemmenteret kartlegging av scancode to ASCII deklareringer
+		-> Vi har initiert tastetur med funksjoner og kodet hvordan dette skal håndteres
+			- Get keyboard buffer
+			- Clear keyboard buffer
+			- is key pressed
+
+- Keyboard.c (lagt til) 
+	- Denne filen inneholder en "scanner" som scanf som tar opp keyboard taster når man ønsker å bruke begge shift og capslock uten interrupting
+	- Vi har lagt et buffer på keyboardet med 64 og en renser hvis det overstiger. 
+	- Vi har en function som leser bytesene  fra porten som tar imot keyboard inputen port (0x60) 
+
+-Kernel.c (endret) 
+	- Lagt til nødvendige headers (keyboard.h, IDT.h) 
+	- Vi prøver 3 av de interrupt handler funskjonene som skal håndtere: 
+		-> Test divide by zero funksjon handler
+		-> Tester breakpoint funksjon handler for den casen: når koden skal stoppe som en break
+		-> Tester generell beskytelse? Se for deg politiet av pc, du får ikke lov til å gjøre ting utenfor dine rettigheter
+	- Vi kjører disse testen og ser at v i får feedback fra os
+
+
+
+
+
+
+
+
+
+## Push 9 "Remove debug printout from keyboard handler for cleaner output" -> Assignment 3 - Interrupts
+
+- IDT.c (endret kode)
+	- Fjerne midlertidlig debug status kode
+
+
+
+
+
+
+
+
+
+
+## Push 10 " Add backspace handling to keyboard input" -> Assignment 3 - Interrupts
+
+
+- Idt.c (endret) 
+	- vi har lagt til handler backspace funksjon
+		-> Den flytter markeringsstreken vår et steg per interaskjon, så hvis det er noe på det steget fjernes objektet, og oppdaterer bufferen og cursoren. 
+	- Vi la til et hexcode for en backspace case slik at programmet forstår hva vi driver med når backspace blir trykket på.
+ 
+- keyboard.h (endret) 
+	- Vi la til handle backspce funskjonen i headeren med referanse til hexcoden 0x0E for å sende den til casen i idt.c
+
+
+
+
+
+
+
+## Push 11 "Add song application with frequency definitions and song playback functionality" -> Assignment 4 - Memory and PIT og Assignment 5 - Music Player
+
+- Frequencies.h (hans kode) 
+	- Definert foskjellige freqvenser og mapper dem til variable = tall i HZ
+	- Definert spesial tilfelle der det er ingen lyd som null. 
+
+- song.h (hans kode) 
+	- Vi definerer structs for en note med variabler frekvens og duration, struct som representerer en hel sang med lengde av mange noter, og struct som skal tolke notene og spille dem altså en sang 		  spiller.
+	- Vi setter opp 6 ulike sanger med noter i formatet vi definerte i frequencies.h og song.h som spiller av noter og lengde på dem. 
+
+- song.cpp (hans kode)
+	- ble lagt til og var forhåndslaget for oss av læreren. 
+	- funskjoner for å aktivere høytalere og spille sanger. 
+
+- memory.h (hans kode og vår endringer)
+	- Definerer en struct som inneholder en status med verdi 1 eller 0 som betyr om minnen er allokert eller ikke og størrelsen på minnet. 
+	- Declarer funskjoner for paging, paging is a memory managemnet scheme brukt i moderne os som tillater os til å: 
+		-> Presentere kontinuerlig virtuel addresse plass til en hver prosess
+		-> Kartlegge disse adressene til fysiske minne lokasjoner
+		-> Lagre deler av minne som ikke er i bruk på disken. 
+	- Memory lokalisering et fysisk sted 
+	- Vi har manipulasjons funskjoner som manipulere rminnet til å være raskt og enkelt for å bruke/hente	
+	- Vi har en print memory layout funksjon
+
+- pit.h (hans fil) 
+	- PIT (programmable interrupt timer
+	- Pit har vi definert makroer som gir lettere tilgang til hendelser som skjer til os'
+		-> Channel 0: Port 0x40 er system timer generer vanblig tids ticker og interrupt irq0
+		-> Channel 1: Port 0x41 er historisk sett brukt for DRAM refresh, og er lite brukt i moderne systemer
+		-> Channel 2: Port 0x42 er tilkoblet til pc høytalere for å spille lyd. 
+	- COMMAND REGISTER Port 0x43 brukt til programere PIT sin måte å operere
+	- PC SPEAKER Port 0x61 kotnrollerer pcen port for høytalere og andre funskjoner
+	- PIT.h definerer pit's i form av kanaler/variabler med den spesifikke minne adresse/lokasjonen det befinner seg i
+	- VI definerer noen irq0 
+		-> Custom sleep function constants
+		-> for sleep tilfeller
+
+
+- malloc.c (hansfil) 
+	- Allokering av minne for kernelen til os.
+	- Den har funksjoner for å allokere minne der det er ledig og fjerne minne for å frie mer plass
+	- Både for vanlig mine og vår page aligned minne (virtuel fysisk minne) 
+	- Vi har en maks grense på 32 MAX_PAGE_ALIGNED_ALLOCS for å ikke bruke unødvendig kraft for dette
+	- Slik fungerer allokerings systemet
+		-> prøver først å finne en ledig minne block som er stor nok
+		-> Hvis den finner plassen, så marker den blokken som brukt og retunerer blokken til systemet
+		-> Hvis ikke det finnes nok plass så allokeres det fra slutten av heap algoritmen til minne tildeling
+		-> Minne blokken inneholder:
+			- Meta data (status og str)
+			- Hvor dataen opprinnelig er fra
+			- Liten padding på 4 bytes
+		-> Paging aligned allocation:
+			- Opprettholder en seperat region/sted for minne fordelinger av slik data
+			- Bruker et egnet bit map for å holde styr for hvilke pages er i bruk
+			- Allokerer minner i fast 4kB deler som er standard page size
+		-> Architecture:
+			- Heapen starter når kernelen går tom for minne
+			- Paging aligned heapen er posisjonert på slutten av en vanlig heap
+			- Systemet holder styr på totalt minne bruk og rappoterer dette til oss
+			- Minne allokering blir tømt av å bruke memset
+
+-memory.c (hans fil) 
+	- Denne koden implementerer mine håndtering systemet vårt, denne håndterer informasjon fra headeren memmory.h for å kommunisere med kernel.c
+	- Denne foksuerer på heap allokasjon og paging og minne
+	- Gir dynamisk minnefordeling med malloc og free
+	- Initierer virtuell minne gjennom paging
+	- Hoved aspecter: 
+		-> Heap minnihåndtering, systemet håndterer heap med disse nøkkelkomponmentene: 
+			- Block bassert minne håndtering (linked list) 
+			- First fit algortimen, søker gjennom for minne som passer og tar den første som oppfyller kravene.
+			- Den har split funksjon som skal splitte minne blokker for å forminske tap av data allokering og blokk plass
+			- Heap forstørring som justerer heapen etter behov opptill 16 mega bytes
+		-> Paging systemet: 
+			- Initier x86 paging systemer for å tillate virtuell minne
+			- Gjøres gjennom å sette opp et paging bibliotek og paging tabell
+			- Lager identites kart for de 4 første mega bytes av minne
+			- Tillatter paging til å sette pg bit inn i cr0
+	- Hvordan det funker
+		-> Når malloc kalles inn
+			- Sjekker om det er første allokering
+			- Så sjekker den etter blokker som har nok str og oppfyller kravene til dataten som skal lagres
+			- Hvis ikke den finner ledig blokk utvoder den heap algoritmen
+			- Han splitter blokkene for å reduser fragmentasjon av minne
+			- Retunerer en pointer (adresse) til ledig minne addressen
+		-> Når free er kalt
+			- Konverter brukeren pointer (adresse) tilbake til blokk sin header
+			- Marker blokken som ledig til fremtidig minne allokering
+	
+	
+	- Paging initialisering: 
+		-> Når innit funksjon av paging kalles 
+		-> Så allokerer den minne og rydder og strukturer minne riktig
+		-> Setter opp identity kartet for de 4 første Mb
+		-> Configurer CPUe registeret til å forstå og registrere mappingen
+		
+
+
+
+
+- Memutils.c (hansfil) 
+	- Implementerer 3 fundamentale minne mainpulasjons funskjoner som er nødvendig for os
+	- Disse funskjonene gir de mest grunnlegende minne opersasjoner som kernel er avhengig av å ha
+	- Mem_cpy
+		-> Kopierer en blokk med minne fra et sted til et annet
+			- Den håndterer byte for byte kopier som er optimalisert for 2 bytes chucks om gangen 
+			- Kan også ta spesielle tilfeller der vi har oddetall med chunks, da kopier den første byten alene slik at det blir partall
+			- Etter det kopier den bytesene i par for bedre performance
+			- Retunerer destinasjons adressen (pointer) 
+	- Mem_set_16
+		-> Den fyller en blokk med minne med en spesifikk 16 bit verdi
+			- Behandler minne som et array av 16 bit verdier
+			- Setter hver array element til den gitte verdien som vi ønsker å legge inn
+			- Retunerer da den originale pointeren
+	- Mem_set
+		-> Den fyller en blokk av minne med spesifikk bit verdi
+			- Den behandler minne som et array med bytes
+			- Setter hver byte til den gitte verdien (truncated to 8 bit) 
+			- Retunerer originale pointeren
+	
+	- Hvorfor dette er viktig for kernel
+		-> Vi kan ikke bruke standard c libraries siden det ikke i kernel mode
+		-> Disse opperasjonene er spesifikk defienert os
+		-> De må være effektive
+
+
+- Memory.c (oppdatert) 
+	- Denne koden implementerer nye endringer
+	- Nøkkel endringer i memory.c
+		-> Forbedret blokk basser minne håndteing
+		-> Implementert en forbedre linked list struktur
+		-> Lagt til memory_block_t for å spore allokert meta data
+		-> Vi hadde introdusert blokk splitting for å redusere minne avfall
+		-> Lagt til støtte for å rebruke frigjort minne
+		-> Mer robust paging implementasjon
+		-> Identits kartlegging for de 4 første mb av minne
+		-> Skikkelig kontrolljustert paging biblioteker og tabeller
+		-> Klar cr0 register manipulasjon for å tillate paging
+		-> Bedre oppsett for minne rapportering 
+		-> Detaljert minne blokk informasjonsvisning
+		-> Sporing og allokering i motsetning til fritt minne 
+		-> Heap boundary rapportering
+		-> Hjelper funnskjoner 3 stk (Find free block (finne tilgjengelig minne), Expand_heap (for å vokse heapen når det trengs), Split_block (optimalisere minne bruk)) 
+	- Påvirkning på andre filer
+		-> Memory.h (endringer) 
+			- Lagt til memory_block_t strukturen 
+			- Simplifisert filen
+			- Endret tilgjengelighjet og plassering av free(), malloc(), init_kernel_meory(), init_paging()
+			- Headeren akk nå gjemmer implementasjons detaljer
+			- Kun nødvendige typer funksjoner er synliggjort
+
+	- Funskjonelle forbedring: 
+		-> Stabilitet
+			- Nye implementasjonen reduserer minne lekkasje og fragmentasjon
+			- Forbedret error handlig for ut av minne tilfeller
+		-> Effekt
+			- Blokk splitting for å optimalisere minne bruk 
+			- FF algoritmen gir god effekt
+		-> Debugging
+			- Forbedrer minne rapportering for å følge allokasjons problemer
+			- Tydeligere initierings meldinger som kan hjelpe oss i problemløsning 
+
+
+- pit.c (hans kode) 
+	- Void sleep busy og void sleep interrupt er kode vi har kopiert fra hans kode
+	- Koden implementerer driver funksjonalitet for intel 8253/8254 programmerings intervall tikker
+	- Hensikt
+		-> PIT'en gjennomfører kritiske tids funskjoner for os
+		-> Sytstem timer genererer vanlige interrupter etter intervall
+		-> Tidbeholding
+		-> Teller som sporer elaps, times since boot
+		-> Sove funksjonalitet
+		-> Gir kernel og applikasjonene muligheten for å vente til tidsperioder
+
+	- Kjernekomponenter
+		-> konfigurasjons konstanter
+			- definerer PIT portene, modusene og tilgangs metoder
+			- setter opp grunnleggende frekvens (1193182 Hz)
+			- Konfigurer en divisor (Dividor from pit.h) for å sette faktiske timer frekvensen 
+		-> Tids setup
+			- Init PIT, konfigurer PIT fastvare
+				-> Registrerer en interrupt håndterer for irq0 som r interrupt 32
+				-> Programmere kanal 0 i rate generator modus (modus 2)
+				-> Setter divisoren for å kontrollere interrupt frekvens
+		-> Tids følger
+			- opprettholder nåværende tick
+			- teller skal øke med hvert tick
+			- get_current_tick, informasjon og nåværende tick
+		-> Sleep funksjoner
+			- sleep_busy() busy waiting implementasjon som tar opp cpu sykluser
+			- sleep_interrupt() effektiv implementerer måter å holde cpuen mellom interrupts
+
+	- Tekniske implementasjoner: 
+		-> Bruker outb til å skrive til I/O porter
+		-> Programet PIT kanal 0 med command byte 0x36 (binary mode rate generator, low/high byte accsess) 
+		-> Sender divisoren som 2 bytes(lav byte så høy byte) 
+	
+	- Interrupt handling 
+		-> Går inn i interrupt beskrivelses tabellen via register_Interrupt_handler()
+		-> Simple handler incrementerer tickern
+	
+	- Sove implementasjon
+		-> Convereterer ms til timer ticks ved å bruke TICKS_PER_MS konstant
+		-> Sleep_interrupt() bruker asm instruksjoner (sti: hlt) til
+			- Å tillate interrupt (sti)
+			- Halt CPU intill neste interrupt (hlt)
+
+ 
+
+
+
+
+
+
+
+## Push 12 "Implement song playback functionality with speaker control and sampling song" -> Assignment 4 - Memory and PIT og Assignment 5 - Music Player
+
+- pit.h (oppdatering)
+	- Vi legger til funksjoner:
+		-> enable_speaker()
+			- Dette er kode for å gjøre høyttaleren tilgjengelig for bruk
+		-> disable_speaker()
+			- Dette er kode for å stenge høyttaleren
+		-> play_sound()
+			- Dette er kode for å spille av lyd på høyttaleren
+		-> stop_sound()
+			- Dette er kode for å stoppe lyden høyttaleren lager
+
+-song.h ( hans fil)
+	- vi har lagt til denne filen etter instruksjoner
+	- Denne filen identifiserer og initisjerer noter basert på frekvenser
+
+- interrupt.asm (oppdatering)
+	- Vi har lagt til noen macro (asså short cuts)
+	- Den lager short cuts for irq2
+	- irq macro definerer en vanlig mønster for håndterig av fastvare forstyrrelser ved å
+		-> lage et inngangs punk for en spesifikk irq håndterer.
+		-> gjør klar stacken med nødvendig informasjon
+		-> hopper til en vanlig håndterings rutine	
+	- Denne fungerer slik:
+		-> %macro irq 2 definerer en macro irq som tar imot to parametere
+		-> irq %1 lager en lable ved å bruke første parameter for eks. irq0 
+		-> cli den flusher og stopper flere avbrytelser under håndtering utførelsen
+		-> push bite 0, dytter en dummy feil kode 0 for samsvar med exeption håndtering	
+		-> push bite %2, dytter avbrytelses tall som er andre parameter
+		-> jmp irq_common_stub hopper til en delt rutine som håndterer alle irq's 
+
+
+- kernel.c (oppdatering)
+	- vi legger til en funksjon for å spille musikk, istedenfor å bare kalle den
+	- og vi error handler den i funksjonen
+
+-song.c (vår kode)
+	- Denne koden initisjerer de forskjellige sang funksjonen i song.h
+	- Den initisjerer notene som skal spilles og hvordan de skal spilles
+	- OG forklarer hvordan funksjonene skal fungere, som har blitt definert i song.h og som senere kan bli brukt i kernel.c
+	- Enkelt, alle funksjoner er i song.h og de blir brukt i song.c
+	- Den returnerer songplayer for å kunne spille sangene som vi definerer
+
+
+
+
+
+
+
+
+
+
+#3 Push 13 "Add Matrix rain animation feature and keyboard interaction for feature selection" -> Assignment 6 - Improvisation
+	
+- keyboard.h
+	- Vi legger til cal back funksjoner, disse skal hjelpe oss med matrix element vi skal legge til
+		-> Den legger til at man kan velge matrix funksjonen i hoved menyen
+		-> Den er det for å registrere at vi legger inn en input
+		-> den er der enkelt set for at man skal kunne bruke keyboard
+
+- matrix.h 
+	- Det er en header for matrisen
+	- Vi har en struct som tracker hvordan en matrise dråpe sin lengde, posisjon, hastighet, tick counter, og om den er på eller ikke, samnt farge og karakterer. 
+	- Dette er elementet som brukes til å lage animasjoner
+	- Vi initisjerer matrise funksjoner
+
+
+- IDT.c (oppdatert) 
+	- Vi legger til keyboard call back fra kayboard.h
+	- Som registerer at vi har trykt på en tast
+
+- kernel.c (oppdatert)
+	- vi legger til matrise headeren, matrix.c
+	- Vi legger til et meny oppsett og funksjoner for å håndtere det, som keyboard call back	
+	- og kode for å kjøre matrix koden og det som er mulig menyen
+
+- keyboard.c (lagd denne)
+	- legger til et standard biblioteker og call back funksjoner
+	- standard bibliotekene er for NULL håndtering
+
+- matrix.c (denne lagde vi) 
+	- Vi initisjerer funksjonen og hvordan disse skal fungere
+	- Hvordan animasjonen håndteres og beregnes
+	-
