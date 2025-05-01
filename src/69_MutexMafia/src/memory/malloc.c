@@ -48,7 +48,7 @@ void* malloc(size_t size) {
         if(block_size >= size) {
             *mem = 1;
             memory_used += size + 5;
-            mafiaPrint("allocated %d bytes on address 0x%x\n", size, mem + 5);
+            mafiaPrint("allocated %d bytes on address %x\n", size, mem + 5);
             memset(mem + 5, 0, size);
             return (void*)(mem + 5);
         }

@@ -4,8 +4,7 @@
 #include "../io/keyboard.h"
 #include "../io/printf.h"
 
-#define SCREEN_WIDTH 80
-#define SCREEN_HEIGHT 25
+
 
 enum vga_color {
 	VGA_COLOR_BLACK = 0,
@@ -28,21 +27,27 @@ enum vga_color {
 
 
 
-size_t terminal_row;
-size_t terminal_column;
+
 uint8_t terminal_color;
 uint16_t* terminal_buffer;
+uint16_t cursor;
+uint8_t terminal_row;
+uint8_t terminal_column;
 
 
 
 void print_menu(){
-    clear_screen();
+    //clear_screen();
     mafiaPrint("Welcome to Mafia! What do you want to do today?\n");
+    mafiaPrint("-------------------------------------------------\n");
     mafiaPrint("1. Print Hello World\n");
     mafiaPrint("2. Print memory Layout\n");
     mafiaPrint("3. Allocate some memory\n");
     mafiaPrint("4. Play Mafia Bird\n");
     mafiaPrint("5. Exit\n");
+    //mafiaPrint("Press a number, then enter to select an option: ");
+    //mafiaPrint("\n");
+    //mafiaPrint("-------------------------------------------------\n");
 }
 
 
@@ -67,17 +72,21 @@ void clear_screen(){
 }
 
 void scroll(){
-    if (terminal_row >= SCREEN_HEIGHT){
-        for (int i = 0; i < (SCREEN_HEIGHT-1)* SCREEN_WIDTH *2; i++){
-            video_memory[i] = video_memory[i+SCREEN_WIDTH*2];
-        }
-        for (int i = (SCREEN_HEIGHT-1)* SCREEN_WIDTH *2; i < SCREEN_WIDTH * SCREEN_HEIGHT * 2; i++){
-            video_memory[i] = ' ';
-            video_memory[i+1] = 0x07;
-        }
-        terminal_row = SCREEN_HEIGHT - 1;
+    
+    for (int i = 0; i < (SCREEN_HEIGHT-1)* SCREEN_WIDTH *2; i++){
+        video_memory[i] = video_memory[i+SCREEN_WIDTH*2];
     }
+    for (int i = (SCREEN_HEIGHT-1)* (SCREEN_WIDTH *2); i < SCREEN_WIDTH * SCREEN_HEIGHT * 2; i+= 2){
+        video_memory[i] = ' ';
+        video_memory[i+1] = 0x07;
+    }
+    cursor -= SCREEN_WIDTH * 2;
+    if (terminal_row > 0) terminal_row--;
+    terminal_column = 0;
+
+    move_cursor();
 }
+
 void move_cursor(){
     uint16_t position = terminal_row * SCREEN_WIDTH + terminal_column;
     outPortB(0x3D4, 14);

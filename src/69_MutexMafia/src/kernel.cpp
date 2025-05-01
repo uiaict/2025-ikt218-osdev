@@ -14,22 +14,25 @@ extern "C" int kernel_main(void);
 
 
 
-    SongPlayer* create_song_player() {
-        SongPlayer* player = (SongPlayer*)malloc(sizeof(SongPlayer));
-        player->play_song = play_song_impl;
-        return player;
-    }
+
+
 
 
     int kernel_main(){
         init_monitor();
         mafiaPrint("Kernel main function started\n");
         init_pit();
-        print_menu();
+        //while (1){};
         
 
-        char input [50];
-        get_input(input, sizeof(input));
+
+ 
+        while(1){
+       print_menu();
+    char input [50];
+    get_input(input, sizeof(input));
+
+
     switch (input[0]) {
         case '1':
             mafiaPrint("Hello World!\n");
@@ -41,14 +44,14 @@ extern "C" int kernel_main(void);
             {
                 int input_size = 0;
                 mafiaPrint("Enter the size of memory to allocate: ");
-                //get_input(input, sizeof(input));
-                //input_size = atoi(input);
-                //void* address = malloc(input_size); 
-                //mafiaPrint("Allocated memory at: %p\n", address);
+                get_input(input, sizeof(input));
+                input_size = stoi(input);
+                void* address = malloc(input_size); 
                 break;
             }
         case '4':
             mafiaPrint("play song\n");
+            song_menu();
             break;
         case '5':
             mafiaPrint("Playing Mafia Bird...\n");
@@ -59,6 +62,8 @@ extern "C" int kernel_main(void);
         default:
             mafiaPrint("Invalid option. Please try again.\n");
     }
+}
+        
 
 
 
@@ -68,24 +73,6 @@ extern "C" int kernel_main(void);
 
 
 
-        /*Song songs[] = {
-            {starwars_theme, sizeof(starwars_theme) / sizeof(Note)}
-        };
-
-        uint32_t n_songs = sizeof(songs) / sizeof(Song);
-        SongPlayer* player = create_song_player();
-        while(1){}
-        
-        while(1) {
-            for(uint32_t i = 0; i < n_songs; i++) {
-                mafiaPrint("Playing Song...\n");
-                player->play_song(&songs[i]);
-                mafiaPrint("Finished playing the song.\n");
-            }
-        }
-        // free(player);   
-        
-        */
         
 
 
@@ -100,5 +87,5 @@ extern "C" int kernel_main(void);
             sleep_interrupt(1000);
             mafiaPrint("[%d]: Slept using interrupts.\n", counter++);
         }; */
-        while (1) {}
+
     }

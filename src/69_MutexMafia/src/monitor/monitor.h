@@ -1,8 +1,15 @@
 #ifndef MONITOR_H
 #define MONITOR_H
 
+#include <libc/stdint.h>
+
+#define SCREEN_WIDTH 80
+#define SCREEN_HEIGHT 25
+
 extern volatile char *video_memory;
-extern int cursor;
+extern uint16_t cursor;
+ extern uint8_t terminal_row;
+ extern uint8_t terminal_column;
 
 void scroll();
 void clear_screen();

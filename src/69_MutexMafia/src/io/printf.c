@@ -3,23 +3,38 @@
 #include <libc/stddef.h>
 #include <libc/stdint.h>
 
+#include "../monitor/monitor.h"
+
 
 
 
 
 volatile char *video_memory = (volatile char *)0xB8000; //minneadresse til VGA tekstbuffer
-int cursor = 0;
+
 
 
 void putc(char c) {
-    if (c == '\n'){
-        cursor = (cursor / 160 + 1) * 160; 
-    }else{
-        video_memory[cursor++] = c;   
-        video_memory[cursor++] = 0x07;  
-        }
+    if (c == '\n') {
+        terminal_row++;
+        terminal_column = 0;
+    } else {
+        const size_t index = (terminal_row * SCREEN_WIDTH + terminal_column) * 2;
+        video_memory[index] = c;
+        video_memory[index + 1] = 0x07;
 
-    
+        terminal_column++;
+        if (terminal_column >= SCREEN_WIDTH) {
+            terminal_column = 0;
+            terminal_row++;
+        }
+    }
+
+    if (terminal_row >= SCREEN_HEIGHT) {
+        scroll();
+    }
+
+    cursor = (terminal_row * SCREEN_WIDTH + terminal_column) * 2;
+    move_cursor();
 }
 
 void int_to_string(int num, char *str, int base)
