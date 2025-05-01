@@ -1,8 +1,8 @@
 #include "i386/keyboard.h"
 #include "libc/system.h"
-#include "../src/common.h"
-#include "../src/arch/i386/interuptRegister.h"
-#include "../src/screen.h"
+#include "../include/common.h"
+#include "i386/IRQ.h"
+#include "../include/screen.h"
 
 void irq1_keyboard_handler(registers_t* regs, void* ctx) {
     printf("IRQ1 handler triggered!\n");
@@ -11,7 +11,7 @@ void irq1_keyboard_handler(registers_t* regs, void* ctx) {
 
     if (ascii != 0 && ascii != 2 && ascii != 3) {
         char msg[2] = { ascii, '\0' };
-        printf(msg);  // Eller bruk printf
+        printf(msg);  
     }
 
     (void)regs;
