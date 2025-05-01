@@ -6,24 +6,7 @@
 
 
 
-enum vga_color {
-	VGA_COLOR_BLACK = 0,
-	VGA_COLOR_BLUE = 1,
-	VGA_COLOR_GREEN = 2,
-	VGA_COLOR_CYAN = 3,
-	VGA_COLOR_RED = 4,
-	VGA_COLOR_MAGENTA = 5,
-	VGA_COLOR_BROWN = 6,
-	VGA_COLOR_LIGHT_GREY = 7,
-	VGA_COLOR_DARK_GREY = 8,
-	VGA_COLOR_LIGHT_BLUE = 9,
-	VGA_COLOR_LIGHT_GREEN = 10,
-	VGA_COLOR_LIGHT_CYAN = 11,
-	VGA_COLOR_LIGHT_RED = 12,
-	VGA_COLOR_LIGHT_MAGENTA = 13,
-	VGA_COLOR_LIGHT_BROWN = 14,
-	VGA_COLOR_WHITE = 15,
-};
+
 
 
 
@@ -44,11 +27,11 @@ void print_menu(){
     mafiaPrint("2. Print memory Layout\n");
     mafiaPrint("3. Allocate some memory\n");
     mafiaPrint("4. Play some music\n");
-    mafiaPrint("5. Play Mafia Bird\n");
-    mafiaPrint("6. Exit\n");
-    //mafiaPrint("Press a number, then enter to select an option: ");
-    //mafiaPrint("\n");
-    //mafiaPrint("-------------------------------------------------\n");
+    mafiaPrint("5. Play  @-Bird\n");
+    mafiaPrint("6. Check highscore board\n");
+    mafiaPrint("7. Clear screen and print menu\n");
+    mafiaPrint("-------------------------------------------------\n");
+
 }
 
 

@@ -22,9 +22,20 @@ extern "C" int kernel_main(void);
         init_monitor();
         mafiaPrint("Kernel main function started\n");
         init_pit();
-        //while (1){};
+        init_highscores();
+       
+        
+        mafiaPrint(" __  __           _                   __  __            __   _         \n");
+        mafiaPrint("|  \\/  |         | |                 |  \\/  |          / _| (_)        \n");
+        mafiaPrint("| \\  / |  _   _  | |_    ___  __  __ | \\  / |   __ _  | |_   _    __ _ \n");
+        mafiaPrint("| |\\/| | | | | | | __|  / _ \\ \\ \\/ / | |\\/| |  / _` | |  _| | |  / _` |\n");
+        mafiaPrint("| |  | | | |_| | | |_  |  __/  >  <  | |  | | | (_| | | |   | | | (_| |\n");
+        mafiaPrint("|_|  |_|  \\__,_|  \\__|  \\___| /_/\\_\\ |_|  |_|  \\__,_| |_|   |_|  \\__,_|\n");
         
 
+                                                                
+
+                                                                       
 
  
         while(1){
@@ -55,13 +66,16 @@ extern "C" int kernel_main(void);
             song_menu();
             break;
         case '5':
-            mafiaPrint("\nPlaying Mafia Bird...\n");
+            mafiaPrint("\nPlaying @-Bird...\n");
             play_game();
             break;
         case '6':
-            mafiaPrint("\nExiting...\n");
-            return 0;
-            //break;
+            print_highscores();
+            break;
+
+        case '7':
+            clear_screen();
+            break;
         default:
             mafiaPrint("\nInvalid option. Please try again.\n");
     }

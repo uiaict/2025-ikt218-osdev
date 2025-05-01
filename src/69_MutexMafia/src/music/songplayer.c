@@ -19,7 +19,8 @@ Song songs[] = {
     {song_5, sizeof(song_5) / sizeof(Note)},
     {song_6, sizeof(song_6) / sizeof(Note)},
     {song_7, sizeof(song_7) / sizeof(Note)},
-    {song_8, sizeof(song_8) / sizeof(Note)},
+    {smash_bros_brawl_intro, sizeof(smash_bros_brawl_intro) / sizeof(Note)},
+    //{song_8, sizeof(song_8) / sizeof(Note)},
     
     
     
@@ -34,7 +35,8 @@ const char* song_names[] = {
     "5. Song 5",
     "6. Song 6",
     "7. Song 7",
-    "8. Song 8",
+    "8. Smash Bros Brawl",
+    //"8. Song 8",
 };
 
 
@@ -116,7 +118,7 @@ void song_menu(){
         mafiaPrint("5. Song 5\n");
         mafiaPrint("6. Song 6\n");
         mafiaPrint("7. Song 7\n");
-        mafiaPrint("8. Song 8\n");
+        mafiaPrint("8. Smash Bros Brawl\n");
         mafiaPrint("9. Exit\n");
 
         get_input(input, sizeof(input));
