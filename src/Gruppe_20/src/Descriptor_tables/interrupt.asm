@@ -1,34 +1,40 @@
-[bits 32]
-section .text
+;
+; interrupt.s -- Contains interrupt service routine wrappers.
+;                Based on Bran's kernel development tutorials.
+;                Rewritten for JamesM's kernel development tutorials.
 
-; --- Define ISR Macros ---
+; This macro creates a stub for an ISR which does NOT pass it's own
+; error code (adds a dummy errcode byte).
 %macro ISR_NOERRCODE 1
-global isr%1
-isr%1:
-    cli
-    push dword 0
-    push dword %1
-    jmp isr_common_stub
+  global isr%1
+  isr%1:
+    ;cli                         ; Disable interrupts firstly.
+    push byte 0                 ; Push a dummy error code.
+    push  %1                    ; Push the interrupt number.
+    jmp isr_common_stub         ; Go to our common handler code.
 %endmacro
 
+; This macro creates a stub for an ISR which passes it's own
+; error code.
 %macro ISR_ERRCODE 1
-global isr%1
-isr%1:
-    cli
-    push dword %1
+  global isr%1
+  isr%1:
+    ;cli                         ; Disable interrupts.
+    push %1                     ; Push the interrupt number
     jmp isr_common_stub
 %endmacro
 
+; This macro creates a stub for an IRQ - the first parameter is
+; the IRQ number, the second is the ISR number it is remapped to.
 %macro IRQ 2
-global irq%1
-irq%1:
-    cli
-    push dword 0
-    push dword %2
+  global irq%1
+  irq%1:
+    ;cli
+    push byte 0
+    push byte %2
     jmp irq_common_stub
 %endmacro
 
-; --- Define ISRs 0-31 ---
 ISR_NOERRCODE 0
 ISR_NOERRCODE 1
 ISR_NOERRCODE 2
@@ -37,20 +43,20 @@ ISR_NOERRCODE 4
 ISR_NOERRCODE 5
 ISR_NOERRCODE 6
 ISR_NOERRCODE 7
-ISR_ERRCODE 8
+ISR_ERRCODE   8
 ISR_NOERRCODE 9
-ISR_ERRCODE 10
-ISR_ERRCODE 11
-ISR_ERRCODE 12
-ISR_ERRCODE 13
-ISR_ERRCODE 14
+ISR_ERRCODE   10
+ISR_ERRCODE   11
+ISR_ERRCODE   12
+ISR_ERRCODE   13
+ISR_ERRCODE   14
 ISR_NOERRCODE 15
 ISR_NOERRCODE 16
-ISR_NOERRCODE 17
+ISR_ERRCODE 17
 ISR_NOERRCODE 18
 ISR_NOERRCODE 19
 ISR_NOERRCODE 20
-ISR_NOERRCODE 21
+ISR_ERRCODE 21
 ISR_NOERRCODE 22
 ISR_NOERRCODE 23
 ISR_NOERRCODE 24
@@ -61,111 +67,135 @@ ISR_NOERRCODE 28
 ISR_NOERRCODE 29
 ISR_NOERRCODE 30
 ISR_NOERRCODE 31
-ISR_NOERRCODE 32
-ISR_NOERRCODE 33
-ISR_NOERRCODE 34
-ISR_NOERRCODE 35
-ISR_NOERRCODE 36
-ISR_NOERRCODE 37
-ISR_NOERRCODE 38
-ISR_NOERRCODE 39
-ISR_NOERRCODE 40
-ISR_NOERRCODE 41
-ISR_NOERRCODE 42
-ISR_NOERRCODE 43
-ISR_NOERRCODE 44
-ISR_NOERRCODE 45
-ISR_NOERRCODE 46
-ISR_NOERRCODE 47
+ISR_NOERRCODE 128
+IRQ   0,    32
+IRQ   1,    33
+IRQ   2,    34
+IRQ   3,    35
+IRQ   4,    36
+IRQ   5,    37
+IRQ   6,    38
+IRQ   7,    39
+IRQ   8,    40
+IRQ   9,    41
+IRQ  10,    42
+IRQ  11,    43
+IRQ  12,    44
+IRQ  13,    45
+IRQ  14,    46
+IRQ  15,    47
+
+; In isr.c
+extern isr_handler
+
+; This is our common ISR stub. It saves the processor state, sets
+; up for kernel mode segments, calls the C-level fault handler,
+; and finally restores the stack frame.
+isr_common_stub:
+    pusha                    ; Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
+
+    mov ax, ds               ; Lower 16-bits of eax = ds.
+    push eax                 ; save the data segment descriptor
+
+    mov ax, 0x10  ; load the kernel data segment descriptor
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    call isr_handler
+
+    pop ebx        ; reload the original data segment descriptor
+    mov ds, bx
+    mov es, bx
+    mov fs, bx
+    mov gs, bx
+
+    popa                     ; Pops edi,esi,ebp...
+    add esp, 8     ; Cleans up the pushed error code and pushed ISR number
+    sti
+    iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
+
+; In isr.c
+extern irq_handler
+
+; This is our common IRQ stub. It saves the processor state, sets
+; up for kernel mode segments, calls the C-level fault handler,
+; and finally restores the stack frame.
+irq_common_stub:
+    pusha                    ; Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
+
+    mov ax, ds               ; Lower 16-bits of eax = ds.
+    push eax                 ; save the data segment descriptor
+
+    mov ax, 0x10  ; load the kernel data segment descriptor
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    call irq_handler
+
+    pop ebx        ; reload the original data segment descriptor
+    mov ds, bx
+    mov es, bx
+    mov fs, bx
+    mov gs, bx
+
+    popa                     ; Pops edi,esi,ebp...
+    add esp, 8     ; Cleans up the pushed error code and pushed ISR number
+
+    iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
 
 
-; --- Define IRQs 32-47 ---
-IRQ 0, 32
-IRQ 1, 33
-IRQ 2, 34
-IRQ 3, 35
-IRQ 4, 36
-IRQ 5, 37
-IRQ 6, 38
-IRQ 7, 39
-IRQ 8, 40
-IRQ 9, 41
-IRQ 10, 42
-IRQ 11, 43
-IRQ 12, 44
-IRQ 13, 45
-IRQ 14, 46
-IRQ 15, 47
-
-; --- Define ISRs 48-255 (autogenerate) ---
-%assign i 48
-%rep 208
-    ISR_NOERRCODE i
-%assign i i+1
-%endrep
-
-; --- Build the ISR Stub Table ---
+; Export the ISR stub table so C code (idt.c) can access it
 global isr_stub_table
 isr_stub_table:
-%assign i 0
-%rep 256
-    dd isr %+ i
-%assign i i+1
-%endrep
-
-; --- Common ISR and IRQ Stubs ---
-extern isr_handler
-isr_common_stub:
-    pusha
-    push ds
-    push es
-    push fs
-    push gs
-
-    mov ax, 0x10
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-
-    mov eax, esp
-    push eax
-    call isr_handler
-    add esp, 4
-
-    pop gs
-    pop fs
-    pop es
-    pop ds
-    popa
-    add esp, 8
-    sti
-    iret
-
-extern irq_handler
-irq_common_stub:
-    pusha
-    push ds
-    push es
-    push fs
-    push gs
-
-    mov ax, 0x10
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-
-    mov eax, esp
-    push eax
-    call irq_handler
-    add esp, 4
-
-    pop gs
-    pop fs
-    pop es
-    pop ds
-    popa
-    add esp, 8
-    sti
-    iret
+    dd isr0
+    dd isr1
+    dd isr2
+    dd isr3
+    dd isr4
+    dd isr5
+    dd isr6
+    dd isr7
+    dd isr8
+    dd isr9
+    dd isr10
+    dd isr11
+    dd isr12
+    dd isr13
+    dd isr14
+    dd isr15
+    dd isr16
+    dd isr17
+    dd isr18
+    dd isr19
+    dd isr20
+    dd isr21
+    dd isr22
+    dd isr23
+    dd isr24
+    dd isr25
+    dd isr26
+    dd isr27
+    dd isr28
+    dd isr29
+    dd isr30
+    dd isr31
+    dd irq0
+    dd irq1
+    dd irq2
+    dd irq3
+    dd irq4
+    dd irq5
+    dd irq6
+    dd irq7
+    dd irq8
+    dd irq9
+    dd irq10
+    dd irq11
+    dd irq12
+    dd irq13
+    dd irq14
+    dd irq15

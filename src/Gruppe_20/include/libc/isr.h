@@ -9,6 +9,11 @@ extern "C" {
 #endif
 
 #define IDT_ENTRIES 256
+extern void* isr_stub_table[256];
+
+
+// Provide access to isr_stub_table from assembly
+extern void* isr_stub_table[IDT_ENTRIES];
 
 // PIC Remapped IRQ Base
 #define IRQ_BASE 0x20
@@ -34,16 +39,12 @@ enum {
 };
 
 typedef struct registers {
-    uint32_t ds;                 // Data segment selector
-    uint32_t edi, esi, ebp;      // Pushed by pusha
-    uint32_t esp;                // Only valid if privilege level changes
-    uint32_t ebx, edx, ecx, eax; // Pushed by pusha
-    uint32_t int_no, err_code;   // Interrupt number and error code
-    uint32_t eip;                // Instruction pointer
-    uint32_t cs;                 // Code segment selector
-    uint32_t eflags;             // CPU flags register
-    uint32_t useresp;            // User stack pointer (if privilege change)
-    uint32_t ss;                 // Stack segment selector (if privilege change)
+    uint32_t ds;
+    uint32_t edi, esi, ebp;
+    uint32_t esp;
+    uint32_t ebx, edx, ecx, eax;
+    uint32_t int_no, err_code;
+    uint32_t eip, cs, eflags, useresp, ss;
 } registers_t;
 
 typedef void (*isr_t)(registers_t*, void*);
