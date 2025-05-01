@@ -11,20 +11,20 @@ void play_song_impl(Song* song) {
         return;
     }
     
-    kprint("Playing song with ");
+    /*kprint("Playing song with ");
     kprint_dec(song->note_count);
-    kprint(" notes\n");
+    kprint(" notes\n");*/
     
     for (size_t i = 0; i < song->note_count; i++) {
         Note* note = &song->notes[i];
         
-        kprint("Note ");
+        /*kprint("Note ");
         kprint_dec(i);
         kprint(": ");
         kprint_dec(note->freq);
         kprint(" Hz for ");
         kprint_dec(note->duration);
-        kprint(" ms\n");
+        kprint(" ms\n");*/
         
         if (note->freq > 0) {
             // Use the beep_blocking function from pit.c to play the note

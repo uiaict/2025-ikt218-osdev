@@ -65,10 +65,10 @@ void sleep_interrupt(uint32_t milliseconds) {
     uint32_t ticks_to_wait = milliseconds * TICKS_PER_MS;
     uint32_t end_ticks = current_tick + ticks_to_wait;
     
-    kprint("Sleep interrupt: start=");
+   /* kprint("Sleep interrupt: start=");
     kprint_dec(current_tick);
     kprint(", end=");
-    kprint_dec(end_ticks);
+    kprint_dec(end_ticks);*/
     kprint("\n");
     
     while (current_tick < end_ticks) {
@@ -79,8 +79,8 @@ void sleep_interrupt(uint32_t milliseconds) {
         current_tick = get_current_tick();
     }
     
-    kprint("Sleep complete at tick ");
-    kprint_dec(get_current_tick());
+    /*kprint("Sleep complete at tick ");
+    kprint_dec(get_current_tick());*/
     kprint("\n");
 }
 
@@ -188,11 +188,11 @@ void disable_pc_speaker(void) {
 // Play a sound for the specified duration (blocking)
 // This function is self-contained and more reliable
 void beep_blocking(uint32_t frequency, uint32_t duration_ms) {
-    kprint("Beeping at ");
+    /*kprint("Beeping at ");
     kprint_dec(frequency);
     kprint(" Hz for ");
     kprint_dec(duration_ms);
-    kprint(" ms\n");
+    kprint(" ms\n");*/
     
     if (frequency == 0) {
         // Just wait for the duration if frequency is 0 (rest)
@@ -235,7 +235,7 @@ void beep_blocking(uint32_t frequency, uint32_t duration_ms) {
     // Restore interrupts
     __asm__ volatile ("sti");
     
-    kprint("Beep complete\n");
+   // kprint("Beep complete\n");
 }
 // Add this function at the end of your pit.c file, 
 // after your existing PC speaker functions

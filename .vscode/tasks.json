@@ -32,7 +32,7 @@
       "problemMatcher": {
         "pattern": {
           "regexp": "^(Starting QEMU)",
-          "line": 1,
+          "line": 1
         },
         "background": {
             "activeOnStart": true,
@@ -41,6 +41,31 @@
         }
       },
       "dependsOn": ["CMake Build"]
+    },
+    {
+      "label": "Launch QEMU (Higher Resolution)",
+      "type": "shell",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "command": "qemu-system-i386 -S -gdb tcp::1234 -boot d -hda ${config:cmake.buildDirectory}/kernel.iso -hdb ${config:cmake.buildDirectory}/disk.iso -m 64 -vga std -audiodev sdl,id=sdl1,out.buffer-length=40000 -machine pcspk-audiodev=sdl1 -serial pty",
+      "problemMatcher": {
+        "pattern": {
+          "regexp": ".*",
+          "line": 1
+        },
+        "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".*",
+            "endsPattern": "never"
+        }
+      },
+      "dependsOn": ["CMake Build"]
     }
   ]
-} 
+}
