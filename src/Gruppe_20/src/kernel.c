@@ -15,6 +15,8 @@
 #include "memory/memory.h"
 #include "libc/common.h"
 #include "input.h"
+#include "Music/song.h"
+#include "Music/frequencies.h"
 
 // Add kernel_main prototype if it exists in another file
 int kernel_main();
@@ -24,7 +26,6 @@ struct multiboot_info {
     uint32_t reserved;
     struct multiboot_tag *first;
 };
-
 extern uint32_t end;
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
@@ -41,5 +42,6 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("Hello %s", "World\n");
 
     return kernel_main();
+
 
 }

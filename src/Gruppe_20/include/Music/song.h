@@ -3,7 +3,6 @@
 
 #include "frequencies.h"
 #include "libc/system.h"
-#include "libc/stdio.h"
 
 // Define a struct to represent a single musical note
 typedef struct {
