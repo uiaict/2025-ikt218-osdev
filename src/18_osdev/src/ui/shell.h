@@ -5,6 +5,8 @@
 #include "libc/monitor.h"
 #include "../keyboard/keyboard.h"
 #include "../song/song.h" // Include your songs header
+#include "../piano/piano.h"
+#include "libc/stdbool.h"
 
 // Initialize and run the shell
 void init_shell();

@@ -1,5 +1,8 @@
 
 #include "../include/libc/common.h"
+#include "libc/stdbool.h"
+
+bool piano_mode_enabled = false;
 
 void outb(uint16_t port, uint8_t value)
 {

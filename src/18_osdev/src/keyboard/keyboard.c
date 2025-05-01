@@ -1,11 +1,19 @@
 // http://www.osdever.net/bkerndev/Docs/keyboard.htm (brans kernel dev)
 #include "keyboard.h"
 #include "libc/stdbool.h"
+#include "libc/common.h"
+#include "../piano/piano.h"
+#include "../song/SongPlayer.h"
+#include "../ui/shell.h"
 
 #define INPUT_BUFFER_SIZE 128
 static char input_buffer[INPUT_BUFFER_SIZE];
 static int buffer_index = 0;
 static bool line_ready = false;
+
+extern bool piano_mode_enabled;
+
+
 
 unsigned char kbdus[128] =
 {
@@ -78,6 +86,24 @@ void keyboard_handler(registers_t regs)
     /* Read from the keyboard's data buffer*/
     unsigned char scancode = inb(0x60);
 
+    // checks if were in piano mode
+    if (piano_mode_enabled) {
+        if (scancode & 0x80) {
+            // Ignore key releases
+            stop_sound(); // stops the speaker
+            return;
+        }
+
+        if (scancode == 0x01) { // ESC key to exit piano mode
+            piano_mode_enabled = false;
+            monitor_write("\nExited piano mode.\n");
+            stop_sound(); // stops the speaker
+            return;
+        }
+
+        handle_piano_key(scancode);
+        return; // Skip normal keyboard input while in piano mode
+    }
     /* If the top bit of the byte we read from the keyboard is
     *  set, that means that a key has just been released */
     if (scancode & 0x80)

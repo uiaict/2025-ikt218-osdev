@@ -42,10 +42,10 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     
     // Timer test
     init_pit();
-    sleep_interrupt(1000);
-    monitor_write("Slept 1 second!\n");
-    sleep_busy(500);
-    monitor_write("Slept 0.5 second!\n");
+    // sleep_interrupt(1000);
+    // monitor_write("Slept 1 second!\n");
+    // sleep_busy(500);
+    // monitor_write("Slept 0.5 second!\n");
     
     // OS initialization complete
     monitor_write("Operating system initialized!\n");

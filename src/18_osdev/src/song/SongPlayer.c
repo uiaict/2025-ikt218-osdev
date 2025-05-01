@@ -51,49 +51,6 @@ void play_sound(uint32_t frequency) {
 }
 
 
-// void play_song_impl(Song *song) {
-//     if(!song || !song->notes || song->length == 0){
-//         monitor_write("Invalid song or empty song\n");
-//         return;
-//     }
-
-//     monitor_write("playing song: ");
-//     monitor_write(song->name);
-//     monitor_write("\n");
-
-//     for (uint32_t i = 0; i < song->length; i++) {
-//         Note current_note = song->notes[i];
-        
-//         // Print note info for debugging
-//         if (current_note.frequency > 0) {
-//             monitor_write("Playing note\n");
-//         } else {
-//             monitor_write("Rest\n");
-//         }
-        
-//         // Play the current note
-//         play_sound(current_note.frequency);
-        
-//         // Wait for the note duration
-//         if (current_note.duration > 0) {
-//             sleep_interrupt(current_note.duration);
-//         }
-        
-//         disable_speaker();
-//         // Stop the sound before moving to next note
-//     }
-//     monitor_write("done!");
-
-//     // Pseudocode for play_song_impl:
-//     // 1. Enable the speaker before starting the song.
-//     // 2. Loop through each note in the song's notes array:
-//     //    a. For each note, display its details such as frequency and duration.
-//     //    b. Call play_sound with the note's frequency.
-//     //    c. Delay execution for the duration of the note (this can be implemented with a sleep function).
-//     //    d. Call stop_sound to end the note.
-//     // 3. Disable the speaker after all notes have been played.
-// }
-
 volatile bool stop_requested = false;
 
 void play_song_impl(Song *song) {
@@ -139,4 +96,8 @@ void play_song(Song *song) {
     // Pseudocode for play_song:
     // 1. Call play_song_impl with the given song.
     //    - This function handles the entire process of playing each note in the song.
+}
+
+void stop_sound() {
+    disable_speaker();
 }
