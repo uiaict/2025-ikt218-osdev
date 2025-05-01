@@ -1,43 +1,40 @@
-//#include "libc/stdbool.h"
-//#include "libc/stdio.h" 
-//#include "libc/string.h"
-#include "libc/stdint.h"
-#include "../utils/utils.h"
 #include "idt.h"
-#include "../io/printf.h"
 
 idt_entry_struct idt_entries[256];
 idt_ptr_struct idt_ptr;
 
-//henter flush funksjonen
+// henter flush funksjonen
 extern void idt_flush(uint32_t);
 
-
 void *irq_routines[16] = {
-    0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0
-};
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0};
 
-void irq_install_handler (int irq, void (*handler)(struct InterruptRegisters *r
-)){
+void irq_install_handler(int irq, void (*handler)(struct InterruptRegisters *r))
+{
     irq_routines[irq] = handler;
 }
-void irq_uninstall_handler(int irq){
+void irq_uninstall_handler(int irq)
+{
     irq_routines[irq] = 0;
 }
-void irq_handler(struct InterruptRegisters *regs){
-   void (*handler)(struct InterruptRegisters *regs);
-   handler = irq_routines[regs ->int_no - 32];
-    if (handler){
-    handler(regs);
+void irq_handler(struct InterruptRegisters *regs)
+{
+    void (*handler)(struct InterruptRegisters *regs);
+    handler = irq_routines[regs->int_no - 32];
+    if (handler)
+    {
+        handler(regs);
     }
-    if (regs->int_no >= 40){
-        outPortB(0xA0, 0x20);       // sender end of interrupt (EoI) til slave PIC
+    if (regs->int_no >= 40)
+    {
+        outPortB(0xA0, 0x20); // sender end of interrupt (EoI) til slave PIC
     }
-outPortB(0x20, 0x20);               // sender end of interrupt (EoI) til master PIC
+    outPortB(0x20, 0x20); // sender end of interrupt (EoI) til master PIC
 };
 
-void setIdtGate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags){
+void setIdtGate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags)
+{
     idt_entries[num].base_low = base & 0xFFFF;
     idt_entries[num].base_high = (base >> 16) & 0xFFFF;
     idt_entries[num].selector = selector;
@@ -68,7 +65,6 @@ const char *exception_message[] = {
     "Reserved",
     "Reserved",
     "Reserved",
-    "Reserved",     
     "Reserved",
     "Reserved",
     "Reserved",
@@ -78,17 +74,20 @@ const char *exception_message[] = {
     "Reserved",
     "Reserved",
     "Reserved",
-    "Reserved"
-};
-void isr_handler(struct InterruptRegisters* regs){
-    if (regs->int_no < 32){
+    "Reserved",
+    "Reserved"};
+void isr_handler(struct InterruptRegisters *regs)
+{
+    if (regs->int_no < 32)
+    {
         mafiaPrint("Exception %d triggered! Error code: %d\n", regs->int_no, regs->err_code);
         mafiaPrint("%s\n", exception_message[regs->int_no]);
         __asm__ volatile("cli; hlt");
     }
 }
 
-void initIdt(){
+void initIdt()
+{
     //  Set base og limit for IDT ptr struct
     idt_ptr.base = (uint32_t)&idt_entries;
     idt_ptr.limit = (uint16_t)(sizeof(idt_entry_struct) * 256 - 1);
@@ -96,28 +95,28 @@ void initIdt(){
     // nullstiller IDT
     memset(&idt_entries, 0, sizeof(idt_entry_struct) * 256);
 
-    outPortB(0x20, 0x11);                   // Init master PIC
-    outPortB(0xA0, 0x11);                   // Init slave PIC
-    outPortB(0x21, 0x20);                   // Remap master PIC til 0x20 (IRQ 0)
-    outPortB(0xA1, 0x28);                   // Remap slave PIC til 0x28 (IRQ 8)
-    outPortB(0x21, 0x04);                   // Fortell master PIC at slave er på IRQ2
-    outPortB(0xA1, 0x02);                   // Fortell slave PIC at den er koblet til IRQ2
-    outPortB(0x21, 0x01);                   // Aktiver 8086 mode
-    outPortB(0xA1, 0x01);                   // Aktiver 8086 mode
-    outPortB(0x21, 0x00);                   // Unmask alle IRQ-er på master
-    outPortB(0xA1, 0x00);                   // Unmask alle IRQ-er på slave
-    outPortB(0x21, inPortB(0x21) & 0x02);   // Unmask IRQ1 (tastatur)
+    outPortB(0x20, 0x11);                 // Init master PIC
+    outPortB(0xA0, 0x11);                 // Init slave PIC
+    outPortB(0x21, 0x20);                 // Remap master PIC til 0x20 (IRQ 0)
+    outPortB(0xA1, 0x28);                 // Remap slave PIC til 0x28 (IRQ 8)
+    outPortB(0x21, 0x04);                 // Fortell master PIC at slave er på IRQ2
+    outPortB(0xA1, 0x02);                 // Fortell slave PIC at den er koblet til IRQ2
+    outPortB(0x21, 0x01);                 // Aktiver 8086 mode
+    outPortB(0xA1, 0x01);                 // Aktiver 8086 mode
+    outPortB(0x21, 0x00);                 // Unmask alle IRQ-er på master
+    outPortB(0xA1, 0x00);                 // Unmask alle IRQ-er på slave
+    outPortB(0x21, inPortB(0x21) & 0x02); // Unmask IRQ1 (tastatur)
 
-    setIdtGate( 0, (uint32_t)isr0 , 0x08, 0x8E);
-    setIdtGate( 1, (uint32_t)isr1 , 0x08, 0x8E);
-    setIdtGate( 2, (uint32_t)isr2 , 0x08, 0x8E);
-    setIdtGate( 3, (uint32_t)isr3 , 0x08, 0x8E);
-    setIdtGate( 4, (uint32_t)isr4 , 0x08, 0x8E);
-    setIdtGate( 5, (uint32_t)isr5 , 0x08, 0x8E);
-    setIdtGate( 6, (uint32_t)isr6 , 0x08, 0x8E);
-    setIdtGate( 7, (uint32_t)isr7 , 0x08, 0x8E);
-    setIdtGate( 8, (uint32_t)isr8 , 0x08, 0x8E);
-    setIdtGate( 9, (uint32_t)isr9 , 0x08, 0x8E);
+    setIdtGate(0, (uint32_t)isr0, 0x08, 0x8E);
+    setIdtGate(1, (uint32_t)isr1, 0x08, 0x8E);
+    setIdtGate(2, (uint32_t)isr2, 0x08, 0x8E);
+    setIdtGate(3, (uint32_t)isr3, 0x08, 0x8E);
+    setIdtGate(4, (uint32_t)isr4, 0x08, 0x8E);
+    setIdtGate(5, (uint32_t)isr5, 0x08, 0x8E);
+    setIdtGate(6, (uint32_t)isr6, 0x08, 0x8E);
+    setIdtGate(7, (uint32_t)isr7, 0x08, 0x8E);
+    setIdtGate(8, (uint32_t)isr8, 0x08, 0x8E);
+    setIdtGate(9, (uint32_t)isr9, 0x08, 0x8E);
     setIdtGate(10, (uint32_t)isr10, 0x08, 0x8E);
     setIdtGate(11, (uint32_t)isr11, 0x08, 0x8E);
     setIdtGate(12, (uint32_t)isr12, 0x08, 0x8E);
@@ -157,9 +156,9 @@ void initIdt(){
     setIdtGate(46, (uint32_t)irq14, 0x08, 0x8E);
     setIdtGate(47, (uint32_t)irq15, 0x08, 0x8E);
 
-    //setIdtGate(128, (uint32_t)isr128, 0x08, 0x8E); //for systemkall, ikke implementert i asm
-    //setIdtGate(177, (uint32_t)isr177, 0x08, 0x8E); //for systemkall, ikke implementert i asm
+    // setIdtGate(128, (uint32_t)isr128, 0x08, 0x8E); //for systemkall, ikke implementert i asm
+    // setIdtGate(177, (uint32_t)isr177, 0x08, 0x8E); //for systemkall, ikke implementert i asm
 
-    idt_flush((uint32_t)&idt_ptr);          // laster inn IDT
+    idt_flush((uint32_t)&idt_ptr); // laster inn IDT
     mafiaPrint("IDT Initialized\n");
-}                   
+}

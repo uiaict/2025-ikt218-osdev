@@ -1,10 +1,10 @@
 #ifndef PAGING_H
 #define PAGING_H
-#include "libc/stdint.h"
+#include "libc/system.h"
+#include "../io/printf.h"
 
-#define NUM_PAGES 1024    //hver page table og page directory har 1024 entries
-#define PAGE_SIZE 0x1000    //4kb per side
-
+#define NUM_PAGES 1024   // hver page table og page directory har 1024 entries
+#define PAGE_SIZE 0x1000 // 4kb per side
 
 void init_paging();
 void enable_paging();

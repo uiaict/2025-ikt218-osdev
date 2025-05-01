@@ -1,43 +1,38 @@
 #ifndef SONGPLAYER_H
 #define SONGPLAYER_H
 
-#include "libc/stdint.h"
-
+#include "libc/system.h"
 #include "../music/frequencies.h"
+#include "../pit/pit.h"
+#include "../io/printf.h"
+#include "../utils/utils.h"
+#include "../memory/malloc.h"
 
-
-
-
-typedef struct {
+typedef struct
+{
     uint32_t frequency;
-    uint32_t duration;  // (i millisekunder)
+    uint32_t duration; // (i millisekunder)
 } Note;
 
-
-typedef struct {
-    Note* notes;
+typedef struct
+{
+    Note *notes;
     size_t note_count;
 } Song;
 
 // Define SongPlayer structure
-typedef struct {
-    void (*play_song)(Song* song);
+typedef struct
+{
+    void (*play_song)(Song *song);
 } SongPlayer;
 
-
-void play_song_impl(Song* song);
-void play_song(Song* song);
+void play_song_impl(Song *song);
+void play_song(Song *song);
 void enable_speaker();
 void disable_speaker();
 void play_sound(uint32_t frequency);
 void stop_sound();
 void song_menu();
-
-
-
-
-
-
 
 static Note battlefield_1942_theme[] = {
     // Attempt at the opening part of the Battlefield 1942 theme
@@ -156,7 +151,5 @@ static Note smash_bros_brawl_intro[] = {
         {B4, 400}, {D5, 400}, {G5, 800}, {F5, 400}, {D5, 400}, {B4, 400},
         {A4, 1200}, {R, 400}, {G4, 1600}, {R, 400}
 };
-
-
 
 #endif

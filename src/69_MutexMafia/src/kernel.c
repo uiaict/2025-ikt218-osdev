@@ -1,6 +1,4 @@
-#include "libc/stdint.h"
-#include "libc/stddef.h"
-#include "libc/stdbool.h"
+#include "libc/system.h"
 #include <multiboot2.h>
 
 #include "gdt/gdt.h"
@@ -11,11 +9,8 @@
 #include "memory/paging.h"
 #include "pit/pit.h"
 
-
-
-
-
-struct multiboot_info {
+struct multiboot_info
+{
     uint32_t size;
     uint32_t reserved;
     struct multiboot_tag *first;
@@ -24,8 +19,8 @@ struct multiboot_info {
 int kernel_main();
 extern uint32_t end;
 
-
-int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
+int main(uint32_t magic, struct multiboot_info *mb_info_addr)
+{
 
     initGdt();
     initIdt();
@@ -33,21 +28,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_paging();
     init_pit();
     //test_pit();
-    
-    initKeyboard();
+    init_keyboard();
+    sleep_busy(1000);
 
-    /*while (1){}
-
-    mafiaPrint("Wadiyatalkinabeet\n");
-    mafiaPrint("\n");
-
-    
-    void* some_memory = malloc(12345); 
-    void* memory2 = malloc(54321); 
-    void* memory3 = malloc(13331);
-    print_memory_layout();
-*/
-    
-    return kernel_main(); 
-
+    return kernel_main();
 }

@@ -1,16 +1,14 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "libc/stdint.h"
-#include "libc/stdbool.h"
-#include "libc/stddef.h"
-#include "../monitor/monitor.h"  // For draw_char_at
-#include "../io/keyboard.h"       // For keyboard_key_pressed, keyboard_read
-#include "../pit/pit.h"         // For sleep_interrupt
-#include "../music/songplayer.h"       // For sound_beep
-#include "../io/printf.h"         // For mafiaPrint
-#include "../memory/malloc.h"         // For malloc/free
+#include "libc/system.h"
 
+#include "../monitor/monitor.h"  // For draw_char_at
+#include "../io/keyboard.h"      // For keyboard_key_pressed, keyboard_read
+#include "../pit/pit.h"          // For sleep_interrupt
+#include "../music/songplayer.h" // For sound_beep
+#include "../io/printf.h"        // For mafiaPrint
+#include "../memory/malloc.h"    // For malloc/free
 
 // Constants
 #define SCREEN_WIDTH 80
@@ -24,17 +22,20 @@
 #define MAX_HIGHSCORES 5
 
 // Structs
-typedef struct {
+typedef struct
+{
     int y;
     int velocity;
 } Bird;
 
-typedef struct {
+typedef struct
+{
     int x;
     int gap_y;
 } Pipe;
 
-typedef struct {
+typedef struct
+{
     int scores[MAX_HIGHSCORES];
     int count;
 } HighscoreTable;

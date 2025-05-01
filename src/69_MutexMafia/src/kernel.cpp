@@ -1,50 +1,34 @@
-extern "C" {
-    #include "memory/malloc.h"
-    #include "memory/paging.h"
-    #include "utils/utils.h"
-    #include "idt/idt.h"
-    #include "io/keyboard.h"
-    #include "io/printf.h"
-    #include "pit/pit.h"
-    #include "music/songplayer.h"
-    #include "monitor/monitor.h"
-    #include "game/game.h"
+extern "C"
+{
+#include "memory/malloc.h"
+#include "memory/paging.h"
+#include "utils/utils.h"
+#include "idt/idt.h"
+#include "io/keyboard.h"
+#include "io/printf.h"
+#include "pit/pit.h"
+#include "music/songplayer.h"
+#include "monitor/monitor.h"
+#include "game/game.h"
 }
 extern "C" int kernel_main(void);
 
+int kernel_main()
+{
+    init_monitor();
+    //init_pit();
+    init_highscores();
+    clear_screen();
+    print_mutexMafia();
 
+    while (1)
+    {
+        print_menu();
+        char input[50];
+        get_input(input, sizeof(input));
 
-
-
-
-
-    int kernel_main(){
-        init_monitor();
-        mafiaPrint("Kernel main function started\n");
-        init_pit();
-        init_highscores();
-       
-        
-        mafiaPrint(" __  __           _                   __  __            __   _         \n");
-        mafiaPrint("|  \\/  |         | |                 |  \\/  |          / _| (_)        \n");
-        mafiaPrint("| \\  / |  _   _  | |_    ___  __  __ | \\  / |   __ _  | |_   _    __ _ \n");
-        mafiaPrint("| |\\/| | | | | | | __|  / _ \\ \\ \\/ / | |\\/| |  / _` | |  _| | |  / _` |\n");
-        mafiaPrint("| |  | | | |_| | | |_  |  __/  >  <  | |  | | | (_| | | |   | | | (_| |\n");
-        mafiaPrint("|_|  |_|  \\__,_|  \\__|  \\___| /_/\\_\\ |_|  |_|  \\__,_| |_|   |_|  \\__,_|\n");
-        
-
-                                                                
-
-                                                                       
-
- 
-        while(1){
-       print_menu();
-    char input [50];
-    get_input(input, sizeof(input));
-
-
-    switch (input[0]) {
+        switch (input[0])
+        {
         case '1':
             mafiaPrint("\nHello World!\n");
             break;
@@ -53,14 +37,14 @@ extern "C" int kernel_main(void);
             print_memory_layout();
             break;
         case '3':
-            {
-                int input_size = 0;
-                mafiaPrint("\nEnter the size of memory to allocate: ");
-                get_input(input, sizeof(input));
-                input_size = stoi(input);
-                void* address = malloc(input_size); 
-                break;
-            }
+        {
+            int input_size = 0;
+            mafiaPrint("\nEnter the size of memory to allocate: ");
+            get_input(input, sizeof(input));
+            input_size = stoi(input);
+            void *address = malloc(input_size);
+            break;
+        }
         case '4':
             mafiaPrint("\nplay song\n");
             song_menu();
@@ -78,31 +62,6 @@ extern "C" int kernel_main(void);
             break;
         default:
             mafiaPrint("\nInvalid option. Please try again.\n");
+        }
     }
 }
-        
-
-
-
-
-
-        while(1) {}
-
-
-
-        
-
-
-        /*
-        while(true){
-            int counter = 0;
-            mafiaPrint("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-            sleep_busy(1000);
-            mafiaPrint("[%d]: Slept using busy-waiting.\n", counter++);
-    
-            mafiaPrint("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-            sleep_interrupt(1000);
-            mafiaPrint("[%d]: Slept using interrupts.\n", counter++);
-        }; */
-
-    }

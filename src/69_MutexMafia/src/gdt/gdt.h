@@ -1,4 +1,5 @@
-#include "libc/stdint.h"
+#include "libc/system.h"
+#include "../io/printf.h"
 
 
 struct GDT{

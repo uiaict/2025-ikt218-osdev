@@ -1,17 +1,16 @@
 #include "pit.h"
-#include "../idt/idt.h"
-#include <libc/stdint.h>
-#include "../utils/utils.h"
 
-static volatile uint32_t ticks = 0;  // Marked volatile because it's updated in interrupt context
+static volatile uint32_t ticks = 0; // Marked volatile because it's updated in interrupt context
 
 // IRQ0 handler without context (matches your irq_install_handler signature)
-void pit_irq_handler(struct InterruptRegisters* regs) {
+void pit_irq_handler(struct InterruptRegisters *regs)
+{
     (void)regs; // Prevent unused parameter warning
     ticks++;
 }
 
-void init_pit() {
+void init_pit()
+{
     // Use your installed handler registration function
     irq_install_handler(IRQ0, pit_irq_handler);
 
@@ -27,35 +26,42 @@ void init_pit() {
     outPortB(PIT_CHANNEL0_PORT, h_divisor);
 }
 
-void sleep_interrupt(uint32_t milliseconds) {
+void sleep_interrupt(uint32_t milliseconds)
+{
     uint32_t current_tick = ticks;
     uint32_t ticks_to_wait = milliseconds * TICKS_PER_MS;
     uint32_t end_ticks = current_tick + ticks_to_wait;
 
-    while (ticks < end_ticks) {
+    while (ticks < end_ticks)
+    {
         asm volatile("sti");
         asm volatile("hlt");
     }
 }
 
-void sleep_busy(uint32_t milliseconds) {
+void sleep_busy(uint32_t milliseconds)
+{
     uint32_t start_tick = ticks;
     uint32_t ticks_to_wait = milliseconds * TICKS_PER_MS;
     uint32_t elapsed_ticks = 0;
 
-    while (elapsed_ticks < ticks_to_wait) {
-        while (ticks == start_tick + elapsed_ticks) {
+    while (elapsed_ticks < ticks_to_wait)
+    {
+        while (ticks == start_tick + elapsed_ticks)
+        {
             // Busy wait
         }
         elapsed_ticks++;
     }
 }
 
-uint32_t get_ticks() {
+uint32_t get_ticks()
+{
     return ticks;
 }
 
-void test_pit() {
+void test_pit()
+{
     mafiaPrint("=== PIT TEST START ===\n");
 
     init_pit();
@@ -78,9 +84,11 @@ void test_pit() {
     // ---- Test 3: Live uptime counter (3 seconds) ----
     mafiaPrint("[Test 3] Live uptime (3 seconds):\n");
     uint32_t last = get_ticks() / 1000;
-    while ((get_ticks() - start) < 3000) {
+    while ((get_ticks() - start) < 3000)
+    {
         uint32_t current = get_ticks() / 1000;
-        if (current != last) {
+        if (current != last)
+        {
             mafiaPrint("Uptime: %d seconds\n", current);
             last = current;
         }
@@ -89,7 +97,8 @@ void test_pit() {
     // ---- Test 4: Precision test ----
     mafiaPrint("[Test 4] Precision sleep test:\n");
     const uint32_t durations[] = {1, 10, 100, 250, 500};
-    for (int i = 0; i < sizeof(durations)/sizeof(durations[0]); ++i) {
+    for (size_t i = 0; i < sizeof(durations) / sizeof(durations[0]); ++i)
+    {
         mafiaPrint("  sleep_interrupt(%d)... ", durations[i]);
         start = get_ticks();
         sleep_interrupt(durations[i]);

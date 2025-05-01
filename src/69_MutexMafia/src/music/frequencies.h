@@ -2,7 +2,7 @@
 #ifndef FREQUENCIES_H
 #define FREQUENCIES_H
 
-// Notefrekvenser (i Hz)
+// Notefrekvenser (i Hz) //Henter fra solution Guide til Per Arne Andersem
 #define C0 16
 #define Cs0 17
 #define D0 18
@@ -137,4 +137,4 @@
 #define G_SHARP4 415
 #define R 0 // R (ingen lyd)
 
-#endif 
+#endif
