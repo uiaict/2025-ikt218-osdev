@@ -30,9 +30,9 @@ void print_memory_layout()
     printf("Memory used: %d bytes\n", memory_used);
     printf("Memory free: %d bytes\n", heap_end - heap_begin - memory_used);
     printf("Heap size: %d bytes\n", heap_end - heap_begin);
-    printf("Heap start: 0x%x\n", heap_begin);
-    printf("Heap end: 0x%x\n", heap_end);
-    printf("PHeap start: 0x%x\nPHeap end: 0x%x\n", pheap_begin, pheap_end);
+    printf("Heap start: %x\n", heap_begin);
+    printf("Heap end: %x\n", heap_end);
+    printf("PHeap start: %x\nPHeap end: %x\n", pheap_begin, pheap_end);
 }
 
 // Free a block of memory

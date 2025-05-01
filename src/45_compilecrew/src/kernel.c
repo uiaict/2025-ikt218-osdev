@@ -61,7 +61,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_gdt();
     idt_init();
     terminal_clear();
-    init_paging();
+    //init_paging();                           
     init_kernel_memory(&end);
     init_pit();
     irq_install_handler(0, pit_callback);
@@ -91,6 +91,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
                             current_mode = MODE_MEMORY;
                             terminal_clear();
                             print_memory_layout();
+                            printf("\n[esc] Back to main menu");
                             break;
                         case '4':
                             current_mode = MODE_TERMINAL;
@@ -98,8 +99,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
                             break;
                         case 'q'|'Q':
                             terminal_clear();
-                            printf("Shutting down (stub).\n");
-                            while (1) __asm__ volatile("hlt");
+                            printf("Shutting down!");
+                            return 0;
                     }
                     break;
 
