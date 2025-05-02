@@ -29,26 +29,19 @@ void disable_speaker() {
 }
 
 void play_sound(uint32_t frequency) {
-    if(frequency==0) return;
+    if (frequency == 0) return;
+
 
     uint32_t divisor = PIT_BASE_FREQUENCY / frequency;
 
-    outb(PIT_CMD_PORT, 0xB6);
+    outb(PIT_CMD_PORT, 0xB6);   // Set PIT to mode 3, binary
 
-    outb(PIT_CHANNEL2_PORT, divisor & 0xFF);
-    outb(PIT_CHANNEL2_PORT, (divisor >> 8) & 0xFF);
-    enable_speaker();
-    // Pseudocode for play_sound:
-    // 1. Check if the frequency is 0. If so, exit the function as this indicates no sound.
-    // 2. Calculate the divisor for setting the PIT (Programmable Interval Timer) frequency.
-    //    - The PIT frequency is a base value, typically 1.193182 MHz.
-    //    - The divisor is PIT frequency divided by the desired sound frequency.
-    // 3. Configure the PIT to the desired frequency:
-    //    - Send control word to PIT control port to set binary counting, mode 3, and access mode (low/high byte).
-    //    - Split the calculated divisor into low and high bytes.
-    //    - Send the low byte followed by the high byte to the PIT channel 2 port.
-    // 4. Enable the speaker (by setting the appropriate bits) to start sound generation.
+    outb(PIT_CHANNEL2_PORT, divisor & 0xFF);       // Low byte
+    outb(PIT_CHANNEL2_PORT, (divisor >> 8) & 0xFF); // High byte
+
+    enable_speaker();          // Start playing
 }
+
 
 
 volatile bool stop_requested = false;
@@ -78,6 +71,7 @@ void play_song_impl(Song *song) {
 
         disable_speaker();
     }
+    
 
     monitor_write(stop_requested ? "Song stopped.\n" : "done!\n");
 }
