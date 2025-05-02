@@ -1,6 +1,7 @@
 global idt_flush
 
 idt_flush:
+    CLI
     MOV eax, [esp+4]
     LIDT [eax]
     STI

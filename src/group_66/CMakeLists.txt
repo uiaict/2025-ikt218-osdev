@@ -74,6 +74,8 @@ add_executable(uiaos-kernel
 	src/keyboard/keyboard.c
 
 	src/PIT/PIT.c
+
+	src/musicPlayer/musicPlayer.c
 )
 
 # Include directories for the kernel target

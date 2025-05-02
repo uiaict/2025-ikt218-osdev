@@ -8,6 +8,7 @@
 #include "idt/idt.h"
 #include "keyboard/keyboard.h"
 #include "PIT/PIT.h"
+#include "musicPlayer/musicPlayer.h"
 
 extern uint32_t end; // This is defined in arch/i386/linker.ld
 uint32_t teller = 0;
@@ -19,12 +20,18 @@ struct multiboot_info {
 };
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-    initGdt();
     reset();
+    printf("[Starting DOOMOS]\n");
+    initGdt();
+    printf("[Initialized GDT]\n");
     initIdt();
+    printf("[Initialized IDT]\n");
     initKeyboard();
+    printf("[Initialized Keyboard]\n");
     enable_cursor(0,15);
+    printf("[Initialized Cursor]\n");
     initPit();
+    printf("[Initialized PIT]\n");
     printf("=======================================================\n");
     printf("      .___                                             \n");
     printf("    __| _/____   ____   _____       ____  ______       \n");
@@ -36,14 +43,8 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("                 Welcome to hell!                      \n");
     printf("               Aris, Marcus, Albert                    \n");
     printf("=======================================================\n");
-    while(true){
-        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", teller);
-        sleepBusy(2000);
-        printf("[%d]: Slept using busy-waiting.\n", teller++);
-
-        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", teller);
-        sleepInterrupt(2000);
-        printf("[%d]: Slept using interrupts.\n", teller++);
-    };
+    play_song(&songs[8]);
+    
+    while(true);
     return 0;
 }

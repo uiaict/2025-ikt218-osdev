@@ -46,7 +46,7 @@ void initIdt() {
     setIdtGate(10,(uint32_t)isr10,0x08,0x8E);
     setIdtGate(11,(uint32_t)isr11,0x08,0x8E);
     setIdtGate(12,(uint32_t)isr12,0x08,0x8E);
-    setIdtGate(13,(uint32_t)isr12,0x08,0x8E);
+    setIdtGate(13,(uint32_t)isr13,0x08,0x8E);
     setIdtGate(14,(uint32_t)isr14,0x08,0x8E);
     setIdtGate(15,(uint32_t)isr15,0x08,0x8E);
     setIdtGate(16,(uint32_t)isr16,0x08,0x8E);
@@ -85,8 +85,8 @@ void initIdt() {
     setIdtGate(47,(uint32_t)irq15,0x08,0x8E);
 
     //ISRs used  for system calls
-    setIdtGate(128,(uint32_t)isr128,0x08,0x8E);
-    setIdtGate(177,(uint32_t)isr177,0x08,0x8E);
+    setIdtGate(128,(uint32_t)isr128,0x08,0xEE);
+    setIdtGate(177,(uint32_t)isr177,0x08,0xEE);
 
     idt_flush((uint32_t)&idt_ptr);
 
@@ -96,10 +96,8 @@ void setIdtGate(uint8_t num, uint32_t base,uint16_t sel, uint8_t flags) {
     idt_entries[num].base_high = (base >> 16) & 0xFFFF;
     idt_entries[num].sel = sel;
     idt_entries[num].always0 = 0;
-    idt_entries[num].flags = flags | 0x60;
+    idt_entries[num].flags = flags;
 }
-
-Short Corrected Version of your exception_messages[]:
 
 const char* exception_messages[] = {
     "Divide By Zero",

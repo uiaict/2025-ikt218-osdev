@@ -25,5 +25,6 @@ void initPit();
 void setTimer(float newCounter);
 void sleepInterrupt(uint32_t milliseconds);
 void sleepBusy(uint32_t milliseconds);
+uint32_t getSystemTicks();
 
 #endif

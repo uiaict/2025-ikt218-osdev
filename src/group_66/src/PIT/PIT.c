@@ -14,7 +14,7 @@ void onIrq0(struct InterruptRegisters *regs) {
 
 void initPit() {
     irq_install_handler(0,&onIrq0);
-
+    system_ticks = 0;
     outPortB(PIT_CMD_PORT,0x36);
     outPortB(PIT_CHANNEL0_PORT,DIVIDER);
     outPortB(PIT_CHANNEL0_PORT,(DIVIDER >> 8));
@@ -35,4 +35,8 @@ void sleepInterrupt(uint32_t milliseconds) {
         asm volatile("sti; hlt");
     }
     
+}
+
+uint32_t getSystemTicks() {
+    return system_ticks;
 }

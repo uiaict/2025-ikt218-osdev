@@ -1,3 +1,6 @@
+#ifndef UTIL
+#define UTIL
+
 #include "libc/stdint.h"
 #include "util.h"
 
@@ -92,3 +95,5 @@ char inPortB(uint16_t port) {
     char rv;
     asm volatile ("inb %1, %0" : "=a"(rv) : "dN"(port));
 }
+
+#endif
