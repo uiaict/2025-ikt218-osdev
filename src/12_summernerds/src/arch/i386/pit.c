@@ -42,8 +42,8 @@ void sleep_busy(uint32_t wait_ms)
     uint32_t waited_ticks = 0;
     while ((waited_ticks) < wait_ticks)
     {
-        // while (get_current_tick() == start_tick + waited_ticks)
-        ;
+        while (get_current_tick() == start_tick + waited_ticks)
+            ;
         waited_ticks++;
     }
 }

@@ -82,8 +82,8 @@ add_executable(uiaos-kernel
 
     # MEMORY
     src/memory/malloc.c
-    src/memory/memory.c
     src/memory/memutils.c
+    src/memory/paging.c
 
     # SONG
     src/song/songPlayer.c

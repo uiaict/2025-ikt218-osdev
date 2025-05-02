@@ -1,6 +1,6 @@
 #include "i386/monitor.h"
 #include "libc/system.h"
-
+int lastrowlen;
 enum vga_color
 {
     VGA_COLOR_BLACK = 0,
@@ -110,15 +110,26 @@ void monitor_putentryat(char c, uint8_t color, size_t x, size_t y)
     terminal_buffer[index] = vga_entry(c, color);
 }
 
+
 void _monitor_put(char c)
 {
     // Deal with special character behavior
     switch (c)
     {
     case '\n':
+        lastrowlen = terminal_column;
         terminal_column = 0;
         terminal_row++;
         scroll();
+        return;
+        break;
+    case '\b':
+        if (terminal_column == 0) {
+            terminal_column = lastrowlen;
+            monitor_putentryat(' ', terminal_color, terminal_column, --terminal_row);
+        }
+        else     
+            monitor_putentryat(' ', terminal_color, --terminal_column, terminal_row);
         return;
         break;
     default:
@@ -129,6 +140,7 @@ void _monitor_put(char c)
     if (++terminal_column == VGA_WIDTH)
     {
         terminal_column = 0;
+        lastrowlen = VGA_WIDTH-1;
         if (++terminal_row == VGA_HEIGHT)
             terminal_row = 0;
     }

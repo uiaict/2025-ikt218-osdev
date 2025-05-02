@@ -4,11 +4,30 @@
 #include "i386/interruptRegister.h"
 #include "screen.h"
 
+typedef struct{
+    int x;
+    int y;
+}arrowKeys;
+
+int cannotType = 1;
+
+void EnableTyping(){
+    cannotType = 0;
+}
+void DisableTyping(){
+    cannotType = 1;
+}
+
+static arrowKeys move2D;
+
 void irq1_keyboard_handler(registers_t *regs, void *ctx)
 {
-    printf("IRQ1 handler triggered!\n");
+    
+
     uint8_t scancode = inb(0x60);
     char ascii = scanCodeToASCII(&scancode);
+
+    if (cannotType) return;
 
     if (ascii != 0 && ascii != 2 && ascii != 3)
     {
@@ -26,21 +45,19 @@ bool capsEnabled = false;
 // 1. Scancode-tabell
 char small_scancode_ascii[128] =
     {
-        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
-        '=', '-', '+', '*', '+', '?', '!', 'a', 'b', 'c',
-        'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
-        'x', 'z', 'y', '.', ',', ' '
+        '.', '.', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0','+', '\\', '.', '.', 
+        'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '.', '.', '.', '.', 
+        'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', '.', '.', '.', '.', '.', 
+        'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '-',
 
-};
+    };
 
 char large_scancode_ascii[128] =
     {
-        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
-        '=', '-', '+', '*', '+', '?', '!', 'A', 'B', 'C',
-        'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
-        'X', 'Z', 'Y', '.', ',', ' '
+        '.', '.', '!', '\"', '#', '$', '%', '&', '/', '(', ')', '=', '\?', '`', '.', '.',
+        'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '.', '.', '.', '.',
+        'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', '.', '.', '.', '.', '.',
+        'Z', 'X', 'C', 'V', 'B', 'N', 'M', ';', ':', '_', 
 
 };
 
@@ -69,10 +86,10 @@ char scanCodeToASCII(unsigned char *scanCode)
         return 0;
 
     case 0x39: // space pressed
-        return 3;
+        return ' ';
 
     case 0x1C: // enter pressed
-        return 2;
+        return '\n';
 
     case 0x9C: // enter released
         return 2;
@@ -112,7 +129,7 @@ char scanCodeToASCII(unsigned char *scanCode)
         return 0;
 
     case 0x0E: // backspce pressed
-        return 0;
+        return '\b';
 
     case 0x8E: // backspce released
         return 0;

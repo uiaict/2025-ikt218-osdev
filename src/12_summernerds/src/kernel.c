@@ -26,6 +26,8 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     init_irq();
 
     register_irq_handler(IRQ1, irq1_keyboard_handler, 0);
+
+    asm volatile("sti");
     // Initializing the kernel memory manager
     init_kernel_memory(&end);
 
@@ -47,17 +49,10 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     printf("Allocated memory blocks at: 0x%x, 0x%x, 0x%x\n", mem1, mem2, mem3);
 
     // Test PIT sleep
-    int counter = 0;
-
+    EnableTyping();
+    
     while (true)
     {
-        printf("[%d]: Sleeping with busy-waiting (HIGH CPU)...\n", counter);
-        sleep_busy(1000);
-        printf("[%d]: Slept using busy-waiting.\n", counter++);
-
-        printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);
     }
     // handle_menu();
 
