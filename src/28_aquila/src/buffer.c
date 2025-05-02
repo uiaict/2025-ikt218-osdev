@@ -10,7 +10,7 @@
 char buffer[INPUT_BUFFER_MAX] = { 0};
 int input_len = 0;
 int input_cursor = 0;
-int in_nano = 0; // 0 = aquila, 1 = program mode
+int in_nano = 0; // 0 = aquila, 1 = program mode (user is in nano)
 
 extern int input_start; // cursor position for aquila:
 
@@ -20,7 +20,6 @@ void cmd_clear_screen() {
     sleep_interrupt(1000);
     clear_screen();
     printf("Hello, Aquila!\n");
-    // clear the screen
 }
 
 void cmd_help() {
@@ -51,17 +50,16 @@ void cmd_remove(char *filename) {
 }
 
 void cmd_nano(char *filename) {
-    // if filename is empty, return
+    // if filename empty, return
     if (strlen(filename) <= 0) {
         printf("Filename is empty\n");
-        buffer_handler(5, 0); // clear the buffer
+        buffer_handler(5, 0); // clear buffer
         printf("aquila: ");
-        input_len = 0; // reset buffer length after processing
-        input_cursor = 0; // reset cursor position
-        input_start = cursor; // prevent deletion of "aquila: "
+        input_len = 0; 
+        input_cursor = 0; 
+        input_start = cursor; 
         return;
     }
-    // if filename is too long, return
     if (strlen(filename) > MAX_FILE_NAME_SIZE) {
         printf("Filename is too long\n");
         return;
@@ -75,9 +73,9 @@ void buffer_handler(int action, char ascii) {
     if (in_nano == 1) {
         switch (action) {
             case 0: // add character to buffer
-                if (input_len < INPUT_BUFFER_MAX - 1) { // leave space for null terminator
+                if (input_len < INPUT_BUFFER_MAX - 1) { 
                     buffer[input_len] = ascii; // add character to buffer
-                    buffer[input_cursor] = ascii; // insert character
+                    buffer[input_cursor] = ascii;
                     input_len++;
                     input_cursor++;
                 }
@@ -103,19 +101,19 @@ void buffer_handler(int action, char ascii) {
                 }
                 break;
             case 4: // enter key pressed
-            if (input_len < INPUT_BUFFER_MAX - 1) { // leave space for null terminator
+            if (input_len < INPUT_BUFFER_MAX - 1) { 
                 buffer[input_len] = '\n'; // add character to buffer
                 input_len++;
                 input_cursor++;
             }                
-            return; // do nothing if not in program mode
+            return; 
         }
     } else {
         switch (action) {
             case 0: // add character to buffer
-                if (input_len < INPUT_BUFFER_MAX - 1) { // leave space for null terminator
+                if (input_len < INPUT_BUFFER_MAX - 1) { 
                     buffer[input_len] = ascii; // add character to buffer
-                    buffer[input_cursor] = ascii; // insert character
+                    buffer[input_cursor] = ascii; 
                     input_len++;
                     input_cursor++;
                 }
@@ -156,23 +154,23 @@ void buffer_handler(int action, char ascii) {
                 } else if (startsWith(buffer, "cat") == 0) {
                     // cat function with parameter
                     char *filename = buffer + 4; // skip "cat "
-                    cmd_cat(filename); // call cat function with filename
+                    cmd_cat(filename); 
                 } else if (startsWith(buffer, "rm") == 0) {
-                    // cat function with parameter
-                    char *filename = buffer + 3; // skip "cat "
-                    cmd_remove(filename); // call cat function with filename
+                    // rm function with parameter
+                    char *filename = buffer + 3; // skip "rm "
+                    cmd_remove(filename); 
                     
                 } else if (startsWith(buffer, "nano") == 0) {
-                    // cat function with parameter
+                    // nano function with parameter
                     char *raw_filename = buffer + 4;
-                    while (*raw_filename == ' ') raw_filename++; // skip extra spaces if any
+                    while (*raw_filename == ' ') raw_filename++;
                     char filename[MAX_FILE_NAME_SIZE];
                     int i = 0;
                     while (raw_filename[i] != '\0' && i < MAX_FILE_NAME_SIZE - 1) {
                         filename[i] = raw_filename[i];
                         i++;
                     }
-                    filename[i] = '\0'; // terminate it
+                    filename[i] = '\0';
                     
                     cmd_nano(filename);
                     return;
@@ -184,18 +182,18 @@ void buffer_handler(int action, char ascii) {
                     printf("\naquila: ");
                     input_start = cursor; // prevent deletion of "aquila: "
                 }
-                input_len = 0; // reset buffer length after processing
-                input_cursor = 0; // reset cursor position
+                input_len = 0; // reset buffer
+                input_cursor = 0;
                 for (int i = 0; i < INPUT_BUFFER_MAX; i++) {
-                    buffer[i] = 0; // clear the buffer
+                    buffer[i] = 0;
                 }
                 break;
-            case 5: // clear buffer
+            case 5: // reset buffer
                 for (int i = 0; i < INPUT_BUFFER_MAX; i++) {
-                    buffer[i] = 0; // clear the buffer
+                    buffer[i] = 0; 
                 }            
-                input_len = 0; // reset buffer length
-                input_cursor = 0; // reset cursor position
+                input_len = 0;
+                input_cursor = 0; 
                 break;
 
         }

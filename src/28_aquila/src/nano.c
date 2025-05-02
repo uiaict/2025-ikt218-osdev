@@ -18,36 +18,35 @@ extern int input_cursor;
 extern int in_nano;
 
 void open_nano(char filename[]) {
-    // Save the current screen and cursor
-    old_vga = malloc(VGA_WIDTH * VGA_HEIGHT * 2); // allocate memory for old screen
+    // save the current screen and cursor
+    old_vga = malloc(VGA_WIDTH * VGA_HEIGHT * 2); 
     memcpy(old_vga, (const void *)vga, VGA_WIDTH * VGA_HEIGHT * 2);
-    old_cursor = cursor; // save the current cursor position
+    old_cursor = cursor; 
 
     clear_screen();
     printf("Editing file: %s\n", filename);
 
     input_start = VGA_WIDTH;
 
-    // Clear the editing buffer
+    // clear buffer
     for (int i = 0; i < INPUT_BUFFER_MAX; i++) {
         buffer[i] = 0;
     }
 
-    // Copy filename into currently_editing
     int i = 0;
     while (filename[i] != '\0' && i < MAX_FILE_NAME_SIZE - 1) {
         currently_editing[i] = filename[i];
         i++;
     }
-    currently_editing[i] = '\0'; // make sure it's null-terminated
+    currently_editing[i] = '\0';
 
-    // If the file already exists, load its content into the buffer
+    // load file into buffer
     if (fs_file_exists(currently_editing)) {
         fs_print_file(currently_editing);
         fs_add_file_to_buffer(currently_editing);
     } else {
-        input_len = 0; // reset buffer length
-        input_cursor = 0; // reset cursor position
+        input_len = 0; 
+        input_cursor = 0; 
     }
 }
 
@@ -63,10 +62,10 @@ void close_nano() {
 
 
     clear_screen();
-    // paste old vga
-    memcpy(vga, old_vga, VGA_WIDTH * VGA_HEIGHT * 2); // paste the old screen
-    free(old_vga); // free the old screen
-    cursor = old_cursor; // restore the cursor position
+    // paste old screen
+    memcpy(vga, old_vga, VGA_WIDTH * VGA_HEIGHT * 2); 
+    free(old_vga); 
+    cursor = old_cursor; 
     printf("\naquila: ");
-    input_start = cursor; // prevent deletion of "aquila: "
+    input_start = cursor; 
 }

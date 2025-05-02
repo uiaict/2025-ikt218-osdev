@@ -8,7 +8,6 @@ extern char buffer[INPUT_BUFFER_MAX];
 extern int input_len;
 extern int input_cursor;
 
-// Fake file entries
 typedef struct {
     char name[MAX_FILE_NAME_SIZE];
     char data[MAX_FILE_SIZE];
@@ -36,7 +35,7 @@ void fs_save(char *filename, char* data) {
     for (int i = 0; i < file_count; i++) {
         if (strcmp(files[i].name, filename) == 0) {
             strncpy(files[i].data, data, MAX_FILE_SIZE - 1); // copy data to file
-            files[i].data[strlen(data)] = '\0'; // null-terminate the string
+            files[i].data[strlen(data)] = '\0';
             return;
         }
     }
