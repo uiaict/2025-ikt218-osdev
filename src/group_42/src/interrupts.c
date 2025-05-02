@@ -1,5 +1,5 @@
 #include "kernel/interrupts.h"
-#include "apps/shell.h"
+#include "apps/shell/shell.h"
 #include "kernel/idt.h"
 #include "kernel/pit.h"
 #include "kernel/keyboard.h"

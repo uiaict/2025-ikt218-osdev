@@ -8,7 +8,7 @@
 #include "kernel/print.h"
 #include "kernel/system.h"
 
-#include "apps/shell.h"
+#include "apps/shell/shell.h"
 
 #include "kernel/memory.h"
 #include "kernel/pit.h"
@@ -64,16 +64,14 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   print("Initializing PIT...\n");
   init_pit();
 
-  print("Testing Pit...\n");
-
   sleep_busy(1000);
-  print("Sleep busy succeded\n");
+  print("Testing sleep_busy...\n");
 
   sleep_interrupt(1000);
-  print("Sleep interrupt succeded\n");
+  print("Testing sleep_interrupt...\n");
 
   print("Initializing shell...\n");
-  sleep_busy(3000);
+  sleep_busy(2000);
   shell_init();
 
   while (true) {
