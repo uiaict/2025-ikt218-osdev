@@ -59,6 +59,36 @@ void printf(const char* fmt, uint32_t arg) {
     }
 }
 
+void print_dec(uint32_t value) {
+    if (value == 0) {
+        putchar('0');
+        return;
+    }
+
+    char buf[16];
+    int i = 0;
+    while (value > 0) {
+        buf[i++] = '0' + (value % 10);
+        value /= 10;
+    }
+
+    while (i--) {
+        putchar(buf[i]);
+    }
+}
+
+void print_hex(uint32_t value) {
+    const char* hex_digits = "0123456789ABCDEF";
+
+    putchar('0');
+    putchar('x');
+    for (int i = 7; i >= 0; i--) {
+        uint8_t digit = (value >> (i * 4)) & 0xF;
+        putchar(hex_digits[digit]); 
+    }
+}
+
+
 void outb(uint16_t port, uint8_t value) {
     __asm__ volatile ("outb %0, %1" : : "a"(value), "Nd"(port));
 }

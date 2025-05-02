@@ -12,6 +12,11 @@ extern "C" {
 void* malloc(size_t size);
 void free(void* ptr);
 
+void* operator_new(size_t size);
+void operator_delete(void* ptr);
+
+void print_heap_blocks(void);
+
 #ifdef __cplusplus
 }
 #endif
