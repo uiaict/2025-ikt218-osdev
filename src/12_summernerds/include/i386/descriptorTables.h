@@ -40,9 +40,8 @@ extern void gdt_flush(uint32_t); // Ekstern ASM-funksjon
 struct IDTEntry
 {
     uint16_t base_low;
-    uint16_t segment;
+    uint16_t sel;
     uint8_t zero;
-    uint8_t sel;
     uint8_t flags;
     uint16_t base_high;
 } __attribute__((packed));
