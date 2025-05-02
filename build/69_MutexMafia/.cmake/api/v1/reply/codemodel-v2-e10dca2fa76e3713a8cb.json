@@ -1,0 +1,78 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.22.1"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "UiAOS",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "create-fat32-disk::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-create-fat32-disk-Debug-1b2731a33ab95299246f.json",
+					"name" : "create-fat32-disk",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uiaos-create-image::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uiaos-create-image-Debug-cf19686888fd16ff5c62.json",
+					"name" : "uiaos-create-image",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uiaos-kernel::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uiaos-kernel-Debug-3aa483c5740f74c61c97.json",
+					"name" : "uiaos-kernel",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/workspaces/2025-ikt218-osdev/build/69_MutexMafia",
+		"source" : "/workspaces/2025-ikt218-osdev/src/69_MutexMafia"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

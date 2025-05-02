@@ -1,0 +1,246 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "kernel.bin"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"target_link_options",
+			"target_compile_options",
+			"target_include_directories"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 60,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 78,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 70,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 66,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-Wall"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-Wextra"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-nostdinc"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-nostdlib"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-fno-builtin"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-fno-stack-protector"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-fno-stack-check"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-fno-lto"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-fPIE"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-m32"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-march=i386"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-mno-mmx"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-mno-sse"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-mno-sse2"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-mno-red-zone"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-Wno-main"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-g"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-Wno-unused-variable"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-Wno-unused-parameter"
+				},
+				{
+					"fragment" : "-std=gnu99"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 4,
+					"path" : "/workspaces/2025-ikt218-osdev/src/group_name/include"
+				}
+			],
+			"language" : "C",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "99"
+			},
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"id" : "uiaos-kernel::@6890427a1f51a3e7e1df",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-g",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-ffreestanding",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-nostdlib",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-fno-builtin",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-static",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-pie",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-O0",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-T/workspaces/2025-ikt218-osdev/src/group_name/src/arch/i386/linker.ld",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-g",
+				"role" : "flags"
+			}
+		],
+		"language" : "C"
+	},
+	"name" : "uiaos-kernel",
+	"nameOnDisk" : "kernel.bin",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/kernel.c",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "EXECUTABLE"
+}

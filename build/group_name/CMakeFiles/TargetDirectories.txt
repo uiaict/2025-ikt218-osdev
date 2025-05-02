@@ -1,0 +1,5 @@
+/workspaces/2025-ikt218-osdev/build/group_name/CMakeFiles/uiaos-kernel.dir
+/workspaces/2025-ikt218-osdev/build/group_name/CMakeFiles/create-fat32-disk.dir
+/workspaces/2025-ikt218-osdev/build/group_name/CMakeFiles/uiaos-create-image.dir
+/workspaces/2025-ikt218-osdev/build/group_name/CMakeFiles/edit_cache.dir
+/workspaces/2025-ikt218-osdev/build/group_name/CMakeFiles/rebuild_cache.dir
