@@ -9,6 +9,7 @@ void monitor_initialize();
 void monitor_setcolor(uint8_t color);
 // void monitor_putentryat(char c, uint8_t color, size_t x, size_t y);
 
+void move_cursor_direction(int move_x, int move_y);
 void monitor_put(char c);
 void monitor_clear();
 void monitor_write(const char *data, size_t size);

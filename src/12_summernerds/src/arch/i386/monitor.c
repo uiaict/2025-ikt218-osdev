@@ -83,6 +83,14 @@ static inline uint16_t vga_entry(unsigned char uc, uint8_t color)
     return (uint16_t)uc | (uint16_t)color << 8;
 }
 
+// Moves cursor according to input
+void move_cursor_direction(int move_x, int move_y)
+{   
+    terminal_column += move_x;
+    terminal_row += move_y;
+    move_cursor();
+}
+
 void monitor_initialize(void)
 {
     terminal_row = 0;

@@ -1,24 +1,24 @@
 #include "i386/keyboard.h"
+#include "i386/interruptRegister.h"
+#include "i386/monitor.h"
+#include "kernel/memory.h"
 #include "libc/system.h"
 #include "common.h"
-#include "i386/interruptRegister.h"
 #include "screen.h"
 
-typedef struct{
-    int x;
-    int y;
-}arrowKeys;
 
 int cannotType = 1;
 
+// Enable free typing from user
 void EnableTyping(){
     cannotType = 0;
 }
+// Disable free typing from user
 void DisableTyping(){
     cannotType = 1;
 }
 
-static arrowKeys move2D;
+
 
 void irq1_keyboard_handler(registers_t *regs, void *ctx)
 {
@@ -28,11 +28,12 @@ void irq1_keyboard_handler(registers_t *regs, void *ctx)
     char ascii = scanCodeToASCII(&scancode);
 
     if (cannotType) return;
-
-    if (ascii != 0 && ascii != 2 && ascii != 3)
+    if (ascii == 1){
+        move_cursor_direction(arrowKeys2D.x, arrowKeys2D.y);
+    }
+    else if (ascii != 0)
     {
-        char msg[2] = {ascii, '\0'};
-        printf(msg); // Eller bruk printf
+        putchar(ascii); // Eller bruk printf
     }
 
     (void)regs;
@@ -76,7 +77,6 @@ char scanCodeToASCII(unsigned char *scanCode)
         return 0;
 
     case 0xBA: // CapsLock released
-        // capsEnabled = !capsEnabled;
         return 0;
 
     case 0x53: // delete pressed
@@ -92,7 +92,7 @@ char scanCodeToASCII(unsigned char *scanCode)
         return '\n';
 
     case 0x9C: // enter released
-        return 2;
+        return 0;
 
     case 0x2A: // Left shift pressed
         shiftPressed = true;
@@ -110,18 +110,6 @@ char scanCodeToASCII(unsigned char *scanCode)
         shiftPressed = false;
         return 0;
 
-    case 0x48: // cursor up
-        return 0;
-
-    case 0x50: // cursor down
-        return 0;
-
-    case 0x49: // cursor høyre
-        return 0;
-
-    case 0x4B: // cursor venstre
-        return 0;
-
     case 0x01: // esc pressed
         return 0;
 
@@ -134,6 +122,38 @@ char scanCodeToASCII(unsigned char *scanCode)
     case 0x8E: // backspce released
         return 0;
 
+    case 0x48: // up arrow pressed
+        if (arrowKeys2D.y ==-1) return 1;
+        arrowKeys2D.y -= 1;
+        return 1;
+    case 0xC8: // up arrow released
+        arrowKeys2D.y += 1;
+        return 0;
+
+    case 0x50: // down arrow pressed
+        if (arrowKeys2D.y ==1) return 1;
+        arrowKeys2D.y += 1;
+        return 1;
+    case 0xD0: // down arrow released
+        
+        arrowKeys2D.y -= 1;
+        return 0;
+
+    case 0x4D: // right arrow pressed
+        if (arrowKeys2D.x ==1) return 1;
+        arrowKeys2D.x += 1;
+        return 1;
+    case 0xCD: // right arrow released
+        arrowKeys2D.x -= 1;
+        return 0;
+
+    case 0x4B: // left arrow pressed
+        if (arrowKeys2D.x ==-1) return 1;
+        arrowKeys2D.x -= 1;
+        return 1;
+    case 0xCB: // left arrow released
+        arrowKeys2D.x += 1;
+        return 0;
     default:
 
         if (word < 128)
