@@ -5,7 +5,8 @@
 extern "C" {
 #endif
 
-void matrix_rain();
+void matrix_rain_init();    // Initializes state
+void matrix_rain_tick(); // Updates the screen
 
 #ifdef __cplusplus
 }

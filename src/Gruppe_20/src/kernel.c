@@ -30,6 +30,18 @@ struct multiboot_info {
 };
 extern uint32_t end;
 
+extern volatile uint32_t ticks;
+
+//void test_interrupts() {
+  //  uint32_t start = ticks;
+   // while (ticks - start < 1000) {
+    //    if ((ticks - start) % 100 == 0) {
+     //       printf("Tick: %d\n", ticks);
+     //   }
+   // }
+   // printf("Interrupts are working!\n");
+//}
+
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     print_int(0);  // Pass a dummy value or actual value
     
@@ -41,7 +53,10 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_paging();
     print_memory_layout();
     init_pit();
+    asm volatile("int $0x04"); // Trigger a timer interrupt for testing
+
     printf("Hello %s", "World\n");
+    //test_interrupts();
     
 
     return kernel_main();

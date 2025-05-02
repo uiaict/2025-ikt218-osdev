@@ -13,6 +13,8 @@
 #define TARGET_FREQUENCY 1000
 #define TICKS_PER_MS (TARGET_FREQUENCY / 1000)
 
+extern volatile uint32_t ticks;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

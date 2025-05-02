@@ -6,14 +6,14 @@
 #include "libc/isr.h"
 #include "io.h"
 
-static volatile uint32_t ticks = 0;
+volatile uint32_t ticks = 0;
 
-void pit_irq_handler(registers_t* regs, void* context) {
+void pit_irq_handler(registers_t regs) {
     ticks++;
 }
 
 void init_pit() {
-    register_irq_handler(IRQ0, pit_irq_handler, NULL);
+    register_interrupt_handler(IRQ0, pit_irq_handler);
 
     // Configure PIT to 1000Hz
     outb(PIT_CMD_PORT, 0x36);  // Channel 0, lobyte/hibyte, rate generator
@@ -27,7 +27,8 @@ void sleep_interrupt(uint32_t milliseconds) {
     uint32_t ticks_to_wait = milliseconds * TICKS_PER_MS;
     
     while ((ticks - start_ticks) < ticks_to_wait) {
-        asm volatile("sti\nhlt");
+        asm volatile("sti\n\t");
+        asm volatile("hlt\n\t");
     }
 }
 

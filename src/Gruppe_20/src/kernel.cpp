@@ -52,38 +52,26 @@ void play_music() {
             player->play_song(&songs[i]);
             printf("Finished playing the song.\n");
         }
+        matrix_rain_tick();
+        sleep_interrupt(10);
+
     }
 }
 
 
 // Kernel main
 extern "C" int kernel_main() {
+    
     init_gdt();
     init_idt();
     init_pit();
 
-    register_interrupt_handler(3, [](registers_t* regs, void* context) {
-        printf("Breakpoint hit!\n");
-    }, nullptr);
-
-    register_interrupt_handler(14, [](registers_t* regs, void* context) {
-        uint32_t fault_addr;
-        asm volatile("mov %%cr2, %0" : "=r"(fault_addr));
-        printf("Page fault at 0x%x (", fault_addr);
-        if (regs->err_code & 0x1) printf("protection violation ");
-        if (regs->err_code & 0x2) printf("write attempt ");
-        if (regs->err_code & 0x4) printf("user-mode ");
-        printf(")\n");
-        panic("Page fault");
-    }, nullptr);
-
     asm volatile("sti");
 
     printf("Kernel initialized successfully\n");
-    sleep_interrupt(50);
-   
+    sleep_interrupt(1000);
     play_music();  // <- starts the loop and never returns
-    matrix_rain();
+   
 
     while (true) {
         asm volatile("hlt");

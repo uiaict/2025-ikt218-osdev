@@ -10,54 +10,72 @@
 // Array of registered interrupt handlers
 static isr_t interrupt_handlers[256];
 // Array to store context pointers for each handler
-static void* handler_contexts[256];
 
-void isr_handler(registers_t* regs) {
-    // Get the context for this interrupt if it exists
-    void* context = handler_contexts[regs->int_no];
-    
-    if (interrupt_handlers[regs->int_no] != NULL) {
-        // Call the registered handler with context
-        interrupt_handlers[regs->int_no](regs, context);
-    } else {
-        printf("Unhandled interrupt: %d\n", regs->int_no);
-        // You might want to halt or handle unregistered interrupts here
+char *exception_messages[] = {
+    "Division by zero exception",
+    "Debug exception",
+    "Non maskable interrupt",
+    "Breakpoint exception",
+    "Into detected overflow",
+    "Out of bounds exception",
+    "Invalid opcode exception",
+    "No coprocessor exception",
+    "Double fault",
+    "Coprocessor segment overrun",
+    "Bad TSS",
+    "Segment not present",
+    "Stack fault",
+    "General protection fault",
+    "Page fault",
+    "Unknown interrupt exception",
+    "Coprocessor fault",
+    "Alignment check exception",
+    "Machine check exception",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved"
+};
+
+
+void isr_handler(registers_t regs)
+{
+    //Prints the interrupt to the terminal.
+    printf("Recieved interrupt %d: %s\n", regs.int_no, exception_messages[regs.int_no]);
+}
+
+void irq_handler(registers_t regs)
+{
+    //Send an end of interrupt signal to the programmable interrupt controllers.
+    //If the interrupt came from a slave PIC send a reset to the slave PIC aswell. 
+    if (regs.int_no >= 40)
+    {
+        //Send reset signal to slave.
+        outb(0xA0, 0x20);
+    }
+    // Send reset signal to master.
+    outb(0x20, 0x20);
+
+    //Checks if a function pointer is registered for the interrupt or IRQ.
+    if (interrupt_handlers[regs.int_no] != 0)
+    {
+        //Retrieves the function pointer from the interrupt_handlers array.
+        isr_t handler = interrupt_handlers[regs.int_no];
+        //Calls the function with the regs struct as a parameter.
+        handler(regs);
     }
 }
 
-void irq_handler(registers_t* regs) {
-    // Get the context for this IRQ if it exists
-    void* context = handler_contexts[regs->int_no];
-    
-    if (interrupt_handlers[regs->int_no] != NULL) {
-        // Call the registered handler with context
-        interrupt_handlers[regs->int_no](regs, context);
-    }
-    
-    // Send End of Interrupt (EOI) to PICs
-    if (regs->int_no >= 40) {
-        outb(0xA0, 0x20); // Send EOI to slave PIC
-    }
-    outb(0x20, 0x20); // Always send EOI to master PIC
-}
-
-void register_interrupt_handler(uint8_t n, isr_t handler, void* context) {
-    if (n >= 255) {  // Changed from >= 256
-        return;
-    }
+void register_interrupt_handler(uint8_t n, isr_t handler)
+{
     interrupt_handlers[n] = handler;
-    handler_contexts[n] = context;
-}
-
-void register_irq_handler(uint8_t irq, isr_t handler, void* context) {
-    // IRQs 0-15 map to interrupts 32-47
-    uint8_t interrupt_num = irq + 32;
-    
-    // Validate the IRQ number
-    if (irq > 15) {
-        printf("Invalid IRQ number: %d\n", irq);
-        return;
-    }
-    
-    register_interrupt_handler(interrupt_num, handler, context);
 }

@@ -7,6 +7,8 @@
 #define VIDEO_MEMORY ((uint16_t*)0xB8000)
 
 static uint32_t rand_seed = 12345678;
+static int positions[SCREEN_WIDTH];
+static int initialized = 0;
 
 // Simple linear congruential generator (LCG)
 uint32_t rand() {
@@ -38,33 +40,28 @@ void clear_screen() {
     }
 }
 
-void matrix_rain() {
-    int positions[SCREEN_WIDTH];
-
-    // Initialize column positions randomly
+void matrix_rain_init() {
+    clear_screen();
     for (int i = 0; i < SCREEN_WIDTH; i++) {
         positions[i] = rand() % SCREEN_HEIGHT;
     }
+    initialized = 1;
+}
 
-    clear_screen();
+void matrix_rain_tick() {
+    if (!initialized) matrix_rain_init();
 
-    while (1) {
-        for (int x = 0; x < SCREEN_WIDTH; x++) {
-            int y = positions[x];
+    for (int x = 0; x < SCREEN_WIDTH; x++) {
+        int y = positions[x];
 
-            // Erase the previous character
-            if (y > 0) {
-                put_char(x, y - 1, ' ', 0x00);
-            }
-
-            // Print new random character
-            char c = random_char();
-            put_char(x, y, c, 0x0A); // Bright green
-
-            // Move head down or wrap around
-            positions[x] = (positions[x] + 1) % SCREEN_HEIGHT;
+        if (y > 0) {
+            put_char(x, y - 1, ' ', 0x00); // Erase previous char
         }
 
-        delay();  // crude animation delay
+        char c = random_char();
+        put_char(x, y, c, 0x0A); // Green
+
+        positions[x] = (positions[x] + 1) % SCREEN_HEIGHT;
     }
 }
+
