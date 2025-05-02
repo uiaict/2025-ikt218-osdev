@@ -1,5 +1,5 @@
-#include "malloc.h"
-#include "../include/libc/stdbool.h"
+#include "kernel/malloc.h"
+#include "libc/stdbool.h"
 
 // #define MEMORY_CHUNKS 512
 

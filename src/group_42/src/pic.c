@@ -1,5 +1,5 @@
-#include "pic.h"
-#include "system.h"
+#include "kernel/pic.h"
+#include "kernel/system.h"
 
 /*
 To avoid conflicts with CPU exceptions, the PIC is typically remapped to start

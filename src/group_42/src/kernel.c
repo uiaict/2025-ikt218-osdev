@@ -3,10 +3,10 @@
 #include "libc/stdint.h"
 #include <multiboot2.h>
 
-#include "interrupts.h"
-#include "pic.h"
-#include "print.h"
-#include "system.h"
+#include "kernel/interrupts.h"
+#include "kernel/pic.h"
+#include "kernel/print.h"
+#include "kernel/system.h"
 
 #include "apps/shell.h"
 
@@ -23,9 +23,7 @@ struct multiboot_info {
 
 int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   cursor_disable();
-  print("Just booted. Hello!\n");
-
-  printf("Testing %s%c", "print", 'f');
+  printf("Testing %s%c%c%d%c%d\n", "print", 'f',' ', 6969, ' ', -420);
 
   print("Initialising PIC...\n");
   remap_pic();
@@ -37,13 +35,10 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   for (int i = 0; i < 1000000; i++) {
     io_wait();
   }
-  print("Done waiting\n");
 
-  print("Switching to protected mode...\n");
   switch_to_protected_mode();
   print("Protected mode switched.\n");
 
-  print("Enabling interrupts...\n");
   asm volatile("sti");
   print("Interrupts enabled.\n");
 
@@ -53,13 +48,13 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   print("Initializing paging...\n");
   init_paging();
 
-  print("Printing memory layout...\n");
-  print_memory_layout();
-
   print("Memory allocation test...\n");
   void *some_memory = malloc(12345);
   void *memory2 = malloc(54321);
   void *memory3 = malloc(13331);
+
+  print("Printing memory layout...\n");
+  print_memory_layout();
 
   print("Freeing memory...\n");
   free(some_memory);

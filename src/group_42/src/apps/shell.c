@@ -1,6 +1,6 @@
 #include "shell.h"
-#include "../system.h"
-#include "../print.h"
+#include "kernel/system.h"
+#include "kernel/print.h"
 
 bool shell_active = false;
 

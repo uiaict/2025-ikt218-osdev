@@ -1,10 +1,10 @@
-#include "interrupts.h"
+#include "kernel/interrupts.h"
 #include "apps/shell.h"
-#include "idt.h"
+#include "kernel/idt.h"
 #include "kernel/pit.h"
-#include "keyboard.h"
-#include "print.h"
-#include "system.h"
+#include "kernel/keyboard.h"
+#include "kernel/print.h"
+#include "kernel/system.h"
 
 void default_interrupt_handler() {
 

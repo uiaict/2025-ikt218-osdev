@@ -1,9 +1,9 @@
 #include "kernel/pit.h"
-#include "idt.h"
-#include "interrupts.h"
+#include "kernel/idt.h"
+#include "kernel/interrupts.h"
 #include "libc/stddef.h"
 #include "libc/stdint.h"
-#include "system.h"
+#include "kernel/system.h"
 
 static uint32_t ticks = 0;
 

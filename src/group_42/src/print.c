@@ -1,6 +1,7 @@
-#include "print.h"
+#include "kernel/print.h"
 #include "libc/stdarg.h"
 #include "libc/stddef.h"
+#include "libc/stdbool.h"
 
 
 int cursorPositionX_ = 0;
@@ -53,6 +54,8 @@ void printf(const char *format, ...) {
 
   const char *p = format;
   char char_buf[2];
+  char num_buf[12];
+  char hex_buf[9];
 
   while (*p != '\0') {
     if (*p == '%') {
@@ -68,6 +71,61 @@ void printf(const char *format, ...) {
         case 's': {
           char *str = va_arg(args, char *);
           printc(str, VIDEO_WHITE);
+          break;
+        }
+        case 'd': {
+          int num = va_arg(args, int);
+          int i = 0;
+          int is_negative = false;
+
+          if (num < 0) {
+            is_negative = true;
+            num = -num;
+          }
+
+          do {
+            num_buf[i++] = (num % 10) + '0';
+            num /= 10;
+          } while (num != 0);
+
+          if (is_negative) {
+            num_buf[i++] = '-';
+          }
+
+          num_buf[i] = '\0';
+
+          for (int j = 0; j < i / 2; j++) {
+            char temp = num_buf[j];
+            num_buf[j] = num_buf[i - j - 1];
+            num_buf[i - j - 1] = temp;
+          }
+
+          printc(num_buf, VIDEO_WHITE);
+          break;
+        }
+        case 'x': {
+          unsigned int num = va_arg(args, unsigned int);
+          int i = 0;
+
+          do {
+            unsigned int nibble = num & 0xF;
+            if (nibble < 10) {
+              hex_buf[i++] = nibble + '0';
+            } else {
+              hex_buf[i++] = nibble - 10 + 'a';
+            }
+            num >>= 4;
+          } while (num != 0);
+
+          hex_buf[i] = '\0';
+
+          for (int j = 0; j < i / 2; j++) {
+            char temp = hex_buf[j];
+            hex_buf[j] = hex_buf[i - j - 1];
+            hex_buf[i - j - 1] = temp;
+          }
+
+          printc(hex_buf, VIDEO_WHITE);
           break;
         }
         case '%': {
