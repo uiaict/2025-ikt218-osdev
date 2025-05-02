@@ -69,18 +69,17 @@ add_executable(uiaos-kernel
 	src/interrupts.c
 	src/keyboard.c
 	src/pic.c
-	src/apps/shell/shell.c
 	src/memory/memory.c
 	src/memory/malloc.c
 	src/memory/memutils.c
 	src/pit.c
-	src/apps/music_player/frequencies.h
+	src/apps/shell/shell.c
+	src/apps/shell/command.c
 	src/apps/music_player/song_player.cpp
-	src/apps/music_player/song.h
 )
 
 # Include directories for the kernel target
-target_include_directories(uiaos-kernel PUBLIC include)
+target_include_directories(uiaos-kernel PUBLIC include src/apps)
 
 
 # Specify compile options for C and C++

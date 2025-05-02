@@ -8,7 +8,7 @@
 #include "kernel/print.h"
 #include "kernel/system.h"
 
-#include "apps/shell/shell.h"
+#include "shell/shell.h"
 
 #include "kernel/memory.h"
 #include "kernel/pit.h"
