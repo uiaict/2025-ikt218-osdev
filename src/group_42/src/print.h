@@ -35,6 +35,11 @@ void print(const char *string);
 
 void printc(const char *string, VideoColour colour);
 
+/**
+ * @brief Very basic printf, supports only string and char.
+ */
+void printf(const char *format, ...);
+
 void incrementCursorPosition();
 
 char *cursorPosToAddress(int x, int y);

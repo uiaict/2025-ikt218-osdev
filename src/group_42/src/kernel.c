@@ -26,6 +26,9 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   cursor_disable();
   print("Just booted. Hello!\n");
 
+  // Print a hello world message with printf.
+  printf("%s%c%c%c%c%c%c%c%c\n", "Hello", ' ', 'W', 'O', 'R', 'L', 'D');
+
   print("Initialising PIC...\n");
   remap_pic();
 
@@ -58,8 +61,6 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
 
   // Initialize PIT
   //init_pit(); // <------ THIS IS PART OF THE ASSIGNMENT
-
-  // Print a hello world message.
 
   shell_init();
   while (true) {
