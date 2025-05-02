@@ -5,8 +5,6 @@
 #include <libc/stdio.h>
 #include "common.h"
 
-#define BRUTE_FORCE_CONSTANT 140000
-
 static uint32_t pit_ticks = 0;
 
 void pit_callback(registers_t *regs, void *ctx)
