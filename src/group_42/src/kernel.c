@@ -21,13 +21,11 @@ struct multiboot_info {
   struct multiboot_tag *first;
 };
 
-
 int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   cursor_disable();
   print("Just booted. Hello!\n");
 
-  // Print a hello world message with printf.
-  printf("%s%c%c%c%c%c%c%c%c\n", "Hello", ' ', 'W', 'O', 'R', 'L', 'D');
+  printf("Testing %s%c", "print", 'f');
 
   print("Initialising PIC...\n");
   remap_pic();
@@ -36,12 +34,11 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   init_interrupts();
 
   print("Waiting...\n");
-
   for (int i = 0; i < 1000000; i++) {
     io_wait();
   }
-
   print("Done waiting\n");
+
   print("Switching to protected mode...\n");
   switch_to_protected_mode();
   print("Protected mode switched.\n");
@@ -50,19 +47,40 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   asm volatile("sti");
   print("Interrupts enabled.\n");
 
-  // Initialize the kernel's memory manager using the end address of the kernel.
-  init_kernel_memory(&end); // <------ THIS IS PART OF THE ASSIGNMENT
+  print("Initializing kernel memory...\n");
+  init_kernel_memory(&end);
 
-  // Initialize paging for memory management.
-  init_paging(); // <------ THIS IS PART OF THE ASSIGNMENT
+  print("Initializing paging...\n");
+  init_paging();
 
-  // Print memory information.
-  print_memory_layout(); // <------ THIS IS PART OF THE ASSIGNMENT
+  print("Printing memory layout...\n");
+  print_memory_layout();
 
-  // Initialize PIT
-  //init_pit(); // <------ THIS IS PART OF THE ASSIGNMENT
+  print("Memory allocation test...\n");
+  void *some_memory = malloc(12345);
+  void *memory2 = malloc(54321);
+  void *memory3 = malloc(13331);
 
+  print("Freeing memory...\n");
+  free(some_memory);
+  free(memory2);
+  free(memory3);
+
+  print("Initializing PIT...\n");
+  init_pit();
+
+  print("Testing Pit...\n");
+
+  sleep_busy(1000);
+  print("Sleep busy succeded\n");
+
+  sleep_interrupt(1000);
+  print("Sleep interrupt succeded\n");
+
+  print("Initializing shell...\n");
+  sleep_busy(3000);
   shell_init();
+
   while (true) {
   }
 

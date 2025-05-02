@@ -1,9 +1,10 @@
 #include "interrupts.h"
+#include "apps/shell.h"
 #include "idt.h"
+#include "kernel/pit.h"
 #include "keyboard.h"
 #include "print.h"
 #include "system.h"
-#include "apps/shell.h"
 
 void default_interrupt_handler() {
 
@@ -39,9 +40,9 @@ void keyboard_handler() {
     // Convert scancode to ASCII
     if (scancode < SCANCODE_MAX) {
       char ascii = scancode_to_ascii[scancode];
-      if(shell_active){
-        shell_input(ascii);
-    } 
+      if (shell_active) {
+	shell_input(ascii);
+      }
     }
   }
 
@@ -51,6 +52,7 @@ void keyboard_handler() {
 extern void default_interrupt_handler_wrapper(void);
 extern void spurious_interrupt_handler_wrapper(void);
 extern void keyboard_handler_wrapper(void);
+extern void pit_interrupt_handler_wrapper(void);
 
 void init_interrupts() {
   // Point IDT entries to the assembly wrappers
@@ -58,6 +60,7 @@ void init_interrupts() {
     set_idt_entry(i, (uint32_t)default_interrupt_handler_wrapper);
   }
 
+  set_idt_entry(IRQ0, (uint32_t)pit_interrupt_handler_wrapper);
   set_idt_entry(IRQ1, (uint32_t)keyboard_handler_wrapper);
   set_idt_entry(IRQ7, (uint32_t)spurious_interrupt_handler_wrapper);
 
