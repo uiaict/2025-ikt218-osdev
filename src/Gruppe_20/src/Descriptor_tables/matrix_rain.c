@@ -64,4 +64,21 @@ void matrix_rain_tick() {
         positions[x] = (positions[x] + 1) % SCREEN_HEIGHT;
     }
 }
+#include "libc/system.h"  // for sleep_interrupt
+#include "libc/stdio.h"   // for printf
+
+void matrix_rain_intro(uint32_t frames, uint32_t delay_ms) {
+    clear_screen();
+    printf("Welcome to our OS! We are group 20!\n");
+    sleep_interrupt(1000);  // pause for dramatic effect
+
+    for (uint32_t i = 0; i < frames; i++) {
+        matrix_rain_tick();
+        sleep_interrupt(delay_ms);
+    }
+
+    clear_screen();
+    printf("Starting system...\n");
+    sleep_interrupt(500);
+}
 

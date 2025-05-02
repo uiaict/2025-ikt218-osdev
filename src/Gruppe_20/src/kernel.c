@@ -43,8 +43,6 @@ extern volatile uint32_t ticks;
 //}
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-    print_int(0);  // Pass a dummy value or actual value
-    
     init_gdt();
     init_idt();
     init_irq();
@@ -56,8 +54,9 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     asm volatile("int $0x04"); // Trigger a timer interrupt for testing
 
     printf("Hello %s", "World\n");
-    //test_interrupts();
+   sleep_interrupt(2000);
     
+    matrix_rain_intro(150, 20);
 
     return kernel_main();
 

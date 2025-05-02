@@ -52,9 +52,6 @@ void play_music() {
             player->play_song(&songs[i]);
             printf("Finished playing the song.\n");
         }
-        matrix_rain_tick();
-        sleep_interrupt(10);
-
     }
 }
 
@@ -62,9 +59,6 @@ void play_music() {
 // Kernel main
 extern "C" int kernel_main() {
     
-    init_gdt();
-    init_idt();
-    init_pit();
 
     asm volatile("sti");
 
