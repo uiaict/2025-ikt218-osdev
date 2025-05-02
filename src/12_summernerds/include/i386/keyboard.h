@@ -1,5 +1,4 @@
 #pragma once
-#include "i386/IRQ.h"
 
 #include "i386/interruptRegister.h"
 // #include <libc/stdint.h>

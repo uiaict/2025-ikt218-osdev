@@ -59,7 +59,7 @@ char scanCodeToASCII(unsigned char *scanCode)
         return 0;
 
     case 0xBA: // CapsLock released
-        capsEnabled = !capsEnabled;
+        // capsEnabled = !capsEnabled;
         return 0;
 
     case 0x53: // delete pressed

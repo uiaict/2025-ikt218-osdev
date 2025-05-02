@@ -19,19 +19,8 @@ void isr_handler(registers_t regs)
     }
     else
     {
-        /*monitor_write("Unhandled interrupt: ");
-        monitor_write_hex(int_no);
-        monitor_put('\n');*/
+        printf("Unhandled interrupt.%d", int_no);
         while (true)
             ; // Infinite loop if no handler is registered
-    }
-}
-__attribute__((noreturn)) void exception_handler(void);
-
-void exception_handler()
-{
-    while (true)
-    {
-        asm volatile("cli; hlt");
     }
 }

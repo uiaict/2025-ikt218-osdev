@@ -6,8 +6,6 @@
 #include <libc/stdio.h>
 #include "common.h"
 
-#define BRUTE_FORCE_CONSTANT 140000
-
 static uint32_t pit_ticks = 0;
 
 void pit_callback(registers_t *regs, void *ctx)
@@ -30,6 +28,7 @@ void init_pit()
     printf("Initialize PIT with %d Hz\n", TARGET_FREQUENCY);
 }
 
+// A safe way to access pit_ticks
 uint32_t get_current_tick()
 {
     return pit_ticks;
@@ -39,7 +38,7 @@ uint32_t get_current_tick()
 void sleep_busy(uint32_t wait_ms)
 {
     uint32_t start_tick = get_current_tick();
-    uint32_t wait_ticks = wait_ms * BRUTE_FORCE_CONSTANT;
+    uint32_t wait_ticks = wait_ms;
     uint32_t waited_ticks = 0;
     while ((waited_ticks) < wait_ticks)
     {

@@ -60,14 +60,13 @@ enable_language(ASM)  #  Fortell CMake at vi bruker Assembly
 
 # Legg til eksekverbar kernel, men IKKE gdt.s her!
 add_executable(uiaos-kernel 
-    src/multiboot2.s # TODO: Add multiboot2 support
     src/kernel.c
     src/menu.c
     src/screen.c
     src/matrix_effect/matrix.c
     #src/song.c
     src/common.c
-    src/multiboot2.s
+
     # SYSTEM
     src/arch/i386/IRQ.c
     src/arch/i386/ISR.c
@@ -80,7 +79,6 @@ add_executable(uiaos-kernel
     src/arch/i386/system.c
     src/arch/i386/pit.c
     src/arch/i386/string.c
-    #src/arch/i386/gdt.asm
 
     # MEMORY
     src/memory/malloc.c
@@ -90,21 +88,17 @@ add_executable(uiaos-kernel
     # SONG
     src/song/songPlayer.c
 
+    # ASSEMBLY 
+    src/arch/i386/descriptor_tables.asm
+    src/arch/i386/ISR.asm
+    src/multiboot2.asm
 )
 
-
-add_library(gdt_asm OBJECT src/arch/i386/gdt.asm)
-set_target_properties(gdt_asm PROPERTIES LANGUAGE ASM_NASM)
-target_link_libraries(uiaos-kernel gdt_asm)
-set_source_files_properties(src/arch/i386/gdt.asm PROPERTIES LANGUAGE ASM_NASM)
+# Necessary for .asm files to be in the add_executable function
+set_source_files_properties(src/arch/i386/descriptor_tables.asm PROPERTIES LANGUAGE ASM_NASM)
 set_source_files_properties(src/arch/i386/ISR.asm PROPERTIES LANGUAGE ASM_NASM)
-add_library(isr_asm OBJECT src/arch/i386/ISR.asm)
-target_link_libraries(uiaos-kernel isr_asm)
+set_source_files_properties(src/multiboot2.asm PROPERTIES LANGUAGE ASM_NASM)
 
-
-
-# Link gdt_asm med uiaos-kernel
-#target_link_libraries(uiaos-kernel gdt_asm)
 
 # Include directories for the kernel target
 target_include_directories(uiaos-kernel PUBLIC include)
