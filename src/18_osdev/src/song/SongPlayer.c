@@ -10,27 +10,15 @@
 void enable_speaker() {
     uint8_t tmp = inb(PC_SPEAKER_PORT);
     outb(PC_SPEAKER_PORT, tmp | 0x03);
-    // Pseudocode for enable_speaker:
-    // 1. Read the current state from the PC speaker control port.
-    // 2. The control register bits are usually defined as follows:
-    //    - Bit 0 (Speaker gate): Controls whether the speaker is on or off.
-    //    - Bit 1 (Speaker data): Determines if data is being sent to the speaker.
-    // 3. Set both Bit 0 and Bit 1 to enable the speaker.
-    //    - Use bitwise OR operation to set these bits without altering others.
 }
 
 void disable_speaker() {
     uint8_t tmp = inb(PC_SPEAKER_PORT);
     outb(PC_SPEAKER_PORT, tmp & 0xFC);
-    // Pseudocode for disable_speaker:
-    // 1. Read the current state from the PC speaker control port.
-    // 2. Clear both Bit 0 and Bit 1 to disable the speaker.
-    //    - Use bitwise AND with the complement of 3 (0b11) to clear these bits.
 }
 
 void play_sound(uint32_t frequency) {
     if (frequency == 0) return;
-
 
     uint32_t divisor = PIT_BASE_FREQUENCY / frequency;
 
@@ -42,8 +30,6 @@ void play_sound(uint32_t frequency) {
     enable_speaker();          // Start playing
 }
 
-
-
 volatile bool stop_requested = false;
 
 void play_song_impl(Song *song) {
@@ -52,28 +38,50 @@ void play_song_impl(Song *song) {
         return;
     }
 
-    stop_requested = false;
-    monitor_write("playing song: ");
+    // Reset stop flag before starting song
+    stop_song_requested = false;
+    
+    monitor_write("Playing song: ");
     monitor_write(song->name);
-    monitor_write("\n");
+    monitor_write("\nPress ESC to stop...\n");
 
-    for (uint32_t i = 0; i < song->length && !stop_requested; i++) {
+    for (uint32_t i = 0; i < song->length && !stop_song_requested; i++) {
         Note current_note = song->notes[i];
+        
         if (current_note.frequency > 0)
-            monitor_write("Playing note\n");
+            play_sound(current_note.frequency);
         else
-            monitor_write("Rest\n");
+            disable_speaker(); // Rest
 
-        play_sound(current_note.frequency);
-
-        if (current_note.duration > 0)
-            sleep_interrupt(current_note.duration);
+        // Play the note for its duration, but check for stop request periodically
+        if (current_note.duration > 0) {
+            // Break the sleep into smaller chunks to check for stop flag more frequently
+            uint32_t remaining = current_note.duration;
+            uint32_t check_interval = 50; // Check every 50ms
+            
+            while (remaining > 0 && !stop_song_requested) {
+                uint32_t sleep_time = (remaining > check_interval) ? check_interval : remaining;
+                sleep_interrupt(sleep_time);
+                remaining -= sleep_time;
+                
+                // Check if ESC was pressed
+                if (stop_song_requested) {
+                    break;
+                }
+            }
+        }
 
         disable_speaker();
+        
+        // Exit loop if stop was requested
+        if (stop_song_requested) {
+            break;
+        }
     }
     
-
-    monitor_write(stop_requested ? "Song stopped.\n" : "done!\n");
+    disable_speaker();
+    
+    monitor_write(stop_song_requested ? "Song stopped.\n" : "Song finished!\n");
 }
 
 
@@ -87,9 +95,6 @@ SongPlayer* create_song_player() {
 
 void play_song(Song *song) {
     play_song_impl(song);
-    // Pseudocode for play_song:
-    // 1. Call play_song_impl with the given song.
-    //    - This function handles the entire process of playing each note in the song.
 }
 
 void stop_sound() {

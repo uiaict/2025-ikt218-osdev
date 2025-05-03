@@ -1,23 +1,20 @@
+#include <multiboot2.h>
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 #include "libc/string.h"
+#include "libc/monitor.h"
 #include "keyboard/keyboard.h"
 #include "gdt/descriptor_tables.h"
 #include "PIT/timer.h"
+#include "PIT/pit.h"
 #include "memory/memory.h"
 #include "memory/paging.h"
-#include "libc/monitor.h"
-#include "PIT/pit.h"
-#include <multiboot2.h>
 #include "song/song.h"
 #include "song/SongPlayer.h"
 #include "ui/shell.h"
 
 extern uint32_t end;
-
-
-
 
 struct multiboot_info {
     uint32_t size;
@@ -25,12 +22,11 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
-
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialize hardware and OS components
     init_descriptor_tables();
-    asm volatile ("int $0x1");
-    asm volatile ("int $0x3");
+    // asm volatile ("int $0x1");
+    // asm volatile ("int $0x3");
     init_keyboard();
     init_kernel_memory(&end);
     init_paging();
