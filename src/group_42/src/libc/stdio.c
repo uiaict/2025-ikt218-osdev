@@ -1,8 +1,7 @@
-#include "kernel/print.h"
+#include "libc/stdio.h"
 #include "libc/stdarg.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
-
 
 int cursorPositionX_ = 0;
 int cursorPositionY_ = 0;

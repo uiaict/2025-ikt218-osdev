@@ -1,6 +1,6 @@
 #include "kernel/system.h"
 #include "kernel/gdt.h"
-#include "kernel/print.h"
+#include "libc/stdio.h"
 
 void cursor_enable(uint8_t cursor_start, uint8_t cursor_end) {
   outb(0x3D4, 0x0A);

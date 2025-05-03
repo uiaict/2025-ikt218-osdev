@@ -1,8 +1,7 @@
 #include "shell/shell.h"
-#include "kernel/print.h"
+#include "libc/stdio.h"
 #include "kernel/system.h"
 #include "libc/stdint.h"
-#include "libc/string.h"
 
 bool shell_active = false;
 

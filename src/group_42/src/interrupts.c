@@ -2,7 +2,7 @@
 #include "kernel/idt.h"
 #include "kernel/keyboard.h"
 #include "kernel/pit.h"
-#include "kernel/print.h"
+#include "libc/stdio.h"
 #include "kernel/system.h"
 #include "shell/command.h"
 #include "shell/shell.h"

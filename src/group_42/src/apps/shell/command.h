@@ -36,16 +36,8 @@ void reg_command(const char *name, command_func_t func);
 void run_command(const char *input);
 
 /**
- * @brief Compare two strings.
- * @param str1 The first string.
- * @param str2 The second string.
- * @return True if the strings are equal, false otherwise.
- */
-bool strcmp(const char *str1, const char *str2);
-
-/**
  * @brief Display a list of available commands.
  */
-void help();
+void list_commands();
 
 #endif

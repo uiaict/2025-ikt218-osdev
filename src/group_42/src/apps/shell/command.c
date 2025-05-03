@@ -1,14 +1,16 @@
 #include "shell/command.h"
-#include "kernel/print.h"
+#include "libc/stdio.h"
 #include "shell/shell.h"
-#include "command.h"
+#include "kernel/memory.h"
+#include "libc/string.h"
 
 static int command_count = 0;
 static command_t registry[MAX_COMMANDS];
 
 void init_commands() {
-  reg_command("help", help);
+  reg_command("help", list_commands);
   reg_command("clear", clear_shell);
+  reg_command("memory", print_memory_layout);
 }
 
 void reg_command(const char *name, command_func_t func) {
@@ -30,18 +32,7 @@ void run_command(const char *input) {
   printf("Command '%s' not found, type 'help'\n", input);
 }
 
-bool strcmp(const char *str1, const char *str2) {
-  int i = 0;
-  while (str1[i] != '\0' && str2[i] != '\0') {
-    if (str1[i] != str2[i]) {
-      return false;
-    }
-    i++;
-  }
-  return str1[i] == str2[i];
-}
-
-void help() {
+void list_commands() {
   print("Available commands:\n");
   for (int i = 0; i < command_count; i++) {
     printf("- %s\n", registry[i].name);
