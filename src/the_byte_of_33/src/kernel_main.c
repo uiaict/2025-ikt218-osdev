@@ -21,20 +21,6 @@ typedef enum {
 int kernel_main() {
     set_color(0x0B); // light cyan text
     puts("=== Entered kernel_main ===\n");
-    
-    void* block1 = operator_new(4096);
-    void* block2 = malloc(8192);
-    void* block3 = malloc(1024);
-    if (block1 && block2 && block3) {
-        printf("Memory blocks allocated successfully!\n", 0);
-    } else {
-        printf("Memory allocation failed!\n", 0);
-    }
-
-    // Free the test blocks immediately since they're not used
-    free(block1);
-    free(block2);
-    free(block3);
 
     //Music player setup
     Song songs[] = {
@@ -54,7 +40,7 @@ int kernel_main() {
     uint32_t counter = 0;
     char last_key = 0;
     
-    puts("Press 'm' to toggle music player, 's' to toggle sleep tests, 'n' to skip song in music mode, 'h' to print heap layout.\n");
+    puts("Press 'm' to toggle music player, 's' to toggle sleep tests, 'n' to skip song in music mode, 'h' to print memory tets.\n");
     // Infinite loop
     while (true) {
         // Check for keyboard input to toggle mode
@@ -72,10 +58,35 @@ int kernel_main() {
                 mode = MODE_SLEEP_TEST;
                 puts("Switched to Sleep Test mode.\n");
             } else if (last_key == 'h') {
-                puts("\n=== Current Heap Layout ===\n");
-                print_heap_blocks();
+                mode = MODE_MEMORY_TEST;
+                puts("Switched to Memory Test mode.\n");
             }
             keyboard_clear_last_char();
+        }
+
+
+        if (mode == MODE_MEMORY_TEST) {
+            
+        void* a = malloc(1024);
+        void* b = malloc(2048);
+        void* c = malloc(4096);
+
+        puts("\nHeap after 3 mallocs:");
+        print_heap_blocks();
+
+        free(b);
+
+        puts("\nHeap after freeing the second block (b):");
+        print_heap_blocks();
+
+        void* d = malloc(1024);
+
+        puts("\nHeap after reallocating a smaller block (should reuse free block):");
+        print_heap_blocks();
+
+        free(a);
+        free(c);
+        free(d);
         }
 
         if (mode == MODE_SLEEP_TEST) {
