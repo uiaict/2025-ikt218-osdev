@@ -86,7 +86,7 @@ static void matrix_mode(void) {
 }
 
 // Music stub, quits on Q
-static void music_mode(void) {
+/*static void music_mode(void) {
     // 1) Mask only keyboard IRQ (IRQ1) in the PIC, leave timer IRQ0 enabled.
     uint8_t pic1_mask = inb(0x21);
     outb(0x21, pic1_mask | 0x02);  // mask bit1 = IRQ1
@@ -108,7 +108,8 @@ static void music_mode(void) {
 
     // 2) Restore original PIC mask to re-enable keyboard IRQ
     outb(0x21, pic1_mask);
-}
+}*/
+
 
 // Piano stub, quits on Q
 static void piano_mode(void) {

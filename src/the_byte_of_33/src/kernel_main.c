@@ -11,10 +11,24 @@
 #include "song/song.h"
 #include "keyboard.h"
 
+static void isr0_handler(registers_t* r) {
+    (void)r; // Ignore the dummy registers
+    puts("Interrupt 0 (Divide by Zero) handled\n");
+}
+
+static void isr1_handler(registers_t* r) {
+    (void)r;
+    puts("Interrupt 1 (Debug) handled\n");
+}
+
+static void isr2_handler(registers_t* r) {
+    (void)r;
+    puts("Interrupt 2 (NMI) handled\n");
+}
+
 // Define modes for the kernel loop
 typedef enum {
     MODE_NONE,
-    MODE_SLEEP_TEST,
     MODE_MUSIC_PLAYER,
     MODE_MEMORY_TEST,
     MODE_PIANO,
@@ -65,10 +79,6 @@ int kernel_main() {
             if(last_key == 'm') {
                 mode = MODE_MUSIC_PLAYER;
                 puts("Switched to Music Player mode.\n");
-            } else if(last_key == 's') {
-                mode = MODE_SLEEP_TEST;
-                puts("Switched to Sleep Test mode.\n");
-                //Make general test mode imo
             } else if (last_key == 'h') {
                 puts("\n=== Current Heap Layout ===\n");
                 print_heap_blocks();
@@ -80,26 +90,17 @@ int kernel_main() {
                 puts("Switched to Matrix mode\n");
             } else if (last_key == 't') {
                 mode = MODE_MEMORY_TEST;
-                puts("Memory test mode");
+                puts("Entered test mode");
             }
             keyboard_clear_last_char();
         }
 
         
-        if (mode == MODE_SLEEP_TEST) {
-            // Original sleep test functionality
-            printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-            sleep_busy(1000); // Sleep 1000 milliseconds (1 second)
-            printf("[%d]: Slept using busy-waiting.\n", counter++);
-            
-            printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-            sleep_interrupt(1000); // Sleep 1000 milliseconds (1 second)
-            printf("[%d]: Slept using interrupts.\n", counter++);
-        } else if (mode == MODE_PIANO) {
+        if (mode == MODE_PIANO) {
             //piano_mode();
         } else if (mode == MODE_MATRIX) {
             //matrix_mode();
-        } else if (mode == MODE_MEMORY_TEST) {            
+        }   else if (mode == MODE_MEMORY_TEST) {            
             void* a = malloc(1024);
             void* b = malloc(2048);
             void* c = malloc(4096);
@@ -120,6 +121,19 @@ int kernel_main() {
             free(a);
             free(c);
             free(d);
+
+            register_interrupt_handler(0, isr0_handler);
+            register_interrupt_handler(1, isr1_handler);
+            register_interrupt_handler(2, isr2_handler);
+
+            printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+            sleep_busy(1000); // Sleep 1000 milliseconds (1 second)
+            printf("[%d]: Slept using busy-waiting.\n", counter++);
+            
+            printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+            sleep_interrupt(1000); // Sleep 1000 milliseconds (1 second)
+            printf("[%d]: Slept using interrupts.\n", counter++);
+
             } else if (mode == MODE_MUSIC_PLAYER) {
             // Play the current song
             printf("Playing song %d...\n", current_song + 1);
