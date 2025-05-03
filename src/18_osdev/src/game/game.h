@@ -11,16 +11,20 @@ typedef struct {
     int north, south, east, west; // indexes to other rooms
     bool has_key;
     bool has_torch;
+    bool is_dark;
+    bool is_locked;
+    bool is_exit;
 } Room;
 
 typedef struct {
     Room *rooms;
     int current_room;
-    bool has_torch;
-    bool has_key;
+    int has_torch;
+    int has_key;
 } GameState;
 
 void run_game();
 void process_game_command(char *input, GameState* state);
 void init_game();
+void try_move(GameState *state, Room rooms[], const char *direction);
 #endif
