@@ -1,6 +1,6 @@
 {
-    "cmake.buildDirectory": "${workspaceFolder}/build/19_operatingpal",
-    "cmake.sourceDirectory": "${workspaceFolder}/src/19_operatingpal",
+    "cmake.buildDirectory": "${workspaceFolder}/build/group_name",
+    "cmake.sourceDirectory": "${workspaceFolder}/src/group_name",
     "cmake.useCMakePresets": "never",
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
