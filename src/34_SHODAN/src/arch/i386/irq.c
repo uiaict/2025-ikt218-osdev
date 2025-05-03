@@ -1,6 +1,7 @@
 #include "irq.h"
 #include "port_io.h"
 #include "terminal.h"
+#include "pit.h" // 👈 Include PIT so we can call pit_callback()
 
 #define PIC1 0x20
 #define PIC2 0xA0
@@ -30,26 +31,36 @@ void irq_remap(void) {
     outb(PIC1_DATA, ICW4_8086);
     outb(PIC2_DATA, ICW4_8086);
 
-    outb(PIC1_DATA, 0xFD); // Unmask IRQ1 (keyboard)
+    outb(PIC1_DATA, 0xFC); // Unmask IRQ1 (keyboard)
     outb(PIC2_DATA, 0xFF); // Mask all on slave
 }
 
 __attribute__((visibility("default")))
 void irq_handler(irq_regs_t* regs) {
-    terminal_write("IRQ ");
-    terminal_putint(regs->int_no);
-    terminal_write(" handler invoked\n");
-
-    if (regs->int_no == 33) { // IRQ1 = keyboard
+    if (regs->int_no == 32) { // IRQ0 = PIT
+        static uint32_t tick_count = 0;
+        pit_callback();
+        tick_count++;
+        if (tick_count % 1000 == 0) {
+            terminal_write("IRQ 32: 1 second passed.\n");
+        }
+    }
+    else if (regs->int_no == 33) { // IRQ1 = keyboard
         uint8_t scancode = inb(0x60);
         if (scancode < 128) {
             char c = scancode_ascii[scancode];
             if (c) terminal_putchar(c);
         }
     }
-
-    if (regs->int_no >= 40) {
-        outb(PIC2_COMMAND, 0x20);
+    else {
+        terminal_write("Unhandled IRQ ");
+        terminal_putint(regs->int_no);
+        terminal_write("\n");
     }
-    outb(PIC1_COMMAND, 0x20);
+
+    // Send End-of-Interrupt (EOI)
+    if (regs->int_no >= 40) {
+        outb(PIC2_COMMAND, 0x20); // EOI to slave PIC
+    }
+    outb(PIC1_COMMAND, 0x20);     // EOI to master PIC
 }

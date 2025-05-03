@@ -283,6 +283,54 @@ src/arch/i386/isr_stubs.asm.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/isr_stubs.asm.o
 .PHONY : src/arch/i386/isr_stubs.asm.o
 
+src/arch/i386/paging.o: src/arch/i386/paging.c.o
+.PHONY : src/arch/i386/paging.o
+
+# target to build an object file
+src/arch/i386/paging.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/paging.c.o
+.PHONY : src/arch/i386/paging.c.o
+
+src/arch/i386/paging.i: src/arch/i386/paging.c.i
+.PHONY : src/arch/i386/paging.i
+
+# target to preprocess a source file
+src/arch/i386/paging.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/paging.c.i
+.PHONY : src/arch/i386/paging.c.i
+
+src/arch/i386/paging.s: src/arch/i386/paging.c.s
+.PHONY : src/arch/i386/paging.s
+
+# target to generate assembly for a file
+src/arch/i386/paging.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/paging.c.s
+.PHONY : src/arch/i386/paging.c.s
+
+src/arch/i386/pit.o: src/arch/i386/pit.c.o
+.PHONY : src/arch/i386/pit.o
+
+# target to build an object file
+src/arch/i386/pit.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/pit.c.o
+.PHONY : src/arch/i386/pit.c.o
+
+src/arch/i386/pit.i: src/arch/i386/pit.c.i
+.PHONY : src/arch/i386/pit.i
+
+# target to preprocess a source file
+src/arch/i386/pit.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/pit.c.i
+.PHONY : src/arch/i386/pit.c.i
+
+src/arch/i386/pit.s: src/arch/i386/pit.c.s
+.PHONY : src/arch/i386/pit.s
+
+# target to generate assembly for a file
+src/arch/i386/pit.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/pit.c.s
+.PHONY : src/arch/i386/pit.c.s
+
 src/arch/i386/port_io.o: src/arch/i386/port_io.c.o
 .PHONY : src/arch/i386/port_io.o
 
@@ -379,6 +427,30 @@ src/libc/string.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/libc/string.c.s
 .PHONY : src/libc/string.c.s
 
+src/memory.o: src/memory.c.o
+.PHONY : src/memory.o
+
+# target to build an object file
+src/memory.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/memory.c.o
+.PHONY : src/memory.c.o
+
+src/memory.i: src/memory.c.i
+.PHONY : src/memory.i
+
+# target to preprocess a source file
+src/memory.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/memory.c.i
+.PHONY : src/memory.c.i
+
+src/memory.s: src/memory.c.s
+.PHONY : src/memory.s
+
+# target to generate assembly for a file
+src/memory.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/memory.c.s
+.PHONY : src/memory.c.s
+
 src/multiboot2.o: src/multiboot2.asm.o
 .PHONY : src/multiboot2.o
 
@@ -438,6 +510,12 @@ help:
 	@echo "... src/arch/i386/isr.i"
 	@echo "... src/arch/i386/isr.s"
 	@echo "... src/arch/i386/isr_stubs.o"
+	@echo "... src/arch/i386/paging.o"
+	@echo "... src/arch/i386/paging.i"
+	@echo "... src/arch/i386/paging.s"
+	@echo "... src/arch/i386/pit.o"
+	@echo "... src/arch/i386/pit.i"
+	@echo "... src/arch/i386/pit.s"
 	@echo "... src/arch/i386/port_io.o"
 	@echo "... src/arch/i386/port_io.i"
 	@echo "... src/arch/i386/port_io.s"
@@ -450,6 +528,9 @@ help:
 	@echo "... src/libc/string.o"
 	@echo "... src/libc/string.i"
 	@echo "... src/libc/string.s"
+	@echo "... src/memory.o"
+	@echo "... src/memory.i"
+	@echo "... src/memory.s"
 	@echo "... src/multiboot2.o"
 	@echo "... src/terminal.o"
 	@echo "... src/terminal.i"

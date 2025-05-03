@@ -1,13 +1,11 @@
-// terminal.c
 #include "terminal.h"
-#include "stddef.h"
-#include "stdint.h"
+#include <stddef.h>
+#include <stdint.h>
 #include <stdbool.h>
-
 
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
-static uint16_t* const VGA_MEMORY = (uint16_t*)0xB8000;
+static volatile uint16_t* const VGA_MEMORY = (volatile uint16_t*)0xB8000;
 
 static size_t terminal_row = 0;
 static size_t terminal_column = 0;
@@ -20,35 +18,53 @@ static uint16_t vga_entry(char c, uint8_t color) {
 void terminal_initialize(void) {
     for (size_t y = 0; y < VGA_HEIGHT; y++) {
         for (size_t x = 0; x < VGA_WIDTH; x++) {
-            const size_t index = y * VGA_WIDTH + x;
-            VGA_MEMORY[index] = vga_entry(' ', terminal_color);
+            VGA_MEMORY[y * VGA_WIDTH + x] = vga_entry(' ', terminal_color);
         }
     }
+    terminal_row = 0;
+    terminal_column = 0;
+}
+
+// 🟡 Scroll screen up by one line
+static void terminal_scroll() {
+    for (size_t y = 1; y < VGA_HEIGHT; y++) {
+        for (size_t x = 0; x < VGA_WIDTH; x++) {
+            VGA_MEMORY[(y - 1) * VGA_WIDTH + x] = VGA_MEMORY[y * VGA_WIDTH + x];
+        }
+    }
+
+    // Clear the last line
+    for (size_t x = 0; x < VGA_WIDTH; x++) {
+        VGA_MEMORY[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = vga_entry(' ', terminal_color);
+    }
+
+    terminal_row = VGA_HEIGHT - 1;
 }
 
 void terminal_putchar(char c) {
     if (c == '\n') {
         terminal_column = 0;
         terminal_row++;
-        return;
+    } else {
+        VGA_MEMORY[terminal_row * VGA_WIDTH + terminal_column] = vga_entry(c, terminal_color);
+        terminal_column++;
+        if (terminal_column >= VGA_WIDTH) {
+            terminal_column = 0;
+            terminal_row++;
+        }
     }
 
-    const size_t index = terminal_row * VGA_WIDTH + terminal_column;
-    VGA_MEMORY[index] = vga_entry(c, terminal_color);
-
-    terminal_column++;
-    if (terminal_column >= VGA_WIDTH) {
-        terminal_column = 0;
-        terminal_row++;
+    if (terminal_row >= VGA_HEIGHT) {
+        terminal_scroll();
     }
 }
 
 void terminal_write(const char* str) {
-    size_t i = 0;
-    while (str[i]) {
-        terminal_putchar(str[i++]);
+    for (size_t i = 0; str[i] != '\0'; i++) {
+        terminal_putchar(str[i]);
     }
 }
+
 void terminal_putint(int num) {
     char buffer[12];
     int i = 0;
@@ -64,7 +80,7 @@ void terminal_putint(int num) {
         num = -num;
     }
 
-    while (num > 0 && i < 11) {
+    while (num > 0 && i < (int)(sizeof(buffer) - 1)) {
         buffer[i++] = '0' + (num % 10);
         num /= 10;
     }

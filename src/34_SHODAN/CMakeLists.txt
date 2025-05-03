@@ -36,6 +36,8 @@ set(OS_KERNEL_IMAGE "kernel.iso")
 ########################################
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
 
 ########################################
 # Assembly Configuration
@@ -73,6 +75,9 @@ add_executable(uiaos-kernel
 	src/arch/i386/irq.c
 	src/arch/i386/irq_stubs.asm
 	src/arch/i386/port_io.c
+	src/memory.c
+	src/arch/i386/paging.c
+	src/arch/i386/pit.c
 
 )
 
