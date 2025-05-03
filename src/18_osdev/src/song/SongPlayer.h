@@ -9,6 +9,8 @@ void enable_speaker();
 // Function to disable PC speaker
 void disable_speaker();
 
+void stop_sound();
+
 // Function to play a single sound frequency
 void play_sound(uint32_t frequency);
 

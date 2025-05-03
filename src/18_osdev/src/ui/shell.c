@@ -1,6 +1,5 @@
 #include "shell.h"
 
-
 Song all_songs[] = {
     {
         .name = "mario theme",
@@ -49,7 +48,7 @@ Song all_songs[] = {
 static bool shell_running = true;
 
 void init_shell() {
-    monitor_write("Simple Shell Ready. Type 'song' to play music, 'q' to quit.\n");
+    monitor_write("Simple Shell Ready. Type 'song' to play music, 'piano' to open piano.\n");
     monitor_write("Type 'help' for available commands.\n");
 }
 
@@ -100,16 +99,20 @@ void process_command(char* command) {
         disable_speaker();
 
         reset_stop_flag();
-
         play_song_impl(&all_songs[song_id-1]);
        
         disable_speaker();
+    } 
+
+    else if (strcmp(command, "piano") == 0) {
+        init_piano();
     } 
     
     else if (strcmp(command, "q") == 0 || strcmp(command, "quit") == 0 || strcmp(command, "exit") == 0) {
         monitor_write("Exiting shell...\n");
         shell_running = false;
     } 
+
     else if (strcmp(command, "help") == 0) {
         monitor_write("Available commands:\n");
         monitor_write("  song - Play a song from the list\n");
@@ -117,9 +120,11 @@ void process_command(char* command) {
         monitor_write("  help - Display this help message\n");
         monitor_write("  cls  - Clear the screen\n");
     }
+
     else if (strcmp(command, "cls") == 0 || strcmp(command, "clear") == 0) {
         monitor_clear();
     }
+
     else if (strlen(command) > 0) {
         monitor_write("Unknown command: ");
         monitor_write(command);

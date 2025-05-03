@@ -3,8 +3,10 @@
 
 #include "libc/string.h"
 #include "libc/monitor.h"
+#include "libc/stdbool.h"
 #include "../keyboard/keyboard.h"
 #include "../song/song.h" // Include your songs header
+#include "../piano/piano.h"
 #include "../song/SongPlayer.h"
 
 // Initialize and run the shell
@@ -15,8 +17,6 @@ void run_shell();
 
 // Process a single command
 void process_command(char* command);
-
-
 
 extern volatile bool stop_song_requested;
 

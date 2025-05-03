@@ -1,3 +1,4 @@
+#include <multiboot2.h>
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
@@ -6,26 +7,20 @@
 #include "keyboard/keyboard.h"
 #include "gdt/descriptor_tables.h"
 #include "PIT/timer.h"
+#include "PIT/pit.h"
 #include "memory/memory.h"
 #include "memory/paging.h"
-#include "libc/monitor.h"
-#include "PIT/pit.h"
-#include <multiboot2.h>
 #include "song/song.h"
 #include "song/SongPlayer.h"
 #include "ui/shell.h"
 
 extern uint32_t end;
 
-
-
-
 struct multiboot_info {
     uint32_t size;
     uint32_t reserved;
     struct multiboot_tag *first;
 };
-
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Initialize hardware and OS components
@@ -43,10 +38,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     
     // Timer test
     init_pit();
-    // sleep_interrupt(1000);
-    // monitor_write("Slept 1 second!\n");
-    // sleep_busy(500);
-    // monitor_write("Slept 0.5 second!\n");
+    test_pit_timing();
     
     // OS initialization complete
     monitor_write("Operating system initialized!\n");

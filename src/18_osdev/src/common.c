@@ -26,6 +26,9 @@
 
 // followd https://wiki.osdev.org/Inline_Assembly/Examples#I/O_access for I/O access functions
 #include "../include/libc/common.h"
+#include "libc/stdbool.h"
+
+bool piano_mode_enabled = false;
 
 void outb(uint16_t port, uint8_t value)
 {

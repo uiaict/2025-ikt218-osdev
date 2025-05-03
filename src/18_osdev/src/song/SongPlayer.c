@@ -10,45 +10,27 @@
 void enable_speaker() {
     uint8_t tmp = inb(PC_SPEAKER_PORT);
     outb(PC_SPEAKER_PORT, tmp | 0x03);
-    // Pseudocode for enable_speaker:
-    // 1. Read the current state from the PC speaker control port.
-    // 2. The control register bits are usually defined as follows:
-    //    - Bit 0 (Speaker gate): Controls whether the speaker is on or off.
-    //    - Bit 1 (Speaker data): Determines if data is being sent to the speaker.
-    // 3. Set both Bit 0 and Bit 1 to enable the speaker.
-    //    - Use bitwise OR operation to set these bits without altering others.
 }
 
 void disable_speaker() {
     uint8_t tmp = inb(PC_SPEAKER_PORT);
     outb(PC_SPEAKER_PORT, tmp & 0xFC);
-    // Pseudocode for disable_speaker:
-    // 1. Read the current state from the PC speaker control port.
-    // 2. Clear both Bit 0 and Bit 1 to disable the speaker.
-    //    - Use bitwise AND with the complement of 3 (0b11) to clear these bits.
 }
 
 void play_sound(uint32_t frequency) {
-    if(frequency==0) return;
+    if (frequency == 0) return;
 
     uint32_t divisor = PIT_BASE_FREQUENCY / frequency;
 
-    outb(PIT_CMD_PORT, 0xB6);
+    outb(PIT_CMD_PORT, 0xB6);   // Set PIT to mode 3, binary
 
-    outb(PIT_CHANNEL2_PORT, divisor & 0xFF);
-    outb(PIT_CHANNEL2_PORT, (divisor >> 8) & 0xFF);
-    enable_speaker();
-    // Pseudocode for play_sound:
-    // 1. Check if the frequency is 0. If so, exit the function as this indicates no sound.
-    // 2. Calculate the divisor for setting the PIT (Programmable Interval Timer) frequency.
-    //    - The PIT frequency is a base value, typically 1.193182 MHz.
-    //    - The divisor is PIT frequency divided by the desired sound frequency.
-    // 3. Configure the PIT to the desired frequency:
-    //    - Send control word to PIT control port to set binary counting, mode 3, and access mode (low/high byte).
-    //    - Split the calculated divisor into low and high bytes.
-    //    - Send the low byte followed by the high byte to the PIT channel 2 port.
-    // 4. Enable the speaker (by setting the appropriate bits) to start sound generation.
+    outb(PIT_CHANNEL2_PORT, divisor & 0xFF);       // Low byte
+    outb(PIT_CHANNEL2_PORT, (divisor >> 8) & 0xFF); // High byte
+
+    enable_speaker();          // Start playing
 }
+
+volatile bool stop_requested = false;
 
 void play_song_impl(Song *song) {
     if (!song || !song->notes || song->length == 0) {
@@ -96,8 +78,7 @@ void play_song_impl(Song *song) {
             break;
         }
     }
-
-    // Make sure speaker is disabled when we're done
+    
     disable_speaker();
     
     monitor_write(stop_song_requested ? "Song stopped.\n" : "Song finished!\n");
@@ -114,7 +95,8 @@ SongPlayer* create_song_player() {
 
 void play_song(Song *song) {
     play_song_impl(song);
-    // Pseudocode for play_song:
-    // 1. Call play_song_impl with the given song.
-    //    - This function handles the entire process of playing each note in the song.
+}
+
+void stop_sound() {
+    disable_speaker();
 }
