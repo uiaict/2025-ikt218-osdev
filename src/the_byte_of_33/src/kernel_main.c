@@ -15,6 +15,7 @@
 typedef enum {
     MODE_NONE,
     MODE_SLEEP_TEST,
+    MODE_MEMORY_TEST,
     MODE_MUSIC_PLAYER,
     MODE_PIANO,
     MODE_MATRIX
@@ -50,6 +51,7 @@ int kernel_main() {
     puts("  [p] Piano mode\n");
     puts("  [s] Test mode\n");
     puts("  [h] print heap layout"); //skal flyttes til test
+    puts("  [t] Memory test\n");
     // Infinite loop
     while (true) {
         // Check for keyboard input to toggle mode
@@ -76,33 +78,11 @@ int kernel_main() {
             } else if (last_key == 'i') {
                 mode = MODE_MATRIX;
                 puts("Switched to Matrix mode\n")
+            } else if (last_key == 't') {
+                mode = MODE_MEMORY_TEST;
+                puts("Memory test mode");
             }
             keyboard_clear_last_char();
-        }
-
-
-        if (mode == MODE_MEMORY_TEST) {
-            
-        void* a = malloc(1024);
-        void* b = malloc(2048);
-        void* c = malloc(4096);
-
-        puts("\nHeap after 3 mallocs:");
-        print_heap_blocks();
-
-        free(b);
-
-        puts("\nHeap after freeing the second block (b):");
-        print_heap_blocks();
-
-        void* d = malloc(1024);
-
-        puts("\nHeap after reallocating a smaller block (should reuse free block):");
-        print_heap_blocks();
-
-        free(a);
-        free(c);
-        free(d);
         }
 
         if (mode == MODE_SLEEP_TEST) {
@@ -126,6 +106,28 @@ int kernel_main() {
                 printf("Finished playing song %d.\n", current_song + 1);
                 // Move to the next song if it completed normally
                 current_song = (current_song + 1) % n_songs;
+            } else if (mode == MODE_MEMORY_TEST) {            
+                void* a = malloc(1024);
+                void* b = malloc(2048);
+                void* c = malloc(4096);
+        
+                puts("\nHeap after 3 mallocs:");
+                print_heap_blocks();
+        
+                free(b);
+        
+                puts("\nHeap after freeing the second block (b):");
+                print_heap_blocks();
+        
+                void* d = malloc(1024);
+        
+                puts("\nHeap after reallocating a smaller block (should reuse free block):");
+                print_heap_blocks();
+        
+                free(a);
+                free(c);
+                free(d);
+                }
             } else {
                 // Song was interrupted (e.g., by pressing 'n')
                 printf("Skipping to song %d.\n", current_song + 2); // +2 because we're about to increment
