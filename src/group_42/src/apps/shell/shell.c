@@ -8,16 +8,6 @@ bool shell_active = false;
 
 char input_buffer[SCREEN_WIDTH];
 
-void parse(char *input) { run_command(string_to_command(input), input); }
-
-void clear_shell() {
-  for (int i = 0; i < SCREEN_HEIGHT; i++) {
-    clear_line(i);
-  }
-  cursorPositionX_ = 0;
-  cursorPositionY_ = 0;
-}
-
 void shell_init() {
   shell_active = true;
 
@@ -25,6 +15,16 @@ void shell_init() {
 
   cursor_enable(0, 0);
   update_cursor(0, 1);
+
+  init_commands();
+}
+
+void clear_shell() {
+  for (int i = 0; i < SCREEN_HEIGHT; i++) {
+    clear_line(i);
+  }
+  cursorPositionX_ = 0;
+  cursorPositionY_ = 0;
 }
 
 void shell_input(char character) {
@@ -53,7 +53,7 @@ void shell_input(char character) {
   } else if (character == '\n') {
     cursorPositionY_++;
     cursorPositionX_ = 0;
-    parse(input_buffer);
+    run_command(input_buffer);
     for (int i = 0; i < SCREEN_WIDTH; i++) {
       input_buffer[i] = 0;
     }

@@ -1,34 +1,33 @@
 #include "shell/command.h"
 #include "kernel/print.h"
 #include "shell/shell.h"
+#include "command.h"
 
-void run_command(Command command, char *input) {
-  switch (command) {
-  case HELP:
-    print("Available commands: clear, song\n");
-    break;
-  case CLEAR:
-    clear_shell();
-    break;
-  case SONG:
-    print("Not implemented");
-    break;
-  default:
-    printf("Invalid command '%s'\n", input);
-    break;
-  }
+static int command_count = 0;
+static command_t registry[MAX_COMMANDS];
+
+void init_commands() {
+  reg_command("help", help);
+  reg_command("clear", clear_shell);
 }
 
-Command string_to_command(const char *string) {
-  if (strcmp(string, "help") == 1) {
-    return HELP;
-  } else if (strcmp(string, "clear") == 1) {
-    return CLEAR;
-  } else if (strcmp(string, "song") == 1) {
-    return SONG;
-  } else {
-    return -1;
+void reg_command(const char *name, command_func_t func) {
+
+  if (command_count >= MAX_COMMANDS) {
+    print("Command registry full\n");
+    return;
   }
+  registry[command_count++] = (command_t){name, func};
+}
+
+void run_command(const char *input) {
+  for (int i = 0; i < command_count; i++) {
+    if (strcmp(input, registry[i].name)) {
+      registry[i].func();
+      return;
+    }
+  }
+  printf("Command '%s' not found, type 'help'\n", input);
 }
 
 bool strcmp(const char *str1, const char *str2) {
@@ -40,4 +39,11 @@ bool strcmp(const char *str1, const char *str2) {
     i++;
   }
   return str1[i] == str2[i];
+}
+
+void help() {
+  print("Available commands:\n");
+  for (int i = 0; i < command_count; i++) {
+    printf("- %s\n", registry[i].name);
+  }
 }

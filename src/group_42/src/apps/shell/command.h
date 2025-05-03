@@ -3,10 +3,37 @@
 
 #include "libc/stdbool.h"
 
+#define MAX_COMMANDS 100
+
 /**
- * @brief Enum for shell commands.
+ * @brief Function pointer type for command functions.
+ * Commands should take no arguments and return void.
  */
-typedef enum { HELP, CLEAR, SONG } Command;
+typedef void (*command_func_t)(void);
+
+/**
+ * @brief Structure to represent a command with its name and function.
+ */
+typedef struct {
+  const char *name;
+  command_func_t func;
+} command_t;
+
+/**
+ * @brief Initialize the command registry.
+ */
+void init_commands();
+
+/**
+ * @brief Register a command to registry
+ */
+void reg_command(const char *name, command_func_t func);
+
+/**
+ * @brief Run a command.
+ * @param input The input string associated with the command.
+ */
+void run_command(const char *input);
 
 /**
  * @brief Compare two strings.
@@ -17,17 +44,8 @@ typedef enum { HELP, CLEAR, SONG } Command;
 bool strcmp(const char *str1, const char *str2);
 
 /**
- * @brief Convert a string to a command.
- * @param string The string to convert.
- * @return The corresponding command enum.
+ * @brief Display a list of available commands.
  */
-Command string_to_command(const char *string);
-
-/**
- * @brief Run a command.
- * @param command The command to run.
- * @param input The input string associated with the command.
- */
-void run_command(Command command, char *input);
+void help();
 
 #endif
