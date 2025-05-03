@@ -51,7 +51,11 @@ static void int_to_string(int value, char* buffer) {
 
 void pit_handler(void) {
     pit_ticks++;
-    outb(PIC1_CMD_PORT, PIC_EOI);
+
+    /* snake frame advance (~75 ms cadence handled inside) */
+    extern void snake_tick(void);
+     snake_tick();
+    outb(PIC1_CMD_PORT, PIC_EOI);   
 }
 
 uint32_t get_current_tick(void) {
@@ -78,29 +82,27 @@ void init_pit(void) {
     terminal_write(" Hz\n");
 }
 
-void pit_set_speaker_freq(uint32_t frequency) {
+void pit_set_speaker_freq(uint32_t frequency)
+{
+    uint8_t tmp = inb(PC_SPEAKER_PORT);
+
+    /* 1. pull the gate LOW (bit-1 = 0) and disconnect speaker (bit-0 = 0) */
+    outb(PC_SPEAKER_PORT, tmp & ~0x03);
+
     if (frequency == 0) {
-        // Turn off the speaker
-        uint8_t tmp = inb(PC_SPEAKER_PORT);
-        outb(PC_SPEAKER_PORT, tmp & 0xFC);
-        current_frequency = 0;
-        return;
+        return;                 /* this is the “rest” (silence) */
     }
 
-    // Calculate divisor
+    /* 2. load new divisor while gate is low */
     uint32_t divisor = PIT_BASE_FREQUENCY / frequency;
-    if (divisor > 0xFFFF) divisor = 0xFFFF; // Clamp to maximum
+    if (divisor > 0xFFFF) divisor = 0xFFFF;
 
-    // Configure channel 2 (speaker)
-    outb(PIT_CMD_PORT, 0xB6);    // Channel 2, lobyte/hibyte, square wave mode
-    outb(PIT_CHANNEL2_PORT, divisor & 0xFF);
-    outb(PIT_CHANNEL2_PORT, (divisor >> 8) & 0xFF);
+    outb(PIT_CMD_PORT, 0xB6);                   /* ch-2, mode 3 */
+    outb(PIT_CHANNEL2_PORT,  divisor & 0xFF);   /* lobyte */
+    outb(PIT_CHANNEL2_PORT, (divisor >> 8));    /* hibyte */
 
-    // Enable speaker
-    uint8_t tmp = inb(PC_SPEAKER_PORT);
-    outb(PC_SPEAKER_PORT, tmp | 3);
-    
-    current_frequency = frequency;
+    /* 3. raise the gate and route ch-2 to the speaker */
+    outb(PC_SPEAKER_PORT, (tmp & ~0x03) | 0x03);
 }
 
 void sleep_busy(uint32_t milliseconds) {
@@ -146,3 +148,4 @@ void sleep_interrupt(uint32_t milliseconds) {
         }
     }
 }
+

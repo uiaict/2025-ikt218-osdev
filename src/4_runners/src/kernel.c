@@ -12,6 +12,8 @@
 #include "memory.h"
 #include "song.h"
 #include <multiboot2.h>
+// #include "memvis.h"
+#include "snake.h"
 
 // External symbols
 extern char end;
@@ -20,7 +22,7 @@ extern char end;
 void terminal_write(const char *str);
 void terminal_put_char(char c);
 void initkeyboard(void);
-extern char keyboard_getchar(void);
+
 
 // Multiboot structure
 struct multiboot_info
@@ -59,42 +61,24 @@ typedef struct
     uint8_t e[6];
 } myStruct;
 
-void verify_pit_channel2() {
+void verify_pit_channel2()
+{
     // Read back command
-    outb(PIT_CMD_PORT, 0xE8);  // Read-back command for channel 2
-    
+    outb(PIT_CMD_PORT, 0xE8); // Read-back command for channel 2
+
     // Read status
     uint8_t status = inb(PIT_CHANNEL2_PORT);
     printf("PIT Channel 2 Status: 0x%02x\n", status);
-    
+
     // Read current count
     uint8_t count_low = inb(PIT_CHANNEL2_PORT);
     uint8_t count_high = inb(PIT_CHANNEL2_PORT);
     uint16_t count = (count_high << 8) | count_low;
-    
-    printf("PIT Channel 2 Count: %u\n", count);
-}
 
-void test_pc_speaker() {
-    terminal_write("Testing PC speaker...\n");
-    
-    // Test a range of frequencies
-    uint32_t test_frequencies[] = {
-        440,  // A4
-        880,  // A5
-        1760, // A6
-        220   // A3
-    };
-    
-    for (int i = 0; i < 4; i++) {
-        printf("Testing frequency %u Hz\n", test_frequencies[i]);
-        set_speaker_frequency(test_frequencies[i]);
-        sleep_busy(500);  // 500ms per note
-        set_speaker_frequency(0);
-        sleep_busy(100);  // 100ms gap
-    }
-    
-    terminal_write("Test complete.\n");
+    printf("PIT Channel 2 Count: %u\n", count);
+
+    // Reset Channel 2 to known state
+    outb(PIT_CMD_PORT, 0xB6); // Channel 2, square wave mode
 }
 
 /* --------------------------------------------------------------------------
@@ -123,42 +107,125 @@ int kernel_main(void)
     init_pit();
     asm volatile("sti"); // Enable interrupts globally
 
-    int counter = 0;
-    while (1) {
-        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-        sleep_busy(1000);
-        printf("[%d]: Slept using busy-waiting.\n", counter++);
+    // int counter = 0;
+    // while (1) {
+    //     printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+    //     sleep_busy(1000);
+    //     printf("[%d]: Slept using busy-waiting.\n", counter++);
 
-        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);
-    }
+    //     printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+    //     sleep_interrupt(1000);
+    //     printf("[%d]: Slept using interrupts.\n", counter++);
+    // }
     // Try out the music
+    // static Note test_notes[] = {
+    //     {440, 1000}, // A4 - 1 second
+    //     {880, 1000}  // A5 - 1 second
+    // };
 
-    test_pc_speaker();  // Test PC speaker
-    verify_pit_channel2(); 
+    // // In kernel_main()
+    // Song test_song = {
+    //     .notes = test_notes,
+    //     .length = sizeof(test_notes) / sizeof(Note)};
 
-    static Note test_notes[] = {
-        {440, 1000},   // A4 for 1 second
-        {494, 1000},   // B4 for 1 second
-        {523, 1000},   // C5 for 1 second
-        {0,   500},    // Longer rest
-        {587, 1000},   // D5 for 1 second
-    };
-    
-    Song test_song = {
-        .notes = test_notes,
-        .note_count = sizeof(test_notes)/sizeof(Note)
-    };
+    // printf("\nTesting PC Speaker...\n");
+    // SongPlayer *player = create_song_player();
 
-    SongPlayer* player = create_song_player();
-    // Play the test tune once:
-    terminal_write("Playing a test tune...\n");
-    player->play_song(&test_song);
-    terminal_write("Finished playing tune.\n");
+    // if (player)
+    // {
+    //     printf("Playing test notes...\n");
+    //     player->play_song(&test_song);
+    //     printf("Test complete\n");
+    // }
+    //--- memory visualizer -------//
+    // printf("Initializing Memory Visualizer...\n");
+    // MemVisualizer *vis = create_memory_visualizer();
+    // vis->init();
 
+    // // Main loop
+    // while (1)
+    // {
+    //     char c = keyboard_getchar();
+    //     if (c != 0)
+    //     {
+    //         vis->handle_key(c);
+    //     }
+    //     if (vis->auto_refresh)
+    //     { // Now this will work
+    //         vis->refresh();
+    //     }
+    // }
+    // Clear screen and show menu
+    terminal_clear();
+    printf("Welcome to UIAOS!\n");
+    printf("================\n\n");
+    printf("Available Options:\n");
+    printf("1. Snake Game\n");
+    printf("2. Memory Visualizer\n");
+    printf("3. Sound Player\n\n");
+    printf("Press 1-3 to select option...\n");
+
+    // Wait for valid selection
     while (1)
     {
+        char key = keyboard_getchar();
+        // In the snake game section
+        // In the snake game section
+        if (key == '1')
+        {
+            terminal_clear();
+            printf("Starting Snake Game...\n");
+            printf("Controls:\n");
+            printf("Arrow keys - Move snake\n");
+            printf("P - Pause game\n");
+            printf("R - Restart when game over\n");
+            printf("ESC - Return to menu\n\n");
+            printf("Press any key to begin...\n");
+
+            // Wait for key press
+            while (keyboard_getchar() == 0)
+            {
+                asm volatile("hlt");
+            }
+
+            SnakeGame *snake = create_snake_game();
+            if (snake)
+            {
+                terminal_clear();
+                snake->init();
+                set_game_mode(true); // Enable game mode
+
+                // Game loop
+                bool running = true;
+                while (running)
+                {
+                    // Handle input
+                    char input = keyboard_getchar();
+                    if (input == 27)
+                    { // ESC
+                        running = false;
+                    }
+                    else
+                    {
+                        snake->handle_input(input);
+                    }
+
+                    // Update game state
+                    snake->update();
+
+                    // Use hlt to reduce CPU usage
+                    asm volatile("hlt");
+                }
+
+                set_game_mode(false); // Disable game mode
+                terminal_clear();
+            }
+        }
+        // For now, other options return to menu
+        else if (key == '2' || key == '3')
+        {
+            printf("Option not implemented yet. Press 1 for Snake game.\n");
+        }
         asm volatile("hlt");
     }
 

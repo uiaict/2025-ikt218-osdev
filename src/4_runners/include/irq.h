@@ -1,13 +1,26 @@
 #pragma once
+#include "libc/stdint.h"
+#include "libc/stdbool.h"
 
+// Keyboard scan codes (used by both IRQ and Snake)
+#define SCANCODE_UP     0x48
+#define SCANCODE_DOWN   0x50
+#define SCANCODE_LEFT   0x4B
+#define SCANCODE_RIGHT  0x4D
+#define SCANCODE_ESC    0x01
+#define SCANCODE_P      0x19
+#define SCANCODE_R      0x13
+
+// Function declarations
 void irq_init(void);
 void irq_handler(int irq);
-char keyboard_getchar(void);
-void irq0_stub(void);
-void pit_handler(void); // this is the C-level handler in pit.c
+uint8_t keyboard_getchar(void);  // Changed to uint8_t to match implementation
+void pit_handler(void);
+void initkeyboard(void);
+void set_game_mode(bool enabled);
+bool get_game_mode(void);
 
-
-// Declare all IRQ stubs
+// IRQ stubs
 void irq0_stub(void);
 void irq1_stub(void);
 void irq2_stub(void);

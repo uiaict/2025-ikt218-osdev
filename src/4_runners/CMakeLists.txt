@@ -82,6 +82,9 @@ add_executable(uiaos-kernel
 	src/stdio.c
 	src/song.c
 
+	# src/memvis.c
+	src/snake.c
+
 )
 
 # Include directories for the kernel target

@@ -1,6 +1,7 @@
 #include "libc/stdint.h"
 #include "idt.h"
 #include "irq.h"
+#include "snake.h"
 
 #define KEYBOARD_DATA_PORT 0x60
 #define KEYBOARD_BUFFER_SIZE 256
@@ -65,40 +66,65 @@ void initkeyboard() {
     outb(0x21, inb(0x21) & ~0x02);
 }
 
+// game state control
+static bool in_game_mode = false;
+
+// function to control game mode
+void set_game_mode(bool enabled) {
+    in_game_mode = enabled;
+}
+
 void irq1_handler(void) {
     uint8_t scancode = inb(KEYBOARD_DATA_PORT);
 
     // Ignore key releases (scancodes >= 0x80)
     if (scancode & 0x80) {
-        outb(PIC1_COMMAND, 0x20); // Send EOI
+        outb(PIC1_COMMAND, 0x20);
         return;
     }
 
-    // Convert scancode to ASCII
-    if (scancode < sizeof(scancode_to_ascii)) {
-        char ascii = scancode_to_ascii[scancode];
-        if (ascii) {
-            // Store in buffer
-            keyboard_buffer.buffer[keyboard_buffer.write_pos] = ascii;
-            keyboard_buffer.write_pos = (keyboard_buffer.write_pos + 1) % KEYBOARD_BUFFER_SIZE;
-
-            // Display the character
-            terminal_put_char(ascii);
+    // Handle game mode differently
+    if (in_game_mode) {
+        // Only process arrow keys and game controls
+        switch(scancode) {
+            case SCANCODE_UP:
+            case SCANCODE_DOWN:
+            case SCANCODE_LEFT:
+            case SCANCODE_RIGHT:
+            case SCANCODE_P:  // Pause
+            case SCANCODE_R:  // Restart
+            case SCANCODE_ESC:// Exit
+                snake_on_key(scancode);
+                break;
+        }
+    } else {
+        // Normal terminal mode
+        if (scancode < sizeof(scancode_to_ascii)) {
+            char ascii = scancode_to_ascii[scancode];
+            if (ascii) {
+                keyboard_buffer.buffer[keyboard_buffer.write_pos] = ascii;
+                keyboard_buffer.write_pos = (keyboard_buffer.write_pos + 1) % KEYBOARD_BUFFER_SIZE;
+                terminal_put_char(ascii);
+            }
         }
     }
 
-    // Send End Of Interrupt to PIC
     outb(PIC1_COMMAND, 0x20);
 }
 
-char keyboard_getchar(void) {
+
+uint8_t keyboard_getchar(void) {
     if (keyboard_buffer.read_pos == keyboard_buffer.write_pos) {
-        return 0; // Buffer is empty
+        return 0;  // Buffer is empty
     }
     
-    char c = keyboard_buffer.buffer[keyboard_buffer.read_pos];
+    uint8_t scancode = keyboard_buffer.buffer[keyboard_buffer.read_pos];
     keyboard_buffer.read_pos = (keyboard_buffer.read_pos + 1) % KEYBOARD_BUFFER_SIZE;
-    return c;
+    return scancode;
+}
+
+bool get_game_mode(void) {
+    return in_game_mode;
 }
 
 void pic_remap() {
@@ -124,3 +150,4 @@ void irq_init(void) {
     set_idt_entry(32, (uint32_t)irq0_stub, 0x08, 0x8E); // IRQ0 = PIT
     set_idt_entry(33, (uint32_t)irq1_stub, 0x08, 0x8E); // IRQ1 = Keyboard
 }
+

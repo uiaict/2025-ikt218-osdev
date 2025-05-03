@@ -2,6 +2,7 @@
 #include "libc/string.h"
 #include "libc/stdio.h"
 
+extern void snake_on_key(uint8_t sc);
 
 void terminal_write(const char* str); // Forward declaration
 

@@ -2,30 +2,33 @@
 #define PIT_H
 
 #include "libc/stdint.h"
-#include "libc/stdbool.h"
 
-// PIT (Programmable Interval Timer) I/O ports
-#define PIT_CMD_PORT 0x43
+// PIT Ports
 #define PIT_CHANNEL0_PORT 0x40
-#define PIT_CHANNEL1_PORT 0x41
 #define PIT_CHANNEL2_PORT 0x42
-#define PC_SPEAKER_PORT 0x61
+#define PIT_CMD_PORT      0x43
+#define PC_SPEAKER_PORT   0x61
 
-// PIC (Programmable Interrupt Controller) ports
+// PIT Frequencies
+#define PIT_BASE_FREQUENCY 1193180
+#define TARGET_FREQUENCY   1000
+#define DIVIDER           (PIT_BASE_FREQUENCY / TARGET_FREQUENCY)
+#define TICKS_PER_MS      1
+
+// PIC ports
 #define PIC1_CMD_PORT  0x20
 #define PIC1_DATA_PORT 0x21
-#define PIC_EOI        0x20  // End of Interrupt
+#define PIC2_CMD_PORT  0xA0
+#define PIC2_DATA_PORT 0xA1
 
-// PIT frequency
-#define PIT_BASE_FREQUENCY 1193180
-#define TARGET_FREQUENCY   1000  // 1000Hz = 1ms per tick
-#define DIVIDER            (PIT_BASE_FREQUENCY / TARGET_FREQUENCY)
-#define TICKS_PER_MS       (TARGET_FREQUENCY / 1000)
+// PIC commands
+#define PIC_EOI 0x20 
 
+// Function declarations
 void init_pit(void);
+void pit_set_speaker_freq(uint32_t frequency);
 void sleep_busy(uint32_t milliseconds);
 void sleep_interrupt(uint32_t milliseconds);
-void pit_handler(void);
 uint32_t get_current_tick(void);
 
 #endif
