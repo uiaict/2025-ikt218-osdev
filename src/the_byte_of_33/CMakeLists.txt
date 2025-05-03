@@ -72,6 +72,8 @@ add_executable(uiaos-kernel
 	src/kernel_main.c
 	src/interrupt.asm
 	src/song.cpp
+	src/piano_mode.c
+	src/matrix_mode.c
 )
 
 # Include directories for the kernel target
