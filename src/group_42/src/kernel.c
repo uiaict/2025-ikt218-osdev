@@ -6,13 +6,12 @@
 #include <multiboot2.h>
 
 #include "kernel/interrupts.h"
+#include "kernel/memory.h"
 #include "kernel/pic.h"
+#include "kernel/pit.h"
 #include "kernel/system.h"
 
 #include "shell/shell.h"
-
-#include "kernel/memory.h"
-#include "kernel/pit.h"
 
 extern uint32_t end; // This is defined in arch/i386/linker.ld
 

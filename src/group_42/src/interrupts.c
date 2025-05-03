@@ -42,7 +42,7 @@ void keyboard_handler() {
     if (scancode < SCANCODE_MAX) {
       char ascii = scancode_to_ascii[scancode];
       if (shell_active) {
-	shell_input(ascii);
+	      shell_input(ascii);
       }
     }
   }

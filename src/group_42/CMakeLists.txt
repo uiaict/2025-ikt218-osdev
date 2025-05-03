@@ -68,7 +68,6 @@ add_executable(uiaos-kernel
 	src/idt.c
 	src/interrupt_wrappers.asm
 	src/interrupts.c
-	src/keyboard.c
 	src/pic.c
 	src/memory/memory.c
 	src/memory/malloc.c
@@ -76,7 +75,7 @@ add_executable(uiaos-kernel
 	src/pit.c
 	src/apps/shell/shell.c
 	src/apps/shell/command.c
-	src/apps/music_player/song_player.cpp
+	src/apps/song_player/song_player.c
 )
 
 # Include directories for the kernel target

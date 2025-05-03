@@ -1,16 +1,29 @@
 #include "shell/command.h"
-#include "libc/stdio.h"
-#include "shell/shell.h"
 #include "kernel/memory.h"
+#include "kernel/pit.h"
+#include "libc/stdio.h"
 #include "libc/string.h"
+#include "shell/shell.h"
+#include "song_player/song_player.h"
 
 static int command_count = 0;
 static command_t registry[MAX_COMMANDS];
+
+void test_sound() {
+  uint32_t freq = 440;
+  uint32_t duration = 2000;
+  play_sound(freq);
+  sleep_interrupt(duration);
+  stop_sound();
+  disable_speaker();
+  printf("Sound test finished.\n");
+}
 
 void init_commands() {
   reg_command("help", list_commands);
   reg_command("clear", clear_shell);
   reg_command("memory", print_memory_layout);
+  reg_command("sound", test_sound);
 }
 
 void reg_command(const char *name, command_func_t func) {
