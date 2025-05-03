@@ -33,8 +33,7 @@ void play_sound(uint32_t frequency) {
 
   uint16_t divisor = PIT_BASE_FREQUENCY / frequency;
 
-  // Send command 0xB6: Channel 2, lobyte/hibyte, mode 3 (square wave), 16-bit
-  // binary
+  // Send command 0xB6: Channel 2, lobyte/hibyte, mode 3 (square wave)
   outb(PIT_CMD_PORT, 0xB6);
 
   // Send divisor low byte then high byte
@@ -55,7 +54,7 @@ void play_song_impl(Song *song) {
 
     stop_sound();
   }
-
+  
   disable_speaker();
 }
 

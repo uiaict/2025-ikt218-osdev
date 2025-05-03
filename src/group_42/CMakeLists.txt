@@ -76,6 +76,7 @@ add_executable(uiaos-kernel
 	src/apps/shell/shell.c
 	src/apps/shell/command.c
 	src/apps/song_player/song_player.c
+	src/apps/song_player/song_commands.c
 )
 
 # Include directories for the kernel target

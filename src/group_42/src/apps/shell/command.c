@@ -5,25 +5,24 @@
 #include "libc/string.h"
 #include "shell/shell.h"
 #include "song_player/song_player.h"
+#include "song_player/song_commands.h"
 
 static int command_count = 0;
 static command_t registry[MAX_COMMANDS];
-
-void test_sound() {
-  uint32_t freq = 440;
-  uint32_t duration = 2000;
-  play_sound(freq);
-  sleep_interrupt(duration);
-  stop_sound();
-  disable_speaker();
-  printf("Sound test finished.\n");
-}
 
 void init_commands() {
   reg_command("help", list_commands);
   reg_command("clear", clear_shell);
   reg_command("memory", print_memory_layout);
   reg_command("sound", test_sound);
+  reg_command("bf", play_bf1942);
+  reg_command("starwars", play_starwars);
+  reg_command("music1", play_music_1);
+  reg_command("music2", play_music_2);
+  reg_command("music3", play_music_3);
+  reg_command("music4", play_music_4);
+  reg_command("music5", play_music_5);
+  reg_command("music6", play_music_6);
 }
 
 void reg_command(const char *name, command_func_t func) {

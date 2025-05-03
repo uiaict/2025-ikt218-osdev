@@ -2,6 +2,7 @@
 #define SONG_H
 
 #include "frequencies.h"
+#include "libc/stdint.h"
 #include "kernel/system.h"
 
 // Define a struct to represent a single musical note
