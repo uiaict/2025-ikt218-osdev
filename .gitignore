@@ -1,25 +1,4 @@
-# Build artifacts
-build/
-*.iso
-*.bin
-*.o
-*.elf
-
-# CMake generated
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
-Makefile
-
-# IDE specific
-.vscode/
-.idea/
-
-# Temporary files
-*~
-*.swp
-
-# Project specific
+.vscode
 src/build_*/*
 venv
 !build_*/kernel.bin
@@ -27,6 +6,8 @@ venv
 *.lock
 *.egg-info*
 .cmake
+CMakeCache*
+CMakeFiles
 iso
 .env
 build.ninja
