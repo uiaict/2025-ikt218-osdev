@@ -1,14 +1,21 @@
 #include "libc/stdint.h"
 #include "libc/stddef.h"
+#include "libc/stdio.h"
 #include "libc/stdbool.h"
-//#include "libc/stdio.h"
+#include "libc/stdlib.h"
 #include <multiboot2.h>
 #include "gdt.h"
 #include "idt.h"
 #include "isr.h"
-#include "terminal.h"
 #include "io.h"
+#include "macros.h"
 #include "keyboard.h"
+#include "memory.h"
+#include "kernelutils.h"
+#include "pit.h"
+
+extern uint32_t end; 
+
 
 struct multiboot_info {
     uint32_t size;
@@ -16,40 +23,34 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
-// Test keyboard handler function
-void keyboard_handler(registers_t regs) {
-    uint8_t scancode = inb(0x60);
-    terminal_write("Keyboard input detected!\n");
-}
-
-// Forward declaration of kernel_main from kernel.cpp
 int kernel_main();
 
-#define MULTIBOOT2_MAGIC 0x36d76289
+
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-    // Initialize GDT
-    gdt_init();
    
-    // Initialize terminal
-    terminal_init();
-   
-    // Initialize IDT
-    init_idt();
+  	gdt_init(); 
+    init_idt();                               // Initializes the descriptor tables
+    initKeyboard();                                 // Initializes the keyboard
+    initPit();                                      // Initializes the PIT 
+    initKernelMemory(&end);                         // Initializes the kernel memory
+    initPaging();                                   // Initializes the paging
+    printMemoryLayout();                            // Prints the memory layout
 
-    // Initialize keyboard
-    initKeyboard(); 
+    cursorVertical;                                 // Makes the cursor vertical
+    changeBackgroundColor(vgaColorDarkGrey);        // Changes the background color to dark grey
+    changeTextColor(vgaColorWhite);                 // Changes the text color to white
 
-    changeBackgroundColor(vgaColorDarkGrey); 
-    changeTextColor(vgaColorWhite); 
-   
-    
-   
-    // Print a test message
-    terminal_write("Hello World\n");
-   
-    // Test interrupt
-    asm volatile("int $0x0");
-   
-    // Return kernel_main (from kernel.cpp)
-    return kernel_main();
+    char strTest[] = "Hello World!";                // Creates test variables to be used for printf testing
+    int intTest = 123;
+    unsigned int uintTest = 1234567890;
+    float floatTest = 3.14;
+    double doubleTest = 3.14159;
+    char hexTest[] = "0x01";
+
+    // Trigger page fault intentionally
+/*     uint32_t *ptr = (uint32_t*)0xE0000000;
+    uint32_t do_page_fault = *ptr; */
+
+ 
+    return kernel_main(); // Call the kernel_main function
 }
