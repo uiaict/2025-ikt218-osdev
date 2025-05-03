@@ -2,6 +2,7 @@
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 #include "libc/string.h"
+#include "libc/monitor.h"
 #include "keyboard/keyboard.h"
 #include "gdt/descriptor_tables.h"
 #include "PIT/timer.h"

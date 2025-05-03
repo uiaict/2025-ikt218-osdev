@@ -1,4 +1,4 @@
-// http://www.osdever.net/bkerndev/Docs/keyboard.htm (brans kernel dev)
+// http://www.osdever.nsavet/bkerndev/Docs/keyboard.htm (brans kernel dev)
 #include "keyboard.h"
 #include "libc/stdbool.h"
 
@@ -85,6 +85,7 @@ void keyboard_handler(registers_t regs)
         /* We don't handle key releases right now */
         return;
     }
+
     else
     {
         /* Here, a key was just pressed */
@@ -101,7 +102,7 @@ void keyboard_handler(registers_t regs)
                 line_ready = true;
             } 
             else if (c == '\b') {
-                // Backspace handling
+                monitor_remove_char();
                 if (buffer_index > 0) {
                     buffer_index--;
                 }
