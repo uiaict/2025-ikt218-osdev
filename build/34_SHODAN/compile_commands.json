@@ -1,32 +1,42 @@
 [
 {
   "directory": "/workspaces/2024-ikt218-osdev/build/34_SHODAN",
-  "command": "/usr/bin/nasm -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/multiboot2.asm",
+  "command": "/usr/bin/nasm -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386 -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/multiboot2.asm",
   "file": "/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/multiboot2.asm"
 },
 {
   "directory": "/workspaces/2024-ikt218-osdev/build/34_SHODAN",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -ffreestanding -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/kernel.c",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386 -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -ffreestanding -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/kernel.c",
   "file": "/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/kernel.c"
 },
 {
   "directory": "/workspaces/2024-ikt218-osdev/build/34_SHODAN",
-  "command": "/usr/local/bin/i686-elf-g++ -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -ffreestanding -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -fno-exceptions -fno-rtti -g -Wno-unused-variable -Wno-unused-parameter -std=gnu++20 -o CMakeFiles/uiaos-kernel.dir/src/kernel.cpp.o -c /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/kernel.cpp",
+  "command": "/usr/local/bin/i686-elf-g++ -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386 -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -ffreestanding -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -fno-exceptions -fno-rtti -g -Wno-unused-variable -Wno-unused-parameter -std=gnu++20 -o CMakeFiles/uiaos-kernel.dir/src/kernel.cpp.o -c /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/kernel.cpp",
   "file": "/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/kernel.cpp"
 },
 {
   "directory": "/workspaces/2024-ikt218-osdev/build/34_SHODAN",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -ffreestanding -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/terminal.c.o -c /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/terminal.c",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386 -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -ffreestanding -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/terminal.c.o -c /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/terminal.c",
   "file": "/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/terminal.c"
 },
 {
   "directory": "/workspaces/2024-ikt218-osdev/build/34_SHODAN",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -ffreestanding -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/arch/i386/gdt.c.o -c /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386/gdt.c",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386 -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -ffreestanding -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/arch/i386/gdt.c.o -c /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386/gdt.c",
   "file": "/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386/gdt.c"
 },
 {
   "directory": "/workspaces/2024-ikt218-osdev/build/34_SHODAN",
-  "command": "/usr/bin/nasm -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/arch/i386/gdt_flush.asm.o /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386/gdt_flush.asm",
+  "command": "/usr/bin/nasm -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386 -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/arch/i386/gdt_flush.asm.o /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386/gdt_flush.asm",
   "file": "/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386/gdt_flush.asm"
+},
+{
+  "directory": "/workspaces/2024-ikt218-osdev/build/34_SHODAN",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386 -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -ffreestanding -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/arch/i386/idt.c.o -c /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386/idt.c",
+  "file": "/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386/idt.c"
+},
+{
+  "directory": "/workspaces/2024-ikt218-osdev/build/34_SHODAN",
+  "command": "/usr/bin/nasm -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/arch/i386 -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/include/libc -I/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386 -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/arch/i386/idt_load.asm.o /workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386/idt_load.asm",
+  "file": "/workspaces/2024-ikt218-osdev/src/34_SHODAN/src/arch/i386/idt_load.asm"
 }
 ]

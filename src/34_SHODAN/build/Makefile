@@ -187,6 +187,126 @@ src/arch/i386/gdt_flush.asm.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/gdt_flush.asm.o
 .PHONY : src/arch/i386/gdt_flush.asm.o
 
+src/arch/i386/idt.o: src/arch/i386/idt.c.o
+.PHONY : src/arch/i386/idt.o
+
+# target to build an object file
+src/arch/i386/idt.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/idt.c.o
+.PHONY : src/arch/i386/idt.c.o
+
+src/arch/i386/idt.i: src/arch/i386/idt.c.i
+.PHONY : src/arch/i386/idt.i
+
+# target to preprocess a source file
+src/arch/i386/idt.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/idt.c.i
+.PHONY : src/arch/i386/idt.c.i
+
+src/arch/i386/idt.s: src/arch/i386/idt.c.s
+.PHONY : src/arch/i386/idt.s
+
+# target to generate assembly for a file
+src/arch/i386/idt.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/idt.c.s
+.PHONY : src/arch/i386/idt.c.s
+
+src/arch/i386/idt_load.o: src/arch/i386/idt_load.asm.o
+.PHONY : src/arch/i386/idt_load.o
+
+# target to build an object file
+src/arch/i386/idt_load.asm.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/idt_load.asm.o
+.PHONY : src/arch/i386/idt_load.asm.o
+
+src/arch/i386/irq.o: src/arch/i386/irq.c.o
+.PHONY : src/arch/i386/irq.o
+
+# target to build an object file
+src/arch/i386/irq.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/irq.c.o
+.PHONY : src/arch/i386/irq.c.o
+
+src/arch/i386/irq.i: src/arch/i386/irq.c.i
+.PHONY : src/arch/i386/irq.i
+
+# target to preprocess a source file
+src/arch/i386/irq.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/irq.c.i
+.PHONY : src/arch/i386/irq.c.i
+
+src/arch/i386/irq.s: src/arch/i386/irq.c.s
+.PHONY : src/arch/i386/irq.s
+
+# target to generate assembly for a file
+src/arch/i386/irq.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/irq.c.s
+.PHONY : src/arch/i386/irq.c.s
+
+src/arch/i386/irq_stubs.o: src/arch/i386/irq_stubs.asm.o
+.PHONY : src/arch/i386/irq_stubs.o
+
+# target to build an object file
+src/arch/i386/irq_stubs.asm.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/irq_stubs.asm.o
+.PHONY : src/arch/i386/irq_stubs.asm.o
+
+src/arch/i386/isr.o: src/arch/i386/isr.c.o
+.PHONY : src/arch/i386/isr.o
+
+# target to build an object file
+src/arch/i386/isr.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/isr.c.o
+.PHONY : src/arch/i386/isr.c.o
+
+src/arch/i386/isr.i: src/arch/i386/isr.c.i
+.PHONY : src/arch/i386/isr.i
+
+# target to preprocess a source file
+src/arch/i386/isr.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/isr.c.i
+.PHONY : src/arch/i386/isr.c.i
+
+src/arch/i386/isr.s: src/arch/i386/isr.c.s
+.PHONY : src/arch/i386/isr.s
+
+# target to generate assembly for a file
+src/arch/i386/isr.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/isr.c.s
+.PHONY : src/arch/i386/isr.c.s
+
+src/arch/i386/isr_stubs.o: src/arch/i386/isr_stubs.asm.o
+.PHONY : src/arch/i386/isr_stubs.o
+
+# target to build an object file
+src/arch/i386/isr_stubs.asm.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/isr_stubs.asm.o
+.PHONY : src/arch/i386/isr_stubs.asm.o
+
+src/arch/i386/port_io.o: src/arch/i386/port_io.c.o
+.PHONY : src/arch/i386/port_io.o
+
+# target to build an object file
+src/arch/i386/port_io.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/port_io.c.o
+.PHONY : src/arch/i386/port_io.c.o
+
+src/arch/i386/port_io.i: src/arch/i386/port_io.c.i
+.PHONY : src/arch/i386/port_io.i
+
+# target to preprocess a source file
+src/arch/i386/port_io.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/port_io.c.i
+.PHONY : src/arch/i386/port_io.c.i
+
+src/arch/i386/port_io.s: src/arch/i386/port_io.c.s
+.PHONY : src/arch/i386/port_io.s
+
+# target to generate assembly for a file
+src/arch/i386/port_io.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/arch/i386/port_io.c.s
+.PHONY : src/arch/i386/port_io.c.s
+
 src/kernel.o: src/kernel.c.o
 .PHONY : src/kernel.o
 
@@ -235,6 +355,30 @@ src/kernel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/kernel.cpp.s
 .PHONY : src/kernel.cpp.s
 
+src/libc/string.o: src/libc/string.c.o
+.PHONY : src/libc/string.o
+
+# target to build an object file
+src/libc/string.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/libc/string.c.o
+.PHONY : src/libc/string.c.o
+
+src/libc/string.i: src/libc/string.c.i
+.PHONY : src/libc/string.i
+
+# target to preprocess a source file
+src/libc/string.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/libc/string.c.i
+.PHONY : src/libc/string.c.i
+
+src/libc/string.s: src/libc/string.c.s
+.PHONY : src/libc/string.s
+
+# target to generate assembly for a file
+src/libc/string.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/libc/string.c.s
+.PHONY : src/libc/string.c.s
+
 src/multiboot2.o: src/multiboot2.asm.o
 .PHONY : src/multiboot2.o
 
@@ -282,12 +426,30 @@ help:
 	@echo "... src/arch/i386/gdt.i"
 	@echo "... src/arch/i386/gdt.s"
 	@echo "... src/arch/i386/gdt_flush.o"
+	@echo "... src/arch/i386/idt.o"
+	@echo "... src/arch/i386/idt.i"
+	@echo "... src/arch/i386/idt.s"
+	@echo "... src/arch/i386/idt_load.o"
+	@echo "... src/arch/i386/irq.o"
+	@echo "... src/arch/i386/irq.i"
+	@echo "... src/arch/i386/irq.s"
+	@echo "... src/arch/i386/irq_stubs.o"
+	@echo "... src/arch/i386/isr.o"
+	@echo "... src/arch/i386/isr.i"
+	@echo "... src/arch/i386/isr.s"
+	@echo "... src/arch/i386/isr_stubs.o"
+	@echo "... src/arch/i386/port_io.o"
+	@echo "... src/arch/i386/port_io.i"
+	@echo "... src/arch/i386/port_io.s"
 	@echo "... src/kernel.o"
 	@echo "... src/kernel.i"
 	@echo "... src/kernel.s"
 	@echo "... src/kernel.o"
 	@echo "... src/kernel.i"
 	@echo "... src/kernel.s"
+	@echo "... src/libc/string.o"
+	@echo "... src/libc/string.i"
+	@echo "... src/libc/string.s"
 	@echo "... src/multiboot2.o"
 	@echo "... src/terminal.o"
 	@echo "... src/terminal.i"

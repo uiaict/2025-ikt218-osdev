@@ -2,6 +2,8 @@
 #include "terminal.h"
 #include "stddef.h"
 #include "stdint.h"
+#include <stdbool.h>
+
 
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
@@ -45,5 +47,33 @@ void terminal_write(const char* str) {
     size_t i = 0;
     while (str[i]) {
         terminal_putchar(str[i++]);
+    }
+}
+void terminal_putint(int num) {
+    char buffer[12];
+    int i = 0;
+    bool is_negative = false;
+
+    if (num == 0) {
+        terminal_putchar('0');
+        return;
+    }
+
+    if (num < 0) {
+        is_negative = true;
+        num = -num;
+    }
+
+    while (num > 0 && i < 11) {
+        buffer[i++] = '0' + (num % 10);
+        num /= 10;
+    }
+
+    if (is_negative) {
+        buffer[i++] = '-';
+    }
+
+    while (i--) {
+        terminal_putchar(buffer[i]);
     }
 }

@@ -4,5 +4,8 @@
 
 void terminal_initialize(void);
 void terminal_write(const char* str);
+void terminal_putint(int num);
+void terminal_putchar(char c);
+
 
 #endif

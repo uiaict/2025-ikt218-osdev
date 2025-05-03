@@ -65,6 +65,15 @@ add_executable(uiaos-kernel
 	src/terminal.c
 	src/arch/i386/gdt.c
 	src/arch/i386/gdt_flush.asm
+	src/arch/i386/idt.c
+	src/arch/i386/idt_load.asm
+	src/libc/string.c
+	src/arch/i386/isr_stubs.asm
+	src/arch/i386/isr.c
+	src/arch/i386/irq.c
+	src/arch/i386/irq_stubs.asm
+	src/arch/i386/port_io.c
+
 )
 
 # Include directories for the kernel target
@@ -72,6 +81,7 @@ target_include_directories(uiaos-kernel PUBLIC
 	include
 	include/arch/i386
 	include/libc
+	src
 	src/arch/i386	
 )
 
