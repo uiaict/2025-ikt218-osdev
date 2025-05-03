@@ -22,4 +22,7 @@ void play_song(Song *song);
 SongPlayer* create_song_player();
 
 
+
+extern volatile bool stop_song_requested;
+
 #endif /* SONGPLAYER_H */

@@ -9,5 +9,6 @@ typedef unsigned char uint8_t;
 void monitor_initialize(void);
 void monitor_clear(void);
 void monitor_put(char c);
+void monitor_remove_char();
 void monitor_write(const char* str);
 void monitor_write_dec(uint32_t n);

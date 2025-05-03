@@ -50,79 +50,57 @@ void play_sound(uint32_t frequency) {
     // 4. Enable the speaker (by setting the appropriate bits) to start sound generation.
 }
 
-
-// void play_song_impl(Song *song) {
-//     if(!song || !song->notes || song->length == 0){
-//         monitor_write("Invalid song or empty song\n");
-//         return;
-//     }
-
-//     monitor_write("playing song: ");
-//     monitor_write(song->name);
-//     monitor_write("\n");
-
-//     for (uint32_t i = 0; i < song->length; i++) {
-//         Note current_note = song->notes[i];
-        
-//         // Print note info for debugging
-//         if (current_note.frequency > 0) {
-//             monitor_write("Playing note\n");
-//         } else {
-//             monitor_write("Rest\n");
-//         }
-        
-//         // Play the current note
-//         play_sound(current_note.frequency);
-        
-//         // Wait for the note duration
-//         if (current_note.duration > 0) {
-//             sleep_interrupt(current_note.duration);
-//         }
-        
-//         disable_speaker();
-//         // Stop the sound before moving to next note
-//     }
-//     monitor_write("done!");
-
-//     // Pseudocode for play_song_impl:
-//     // 1. Enable the speaker before starting the song.
-//     // 2. Loop through each note in the song's notes array:
-//     //    a. For each note, display its details such as frequency and duration.
-//     //    b. Call play_sound with the note's frequency.
-//     //    c. Delay execution for the duration of the note (this can be implemented with a sleep function).
-//     //    d. Call stop_sound to end the note.
-//     // 3. Disable the speaker after all notes have been played.
-// }
-
-volatile bool stop_requested = false;
-
 void play_song_impl(Song *song) {
     if (!song || !song->notes || song->length == 0) {
         monitor_write("Invalid song\n");
         return;
     }
 
-    stop_requested = false;
-    monitor_write("playing song: ");
+    // Reset stop flag before starting song
+    stop_song_requested = false;
+    
+    monitor_write("Playing song: ");
     monitor_write(song->name);
-    monitor_write("\n");
+    monitor_write("\nPress ESC to stop...\n");
 
-    for (uint32_t i = 0; i < song->length && !stop_requested; i++) {
+    for (uint32_t i = 0; i < song->length && !stop_song_requested; i++) {
         Note current_note = song->notes[i];
+        
         if (current_note.frequency > 0)
-            monitor_write("Playing note\n");
+            play_sound(current_note.frequency);
         else
-            monitor_write("Rest\n");
+            disable_speaker(); // Rest
 
-        play_sound(current_note.frequency);
-
-        if (current_note.duration > 0)
-            sleep_interrupt(current_note.duration);
+        // Play the note for its duration, but check for stop request periodically
+        if (current_note.duration > 0) {
+            // Break the sleep into smaller chunks to check for stop flag more frequently
+            uint32_t remaining = current_note.duration;
+            uint32_t check_interval = 50; // Check every 50ms
+            
+            while (remaining > 0 && !stop_song_requested) {
+                uint32_t sleep_time = (remaining > check_interval) ? check_interval : remaining;
+                sleep_interrupt(sleep_time);
+                remaining -= sleep_time;
+                
+                // Check if ESC was pressed
+                if (stop_song_requested) {
+                    break;
+                }
+            }
+        }
 
         disable_speaker();
+        
+        // Exit loop if stop was requested
+        if (stop_song_requested) {
+            break;
+        }
     }
 
-    monitor_write(stop_requested ? "Song stopped.\n" : "done!\n");
+    // Make sure speaker is disabled when we're done
+    disable_speaker();
+    
+    monitor_write(stop_song_requested ? "Song stopped.\n" : "Song finished!\n");
 }
 
 

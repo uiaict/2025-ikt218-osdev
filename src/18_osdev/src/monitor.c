@@ -56,6 +56,22 @@ void monitor_put(char c) {
     }
 }
 
+void monitor_remove_char(){
+    if(cursor_col==0 && cursor_row==0) return;
+
+    if (cursor_col==0){ // go one column up
+        cursor_row--;
+        cursor_col = VGA_WIDTH - 1;
+    } else { // go back
+        cursor_col--;
+    }
+
+    uint16_t* location = (uint16_t*)video_memory + (cursor_row * VGA_WIDTH + cursor_col);
+    *location = ' ' ;// Clear the character
+    // move_cursor(); // Update hardware cursor
+
+}
+
 void monitor_write(const char* str) {
     while (*str) {
         monitor_put(*str++);
