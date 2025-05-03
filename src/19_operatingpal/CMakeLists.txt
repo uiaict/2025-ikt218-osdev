@@ -41,6 +41,7 @@ set(CMAKE_C_STANDARD 99)
 # Assembly Configuration
 ########################################
 set(CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS "s;S;asm")
+enable_language(ASM_NASM)
 if(OS_ARCH_TARGET STREQUAL "i386")
 	set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf32")
 elseif(OS_ARCH_TARGET STREQUAL "x86_64")
@@ -63,16 +64,37 @@ file(GLOB_RECURSE OS_LIBC_SOURCES
 )
 
 
-# Put all .c , .ccp and .asm files into the src directory
-file(GLOB_RECURSE OS_KERNEL_SOURCES "src/*.c" "src/*.cpp" "src/*.asm" "src/*s")
-
-
 
 # Add executable target for the kernel
 add_executable(uiaos-kernel 
 
-	src/multiboot2.asm # TODO: Add multiboot2 support
-    src/kernel.c
+	src/multiboot2.asm
+	src/kernel.c
+
+	# GDT
+	src/gdt/gdt.asm
+	src/gdt/gdt.c
+
+	# Drivers
+	src/drivers/keyboard.c
+	src/drivers/vga.c
+
+	# Interrupts
+	src/interrupts/desTables.asm
+	src/interrupts/desTables.c
+	src/interrupts/idt.asm
+	src/interrupts/io.c
+	src/interrupts/irq.c
+	src/interrupts/isr.c
+	src/interrupts/pic.c
+	src/interrupts/pit.c
+	src/interrupts/vga.c
+
+	# Lib
+	src/lib_src/stdio.c
+	src/lib_src/string.c
+
+
 
 	${OS_LIBC_SOURCES}
 	${OS_KERNEL_SOURCES}
