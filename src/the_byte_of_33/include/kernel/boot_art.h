@@ -54,7 +54,7 @@ static inline void animate_boot_screen(void) {
     for (int row = 0; row < BOOT_ART_LINES; row++) {
         __draw_line(row);
         // ~0.3s per line on typical emulator; adjust as needed
-        for (volatile uint32_t i = 0; i < 100000000; i++) {
+        for (volatile uint32_t i = 0; i < 1000; i++) {
             __asm__ volatile("nop");
         }
     }
