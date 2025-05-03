@@ -8,11 +8,6 @@ Song all_songs[] = {
         .length = sizeof(music_1) / sizeof(Note)
     },
     {
-        .name = "wii theme",
-        .notes = music_wii_theme,
-        .length = sizeof(music_wii_theme) / sizeof(Note)
-    },
-    {
         .name = "star wars theme",
         .notes = starwars_theme,
         .length = sizeof(starwars_theme) / sizeof(Note)
@@ -91,15 +86,24 @@ void reset_stop_flag() {
 
 void process_command(char* command) {
     if (strcmp(command, "song") == 0) {
-        monitor_write("Choose song :\n1. Mario\n2. Wii\n3. Star Wars\n 4. Battlefield 1942\n5. Music 2\n6. Music 3\n7. Music 4\n8. Music 5\n9. Music 6\n> ");
+        monitor_write("Choose song :\n1. Mario\n2. Star Wars\n3. Battlefield 1942\n4. Music 2\n5. Music 3\n6. Music 4\n7. Music 5\n8. Music 6\n> ");
         
         char selection[128];
         read_line(selection);
         int song_id = atoi(selection);
 
-        play_song_impl(&all_songs[song_id-1]);
+        if (song_id < 1 || song_id > 9) {
+            monitor_write("Invalid selection.\n");
+            return;
+        }
+
+        disable_speaker();
+
         reset_stop_flag();
+
+        play_song_impl(&all_songs[song_id-1]);
        
+        disable_speaker();
     } 
     
     else if (strcmp(command, "q") == 0 || strcmp(command, "quit") == 0 || strcmp(command, "exit") == 0) {

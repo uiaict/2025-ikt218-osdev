@@ -4,6 +4,7 @@
 #include "../../include/libc/monitor.h"
 #include "../../include/libc/common.h"
 #include "../gdt/isr.h"
+#include "../ui/shell.h"
 
 void init_keyboard();
 void keyboard_handler(registers_t regs);

@@ -85,12 +85,27 @@ void keyboard_handler(registers_t regs)
         /* We don't handle key releases right now */
         return;
     }
-
     else
     {
-        /* Here, a key was just pressed */
-        char c = kbdus[scancode];
 
+        /* Check for ESC key (scancode 0x01) to stop music */
+        if (scancode == 0x01) {
+            stop_song_requested = true;  // Set the flag to stop any playing song
+            return;
+        }
+        /* Check for backspace first - special handling */
+        if (scancode == 0x0E) {
+            if (buffer_index > 0) {
+                buffer_index--;
+                monitor_remove_char();
+            }
+            return;
+        }
+        
+
+        /* For other keys, get the character */
+        char c = kbdus[scancode];
+        
         if (c) {
             // Echo character to screen
             monitor_put(c);
@@ -101,12 +116,6 @@ void keyboard_handler(registers_t regs)
                 input_buffer[buffer_index] = '\0'; // Null-terminate the string
                 line_ready = true;
             } 
-            else if (c == '\b') {
-                monitor_remove_char();
-                if (buffer_index > 0) {
-                    buffer_index--;
-                }
-            }
             else {
                 // Regular character - add to buffer if there's space
                 if (buffer_index < INPUT_BUFFER_SIZE - 1) {
