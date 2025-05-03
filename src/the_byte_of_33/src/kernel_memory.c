@@ -3,6 +3,7 @@
 #include <libc/stdbool.h>
 #include "memory.h"
 #include "kernel_memory.h"
+#include "io.h"
 
 
 static mem_block_t* heap_head = NULL;

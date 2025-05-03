@@ -15,10 +15,10 @@
 typedef enum {
     MODE_NONE,
     MODE_SLEEP_TEST,
-    MODE_MEMORY_TEST,
     MODE_MUSIC_PLAYER,
+    MODE_MEMORY_TEST,
     MODE_PIANO,
-    MODE_MATRIX
+    MODE_MATRIX,
 } KernelMode;
 
 int kernel_main() {
@@ -43,7 +43,7 @@ int kernel_main() {
     uint32_t counter = 0;
     char last_key = 0;
     
-    __clear_screen();
+    //__clear_screen();
     set_color(0x0E);
     puts("\nSelect mode:\n");
     puts("  [i] Matrix mode\n");
@@ -73,11 +73,11 @@ int kernel_main() {
                 puts("\n=== Current Heap Layout ===\n");
                 print_heap_blocks();
             } else if (last_key == 'p') {
-                mode = MODE_PIANO;
+                //mode = MODE_PIANO;
                 puts("Switched to Piano mode\n");
             } else if (last_key == 'i') {
-                mode = MODE_MATRIX;
-                puts("Switched to Matrix mode\n")
+                //mode = MODE_MATRIX;
+                puts("Switched to Matrix mode\n");
             } else if (last_key == 't') {
                 mode = MODE_MEMORY_TEST;
                 puts("Memory test mode");
@@ -85,6 +85,7 @@ int kernel_main() {
             keyboard_clear_last_char();
         }
 
+        
         if (mode == MODE_SLEEP_TEST) {
             // Original sleep test functionality
             printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
@@ -95,10 +96,31 @@ int kernel_main() {
             sleep_interrupt(1000); // Sleep 1000 milliseconds (1 second)
             printf("[%d]: Slept using interrupts.\n", counter++);
         } else if (mode == MODE_PIANO) {
-            piano_mode();
+            //piano_mode();
         } else if (mode == MODE_MATRIX) {
-            matrix_mode();
-        } else if (mode == MODE_MUSIC_PLAYER) {
+            //matrix_mode();
+        } else if (mode == MODE_MEMORY_TEST) {            
+            void* a = malloc(1024);
+            void* b = malloc(2048);
+            void* c = malloc(4096);
+    
+            puts("\nHeap after 3 mallocs:");
+            print_heap_blocks();
+    
+            free(b);
+    
+            puts("\nHeap after freeing the second block (b):");
+            print_heap_blocks();
+    
+            void* d = malloc(1024);
+    
+            puts("\nHeap after reallocating a smaller block (should reuse free block):");
+            print_heap_blocks();
+    
+            free(a);
+            free(c);
+            free(d);
+            } else if (mode == MODE_MUSIC_PLAYER) {
             // Play the current song
             printf("Playing song %d...\n", current_song + 1);
             bool completed = player->play_song(&songs[current_song]);
@@ -106,28 +128,6 @@ int kernel_main() {
                 printf("Finished playing song %d.\n", current_song + 1);
                 // Move to the next song if it completed normally
                 current_song = (current_song + 1) % n_songs;
-            } else if (mode == MODE_MEMORY_TEST) {            
-                void* a = malloc(1024);
-                void* b = malloc(2048);
-                void* c = malloc(4096);
-        
-                puts("\nHeap after 3 mallocs:");
-                print_heap_blocks();
-        
-                free(b);
-        
-                puts("\nHeap after freeing the second block (b):");
-                print_heap_blocks();
-        
-                void* d = malloc(1024);
-        
-                puts("\nHeap after reallocating a smaller block (should reuse free block):");
-                print_heap_blocks();
-        
-                free(a);
-                free(c);
-                free(d);
-                }
             } else {
                 // Song was interrupted (e.g., by pressing 'n')
                 printf("Skipping to song %d.\n", current_song + 2); // +2 because we're about to increment
