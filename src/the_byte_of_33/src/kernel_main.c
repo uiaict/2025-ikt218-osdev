@@ -15,7 +15,9 @@
 typedef enum {
     MODE_NONE,
     MODE_SLEEP_TEST,
-    MODE_MUSIC_PLAYER
+    MODE_MUSIC_PLAYER,
+    MODE_PIANO,
+    MODE_MATRIX
 } KernelMode;
 
 int kernel_main() {
@@ -54,7 +56,14 @@ int kernel_main() {
     uint32_t counter = 0;
     char last_key = 0;
     
-    puts("Press 'm' to toggle music player, 's' to toggle sleep tests, 'n' to skip song in music mode, 'h' to print heap layout.\n");
+    __clear_screen();
+    set_color(0x0E);
+    puts("\nSelect mode:\n");
+    puts("  [i] Matrix mode\n");
+    puts("  [m] Music player\n");
+    puts("  [p] Piano mode\n");
+    puts("  [s] Test mode\n");
+    puts("  [h] print heap layout"); //skal flyttes til test
     // Infinite loop
     while (true) {
         // Check for keyboard input to toggle mode
@@ -71,9 +80,16 @@ int kernel_main() {
             } else if(last_key == 's') {
                 mode = MODE_SLEEP_TEST;
                 puts("Switched to Sleep Test mode.\n");
+                //Make general test mode imo
             } else if (last_key == 'h') {
                 puts("\n=== Current Heap Layout ===\n");
                 print_heap_blocks();
+            } else if (last_key == 'p') {
+                mode = MODE_PIANO;
+                puts("Switched to Piano mode\n");
+            } else if (last_key == 'i') {
+                mode = MODE_MATRIX;
+                puts("Switched to Matrix mode\n")
             }
             keyboard_clear_last_char();
         }
@@ -87,6 +103,10 @@ int kernel_main() {
             printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
             sleep_interrupt(1000); // Sleep 1000 milliseconds (1 second)
             printf("[%d]: Slept using interrupts.\n", counter++);
+        } else if (mode == MODE_PIANO) {
+            piano_mode();
+        } else if (mode == MODE_MATRIX) {
+            matrix_mode();
         } else if (mode == MODE_MUSIC_PLAYER) {
             // Play the current song
             printf("Playing song %d...\n", current_song + 1);

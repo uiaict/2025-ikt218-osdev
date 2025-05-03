@@ -13,7 +13,7 @@
 #include "paging.h"
 #include <multiboot2.h>
 #include "interrupt.h"
-#include "keyboard.h"    // wait_scancode()
+#include "keyboard.h"
 #include "kernel_main.h"
 
 #include "kernel/boot_art.h"
@@ -24,7 +24,7 @@ struct multiboot_info {
     uint32_t size;
     uint32_t reserved;
     struct multiboot_tag *first;
-};  // ← semicolon was missing
+};
 
 // Poll PS/2 status port until a scancode arrives, then return it
 static uint8_t wait_scancode(void) {
@@ -163,33 +163,6 @@ int main(uint32_t magic, struct multiboot_info *mb) {
     init_irq();
     __asm__ volatile("sti");
     outb(0x21, 0xFC);  // unmask timer (IRQ0) and keyboard (IRQ1)
-
-    // 8) Main menu loop
-    while (1) {
-        __clear_screen();
-        set_color(0x0E);
-        puts("\nSelect mode:\n");
-        puts("  [i] Matrix mode\n");
-        puts("  [m] Music player\n");
-        puts("  [p] Piano mode\n");
-
-        // non-blocking poll for i/m/p
-        __asm__ volatile("cli");
-        uint8_t sc;
-        while (1) {
-            if (inb(0x64) & 1) {
-                sc = inb(0x60) & 0x7F;
-                if (sc == 0x17 || sc == 0x32 || sc == 0x19)
-                    break;
-            }
-        }
-        __asm__ volatile("sti");
-
-        // dispatch
-        if (sc == 0x17)       matrix_mode();  // 'i'
-        else if (sc == 0x32)  music_mode();   // 'm'
-        else                  piano_mode();   // 'p'
-    }
 
     return kernel_main();
 }
