@@ -32,13 +32,13 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_paging();
    
     // Memory test
-    void* mem1 = malloc(20);
-    void* mem2 = malloc(50);
-    print_memory_layout();
+    // void* mem1 = malloc(20);
+    // void* mem2 = malloc(50);
+    // print_memory_layout();
     
     // Timer test
     init_pit();
-    test_pit_timing();
+    //test_pit_timing();
     
     // OS initialization complete
     monitor_write("Operating system initialized!\n");
