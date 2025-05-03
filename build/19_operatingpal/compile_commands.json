@@ -26,11 +26,6 @@
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev-shanthomasben/build/19_operatingpal",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/drivers/vga.c.o -c /workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/drivers/vga.c",
-  "file": "/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/drivers/vga.c"
-},
-{
-  "directory": "/workspaces/2025-ikt218-osdev-shanthomasben/build/19_operatingpal",
   "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/include -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/interrupts/desTables.asm.o /workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/interrupts/desTables.asm",
   "file": "/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/interrupts/desTables.asm"
 },
@@ -71,11 +66,6 @@
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev-shanthomasben/build/19_operatingpal",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/interrupts/vga.c.o -c /workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/interrupts/vga.c",
-  "file": "/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/interrupts/vga.c"
-},
-{
-  "directory": "/workspaces/2025-ikt218-osdev-shanthomasben/build/19_operatingpal",
   "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/lib_src/stdio.c.o -c /workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/lib_src/stdio.c",
   "file": "/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/lib_src/stdio.c"
 },
@@ -83,5 +73,15 @@
   "directory": "/workspaces/2025-ikt218-osdev-shanthomasben/build/19_operatingpal",
   "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/lib_src/string.c.o -c /workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/lib_src/string.c",
   "file": "/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/lib_src/string.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev-shanthomasben/build/19_operatingpal",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/memory.c.o -c /workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/memory/memory.c",
+  "file": "/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/memory/memory.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev-shanthomasben/build/19_operatingpal",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/paging.c.o -c /workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/memory/paging.c",
+  "file": "/workspaces/2025-ikt218-osdev-shanthomasben/src/19_operatingpal/src/memory/paging.c"
 }
 ]

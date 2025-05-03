@@ -77,7 +77,6 @@ add_executable(uiaos-kernel
 
 	# Drivers
 	src/drivers/keyboard.c
-	src/drivers/vga.c
 
 	# Interrupts
 	src/interrupts/desTables.asm
@@ -88,11 +87,14 @@ add_executable(uiaos-kernel
 	src/interrupts/isr.c
 	src/interrupts/pic.c
 	src/interrupts/pit.c
-	src/interrupts/vga.c
 
 	# Lib
 	src/lib_src/stdio.c
 	src/lib_src/string.c
+
+	# Memory
+	src/memory/memory.c
+	src/memory/paging.c
 
 
 
