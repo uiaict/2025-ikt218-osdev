@@ -15,15 +15,19 @@
 char* hex32_to_str(char buffer[], unsigned int val) {
     const char* hex_chars = "0123456789ABCDEF";
     
-    // Add "0x" prefix
+    
     buffer[0] = '0';
     buffer[1] = 'x';
     
-    // Fill in hex digits
-    for (int i = 0; i < 8; i++) {
-        int digit = (val >> (28 - i * 4)) & 0xF;
-        buffer[2 + i] = hex_chars[digit];
-    }
+    
+    buffer[2] = hex_chars[(val >> 28) & 0xF];
+    buffer[3] = hex_chars[(val >> 24) & 0xF];
+    buffer[4] = hex_chars[(val >> 20) & 0xF];
+    buffer[5] = hex_chars[(val >> 16) & 0xF];
+    buffer[6] = hex_chars[(val >> 12) & 0xF];
+    buffer[7] = hex_chars[(val >> 8) & 0xF];
+    buffer[8] = hex_chars[(val >> 4) & 0xF];
+    buffer[9] = hex_chars[val & 0xF];
     
     buffer[10] = '\0';
     return buffer;
