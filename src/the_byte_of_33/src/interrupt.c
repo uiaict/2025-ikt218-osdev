@@ -102,7 +102,7 @@ void irq_handler(uint8_t irq) {
         outb(0xA0, 0x20); // Send EOI to slave
     }
     outb(0x20, 0x20); // Send EOI to master
-    printf("Received IRQ%d\n", (uint32_t)irq); // Debug
+    //printf("Received IRQ%d\n", (uint32_t)irq); // Debug
     if (interrupt_handlers[irq + 32]) {
         registers_t r;
         interrupt_handlers[irq + 32](&r);
@@ -111,8 +111,22 @@ void irq_handler(uint8_t irq) {
     }
 }
 
-
-
 void register_interrupt_handler(uint8_t n, void (*handler)(registers_t* r)) {
     interrupt_handlers[n] = handler;
+}
+
+// Moved from kernel.c, for tests in kernel_main.c
+void isr0_handler(registers_t* r) {
+    (void)r;
+    puts("Interrupt 0 (Divide by Zero) handled\n");
+}
+
+void isr1_handler(registers_t* r) {
+    (void)r;
+    puts("Interrupt 1 (Debug) handled\n");
+}
+
+void isr2_handler(registers_t* r) {
+    (void)r;
+    puts("Interrupt 2 (NMI) handled\n");
 }

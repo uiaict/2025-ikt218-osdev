@@ -36,7 +36,11 @@ void init_idt(void);
 void init_irq(void);
 void isr_handler(uint8_t interrupt);
 void irq_handler(uint8_t irq);
-
 void register_interrupt_handler(uint8_t n, void (*handler)(registers_t* r));
+
+// ISR handler declarations for test
+void isr0_handler(registers_t* r);
+void isr1_handler(registers_t* r);
+void isr2_handler(registers_t* r);
 
 #endif

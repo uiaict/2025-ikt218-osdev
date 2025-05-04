@@ -11,8 +11,6 @@
 #include "song/song.h"
 #include "keyboard.h"
 
-
-
 // Define modes for the kernel loop
 typedef enum {
     MODE_NONE,
@@ -81,7 +79,6 @@ int kernel_main() {
             keyboard_clear_last_char();
         }
 
-        
         if (mode == MODE_PIANO) {
             //piano_mode();
         } else if (mode == MODE_MATRIX) {
@@ -108,7 +105,8 @@ int kernel_main() {
             free(c);
             free(d);
 
-            
+            puts("Triggering ISR tests....\n");
+            run_isr_tests();
 
             printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
             sleep_busy(1000); // Sleep 1000 milliseconds (1 second)
@@ -130,7 +128,7 @@ int kernel_main() {
                 current_song = (current_song + 1) % n_songs;
             } else {
                 // Song was interrupted (e.g., by pressing 'n')
-                printf("Skipping to song %d.\n", current_song + 2); // +2 because we're about to increment
+                printf("Skipping to song %d.\n", current_song + 2);
                 current_song = (current_song + 1) % n_songs;
             }
         }
@@ -138,4 +136,11 @@ int kernel_main() {
 
     // free(player) unnecessary for now since its used indefinitely, but after future additions add it idk
     return 0;
+}
+
+// Function to run ISR tests
+void run_isr_tests(void) {
+    __asm__ volatile("int $0");  // Divide by zero
+    __asm__ volatile("int $1");  // Debug
+    __asm__ volatile("int $2");  // NMI
 }
