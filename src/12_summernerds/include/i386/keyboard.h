@@ -2,14 +2,15 @@
 #define KEYBOARD_H
 
 #include "i386/interruptRegister.h"
-// #include <libc/stdint.h>
-// #include <libc/stdbool.h>
 
-typedef struct{
+typedef struct
+{
     int x;
     int y;
-}vector2D __attribute__((packed));
+} vector2D;
 
+void EnableBufferTyping();
+void DisableBufferTyping();
 void EnableTyping();
 void DisableTyping();
 char scanCodeToASCII(unsigned char *scanCode);

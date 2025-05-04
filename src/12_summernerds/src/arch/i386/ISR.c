@@ -24,3 +24,28 @@ void isr_handler(registers_t regs)
             ; // Infinite loop if no handler is registered
     }
 }
+
+void testISR3(registers_t *regs, void *context)
+{
+    printf("this is printed when isr 3 is activated\n");
+}
+void testISR4(registers_t *regs, void *context)
+{
+    printf("this is printed when isr 4 is activated\n");
+}
+void testISR5(registers_t *regs, void *context)
+{
+    printf("this is printed when isr 5 is activated\n");
+}
+
+void testThreeISRs()
+{
+    register_interrupt_handler(ISR3, testISR3, 0);
+    register_interrupt_handler(ISR4, testISR4, 0);
+    register_interrupt_handler(ISR5, testISR5, 0);
+
+    asm volatile("sti");
+    asm volatile("int $0x3");
+    asm volatile("int $0x4");
+    asm volatile("int $0x5");
+}

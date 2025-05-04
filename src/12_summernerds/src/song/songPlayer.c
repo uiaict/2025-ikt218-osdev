@@ -44,7 +44,7 @@ static void nosound()
 void beep()
 {
     play_sound(1000);
-    sleep_interrupt(10);
+    sleep_interrupt(100);
     nosound();
 }
 

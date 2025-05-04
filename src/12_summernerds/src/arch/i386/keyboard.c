@@ -4,31 +4,45 @@
 #include "kernel/memory.h"
 #include "libc/system.h"
 #include "common.h"
+#include "menu.h"
 #include "screen.h"
 
-
 int cannotType = 1;
+int menu_buffer = 0;
+
+void EnableBufferTyping()
+{
+    menu_buffer = 1;
+}
+void DisableBufferTyping()
+{
+    menu_buffer = 0;
+}
 
 // Enable free typing from user
-void EnableTyping(){
+void EnableTyping()
+{
     cannotType = 0;
 }
 // Disable free typing from user
-void DisableTyping(){
+void DisableTyping()
+{
     cannotType = 1;
 }
 
-
-
 void irq1_keyboard_handler(registers_t *regs, void *ctx)
 {
-    
-
     uint8_t scancode = inb(0x60);
     char ascii = scanCodeToASCII(&scancode);
 
-    if (cannotType) return;
-    if (ascii == 1){
+    if (menu_buffer)
+    {
+        write_to_buffer(ascii);
+    }
+    else if (cannotType)
+        return;
+    else if (ascii == 1)
+    {
         move_cursor_direction(arrowKeys2D.x, arrowKeys2D.y);
     }
     else if (ascii != 0)
@@ -46,19 +60,119 @@ bool capsEnabled = false;
 // 1. Scancode-tabell
 char small_scancode_ascii[128] =
     {
-        '.', '.', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0','+', '\\', '.', '.', 
-        'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '.', '.', '.', '.', 
-        'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', '.', '.', '.', '.', '.', 
-        'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '-',
+        '.',
+        '.',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '0',
+        '+',
+        '\\',
+        '.',
+        '.',
+        'q',
+        'w',
+        'e',
+        'r',
+        't',
+        'y',
+        'u',
+        'i',
+        'o',
+        'p',
+        '.',
+        '.',
+        '.',
+        '.',
+        'a',
+        's',
+        'd',
+        'f',
+        'g',
+        'h',
+        'j',
+        'k',
+        'l',
+        '.',
+        '.',
+        '.',
+        '.',
+        '.',
+        'z',
+        'x',
+        'c',
+        'v',
+        'b',
+        'n',
+        'm',
+        ',',
+        '.',
+        '-',
 
-    };
+};
 
 char large_scancode_ascii[128] =
     {
-        '.', '.', '!', '\"', '#', '$', '%', '&', '/', '(', ')', '=', '\?', '`', '.', '.',
-        'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '.', '.', '.', '.',
-        'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', '.', '.', '.', '.', '.',
-        'Z', 'X', 'C', 'V', 'B', 'N', 'M', ';', ':', '_', 
+        '.',
+        '.',
+        '!',
+        '\"',
+        '#',
+        '$',
+        '%',
+        '&',
+        '/',
+        '(',
+        ')',
+        '=',
+        '\?',
+        '`',
+        '.',
+        '.',
+        'Q',
+        'W',
+        'E',
+        'R',
+        'T',
+        'Y',
+        'U',
+        'I',
+        'O',
+        'P',
+        '.',
+        '.',
+        '.',
+        '.',
+        'A',
+        'S',
+        'D',
+        'F',
+        'G',
+        'H',
+        'J',
+        'K',
+        'L',
+        '.',
+        '.',
+        '.',
+        '.',
+        '.',
+        'Z',
+        'X',
+        'C',
+        'V',
+        'B',
+        'N',
+        'M',
+        ';',
+        ':',
+        '_',
 
 };
 
@@ -123,7 +237,8 @@ char scanCodeToASCII(unsigned char *scanCode)
         return 0;
 
     case 0x48: // up arrow pressed
-        if (arrowKeys2D.y ==-1) return 1;
+        if (arrowKeys2D.y == -1)
+            return 1;
         arrowKeys2D.y -= 1;
         return 1;
     case 0xC8: // up arrow released
@@ -131,16 +246,18 @@ char scanCodeToASCII(unsigned char *scanCode)
         return 0;
 
     case 0x50: // down arrow pressed
-        if (arrowKeys2D.y ==1) return 1;
+        if (arrowKeys2D.y == 1)
+            return 1;
         arrowKeys2D.y += 1;
         return 1;
     case 0xD0: // down arrow released
-        
+
         arrowKeys2D.y -= 1;
         return 0;
 
     case 0x4D: // right arrow pressed
-        if (arrowKeys2D.x ==1) return 1;
+        if (arrowKeys2D.x == 1)
+            return 1;
         arrowKeys2D.x += 1;
         return 1;
     case 0xCD: // right arrow released
@@ -148,7 +265,8 @@ char scanCodeToASCII(unsigned char *scanCode)
         return 0;
 
     case 0x4B: // left arrow pressed
-        if (arrowKeys2D.x ==-1) return 1;
+        if (arrowKeys2D.x == -1)
+            return 1;
         arrowKeys2D.x -= 1;
         return 1;
     case 0xCB: // left arrow released

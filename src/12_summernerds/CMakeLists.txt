@@ -70,7 +70,7 @@ add_executable(uiaos-kernel
     # SYSTEM
     src/arch/i386/IRQ.c
     src/arch/i386/ISR.c
-    src/arch/i386/Keyboard.c
+    src/arch/i386/keyboard.c
     src/arch/i386/IDT.c
     src/arch/i386/gdt.c
     src/arch/i386/stdio.c

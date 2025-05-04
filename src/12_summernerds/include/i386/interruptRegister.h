@@ -109,6 +109,8 @@ void init_irq();
 // Register the interrupts
 void init_interrupts();
 
+void testThreeISRs();
+
 // Struct to hold register values pushed by the processor
 typedef struct InterruptRegisters
 {
