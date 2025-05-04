@@ -8,15 +8,9 @@
 #include <libc/stddef.h>
 #include "libc/stdbool.h"
 #include "song/song.h"
+#include "song/song.h"
 #include "common.h"
 #include "menu.h"
-
-uint8_t rainbow_colours[4] = {0x4, 0xE, 0x2, 0x9};
-static char key_buffer[BUFFER_SIZE];
-
-#define VGA_HEIGHT 25
-#define VGA_WIDTH 80
-#define VGA_MEMORY (volatile uint16_t *)0xB8000
 
 extern uint32_t end; // Linker symbol marking the end of kernel
 extern uint32_t end; // Linker symbol marking the end of kernel
@@ -81,6 +75,8 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     // printf("Allocated memory blocks at: 0x%x, 0x%x, 0x%x\n", mem1, mem2, mem3);
 
     // beep();
+
+    beep();
 
     // EnableTyping(); // Enables free typing
     handle_menu(); // opens the menu
