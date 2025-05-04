@@ -92,6 +92,8 @@ int kernel_main() {
                         set_color(0x0B);
                         puts("Switched to Piano mode\n");
                         piano_mode();
+                        keyboard_clear_last_char();
+                        last_key = 0;
                         print_main_menu();
                         break;
                     case 't':
