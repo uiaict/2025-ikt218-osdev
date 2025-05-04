@@ -83,7 +83,6 @@ void init_keyboard_controller(void) {
 void keyboard_handler(registers_t* r) {
     // Read scancode from keyboard port (0x60)
     (void)r;
-    puts("Keyboard interrupt received\n");
     uint8_t scancode = inb(0x60);
 
     // Ignore key release (bit 7 set)
