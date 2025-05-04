@@ -95,7 +95,7 @@ int kernel_main() {
                         set_color(0x0B); // Light cyan text
                         puts("Switched to Music Player mode.\n");
                         set_color(0x0C); // Red text for menu
-                            puts("\nSong Selection Menu:\n");
+                            puts("\nSong Selection Menu:\n");   
                             for (uint32_t i = 0; i < n_songs; i++) {
                                 printf("[%d] Song %d\n", i, i + 1);
                             }
@@ -123,7 +123,12 @@ int kernel_main() {
                 if ((uint32_t)(last_key - '0') < n_songs) {
                     current_song = last_key - '0';
                     set_color(0x0B);
+                    clear_screen();
                     printf("Selected song %d, now playing...\n", current_song + 1);
+                    puts("[n] Next song\n");
+                    puts("[b] Previous song\n");
+                    puts("[s] Select song\n");
+                    puts("[q] Quit to main menu\n");
                     mode = MODE_MUSIC_PLAYER;
                 } else if (last_key == 'q') {
                     mode = MODE_NONE;
@@ -181,6 +186,7 @@ int kernel_main() {
                         break;
                     case SONG_INTERRUPTED_S:
                         mode = MODE_MUSIC_MENU;
+                        clear_screen();
                         set_color(0x0C);
                         puts("\nSong Selection Menu:");
                         for (uint32_t i = 0; i < n_songs; i++)
