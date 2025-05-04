@@ -11,6 +11,8 @@ typedef struct
 
 #define BUFFER_SIZE 255
 
+void EnableBufferTyping();
+void DisableBufferTyping();
 void EnableTyping();
 void DisableTyping();
 char scanCodeToASCII(unsigned char *scanCode);
