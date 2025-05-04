@@ -5,10 +5,17 @@
 #include "interrupts/pit.h"
 #include "memory/memory.h"
 #include "memory/paging.h"
+#include "music/sound.h"
+#include "music/song.h"
+#include "music/notes.h"
+
 
 extern uint32_t end;
 extern char charBuffer[];
 extern int bufferIndex;
+
+extern Note music_1[];
+extern size_t music_1_length;
 
 struct multiboot_info {
     uint32_t size;
@@ -45,9 +52,15 @@ void kmain(uint32_t magic, struct multiboot_info* mb_info_addr) {
         printf("[%d] Done interrupt sleep.\n", i);
     }
 
+
+    Song song = { music_1, music_1_length };
+    play_song(&song);
+
     // Interactive mode after PIT demo
     printf("You can now type! Input will be printed live:\n");
     bufferIndex = 0;
+
+    
 
     while (1) {
         asm volatile("hlt");

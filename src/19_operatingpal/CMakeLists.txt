@@ -96,6 +96,12 @@ add_executable(uiaos-kernel
 	src/memory/memory.c
 	src/memory/paging.c
 
+	# Music
+	src/music/song.c
+	src/music/sound.c
+	src/music/notes.c
+
+
 
 
 	${OS_LIBC_SOURCES}
