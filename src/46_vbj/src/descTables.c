@@ -1,14 +1,16 @@
-// This code is adapted from JamesM's kernel development tutorials https://archive.is/L3pyA 
-
+/* ---------------------------------------------------------------------
+    * Most of the code is adapted from JamesM's kernel development tutorials 
+      https://archive.is/L3pyA
+    ---------------------------------------------------------------------
+*/
 #include "descTables.h"
 #include "memory.h"
 #include "isr.h"
 #include "global.h"
-// Lets us access our ASM functions from our C code.
+
 extern void gdt_flush(uint32_t);
 extern void idt_flush(uint32_t);
 
-// Internal function prototypes.
 static void init_gdt();
 static void init_idt();
 static void gdt_set_gate(int32_t,uint32_t,uint32_t,uint8_t,uint8_t);
@@ -20,10 +22,8 @@ idt_entry_t idt_entries[256];
 idt_ptr_t   idt_ptr;
 
 void init_descriptor_tables()
-{
-   // Initialise the global descriptor table.
+{.
    init_gdt();
-   // Initialise the interrupt descriptor table.
    init_idt();
    asm volatile("sti");
 }
@@ -43,7 +43,6 @@ static void init_gdt()
    gdt_flush((uint32_t)&gdt_ptr);
 }
 
-// Set the value of one GDT entry.
 static void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran)
 {
    gdt_entries[num].base_low    = (base & 0xFFFF);

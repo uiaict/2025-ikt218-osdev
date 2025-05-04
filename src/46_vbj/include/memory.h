@@ -1,3 +1,8 @@
+/* ---------------------------------------------------------------------
+    * This code is adapted from assignment_files.zip in assignment 4
+    ---------------------------------------------------------------------
+*/
+
 #ifndef MEMORY_H
 #define MEMORY_H
 
@@ -20,7 +25,6 @@ extern void paging_enable();
 
 extern void* malloc(size_t size);
 extern void free(void *mem);
-//extern void* pmalloc(size_t size);
 extern char* pmalloc(size_t size);
 
 

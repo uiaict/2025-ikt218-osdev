@@ -1,3 +1,9 @@
+/* ---------------------------------------------------------------------
+    * Inspired by the pseduocode from the assignment 4
+    ---------------------------------------------------------------------
+*/
+
+
 #include "pit.h"
 #include "terminal.h"
 #include "isr.h"

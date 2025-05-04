@@ -1,3 +1,8 @@
+/* ---------------------------------------------------------------------
+    * Inspired by the pseduocode from the assignment 5
+    ---------------------------------------------------------------------
+*/
+
 extern "C"
 {
     #include "apps/song.h"
@@ -39,10 +44,9 @@ void play_sound(uint32_t frequency) {
 }
 
 void stop_sound() {
-    uint8_t port_value = inb(PC_SPEAKER_PORT);  // Les inn nåværende status fra PC-høyttalerens port
-    
-    // Fjern bare bit 1 som styrer data for å stoppe lyden
-    outb(PC_SPEAKER_PORT, port_value & ~0b10);  // Fjerner bit 1, men lar bit 0 (høyttalerens "gate") være intakt
+    uint8_t port_value = inb(PC_SPEAKER_PORT); 
+
+    outb(PC_SPEAKER_PORT, port_value & ~0b10);  
 }
 
 void play_song_impl(Song *song) {
@@ -56,10 +60,10 @@ void play_song_impl(Song *song) {
 
             play_sound(note->frequency);
 
-            sleep_interrupt(note->duration); // Bruk PIT til å vente på riktig tid
+            sleep_interrupt(note->duration);
 
             stop_sound();
-            //sleep_interrupt(20); // Legg til en liten pause mellom noter
+            //sleep_interrupt(20); 
         }
     printf("Songplayer finished playing\n");
     

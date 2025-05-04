@@ -2,7 +2,7 @@
 #include "terminal.h"  
 #include "libc/stdint.h"
 
-// Kernel panic function
+// PANIC FUNCTION
 void panic(const char *message)
 {
     // Print the panic message
@@ -11,6 +11,5 @@ void panic(const char *message)
     // Halt the CPU
     asm volatile("cli; hlt");
 
-    // This will never be reached, but keeps compilers happy
     while (1) { }
 }

@@ -1,4 +1,7 @@
-
+/* ---------------------------------------------------------------------
+    * This of  this code is adapted from the assignment_files.zip in assignment 5
+    ---------------------------------------------------------------------
+*/
 #ifndef UIAOS_FREQUENCIES_H
 #define UIAOS_FREQUENCIES_H
 

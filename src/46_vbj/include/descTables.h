@@ -1,4 +1,9 @@
-// This code is adapted from JamesM's kernel development tutorials https://archive.is/L3pyA 
+/* ---------------------------------------------------------------------
+    * This code is adapted from JamesM's kernel development tutorials 
+      https://archive.is/L3pyA 
+    ---------------------------------------------------------------------
+*/
+
 
 # ifndef DESC_TABLES_H
 # define DESC_TABLES_H

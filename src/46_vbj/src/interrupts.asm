@@ -1,3 +1,4 @@
+; Most of this code is adapted from JamesM's kernel development tutorials https://archive.is/L3pyA and https://archive.is/8W6ew
 %macro ISR_NOERRCODE 1  ; define a macro, taking one parameter
   [GLOBAL isr%1]        ; %1 accesses the first parameter.
   isr%1:

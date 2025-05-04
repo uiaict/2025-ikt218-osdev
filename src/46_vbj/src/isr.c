@@ -1,3 +1,8 @@
+/* ---------------------------------------------------------------------
+    * Some of this code is adapted from JamesM's kernel development 
+    tutorials https://archive.is/8W6ew
+    ---------------------------------------------------------------------
+*/
 #include "libc/stdint.h"
 #include "libc/stdbool.h"
 #include "descTables.h"
@@ -12,14 +17,13 @@ void register_interrupt_handler(uint8_t n, isr_t handler)
   interrupt_handlers[n] = handler;
 }
 
-
+// ---------- ISR Handlers ----------
 void isr_handler(registers_t regs)
 {
   // printf("Received interrupt: %d\n", regs.int_no);
 }
 
-
-// This gets called from our ASM interrupt handler stub.
+// ---------- IRQ Handlers ----------
 void irq_handler(registers_t regs)
 {
    // Send an EOI (end of interrupt) signal to the PICs.

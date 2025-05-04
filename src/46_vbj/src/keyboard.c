@@ -58,10 +58,6 @@ void keyboard_callback()
     }
 }
 
-
-
-
-
 void init_keyboard() {
    // printf("Initializing keyboard...\n");  
     register_interrupt_handler(33, keyboard_callback);

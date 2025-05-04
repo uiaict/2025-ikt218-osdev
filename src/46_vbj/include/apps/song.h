@@ -1,3 +1,9 @@
+/* ---------------------------------------------------------------------
+    * Most of  this code is adapted from the assignment_files.zip in assignment 5
+    ---------------------------------------------------------------------
+*/
+
+
 #ifndef SONG_H
 #define SONG_H
 #include <libc/stdint.h>
