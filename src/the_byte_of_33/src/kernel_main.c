@@ -18,6 +18,20 @@
 static void print_main_menu(void) {
     clear_screen();
     set_color(0x0E); // Yellow text
+
+    // “The byte of 33” logo
+    puts("                                                                          \n");
+    puts("  _______ _            ____        _                __   ____    ____    \n");
+    puts(" |__   __| |          |  _ \\      | |              / _| |___ \\  |___ \\   \n");
+    puts("    | |  | |__   ___  | |_) |_   _| |_ ___    ___ | |_    __) |   __) |  \n");
+    puts("    | |  | '_ \\ / _ \\ |  _ <| | | | __/ _ \\  / _ \\|  _|  |__ <|  |__ <|   \n");
+    puts("    | |  | | | |  __/ | |_) | |_| | ||  __/ | (_) | |    ___) |  ___) |  \n");
+    puts("    |_|  |_| |_|\\___| |____/ \\__, |\\__\\___|  \\___/|_|   |____/  |____/   \n");
+    puts("                              __/ |                                      \n");
+    puts("                             |___/                                       \n");
+    puts("\n");  // blank line
+
+    // Menu
     puts("  Select mode:\n");
     puts("  [i] Matrix mode\n");
     puts("  [m] Music player\n");
@@ -92,6 +106,7 @@ int kernel_main() {
                         set_color(0x0B);
                         puts("Switched to Piano mode\n");
                         piano_mode();
+                        // Flush the last 'p' so you can re-enter piano mode with a single press
                         keyboard_clear_last_char();
                         last_key = 0;
                         print_main_menu();
@@ -100,7 +115,7 @@ int kernel_main() {
                         clear_screen();
                         mode = MODE_TEST;
                         set_color(0x0B);
-                        puts("Entered test mode\n");
+                        puts("Entered test mode: press any key to show\n");
                         break;
                 }
                 keyboard_clear_last_char();
@@ -133,7 +148,7 @@ int kernel_main() {
                 printf("[%d]: Busy-wait sleep...\n", counter);
                 sleep_busy(1000); printf("[%d]: Done.\n", counter++);
                 printf("[%d]: Interrupt sleep...\n", counter);
-                sleep_interrupt(1000); printf("[%d]: Done.\n", counter++);
+                sleep_interrupt(3000); printf("[%d]: Done.\n", counter++);
 
                 mode = MODE_NONE;
                 keyboard_clear_last_char();
