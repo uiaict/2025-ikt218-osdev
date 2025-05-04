@@ -46,7 +46,7 @@ int kernel_main(){
 
     int counter = 0;
 
-/*     while(true){
+     while(true){
         printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
         sleepBusy(1000);
         printf("[%d]: Slept using busy-waiting.\n", counter++);
@@ -54,7 +54,7 @@ int kernel_main(){
         printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
         sleepInterrupt(1000);
         printf("[%d]: Slept using interrupts.\n", counter++);
-    }; */
+    }; 
 
     while (true){}
 }

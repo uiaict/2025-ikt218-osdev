@@ -14,15 +14,18 @@
 // Convert a 32-bit hex value to a string
 char* hex32_to_str(char buffer[], unsigned int val) {
     const char* hex_chars = "0123456789ABCDEF";
-    int i;
     
-    // Start at the end of the buffer and work backwards
-    buffer[8] = '\0';
-    for(i = 7; i >= 0; i--) {
-        buffer[i] = hex_chars[val & 0xF];
-        val >>= 4;
+    // Add "0x" prefix
+    buffer[0] = '0';
+    buffer[1] = 'x';
+    
+    // Fill in hex digits
+    for (int i = 0; i < 8; i++) {
+        int digit = (val >> (28 - i * 4)) & 0xF;
+        buffer[2 + i] = hex_chars[digit];
     }
     
+    buffer[10] = '\0';
     return buffer;
 }
 

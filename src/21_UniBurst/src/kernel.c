@@ -39,7 +39,10 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     cursorVertical;                                 // Makes the cursor vertical
     changeBackgroundColor(vgaColorDarkGrey);        // Changes the background color to dark grey
     changeTextColor(vgaColorWhite);                 // Changes the text color to white
+    asm volatile("sti");
 
+    printf("Test address of end: %x\n", (uint32_t)&end);
+    
     char strTest[] = "Hello World!";                // Creates test variables to be used for printf testing
     int intTest = 123;
     unsigned int uintTest = 1234567890;
