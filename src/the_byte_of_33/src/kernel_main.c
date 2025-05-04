@@ -16,13 +16,13 @@
 
 // Print the main selection menu
 static void print_main_menu(void) {
+    clear_screen();
     set_color(0x0E); // Yellow text
-    puts("\nSelect mode:\n");
-    puts("  [i] Matrix mode");
-    puts("  [m] Music player");
-    puts("  [p] Piano mode");
-    puts("  [t] Test mode");
-    puts("  [h] Print heap layout");
+    puts("  Select mode:\n");
+    puts("  [i] Matrix mode\n");
+    puts("  [m] Music player\n");
+    puts("  [p] Piano mode\n");
+    puts("  [t] Test mode\n");
 }
 
 // Run ISR tests
@@ -66,6 +66,7 @@ int kernel_main() {
             if (mode == MODE_NONE) {
                 switch (last_key) {
                     case 'i':
+                        clear_screen();
                         set_color(0x0B);
                         puts("Switched to Matrix mode");
                         matrix_mode();
@@ -75,29 +76,29 @@ int kernel_main() {
                         print_main_menu();
                         break;
                     case 'm':
-                        mode = MODE_MUSIC_PLAYER;
-                        set_color(0x0B);
+                        clear_screen();
+                        mode = MODE_MUSIC_MENU;
+                        set_color(0x0B); // Light cyan text
                         puts("Switched to Music Player mode.\n");
-                        puts("[n] Next song");
-                        puts("[b] Previous song");
-                        puts("[s] Select song");
-                        puts("[q] Quit to main menu");
+                        set_color(0x0C); // Red text for menu
+                            puts("\nSong Selection Menu:\n");
+                            for (uint32_t i = 0; i < n_songs; i++) {
+                                printf("[%d] Song %d\n", i, i + 1);
+                            }
+                            puts("Press 0-5 to select a song, or q to return\n");
                         break;
                     case 'p':
+                        clear_screen();
                         set_color(0x0B);
                         puts("Switched to Piano mode\n");
                         piano_mode();
                         print_main_menu();
                         break;
                     case 't':
+                        clear_screen();
                         mode = MODE_TEST;
                         set_color(0x0B);
                         puts("Entered test mode\n");
-                        break;
-                    case 'h':
-                        puts("\n=== Current Heap Layout ===\n");
-                        print_heap_blocks();
-                        print_main_menu();
                         break;
                 }
                 keyboard_clear_last_char();
