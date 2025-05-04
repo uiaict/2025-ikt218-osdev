@@ -19,22 +19,32 @@ static void put_at(char c, uint8_t r, uint8_t ccol) {
 }
 
 int putchar(int ic) {
-    char c = (char)ic; // Cast int to char
+    char c = (char)ic;
     if (c == '\n') {
         col = 0;
         if (++row == VGA_HEIGHT) row = 0;
-        return ic; // Return the input character as per standard
+        return ic;
     }
     put_at(c, row, col);
     if (++col == VGA_WIDTH) {
         col = 0;
         if (++row == VGA_HEIGHT) row = 0;
     }
-    return ic; // Return the input character
+    return ic;
 }
 
 void puts(const char *s) {
     while (*s) putchar(*s++);
+}
+
+void clear_screen(void) {
+    for (uint8_t r = 0; r < VGA_HEIGHT; r++) {
+        for (uint8_t ccol = 0; ccol < VGA_WIDTH; ccol++) {
+            put_at(' ', r, ccol);
+        }
+    }
+    row = 0;
+    col = 0;
 }
 
 void print_number(uint32_t num) {
@@ -69,7 +79,7 @@ void printf(const char *fmt, ...) {
                 char *arg = va_arg(args, char *);
                 print_string(arg);
             } else {
-                putchar(*fmt); // Print unrecognized format specifier as-is
+                putchar(*fmt);
             }
         } else {
             putchar(*fmt);
