@@ -19,32 +19,6 @@
 
 extern uint32_t end;
 
-// Music stub, quits on Q
-/*static void music_mode(void) {
-    // 1) Mask only keyboard IRQ (IRQ1) in the PIC, leave timer IRQ0 enabled.
-    uint8_t pic1_mask = inb(0x21);
-    outb(0x21, pic1_mask | 0x02);  // mask bit1 = IRQ1
-
-    __clear_screen();
-    set_color(0x0E);
-    puts("Music Player Menu (press Q to go back):\n");
-    puts("  [P] Play/Pause\n");
-    puts("  [N] Next Track\n");
-    puts("  [Q] Back\n");
-
-    uint8_t sc;
-    do {
-        sc = wait_make();
-        // you can dispatch P/N here based on sc
-    } while (sc != 0x10);  // 0x10 = 'Q'
-
-    __clear_screen();
-
-    // 2) Restore original PIC mask to re-enable keyboard IRQ
-    outb(0x21, pic1_mask);
-}*/
-
-
 int main(uint32_t magic, struct multiboot_info *mb) {
     (void)magic; (void)mb;
 

@@ -21,6 +21,7 @@ typedef enum {
     MODE_TEST,
     MODE_PIANO,
     MODE_MATRIX,
+    MODE_MUSIC_MENU
 } KernelMode;
 
 int kernel_main(void);

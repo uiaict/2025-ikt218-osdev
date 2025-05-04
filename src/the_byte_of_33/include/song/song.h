@@ -4,6 +4,14 @@
 #include "frequencies.h"
 #include <libc/stdbool.h>
 
+typedef enum {
+    SONG_COMPLETED,      // Song finished naturally
+    SONG_INTERRUPTED_N,  // Interrupted by 'n' (next song)
+    SONG_INTERRUPTED_Q,  // Interrupted by 'q' (quit)
+    SONG_INTERRUPTED_S,  // Interrupted by 's' (song menu)
+    SONG_INTERRUPTED_B   // Interrupted by 'b' (previous song)
+} SongResult;
+
 // Define a struct to represent a single musical note
 typedef struct {
     uint32_t frequency; // The frequency of the note in Hz (e.g., A4 = 440 Hz)
@@ -17,8 +25,9 @@ typedef struct {
 } Song;
 
 // Define a struct to represent a song player
-typedef struct {
-    bool (*play_song)(Song* song); // Function pointer to a function that plays a song
+typedef struct SongPlayer {
+    SongResult (*play_song)(struct SongPlayer* player, Song* song); // Function pointer to a function that plays a song
+    bool is_playing;
 } SongPlayer;
 
 #ifdef __cplusplus
@@ -27,6 +36,10 @@ extern "C" {
 
 // Function prototype for creating a new SongPlayer instance
 SongPlayer* create_song_player();
+void free_song_player(SongPlayer* player);
+void stop_sound();
+void disable_speaker();
+SongResult play_song(struct SongPlayer* player, Song* song);
 
 #ifdef __cplusplus
 }

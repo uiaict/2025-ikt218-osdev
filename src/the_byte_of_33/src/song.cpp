@@ -11,25 +11,21 @@
 extern "C" {
 #endif
 
-void enable_speaker(){
-    // Read the current state of the PC speaker control register
+void enable_speaker() {
     uint8_t speaker_state = inb(PC_SPEAKER_PORT);
-    // Set bits 0 and 1 to enable the speaker
     if ((speaker_state & 0x03) != 0x03) {
         outb(PC_SPEAKER_PORT, speaker_state | 0x03);
     }
 }
 
 void disable_speaker() {
-    // Turn off the PC speaker
     uint8_t speaker_state = inb(PC_SPEAKER_PORT);
     outb(PC_SPEAKER_PORT, speaker_state & 0xFC);
 }
 
 void stop_sound() {
-    // Stop the sound by clearing bit 1 (speaker data), leaving bit 0 (speaker gate) unchanged
     uint8_t speaker_state = inb(PC_SPEAKER_PORT);
-    outb(PC_SPEAKER_PORT, speaker_state & 0xFD); // Clear bit 1
+    outb(PC_SPEAKER_PORT, speaker_state & 0xFD);
 }
 
 void play_sound(uint32_t frequency) {
@@ -44,7 +40,9 @@ void play_sound(uint32_t frequency) {
     enable_speaker();
 }
 
-bool play_song_impl(Song *song) {
+SongResult play_song_impl(SongPlayer* player, Song* song) {
+    if (!player || !song) return SONG_COMPLETED;
+    player->is_playing = true;
     for (uint32_t i = 0; i < song->length; i++) {
         Note* note = &song->notes[i];
         play_sound(note->frequency);
@@ -52,26 +50,42 @@ bool play_song_impl(Song *song) {
         stop_sound();
         sleep_interrupt(10);
 
-        // Check for 'n' kkey to interrupt the song
-        if (keyboard_get_last_char() == 'n') {
+        char current_key = keyboard_get_last_char();
+        if (current_key != 0) {
             keyboard_clear_last_char();
             stop_sound();
             disable_speaker();
-            return false;
+            player->is_playing = false;
+            if (current_key == 'n') return SONG_INTERRUPTED_N;
+            if (current_key == 'q') return SONG_INTERRUPTED_Q;
+            if (current_key == 's') return SONG_INTERRUPTED_S;
+            if (current_key == 'b') return SONG_INTERRUPTED_B;
         }
     }
     disable_speaker();
-    return true;
+    player->is_playing = false;
+    return SONG_COMPLETED;
 }
 
-bool play_song(Song *song) {
-    return play_song_impl(song);
+SongResult play_song(SongPlayer* player, Song* song) {
+    return play_song_impl(player, song);
 }
 
 SongPlayer* create_song_player() {
-    SongPlayer* player = (SongPlayer*)malloc(sizeof(SongPlayer)); // Use malloc since primarily C
-    player->play_song = play_song;
+    SongPlayer* player = (SongPlayer*)malloc(sizeof(SongPlayer));
+    if (player) {
+        player->play_song = play_song;
+        player->is_playing = false;
+    }
     return player;
+}
+
+void free_song_player(SongPlayer* player) {
+    if (player) {
+        stop_sound();
+        disable_speaker();
+        free(player);
+    }
 }
 
 #ifdef __cplusplus
