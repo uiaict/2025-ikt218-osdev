@@ -11,6 +11,8 @@
 #include "song/song.h"
 #include "keyboard.h"
 #include "kernel_main.h"
+#include "matrix_mode.h"
+#include "piano_mode.h"
 
 int kernel_main() {
     set_color(0x0B); // Light cyan text
@@ -64,10 +66,17 @@ int kernel_main() {
                 } else if (last_key == 'h') {
                     puts("\n=== Current Heap Layout ===\n");
                     print_heap_blocks();
+                    puts("Switched to Music Player mode.\n");
+                    puts("[n] Next song\n");
+                    puts("[b] Previous song\n");
+                    puts("[s] Select song\n");
+                    puts("[q] Quit to main menu\n");
                 } else if (last_key == 'p') {
                     puts("Switched to Piano mode\n");
+                    piano_mode();
                 } else if (last_key == 'i') {
                     puts("Switched to Matrix mode\n");
+                    matrix_mode();
                 } else if (last_key == 't') {
                     mode = MODE_TEST;
                     puts("Entered test mode\n");
