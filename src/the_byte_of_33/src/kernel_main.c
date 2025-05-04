@@ -64,41 +64,7 @@ int kernel_main() {
             puts("Key pressed: "); putchar(current_key); puts("\n");
 
             if (mode == MODE_NONE) {
-                switch (last_key) {
-                    case 'i':
-                        set_color(0x0B);
-                        puts("Switched to Matrix mode");
-                        matrix_mode();
-                        mode = MODE_NONE;
-                        keyboard_clear_last_char();
-                        last_key = 0;
-                        print_main_menu();
-                        break;
-                    case 'm':
-                        mode = MODE_MUSIC_PLAYER;
-                        set_color(0x0B);
-                        puts("Switched to Music Player mode.\n");
-                        puts("[n] Next song");
-                        puts("[b] Previous song");
-                        puts("[s] Select song");
-                        puts("[q] Quit to main menu");
-                        break;
-                    case 'p':
-                        set_color(0x0B);
-                        puts("Switched to Piano mode\n");
-                        piano_mode();
-                        print_main_menu();
-                        break;
-                    case 't':
-                        mode = MODE_TEST;
-                        set_color(0x0B);
-                        puts("Entered test mode\n");
-                        break;
-                    case 'h':
-                        puts("\n=== Current Heap Layout ===\n");
-                        print_heap_blocks();
-                        print_main_menu();
-                        break;
+
                 }
                 keyboard_clear_last_char();
             } else if (mode == MODE_MUSIC_MENU) {
