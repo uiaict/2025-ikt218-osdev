@@ -7,7 +7,7 @@
 
 // ─── The ASCII art itself ─────────────────────────────────────────────────────
 
-#define BOOT_ART_LINES 16
+#define BOOT_ART_LINES 15
 static const char* boot_art[BOOT_ART_LINES] = {
     // "Welcome to" banner
     "     __          __  _                            _______               ",
@@ -54,7 +54,7 @@ static inline void animate_boot_screen(void) {
     for (int row = 0; row < BOOT_ART_LINES; row++) {
         __draw_line(row);
         // ~0.3s per line on typical emulator; adjust as needed
-        for (volatile uint32_t i = 0; i < 1000; i++) {
+        for (volatile uint32_t i = 0; i < 10000000; i++) {
             __asm__ volatile("nop");
         }
     }
