@@ -56,13 +56,15 @@ int kernel_main() {
 
             if (mode == MODE_NONE) {
                 if (last_key == 'm') {
-                    mode = MODE_MUSIC_PLAYER;
+                    mode = MODE_MUSIC_MENU;
                     set_color(0x0B); // Light cyan text
                     puts("Switched to Music Player mode.\n");
-                    puts("[n] Next song\n");
-                    puts("[b] Previous song\n");
-                    puts("[s] Select song\n");
-                    puts("[q] Quit to main menu\n");
+                    set_color(0x0C); // Red text for menu
+                        puts("\nSong Selection Menu:\n");
+                        for (uint32_t i = 0; i < n_songs; i++) {
+                            printf("[%d] Song %d\n", i, i + 1);
+                        }
+                        puts("Press 0-5 to select a song, or q to return\n");
                 } else if (last_key == 'h') {
                     puts("\n=== Current Heap Layout ===\n");
                     print_heap_blocks();
