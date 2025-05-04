@@ -1,10 +1,9 @@
 {
-    "cmake.buildDirectory": "${workspaceFolder}/build/2_mangOS",
-    "cmake.sourceDirectory": "${workspaceFolder}/src/2_mangOS",
+    "cmake.buildDirectory": "${workspaceFolder}/build/group_name",
+    "cmake.sourceDirectory": "${workspaceFolder}/src/group_name",
     "cmake.useCMakePresets": "never",
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
-        "*.html": "html",
         "cstddef": "cpp",
         "*.tcc": "cpp",
         "*.ipp": "cpp",
@@ -16,8 +15,6 @@
         "multiboot2.h": "c",
         "interrupts.h": "c",
         "memory.h": "c",
-        "limits.h": "c",
-        "time.h": "c",
-        "idt.h": "c"
+        "limits.h": "c"
     }
 }
