@@ -16,10 +16,4 @@ uint8_t inb(uint16_t port);
 }
 #endif
 
-void printf(const char* fmt, uint32_t arg);
-
-void print_dec(uint32_t value);
-void print_hex(uint32_t value);
-
-
 #endif

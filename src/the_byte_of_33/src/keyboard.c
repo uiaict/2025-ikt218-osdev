@@ -13,13 +13,14 @@ static const char scancode_to_ascii[] = {
 
 static char last_char = 0; // Store the last character pressed
 
-void keyboard_handler(void) {
+void keyboard_handler(registers_t* r) {
     // Read scancode from keyboard port (0x60)
+    (void)r;
+    puts("Keyboard interrupt received\n");
     uint8_t scancode = inb(0x60);
 
     // Ignore key release (bit 7 set)
     if (scancode & 0x80) {
-        outb(0x20, 0x20); // EOI to master PIC
         return;
     }
 
@@ -29,9 +30,6 @@ void keyboard_handler(void) {
         putchar(c); // Print character
         last_char = c; // Store the last character
     }
-
-    // Send EOI
-    outb(0x20, 0x20); // Master PIC
 }
 
 char keyboard_get_last_char(void) {

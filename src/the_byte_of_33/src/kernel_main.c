@@ -11,26 +11,13 @@
 #include "song/song.h"
 #include "keyboard.h"
 
-static void isr0_handler(registers_t* r) {
-    (void)r; // Ignore the dummy registers
-    puts("Interrupt 0 (Divide by Zero) handled\n");
-}
 
-static void isr1_handler(registers_t* r) {
-    (void)r;
-    puts("Interrupt 1 (Debug) handled\n");
-}
-
-static void isr2_handler(registers_t* r) {
-    (void)r;
-    puts("Interrupt 2 (NMI) handled\n");
-}
 
 // Define modes for the kernel loop
 typedef enum {
     MODE_NONE,
     MODE_MUSIC_PLAYER,
-    MODE_MEMORY_TEST,
+    MODE_TEST,
     MODE_PIANO,
     MODE_MATRIX,
 } KernelMode;
@@ -60,12 +47,11 @@ int kernel_main() {
     //__clear_screen();
     set_color(0x0E);
     puts("\nSelect mode:\n");
-    puts("  [i] Matrix mode\n");
-    puts("  [m] Music player\n");
-    puts("  [p] Piano mode\n");
-    puts("  [s] Test mode\n");
-    puts("  [h] print heap layout"); //skal flyttes til test
-    puts("  [t] Memory test\n");
+    puts("[i] Matrix mode\n");
+    puts("[m] Music player\n");
+    puts("[p] Piano mode\n");
+    puts("[t] Test mode\n");
+    puts("[h] print heap layout"); //skal flyttes til test
     // Infinite loop
     while (true) {
         // Check for keyboard input to toggle mode
@@ -89,7 +75,7 @@ int kernel_main() {
                 //mode = MODE_MATRIX;
                 puts("Switched to Matrix mode\n");
             } else if (last_key == 't') {
-                mode = MODE_MEMORY_TEST;
+                mode = MODE_TEST;
                 puts("Entered test mode");
             }
             keyboard_clear_last_char();
@@ -100,7 +86,7 @@ int kernel_main() {
             //piano_mode();
         } else if (mode == MODE_MATRIX) {
             //matrix_mode();
-        }   else if (mode == MODE_MEMORY_TEST) {            
+        } else if (mode == MODE_TEST) {            
             void* a = malloc(1024);
             void* b = malloc(2048);
             void* c = malloc(4096);
@@ -122,9 +108,7 @@ int kernel_main() {
             free(c);
             free(d);
 
-            register_interrupt_handler(0, isr0_handler);
-            register_interrupt_handler(1, isr1_handler);
-            register_interrupt_handler(2, isr2_handler);
+            
 
             printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
             sleep_busy(1000); // Sleep 1000 milliseconds (1 second)
@@ -133,6 +117,8 @@ int kernel_main() {
             printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
             sleep_interrupt(1000); // Sleep 1000 milliseconds (1 second)
             printf("[%d]: Slept using interrupts.\n", counter++);
+
+            KernelMode mode = MODE_NONE;
 
             } else if (mode == MODE_MUSIC_PLAYER) {
             // Play the current song

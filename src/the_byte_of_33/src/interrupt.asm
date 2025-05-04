@@ -52,7 +52,7 @@ IRQ 0
 irq1_handler:
     pusha
     push 1
-    call keyboard_handler
+    call irq_handler
     add esp, 4
     popa
     iret

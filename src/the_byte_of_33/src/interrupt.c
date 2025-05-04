@@ -1,5 +1,6 @@
 #include "interrupt.h"
 #include "io.h"
+#include "libc/stdio.h"
 
 #define MAX_INTERRUPTS 256
 
@@ -89,10 +90,10 @@ void init_irq(void) {
 
 void isr_handler(uint8_t interrupt) {
     if (interrupt_handlers[interrupt]) {
-        registers_t r; // fake registers if needed
+        registers_t r;
         interrupt_handlers[interrupt](&r);
     } else {
-        printf("Unhandled ISR: Interrupt %d\n", interrupt);
+        printf("Unhandled ISR: Interrupt %d\n", (uint32_t)interrupt);
     }
 }
 
@@ -100,13 +101,13 @@ void irq_handler(uint8_t irq) {
     if (irq >= 8) {
         outb(0xA0, 0x20); // Send EOI to slave
     }
-    outb(0x20, 0x20);     // Send EOI to master
-
-    if (interrupt_handlers[irq + 32]) { // IRQs start at interrupt 32
-        registers_t r; // fake registers if needed
+    outb(0x20, 0x20); // Send EOI to master
+    printf("Received IRQ%d\n", (uint32_t)irq); // Debug
+    if (interrupt_handlers[irq + 32]) {
+        registers_t r;
         interrupt_handlers[irq + 32](&r);
     } else {
-        printf("Unhandled IRQ: IRQ%d\n", irq);
+        printf("Unhandled IRQ: IRQ%d\n", (uint32_t)irq);
     }
 }
 
