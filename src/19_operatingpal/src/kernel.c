@@ -9,7 +9,6 @@
 #include "music/song.h"
 #include "music/notes.h"
 
-
 extern uint32_t end;
 extern char charBuffer[];
 extern int bufferIndex;
@@ -17,31 +16,35 @@ extern int bufferIndex;
 extern Note music_1[];
 extern size_t music_1_length;
 
-struct multiboot_info {
-    uint32_t size;
-    uint32_t reserved;
-    struct multiboot_tag* first;
-};
-
-void kmain(uint32_t magic, struct multiboot_info* mb_info_addr) {
+void kmain(uint32_t magic, void* mb_info_addr) {
     printf("Hello World!\n");
 
+    // Init OS subsystems
     initDesTables();
-    initKeyboard();
-    initPit();
-    init_kernel_memory(&end);
-    init_paging();
-    print_memory_layout();
 
+    initKeyboard();
+
+    initPit();
+
+    // Init memory systems
+    init_kernel_memory(&end);
+
+    init_paging();
+
+    // Show memory map from multiboot info
+    print_memory_layout(magic, mb_info_addr);
+
+    // Confirm subsystems are ready
     printf("[OK] Descriptors initialized\n");
     printf("[OK] Keyboard initialized\n");
     printf("[OK] PIT initialized\n");
 
+    // Test malloc
     void* mem1 = malloc(1234);
     void* mem2 = malloc(4321);
     printf("Allocated mem1: 0x%x, mem2: 0x%x\n", (uint32_t)mem1, (uint32_t)mem2);
 
-    // PIT test: Demonstrate sleep functions 3 times
+    // Test PIT sleep functions
     for (int i = 0; i < 3; i++) {
         printf("[%d] Sleeping busy...\n", i);
         sleepBusy(1000);
@@ -56,13 +59,11 @@ void kmain(uint32_t magic, struct multiboot_info* mb_info_addr) {
     Song song = { music_1, music_1_length };
     play_song(&song);
 
-    // Interactive mode after PIT demo
+    // Keyboard input test
     printf("You can now type! Input will be printed live:\n");
     bufferIndex = 0;
 
-    
-
     while (1) {
-        asm volatile("hlt");
+        asm volatile("hlt"); // Idle loop
     }
 }

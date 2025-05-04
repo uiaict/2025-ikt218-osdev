@@ -70,6 +70,7 @@ add_executable(uiaos-kernel
 
 	src/multiboot2.asm
 	src/kernel.c
+	
 
 	# GDT
 	src/gdt/gdt.asm
@@ -91,6 +92,7 @@ add_executable(uiaos-kernel
 	# Lib
 	src/lib_src/stdio.c
 	src/lib_src/string.c
+	src/lib_src/panic.c
 
 	# Memory
 	src/memory/memory.c

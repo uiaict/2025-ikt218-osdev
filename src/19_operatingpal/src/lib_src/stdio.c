@@ -12,6 +12,8 @@ static uint16_t* const video_memory = (uint16_t*) VGA_ADDRESS;
 static size_t row = 0;
 static size_t col = 0;
 static uint8_t color = 0x07; 
+static void scroll(); 
+
 
 int putchar(int ic) {
     char c = (char)ic;
@@ -19,19 +21,39 @@ int putchar(int ic) {
     if (c == '\n') {
         row++;
         col = 0;
-        return ic;
+    } else {
+        video_memory[row * VGA_WIDTH + col] = ((uint16_t)color << 8) | c;
+        col++;
+
+        if (col >= VGA_WIDTH) {
+            col = 0;
+            row++;
+        }
     }
 
-    video_memory[row * VGA_WIDTH + col] = ((uint16_t)color << 8) | c;
-    col++;
-
-    if (col >= VGA_WIDTH) {
-        col = 0;
-        row++;
+    if (row >= VGA_HEIGHT) {
+        scroll();
     }
 
     return ic;
 }
+
+
+static void scroll() {
+    for (size_t y = 1; y < VGA_HEIGHT; y++) {
+        for (size_t x = 0; x < VGA_WIDTH; x++) {
+            video_memory[(y - 1) * VGA_WIDTH + x] = video_memory[y * VGA_WIDTH + x];
+        }
+    }
+    // Blank ut siste linje
+    for (size_t x = 0; x < VGA_WIDTH; x++) {
+        video_memory[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = ((uint16_t)color << 8) | ' ';
+    }
+
+    row = VGA_HEIGHT - 1;
+    col = 0;
+}
+
 
 bool print(const char* data, size_t length) {
     for (size_t i = 0; i < length; i++) {
