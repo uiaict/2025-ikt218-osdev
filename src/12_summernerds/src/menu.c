@@ -6,9 +6,7 @@
 #include "song/song.h"
 #include "common.h"
 #include "menu.h"
-#include "screen.h"
-
-char key_buffer[BUFFER_SIZE];
+#include "game/game.h"
 
 void reset_key_buffer();
 
@@ -69,8 +67,7 @@ void reset_key_buffer()
 
 void print_menu()
 {
-    clear_the_screen();
-    printf("\n");
+    monitor_clear();
     printf("Welcome to the os for summernerds!\n");
     printf("\n");
     printf(" 1. Play Startup Song\n");
@@ -109,7 +106,7 @@ void handle_menu()
             while (1)
             {
                 draw_matrix_frame();
-                // sleep_interrupt(100);
+                sleep_interrupt(80);
                 if (key_buffer[0] != '\0')
                     break;
             }
@@ -125,8 +122,8 @@ void handle_menu()
 
         case '4':
         {
-            // call runthegame function when finished to be made
-            
+            // call runthegame function when it is finished
+            runthegame();
             break;
         }
 

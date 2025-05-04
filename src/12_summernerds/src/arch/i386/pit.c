@@ -33,7 +33,7 @@ uint32_t get_current_tick()
     return pit_ticks;
 }
 
-// Brute forced since pit timer doesn't work
+// Sleeps with high processor power
 void sleep_busy(uint32_t wait_ms)
 {
     uint32_t start_tick = get_current_tick();
@@ -47,7 +47,7 @@ void sleep_busy(uint32_t wait_ms)
     }
 }
 
-// Reboots OS problem (do not use until fixed)
+// Sleeps with low processor power
 void sleep_interrupt(uint32_t wait_ticks)
 {
     uint32_t end_tick = get_current_tick() + wait_ticks;

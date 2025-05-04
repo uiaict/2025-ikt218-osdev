@@ -7,9 +7,9 @@
 #include <libc/stdint.h>
 #include <libc/stddef.h>
 #include "libc/stdbool.h"
+#include "song/song.h"
 #include "common.h"
 #include "menu.h"
-#include <screen.h>
 
 extern uint32_t end; // Linker symbol marking the end of kernel
 
@@ -40,7 +40,9 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     // print if we get any problem with allocating memory
     printf("Allocated memory blocks at: 0x%x, 0x%x, 0x%x\n", mem1, mem2, mem3);
 
-    //EnableTyping(); // Enables free typing
+    beep();
+
+    // EnableTyping(); // Enables free typing
     handle_menu(); // opens the menu
 
     while (true)

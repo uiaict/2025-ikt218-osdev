@@ -32,15 +32,6 @@ void print_where(const char *str, int row, int col)
     }
 }
 
-void clear_the_screen()
-{
-    volatile uint16_t *vga = VGA_MEMORY;
-    for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++)
-    {
-        vga[i] = (current_color << 8) | ' ';
-    }
-}
-
 void set_color(uint8_t fg, uint8_t bg)
 {
     current_color = (bg << 4) | (fg & 0x0F);

@@ -66,6 +66,7 @@ add_executable(uiaos-kernel
     src/matrix_effect/matrix.c
     #src/song.c
     src/common.c
+    src/random.c
 
     # SYSTEM
     src/arch/i386/IRQ.c
@@ -87,6 +88,9 @@ add_executable(uiaos-kernel
 
     # SONG
     src/song/songPlayer.c
+
+    # Game
+    src/game/game.c
 
     # ASSEMBLY 
     src/arch/i386/descriptor_tables.asm

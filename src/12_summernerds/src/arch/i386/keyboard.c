@@ -4,11 +4,10 @@
 #include "kernel/memory.h"
 #include "libc/system.h"
 #include "common.h"
-#include "menu.h"
-#include "screen.h"
 
 int cannotType = 1;
 int menu_buffer = 0;
+int escpressed = 0;
 
 void EnableBufferTyping()
 {
@@ -52,6 +51,16 @@ void irq1_keyboard_handler(registers_t *regs, void *ctx)
 
     (void)regs;
     (void)ctx;
+}
+
+int has_user_pressed_esc()
+{
+    if (!escpressed)
+    {
+        return 0;
+    }
+    escpressed = 0;
+    return 1;
 }
 
 bool shiftPressed = false;
@@ -176,10 +185,6 @@ char large_scancode_ascii[128] =
 
 };
 
-// 2. Buffer for tastetrykk
-// char key_buffer[256];
-// int key_index = 0;
-
 // switch Casene
 char scanCodeToASCII(unsigned char *scanCode)
 {
@@ -225,6 +230,7 @@ char scanCodeToASCII(unsigned char *scanCode)
         return 0;
 
     case 0x01: // esc pressed
+        escpressed = 1;
         return 0;
 
     case 0x81: // esc released
