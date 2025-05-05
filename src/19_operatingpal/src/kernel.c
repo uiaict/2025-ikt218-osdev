@@ -39,6 +39,12 @@ void kmain(uint32_t magic, void* mb_info_addr) {
     printf("[OK] Keyboard initialized\n");
     printf("[OK] PIT initialized\n");
 
+    // Test software interrupts
+    asm volatile("int $0x0");
+    asm volatile("int $0x3");
+    asm volatile("int $0x4");
+
+
     // Test malloc
     void* mem1 = malloc(1234);
     void* mem2 = malloc(4321);
@@ -56,8 +62,8 @@ void kmain(uint32_t magic, void* mb_info_addr) {
     }
 
 
-    Song song = { music_1, music_1_length };
-    play_song(&song);
+    //Song song = { music_1, music_1_length };
+    //play_song(&song);
 
     // Keyboard input test
     printf("You can now type! Input will be printed live:\n");
