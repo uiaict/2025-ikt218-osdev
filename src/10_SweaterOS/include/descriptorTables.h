@@ -101,4 +101,7 @@ void initializer_IDT(void); // Initialiserer Interrupt Descriptor Table
 extern void gdt_flush(uint32_t); // Laster GDT inn i GDTR-registeret
 extern void idt_flush(uint32_t); // Laster IDT inn i IDTR-registeret
 
+extern struct gdt_entries gdt[GDT_SIZE];
+extern struct idt_entries idt_entries[IDT_SIZE];
+
 #endif // DESCRIPTOR_TABLES_H

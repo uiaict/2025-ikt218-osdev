@@ -9,6 +9,9 @@
 #include "pcSpeaker.h"
 #include "storage.h"
 #include "musicPlayer.h"
+#include "frequencies.h"
+#include "libc/string.h"
+#include "libc/stdbool.h"
 
 #ifndef NULL
 #define NULL ((void*)0)
@@ -78,6 +81,12 @@ void test_gdt() {
     }
     
     display_write_color("GDT appears to be configured correctly!\n", COLOR_GREEN);
+
+    char hex[16];
+    hexToString((uint32_t)&gdt, hex);
+    display_write_color("GDT address: ", COLOR_YELLOW);
+    display_write_color(hex, COLOR_YELLOW);
+    display_write_char('\n');
 }
 
 /* 
@@ -88,19 +97,36 @@ void test_gdt() {
  * Denne testen verifiserer at IDT er lastet og fungerer.
  */
 void test_idt() {
-    display_write_color("\nTesting IDT functionality:\n", COLOR_YELLOW);
-    
-    // Sjekk i stedet debug-tegnene som vises når IDT lastes
-    display_write_color("- IDT loaded: ", COLOR_WHITE);
-    display_write_color("Debug characters 'Ii' visible in debug output\n", COLOR_GREEN);
-    
-    // Forklar hva en full IDT-test ville involvere
-    display_write_color("- For a true IDT test, we would need to:\n", COLOR_WHITE);
-    display_write_color("  1. Set up proper exception handlers\n", COLOR_GRAY);
-    display_write_color("  2. Trigger exceptions and verify they're caught\n", COLOR_GRAY);
-    display_write_color("  3. Program the PIC for hardware interrupts\n", COLOR_GRAY);
-    
-    display_write_color("IDT appears to be loaded correctly.\n", COLOR_GREEN);
+    display_write_color("\n=== Testing IDT Functionality ===\n", COLOR_LIGHT_CYAN);
+
+    // 1. Vis info om IDT-tabellen
+    display_write_color("Checking IDT pointer...\n", COLOR_YELLOW);
+
+    extern struct idt_pointer idt_ptr;
+    char hex[16];
+    hexToString((uint32_t)idt_ptr.table_address, hex);
+    display_write_color("- IDT address: 0x", COLOR_WHITE);
+    display_write_color(hex, COLOR_GREEN);
+    display_write_char('\n');
+
+    display_write_color("- IDT size: ", COLOR_WHITE);
+    display_write_decimal(idt_ptr.table_size + 1);  // +1 fordi vi subtraherer 1 ved init
+    display_write_string(" bytes\n");
+
+    // 2. Vis adresse til ISR3 fra IDT-tabellen
+    uint32_t isr3_addr = (idt_entries[3].isr_address_high << 16) | idt_entries[3].isr_address_low;
+    hexToString(isr3_addr, hex);
+    display_write_color("- ISR3 handler address from IDT: 0x", COLOR_WHITE);
+    display_write_color(hex, COLOR_GREEN);
+    display_write_char('\n');
+
+    // 3. Utløs et ekte interrupt for å teste IDT og ISR-funksjonalitet
+    display_write_color("Triggering INT 3 (Breakpoint)...\n", COLOR_YELLOW);
+    __asm__ volatile("int $3");
+
+    // 4. Hvis vi fortsatt kjører, betyr det at ISR3 håndterte avbruddet
+    display_write_color("INT 3 interrupt was successfully handled by ISR3\n", COLOR_LIGHT_GREEN);
+    display_write_color("IDT appears to be working correctly!\n", COLOR_LIGHT_GREEN);
 }
 
 /* 
@@ -186,7 +212,11 @@ void test_software_interrupt() {
  */
 void test_memory_management(void) {
     display_write_color("\n=== Testing Memory Management ===\n", COLOR_LIGHT_CYAN);
-    
+
+    // Print current memory layout before testing malloc/free
+    print_memory_layout();
+    display_write_string("\n");
+
     // Test memory allocation using malloc
     display_write_color("Testing malloc() allocation...\n", COLOR_WHITE);
     void* some_memory = malloc(12345);
@@ -398,38 +428,60 @@ void test_hard_drive(void) {
     }
 }
 
-/**
- * Run all tests
- */
 void run_all_tests() {
+    display_clear();
+    display_write_color("\n=== System Tests Introduction ===\n", COLOR_LIGHT_CYAN);
+    display_write_color("\nWelcome to the SweaterOS System Tests!\n\n", COLOR_YELLOW);
+    display_write_color("Thise tests will verify various OS components:\n", COLOR_WHITE);
+    display_write_color("- Terminal output\n", COLOR_GRAY);
+    display_write_color("- Global Descriptor Table (GDT)\n", COLOR_GRAY);
+    display_write_color("- Interrupt Descriptor Table (IDT)\n", COLOR_GRAY);
+    display_write_color("- Keyboard functionality\n", COLOR_GRAY);
+    display_write_color("- Software interrupts\n", COLOR_GRAY);
+    display_write_color("- Memory management\n", COLOR_GRAY);
+    display_write_color("- Timer functionality\n", COLOR_GRAY);
+    display_write_color("- Music playback\n", COLOR_GRAY);
+    display_write_color("- Hard drive operations\n", COLOR_GRAY);
+    
+    display_write_color("\nThere will be a 1 second delay between each test\n", COLOR_LIGHT_GREEN);
+    display_write_color("\nPress any key to begin the tests...\n", COLOR_YELLOW);
+    
+    // Wait for keypress to start tests
+    while (!keyboard_data_available()) {
+        __asm__ volatile("hlt");
+    }
+    keyboard_getchar();  // Clear the keypress
+    
+    // Clear the screen before starting tests
+    display_clear();
     display_write_color("Starting system tests...\n\n", COLOR_YELLOW);
     
     test_terminal_output();
-    sleep_interrupt(500);  // 0.5 second delay
+    sleep_interrupt(1000);  // 1 second delay
     
     test_gdt();
-    sleep_interrupt(500);
+    sleep_interrupt(1000);
     
     test_idt();
-    sleep_interrupt(500);
+    sleep_interrupt(1000);
     
-    test_keyboard_interactive();  // Interactive keyboard test
-    sleep_interrupt(500);
+    test_keyboard_interactive();
+    sleep_interrupt(1000);
     
     test_software_interrupt();
-    sleep_interrupt(500);
+    sleep_interrupt(1000);
     
     test_memory_management();
-    sleep_interrupt(500);
+    sleep_interrupt(1000);
     
     test_programmable_interval_timer();
-    sleep_interrupt(500);
+    sleep_interrupt(1000);
     
     test_music_player();
-    sleep_interrupt(500);
+    sleep_interrupt(1000);
     
     test_hard_drive();
-    sleep_interrupt(500);
+    sleep_interrupt(1000);
     
     display_write_color("\nAll tests completed!\n", COLOR_LIGHT_GREEN);
 } 

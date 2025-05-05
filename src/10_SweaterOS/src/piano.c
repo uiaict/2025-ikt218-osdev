@@ -156,7 +156,7 @@ void handle_piano_keyboard(void) {
         }
         
         // Vent litt for å unngå for høy CPU-bruk
-        sleep_interrupt(10);
+        sleep_interrupt(5); // Redusert fra 10ms til 5ms for mer responsiv kontroll
     }
     
     // Sikre at høyttaler er deaktivert når vi avslutter

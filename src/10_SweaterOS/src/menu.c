@@ -6,11 +6,11 @@
 #include "programmableIntervalTimer.h"
 #include "testFuncs.h"
 #include "miscFuncs.h"
-#include "storage.h"  // For harddisk testing functions
+#include "storage.h"
 #include "snake.h"
 #include "piano.h"
 
-// QEMU/Bochs exit port
+// QEMU exit port:
 #define QEMU_EXIT_PORT 0x604
 #define QEMU_EXIT_CODE 0x2000
 
@@ -87,7 +87,7 @@ void show_music_menu(void) {
     
     display_write_color("  ", COLOR_WHITE);
     display_write_color("3", COLOR_LIGHT_GREEN);
-    display_write_color(". Frère Jacques\n", COLOR_WHITE);
+    display_write_color(". Frere Jacques\n", COLOR_WHITE);
     
     display_write_color("  ", COLOR_WHITE);
     display_write_color("4", COLOR_LIGHT_GREEN);

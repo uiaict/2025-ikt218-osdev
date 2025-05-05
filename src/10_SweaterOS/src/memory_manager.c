@@ -140,6 +140,17 @@ void* malloc(long unsigned int size) {
         display_write_color("ERROR: Invalid pointer generated in malloc\n", COLOR_LIGHT_RED);
         return NULL;
     }
+
+// HUSK BREAKPOINTS !
+    // DEBUG: Print block, sizeof, and result addresses
+    // display_write_color("malloc: block=0x", COLOR_YELLOW);
+    // display_write_hex((uint32_t)block);
+    // display_write_color(", sizeof(header)=", COLOR_YELLOW);
+    // display_write_decimal(sizeof(memory_block_t));
+    // display_write_color(", result=0x", COLOR_YELLOW);
+    // display_write_hex((uint32_t)result);
+    // display_write_string("\n");
+
     return result;
 }
 

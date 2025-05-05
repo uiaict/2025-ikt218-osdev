@@ -211,7 +211,12 @@ void initialize_system(void) {
     display_write_color("Initializing memory management...\n", COLOR_WHITE);
     init_kernel_memory(&end);
     display_write_color("Memory management initialized successfully\n", COLOR_LIGHT_GREEN);
-    
+
+    // Initialiser Paging (setter bare flagg i denne implementasjonen)
+    display_write_color("Initializing paging...\n", COLOR_WHITE);
+    init_paging(); 
+    display_write_color("Paging initialized (flag set)\n", COLOR_LIGHT_GREEN);
+
     // Aktiver interrupts til slutt
     enable_interrupts();
     display_write_color("Enabled interrupts\n", COLOR_LIGHT_GREEN);

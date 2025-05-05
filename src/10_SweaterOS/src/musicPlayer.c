@@ -66,13 +66,17 @@ void play_song_impl(Song* song) {
             __asm__ volatile("pause");
         }
         
-        // Stopp lyden eksplisitt
-        disable_speaker();
+        // Ikke stopp lyden mellom noter med mindre neste note er en pause eller vi er på siste note
+        if (i == song->length - 1 || (i < song->length - 1 && song->notes[i + 1].frequency == 0)) {
+            disable_speaker();
+        }
         
-        // Legg til liten pause mellom noter (5ms) for bedre lydseparasjon
-        start_time = get_current_tick();
-        while (get_current_tick() - start_time < 5) {
-            __asm__ volatile("pause");
+        // Minimal pause mellom noter, bare hvis det skal være lyd på neste note også
+        if (i < song->length - 1 && current_note->frequency > 0 && song->notes[i + 1].frequency > 0) {
+            start_time = get_current_tick();
+            while (get_current_tick() - start_time < 2) { // Redusert fra 5ms til 2ms
+                __asm__ volatile("pause");
+            }
         }
     }
     

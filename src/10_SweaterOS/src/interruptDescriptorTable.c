@@ -19,10 +19,10 @@
 #define IDT_SIZE 256
 
 // IDT table - array of IDT entries
-static struct idt_entries idt_entries[IDT_SIZE];
+struct idt_entries idt_entries[IDT_SIZE];
 
 // IDT pointer - tells CPU where IDT is in memory
-static struct idt_pointer idt_ptr;
+struct idt_pointer idt_ptr;
 
 // Assembly function that loads IDT into CPU
 extern void idt_flush(uint32_t);
