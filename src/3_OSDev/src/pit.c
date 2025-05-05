@@ -7,6 +7,7 @@ static uint32_t ticks = 0;
 
 void timer_handler(void) {
     ticks++;
+    outb(0x20, 0x20); 
 }
 
 void init_pit() {
@@ -38,4 +39,8 @@ void sleep_interrupt(uint32_t milliseconds) {
         asm volatile("hlt");
         current_tick = ticks;
     }
+}
+
+uint32_t get_current_ticks() {
+    return ticks;
 }

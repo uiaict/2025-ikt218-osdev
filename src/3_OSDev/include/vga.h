@@ -13,3 +13,4 @@
 void scrollup();
 void newLine();
 void Reset();
+void set_cursor_position(int x, int y);

@@ -1,4 +1,5 @@
-#include <vga.h>
+#include "vga.h"
+#include "utils.h"
 #include <libc/stdarg.h>
 #include <libc/stdio.h>
 
@@ -245,5 +246,33 @@ void printf(int colour, const char* s, ...) {
         s++;
     }
     va_end(args);
+    set_cursor_position(coloumn, line);
 }
 
+// uint16_t cursor_x = 0;
+// uint16_t cursor_y = 0;
+void set_cursor_position(int x, int y) {
+    // Bounds checking
+    if (x < 0) x = 0;
+    if (x >= width) x = width - 1;
+    if (y < 0) y = 0;
+    if (y >= height) y = height - 1;
+    
+    coloumn = x;
+    line = y;
+
+    // Calculate the linear position in the buffer
+    uint16_t position = y * width + x;
+    
+    // Update the hardware cursor position using port I/O
+    // Port 0x3D4 is the VGA control register
+    // Port 0x3D5 is the VGA data register
+    
+    // Set the high byte of the cursor position
+    outb(0x3D4, 0x0E);
+    outb(0x3D5, (position >> 8) & 0xFF);
+    
+    // Set the low byte of the cursor position
+    outb(0x3D4, 0x0F);
+    outb(0x3D5, position & 0xFF);
+}

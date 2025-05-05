@@ -26,8 +26,6 @@ void init_idt(void) {
 
     // Load the IDT
     idt_load(&idt_ptr);
-
-    printf(0x0E, "Interrupt Descriptor Table initialized...\n");
 }
 
 void idt_load(struct idt_ptr *idt_ptr) {
