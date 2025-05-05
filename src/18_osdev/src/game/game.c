@@ -64,19 +64,22 @@ static bool game_running = true;
 
 void init_game() {
     game_running = true;
-      
-    monitor_write("                                                                     \n");
-    monitor_write(" (  (                 (                          )                  \n");
-    monitor_write(" )\\))(   '   (    (   )\\ )   )      (         ( /(   (   (      (   \n");
-    monitor_write("((_)()\\ )   ))\\  ))\\ (()/(  /((    ))\\  (     )\\()) ))\\  )(    ))\\  \n");
-    monitor_write("_(())\\_)() /((_)/((_) ((_))(_))\\  /((_) )\\ ) (_))/ /((_)(()\\  /((_) \n");
-    monitor_write("\\ \\((_)/ /(_)) (_))   _| | _)((_)(_))  _(_/( | |_ (_))(  ((_)(_))   \n");
-    monitor_write(" \\ \\/\\/ / / -_)/ -_)/ _` | \\ V / / -_)| ' \\))|  _|| || || '_|/ -_)  \n");
-    monitor_write("  \\_/\\_/  \\___|\\___|\\__,_|  \\_/  \\___||_||_|  \\__| \\_,_||_|  \\___|  \n");
-    monitor_write("                                                                     \n");    
-    monitor_write("               WELCOME TO DISPENSARY DUNGEON!               \n");
-    monitor_write("   Explore the halls, collect your gear, and light the path!\n\n");
-    monitor_write("Type 'help' for available commands.\n");    
+    
+    // Flame colors (red/orange gradients)
+    monitor_write_color(12, "                                                                     \n");
+    monitor_write_color(12, " (  (                 (                          )                  \n");
+    monitor_write_color(12, " )\\))(   '   (    (   )\\ )   )      (         ( /(   (   (      (   \n");
+    monitor_write_color(4, "((_)()\\ )   ))\\  ))\\ (()/(  /((    ))\\  (     )\\()) ))\\  )(    ))\\  \n");
+    monitor_write_color(4, "_(())\\_)() /((_)/((_) ((_))(_))\\  /((_) )\\ ) (_))/ /((_)(()\\  /((_) \n");
+    monitor_write_color(6, "\\ \\((_)/ /(_)) (_))   _| | _)((_)(_))  _(_/( | |_ (_))(  ((_)(_))   \n");
+    monitor_write_color(6, " \\ \\/\\/ / / -_)/ -_)/ _` | \\ V / / -_)| ' \\))|  _|| || || '_|/ -_)  \n");
+    monitor_write_color(5, "  \\_/\\_/  \\___|\\___|\\__,_|  \\_/  \\___||_||_|  \\__| \\_,_||_|  \\___|  \n");
+    monitor_write_color(5, "                                                                     \n");
+    
+    // Title in bright color
+    monitor_write_color(14, "               WELCOME TO DISPENSARY DUNGEON!               \n");
+    monitor_write_color(7, "   Explore the halls, collect your gear, and light the path!\n\n");
+    monitor_write_color(15, "Type 'help' for available commands.\n");
 }
 
 void run_game() {
