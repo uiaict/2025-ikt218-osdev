@@ -1,10 +1,9 @@
-.vscode
+vscode
 src/build_*/*
 venv
 !build_*/kernel.bin
 !build_*/kernel.img
 *.lock
-*.egg-info*
 .cmake
 CMakeCache*
 CMakeFiles
@@ -12,6 +11,9 @@ iso
 .env
 build.ninja
 .ninja*
+
+cmake_install.cmake
+compile_commands.json
 
 00_per_arne
 src/group_name/src/kernel.c
