@@ -16,41 +16,61 @@ extern int bufferIndex;
 extern Note music_1[];
 extern size_t music_1_length;
 
-void kmain(uint32_t magic, void* mb_info_addr) {
-    printf("Hello World!\n");
+void show_ascii_homepage() {
+    clear_screen();  
 
-    // Init OS subsystems
-    initDesTables();
+    // John Pork ASCII-art 
+    printf("\n\n");
+    printf("               +#*=====-=--=+++      \n");
+    printf("             .+*==+=+===++**+=-@%%    \n");
+    printf("            -@.=+++=====--::::  @@   \n");
+    printf("           :@@ .   .-=--:....   +@%%  \n");
+    printf("          %%@  *##*=--:+##+--*@  #@@ \n");
+    printf("          @..-  =@%%-:-=#@@@@@@%. @@ \n");
+    printf("          @ -@@@@@:.--..:%#-. .:  @  \n");
+    printf("          @              ...:--=+ %% \n");
+    printf("          @ -:=-  =+#=:   -+=***=. .\n");
+    printf("          @.+=- ::%%.:-@@-+  .+*#.*  \n");
+    printf("          :::-=:-@@@:.@%%-+ :@=--.== \n");
+    printf("          *+:-+--   ::..-@@+.:=::+= \n");
+    printf("          *=:-+.+@@@@@@@%%*  :++--=%%\n");
+    printf("          :#-:=  ...-::--....--.:#@ \n");
+    printf("           @%%--:..-.. . .::-:+=+#@  \n");
+    printf("            =@#+=*++*@###%%%*===@@  \n");
+    printf("             +#==-++**#*++====*@@   \n");
+    printf("              @%%###*===++##%%@@@    \n");
+    printf(" John Pork     @%%*-=+*#*+-:-@@      \n");
+    
+    // Meny
+    printf("\n");
+    printf("    [1] Show assignment print/test functions\n");
+    printf("    [2] Start Assignment 6 Improvisation\n");
+    printf("    [3] Stop song\n");
+    printf("    [4] Play song\n");
+    printf("\nCurrently playing: Anthem of the Soviet Union");
+    printf("\nType your choice and press Enter: ");
+}
 
-    initKeyboard();
 
-    initPit();
+void show_assignment_output(uint32_t magic, void* mb_info_addr) {
+    printf("\n--- Assignment Output ---\n");
 
-    // Init memory systems
     init_kernel_memory(&end);
-
     init_paging();
-
-    // Show memory map from multiboot info
     print_memory_layout(magic, mb_info_addr);
 
-    // Confirm subsystems are ready
     printf("[OK] Descriptors initialized\n");
     printf("[OK] Keyboard initialized\n");
     printf("[OK] PIT initialized\n");
 
-    // Test software interrupts
     asm volatile("int $0x0");
     asm volatile("int $0x3");
     asm volatile("int $0x4");
 
-
-    // Test malloc
     void* mem1 = malloc(1234);
     void* mem2 = malloc(4321);
     printf("Allocated mem1: 0x%x, mem2: 0x%x\n", (uint32_t)mem1, (uint32_t)mem2);
 
-    // Test PIT sleep functions
     for (int i = 0; i < 3; i++) {
         printf("[%d] Sleeping busy...\n", i);
         sleepBusy(1000);
@@ -61,15 +81,64 @@ void kmain(uint32_t magic, void* mb_info_addr) {
         printf("[%d] Done interrupt sleep.\n", i);
     }
 
+    printf("\nReturning to main menu...\n");
+    sleepBusy(1000);
+}
 
-    //Song song = { music_1, music_1_length };
-    //play_song(&song);
+void start_assignment6_demo() {
+    printf("\n--- Assignment 6 Improvisation ---\n");
+    printf("Here you could add animation, game, sound visualizer, etc.\n");
+    sleepBusy(2000);
+    printf("Returning to main menu...\n");
+    sleepBusy(1000);
+}
 
-    // Keyboard input test
-    printf("You can now type! Input will be printed live:\n");
-    bufferIndex = 0;
+void kmain(uint32_t magic, void* mb_info_addr) {
+    // Minimal init for homepage
+    initDesTables();
+    initKeyboard();
+    initPit();
 
+    // Start music in background
+    Song song = { music_1, music_1_length };
+    play_song(&song);
+
+    // Main loop
     while (1) {
-        asm volatile("hlt"); // Idle loop
+        show_ascii_homepage();
+        bufferIndex = 0;
+
+        while (1) {
+            if (bufferIndex > 0) {
+                char input = charBuffer[0];
+                bufferIndex = 0;
+
+                if (input == '1') {
+                    clear_screen();
+                    show_assignment_output(magic, mb_info_addr);
+                    clear_screen();
+                    break; // Gå tilbake til meny
+                } else if (input == '2') {
+                    clear_screen();
+                    start_assignment6_demo();
+                    clear_screen();
+                    break;
+                } else if (input == '3') {
+                    clear_screen();
+                    stop_song();
+                    break;
+                } else if (input == '4') {
+                    clear_screen();
+                    Song song = { music_1, music_1_length };
+                    play_song(&song);
+                    break;
+                } else {
+                    printf("\nUnknown input: %c\n", input);
+                    sleepBusy(1000);
+                    break;
+                }
+            }
+            asm volatile("hlt");
+        }
     }
 }

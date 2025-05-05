@@ -9,7 +9,6 @@ int bufferIndex = 0;
 
 // Initializes the keyboard
 void initKeyboard() {
-    printf("Initializing keyboard\n");
     registerInterruptHandler(IRQ1, &keyboardHandler);
 }
 

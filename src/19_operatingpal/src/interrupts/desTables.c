@@ -19,7 +19,6 @@ idtPtr_t idtPtr;
 
 
 void initDesTables() {
-    printf("Initializing descriptor tables\n");
     initGdt();
     initIdt();
     asm volatile("sti");

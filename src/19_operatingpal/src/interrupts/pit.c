@@ -2,14 +2,21 @@
 #include "interrupts/isr.h"
 #include "interrupts/io.h"
 #include "libc/stdio.h"
+#include "music/song.h"
 
 
+
+extern bool is_song_playing;
 volatile uint32_t tick = 0;                      // The number of PIT ticks
 
-// The PIT handler
 void pitHandler(registers_t regs) {
-    tick++;                                      // Increment the number of ticks
+    tick++;
+
+    if (is_song_playing) {
+        update_song_tick();  // spiller neste note
+    }
 }
+
 
 // Returns the current tick
 uint32_t getCurrentTick() {
@@ -18,7 +25,6 @@ uint32_t getCurrentTick() {
 
 // Initializes the PIT
 void initPit() {
-    printf("Initializing PIT\n");
     outb(PIT_CMD_PORT, 0x36);                                       // Send the command byte to the PIT
     outb(PIT_CHANNEL0_PORT, (uint8_t)(DIVIDER & 0xFF));             // Low byte of divisor
     outb(PIT_CHANNEL0_PORT, (uint8_t)((DIVIDER >> 8) & 0xFF));      // High byte of divisor

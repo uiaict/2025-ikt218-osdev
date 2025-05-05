@@ -1,30 +1,48 @@
 #include "music/song.h"
-#include "music/sound.h"       // Hent speaker-funksjoner herfra
-#include "music/notes.h"      // For å bruke Note og Song
-#include "interrupts/pit.h"    // For sleep_interrupt()
+#include "music/sound.h"
+#include "music/notes.h"
+#include "interrupts/pit.h"
 #include "libc/stdio.h"
+#include "libc/stdbool.h"
+
+// ==== Ny bakgrunnsspiller ====
+bool is_song_playing = false;
+static Song* current_song = NULL;
+static uint32_t current_note = 0;
+static uint32_t note_elapsed = 0;
 
 void play_song(Song* song) {
-    printf("Playing State Anthem of the Soviet Union \n", (int)song->note_count);
-
-    uint32_t prev_freq = 0;
-
-    for (size_t i = 0; i < song->note_count; i++) {
-        Note note = song->notes[i];
-
-        if (note.frequency == 0) {
-            stop_sound(); // Pause
-        } else {
-            if (note.frequency != prev_freq) {
-                play_sound(note.frequency); // Bare sett ny frekvens hvis den endrer seg
-                prev_freq = note.frequency;
-            }
-        }
-
-        sleepInterrupt(note.duration);
-    }
-
-    stop_sound(); // Til slutt
-    printf("Song done.\n");
+    current_song = song;
+    current_note = 0;
+    note_elapsed = 0;
+    is_song_playing = true;
 }
 
+void stop_song() {
+    is_song_playing = false;
+    stop_sound();
+}
+
+
+void update_song_tick() {
+    if (!is_song_playing || current_song == NULL) return;
+
+    note_elapsed++;
+
+    Note note = current_song->notes[current_note];
+    if (note_elapsed >= note.duration) {
+        current_note++;
+        note_elapsed = 0;
+
+        if (current_note >= current_song->note_count) {
+            current_note = 0; // loop sang
+        }
+
+        note = current_song->notes[current_note];
+        if (note.frequency == 0) {
+            stop_sound();
+        } else {
+            play_sound(note.frequency);
+        }
+    }
+}

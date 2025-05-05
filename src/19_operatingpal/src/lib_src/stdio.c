@@ -11,9 +11,9 @@
 static uint16_t* const video_memory = (uint16_t*) VGA_ADDRESS;
 static size_t row = 0;
 static size_t col = 0;
-static uint8_t color = 0x07; 
-static void scroll(); 
+static uint8_t color = 0x07;
 
+static void scroll();
 
 int putchar(int ic) {
     char c = (char)ic;
@@ -38,14 +38,13 @@ int putchar(int ic) {
     return ic;
 }
 
-
 static void scroll() {
     for (size_t y = 1; y < VGA_HEIGHT; y++) {
         for (size_t x = 0; x < VGA_WIDTH; x++) {
             video_memory[(y - 1) * VGA_WIDTH + x] = video_memory[y * VGA_WIDTH + x];
         }
     }
-    // Blank ut siste linje
+
     for (size_t x = 0; x < VGA_WIDTH; x++) {
         video_memory[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = ((uint16_t)color << 8) | ' ';
     }
@@ -53,7 +52,6 @@ static void scroll() {
     row = VGA_HEIGHT - 1;
     col = 0;
 }
-
 
 bool print(const char* data, size_t length) {
     for (size_t i = 0; i < length; i++) {
@@ -105,7 +103,6 @@ int printf(const char* __restrict__ format, ...) {
                 }
                 case 'd':
                     print_dec(va_arg(args, int));
-                    // Optional: count digits
                     break;
                 case 'x':
                     print_hex(va_arg(args, uint32_t));
@@ -131,4 +128,13 @@ int printf(const char* __restrict__ format, ...) {
 
     va_end(args);
     return written;
+}
+
+void clear_screen() {
+    uint16_t blank = ((uint16_t)color << 8) | ' ';
+    for (size_t i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++) {
+        video_memory[i] = blank;
+    }
+    row = 0;
+    col = 0;
 }
