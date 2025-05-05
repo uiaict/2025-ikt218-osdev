@@ -9,6 +9,7 @@
 #define BORDER_COLOR 0x0F // White
 
 #define SNAKE_LENGTH 1
+#define INITIAL_CAPACITY 10 // Initial allocation size for snake positions
 
 extern bool snakes_active;
 
@@ -25,7 +26,8 @@ typedef struct {
 } Position;
 
 typedef struct {
-    Position position[SNAKE_GAME_WIDTH * SNAKE_GAME_HEIGHT];
+    Position* position;       // Dynamically allocated array
+    int capacity;             // Current allocation capacity
     Position food_position;
     int snake_length;
     Direction direction;
@@ -42,5 +44,10 @@ void draw_snake(void);
 void draw_food(void);
 void display_score(void);
 static void clear_cell(int x, int y);
+
+// Memory management functions
+void allocate_snake_memory(int initial_size);
+void grow_snake_memory(int new_capacity);
+void free_snake_memory(void);
 
 #endif /* SNAKES_H */

@@ -53,7 +53,7 @@ void play_song_impl(Song *song) {
     for (size_t i = 0; i < song->note_count; i++) {
         // [a] For each note, display its details such as frequency and duration
         Note note = song->notes[i];
-        printf(0x0F, "Playing note: Frequency = %d, Duration = %d\n", note.frequency, note.duration);
+        // printf(0x0F, "Playing note: Frequency = %d, Duration = %d\n", note.frequency, note.duration);
         // [b] Call play_sound with the note's frequency
         play_sound(note.frequency);
         // [c] Delay execution for the duration of the note

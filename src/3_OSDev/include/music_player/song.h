@@ -82,6 +82,4 @@ static Note rick_roll[] = {
     {R,   500}   // rest quarter
 };
 
-
-
 #endif /* SONG_H */

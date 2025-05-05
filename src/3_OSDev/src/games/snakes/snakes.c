@@ -7,8 +7,48 @@
 #include "pit.h"
 #include "vga.h"
 #include "interrupts.h"
+#include "memory/memory.h"
 
 SnakeGame snake_game;
+
+void allocate_snake_memory(int initial_size) {
+    snake_game.position = (Position*)malloc(initial_size * sizeof(Position));
+    snake_game.capacity = initial_size;
+    
+    // Initialize positions to invalid coordinates
+    for (int i = 0; i < initial_size; i++) {
+        snake_game.position[i].x = -1;
+        snake_game.position[i].y = -1;
+    }
+}
+
+void grow_snake_memory(int new_capacity) {
+    Position* new_position = (Position*)malloc(new_capacity * sizeof(Position));
+    
+    // Copy existing positions to new array
+    for (int i = 0; i < snake_game.snake_length; i++) {
+        new_position[i] = snake_game.position[i];
+    }
+    
+    // Initialize new positions to invalid coordinates
+    for (int i = snake_game.snake_length; i < new_capacity; i++) {
+        new_position[i].x = -1;
+        new_position[i].y = -1;
+    }
+    
+    // Free old memory and update pointers
+    free(snake_game.position);
+    snake_game.position = new_position;
+    snake_game.capacity = new_capacity;
+}
+
+void free_snake_memory(void) {
+    if (snake_game.position != NULL) {
+        free(snake_game.position);
+        snake_game.position = NULL;
+        snake_game.capacity = 0;
+    }
+}
 
 void start_snake_game(void) {
     // Initialize the game
@@ -23,6 +63,9 @@ void start_snake_game(void) {
         sleep_interrupt(100); 
     }
 
+    // Free snake memory
+    free_snake_memory();
+
     // Game over message
     set_cursor_position(SNAKE_GAME_WIDTH/2 - 5, SNAKE_GAME_HEIGHT/2);
     printf(0x0F, "GAME OVER!");
@@ -36,6 +79,9 @@ void init_snake_game(void) {
     // Set random seed
     srand(get_current_ticks()); 
     
+    // Allocate memory for snake positions
+    allocate_snake_memory(INITIAL_CAPACITY);
+    
     // Initialize game variables, snake position, food position, etc.
     snake_game.snake_length = SNAKE_LENGTH;
     snake_game.direction = SNAKE_RIGHT;
@@ -43,12 +89,6 @@ void init_snake_game(void) {
     snake_game.score = 0;
     snake_game.food_position.x = -1;
     snake_game.food_position.y = -1;
-
-    // Remove old snake and food positions
-    for (int i = 0; i < SNAKE_GAME_WIDTH * SNAKE_GAME_HEIGHT; i++) {
-        snake_game.position[i].x = -1;
-        snake_game.position[i].y = -1;
-    }
     
     draw_game_board();
     
@@ -102,6 +142,11 @@ void update_snake_game(void) {
     // Check for food collision
     if (new_head.x == snake_game.food_position.x && new_head.y == snake_game.food_position.y) {
         snake_game.score += 10;
+
+        // Check if we need to grow the memory allocation
+        if (snake_game.snake_length + 1 >= snake_game.capacity) {
+            grow_snake_memory(snake_game.capacity * 2);
+        }
 
         snake_game.snake_length++;
         snake_game.position[snake_game.snake_length - 1] = old_tail;

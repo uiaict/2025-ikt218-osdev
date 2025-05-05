@@ -63,6 +63,9 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Display the menu
     display_menu();
 
+    // __asm__("int $0x2C"); // Mouse interrupt
+    // __asm__("int $0x2A"); // Network interrupt
+
     while (1) {}
     return 0;
 }

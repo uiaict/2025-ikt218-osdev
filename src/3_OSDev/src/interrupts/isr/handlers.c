@@ -87,43 +87,8 @@ void keyboard_handler(void) {
 }
 
 void mouse_handler(void) {
-    // Read the data from the mouse buffer
-    uint8_t mouse_data = inb(0x60);
-
-    // Check for any errors in the mouse data
-    
-    // Determine the type of mouse event
-    int event_type = 0;
-    if (mouse_data & 0x01) {
-        event_type = MOUSE_MOVE;
-    } else if (mouse_data & 0x02) {
-        event_type = MOUSE_LEFT_CLICK;
-    } else if (mouse_data & 0x04) {
-        event_type = MOUSE_RIGHT_CLICK;
-    } else if (mouse_data & 0x08) {
-        event_type = MOUSE_SCROLL_UP;
-    } else if (mouse_data & 0x10) {
-        event_type = MOUSE_SCROLL_DOWN;
-    }
-
-    // Update the cursur position 
-    if (event_type == MOUSE_MOVE) {
-        
-    }
-    else if (event_type == MOUSE_LEFT_CLICK) {
-
-    }
-    else if (event_type == MOUSE_RIGHT_CLICK) {
-
-    }
-    else if (event_type == MOUSE_SCROLL_UP) {
-
-    }
-    else if (event_type == MOUSE_SCROLL_DOWN) {
-
-    }
     // Print the mouse event
-    printf(0x0F, "Mouse Event: %d\n", event_type);
+    printf(0x0F, "Mouse Interrupt Triggered\n");
 }
 
 void network_handler(void) {
@@ -133,6 +98,7 @@ void network_handler(void) {
 void init_irq_handlers(void) {
     register_irq_handlers(IRQ1, keyboard_handler);
     register_irq_handlers(IRQ12, mouse_handler);
+    register_irq_handlers(IRQ10, network_handler);
 }
 
 
