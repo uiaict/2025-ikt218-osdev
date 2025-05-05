@@ -6,6 +6,7 @@
 #include "common.h"
 #include "kernel/pit.h"
 #include "i386/keyboard.h"
+#include "i386/monitor.h"
 
 #define LNLIMIT 100
 
@@ -15,17 +16,36 @@ int abs(int number)
         return -number;
     return number;
 }
-float ln(int num)
+// Simple exponential approximation using Taylor series
+double exp_taylor(double x, int terms)
 {
-    float sum = 0;
-    for (int i = 1; i < LNLIMIT; i++)
+    double result = 1.0;
+    double term = 1.0;
+    for (int i = 1; i < terms; ++i)
     {
-        sum += 
+        term *= x / i;
+        result += term;
     }
+    return result;
 }
-float log10(int num)
+// Natural log using Newton-Raphson
+double ln(double x)
 {
-    return ln(num) / ln(10);
+    if (x <= 0)
+        return -1e9; // error approximation
+
+    double y = 1.0; // initial guess
+    for (int i = 0; i < 20; ++i)
+    {
+        double e_y = exp_taylor(y, 20);
+        y = y - 1 + x / e_y;
+    }
+    return y;
+}
+// Log base 10 using ln
+double log10(double x)
+{
+    return ln(x) / ln(10.0);
 }
 int floor(float num)
 {
@@ -35,8 +55,8 @@ int floor(float num)
 typedef uint16_t uint;
 
 // global variables, does not use #define because they can be changed with arguments
-uint ROWS = 16,
-     COLS = 64,
+uint ROWS = 25,
+     COLS = 80,
 
      PADDLE_X = 2,
      PADDLE_Y = 3,
@@ -142,7 +162,7 @@ void draw_game(uint grid[ROWS][COLS])
     {
         printf(" ");
     }
-    printf("%llu | %llu", player[0].score, player[1].score);
+    printf("%d | %d", (int)player[0].score, (int)player[1].score);
 
     // debug stuff
     if (debug)
@@ -240,35 +260,8 @@ void automate_player(unsigned int index, uint grid[ROWS][COLS])
     }
 }
 
-// shamelessly stolen from https://github.com/mevdschee/2048.c/blob/main/2048.c
-void setBufferedInput(bool enable)
-{
-    while (1)
-    {
-        if (key_buffer[0] != '\0')
-            break;
-    }
-}
-
-// https://www.flipcode.com/archives/_kbhit_for_Linux.shtml
-int _kbhit()
-{
-    static const int STDIN = 0;
-
-    int bytesWaiting;
-    //    ioctl(STDIN, FIONREAD, &bytesWaiting);
-    return bytesWaiting;
-}
-
-void end_game(int signum)
-{
-    setBufferedInput(true);
-    printf("\033[?25h\033[m");
-}
-
 int run_pong(int argc, char *argv[])
 {
-    // pass arguments
     uint grid[ROWS][COLS];
 
     // init values
@@ -290,15 +283,16 @@ int run_pong(int argc, char *argv[])
     printf("\033[?25l\033[2J");
     generate_grid(grid);
     draw_game(grid);
-    setBufferedInput(false);
     char m;
     EnableBufferTyping();
     // begin main loop
     while (true)
     {
-        if (_kbhit())
+        monitor_clear();
+        m = get_first_buffer();
+        if (m)
         {
-            m = get_key();
+            reset_key_buffer();
             switch (m)
             {
                 // first player (w-s)
@@ -308,21 +302,10 @@ int run_pong(int argc, char *argv[])
             case 's':
                 move_player(0, 1, grid);
                 break;
-
-            // second player(up-down)
-            case 65:
-                if (pvp)
-                    move_player(1, 0, grid);
-                break;
-
-            case 66:
-                if (pvp)
-                    move_player(1, 1, grid);
-                break;
             }
         }
 
-        if (updates % _UPDATE_FREQUENCY == 0)
+        if ((int)updates % (int)_UPDATE_FREQUENCY == 0)
         {
             update_ball(grid);
             if (!pvp || eve)
@@ -332,8 +315,11 @@ int run_pong(int argc, char *argv[])
         }
         draw_game(grid);
         updates++;
-
-        sleep_busy(1000); // minimum 1ms delay
+        if (has_user_pressed_esc())
+        {
+            return 0;
+        }
+        sleep_interrupt(100); // minimum 1ms delay
     }
-    end_game(0);
+    return 0;
 }

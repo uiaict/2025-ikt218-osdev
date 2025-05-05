@@ -7,6 +7,7 @@
 #include "common.h"
 #include "menu.h"
 #include "game/game.h"
+#include "i386/monitor.h"
 
 void reset_key_buffer();
 
@@ -23,18 +24,25 @@ void shutdown()
     }
 }
 
-
-
 void print_menu()
 {
     monitor_clear();
-    printf("Welcome to the os for summernerds!\n"
+    printf("\\\\                            //\n"
+           " \\\\                          // \n"
+           "  \\\\                        //  \n"
+           "   \\\\                      //   \n"
+           "    \\\\        //\\\\        //    \n" // for wanted result, it looks weird here
+           "     \\\\      //  \\\\      //     \n"
+           "      \\\\    //    \\\\    //      \n"
+           "       \\\\  //      \\\\  //       \n"
+           "        \\\\//        \\\\//        \n"
+           "Welcome to the os for summernerds!\n"
            "\n"
            " 1. Play Startup Song\n"
            " 2. Matrix Rain Effect\n"
            " 3. Play beep Sound\n"
            " 4. Write text (similar to notepad)\n"
-           " 5. Play pong."
+           " 5. Play pong.\n"
            " 6. Exit\n"
            "\n");
 }
@@ -68,7 +76,7 @@ void handle_menu()
             {
                 draw_matrix_frame();
                 sleep_interrupt(80);
-                if (key_buffer[0] != '\0')
+                if (get_first_buffer())
                     break;
             }
             break;
@@ -97,8 +105,10 @@ void handle_menu()
             EnableBufferTyping();
             break;
         }
-
         case '5':
+            run_pong();
+            break;
+        case '6':
         {
             printf("Shutting down...\n");
             shutdown();
