@@ -16,6 +16,9 @@ extern int bufferIndex;
 extern Note music_1[];
 extern size_t music_1_length;
 
+bool memory_initialized = false;
+
+
 void show_ascii_homepage() {
     clear_screen();  
 
@@ -44,7 +47,7 @@ void show_ascii_homepage() {
     // Meny
     printf("\n");
     printf("    [1] Show assignment print/test functions\n");
-    printf("    [2] Start Assignment 6 Improvisation\n");
+    printf("    [2] Keyboard Piano\n");
     printf("    [3] Stop song\n");
     printf("    [4] Play song\n");
     printf("\nCurrently playing: Anthem of the Soviet Union");
@@ -55,8 +58,12 @@ void show_ascii_homepage() {
 void show_assignment_output(uint32_t magic, void* mb_info_addr) {
     printf("\n--- Assignment Output ---\n");
 
-    init_kernel_memory(&end);
-    init_paging();
+    if (!memory_initialized) {
+        init_kernel_memory(&end);
+        init_paging();
+        memory_initialized = true;
+    }
+    
     print_memory_layout(magic, mb_info_addr);
 
     printf("[OK] Descriptors initialized\n");
@@ -85,12 +92,42 @@ void show_assignment_output(uint32_t magic, void* mb_info_addr) {
     sleepBusy(1000);
 }
 
-void start_assignment6_demo() {
-    printf("\n--- Assignment 6 Improvisation ---\n");
-    printf("Here you could add animation, game, sound visualizer, etc.\n");
-    sleepBusy(2000);
-    printf("Returning to main menu...\n");
-    sleepBusy(1000);
+
+void piano() {
+    clear_screen();
+    printf("\n--- Piano Keyboard ---\n");
+    printf("Press keys 1-8 to play notes:\n");
+    printf("a = C4, s = D4, d = E4, f = F4\n");
+    printf("g = G4, h = A4, j = B4, k = C5\n");
+    printf("Press '0' to return to menu\n");
+    printf("Twinkle twinkle little star: \n");
+    printf("gg-ss-dd-s-aa-jj-hh-g-ss-aa-jj-h-ss-aa-jj-h-gg-ss-dd-s\n");
+
+    bufferIndex = 0;
+    while (1) {
+        if (bufferIndex > 0) {
+            char input = charBuffer[0];
+            bufferIndex = 0;
+
+            switch (input) {
+                case 'a': play_sound(261); break; // C4
+                case 's': play_sound(293); break; // D4
+                case 'd': play_sound(329); break; // E4
+                case 'f': play_sound(349); break; // F4
+                case 'g': play_sound(392); break; // G4
+                case 'h': play_sound(440); break; // A4
+                case 'j': play_sound(493); break; // B4
+                case 'k': play_sound(523); break; // C5
+                case '0': stop_sound(); return;
+                break;
+            }
+
+            sleepBusy(500);
+            stop_sound();
+        }
+
+        asm volatile("hlt");
+    }
 }
 
 void kmain(uint32_t magic, void* mb_info_addr) {
@@ -120,7 +157,7 @@ void kmain(uint32_t magic, void* mb_info_addr) {
                     break; // Gå tilbake til meny
                 } else if (input == '2') {
                     clear_screen();
-                    start_assignment6_demo();
+                    piano();
                     clear_screen();
                     break;
                 } else if (input == '3') {

@@ -1,5 +1,4 @@
 #include "interrupts/io.h"
-#include "interrupts/macros.h"
 
 // Video memory begins at address 0xb8000
 char* videoMemory = (char*) 0xb8000;
