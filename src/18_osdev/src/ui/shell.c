@@ -58,7 +58,7 @@ void init_shell() {
     monitor_write_color(3, "  .'._( )_ : (  '\\_/ \\   ;|   |   |   |(_,_)'     \n");
     monitor_write_color(1, ".'  (_'o._) \\ `\"/  \\  ) / |   |   |   `-'  /      \n");
     monitor_write_color(1, "|    (_,_)|  '. \\_/``\".'  /   )    \\      /       \n");
-    monitor_write_color(8, "|_________|    '-----'    `---'     `-..-'        \n");
+    monitor_write_color(2, "|_________|    '-----'    `---'     `-..-'        \n");
     
     // Title and instructions with bright colors
     monitor_write_color(11, "              Welcome to OSDEV 18 Kernel             \n\n");
