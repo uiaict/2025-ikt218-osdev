@@ -63,6 +63,48 @@ int has_user_pressed_esc()
     return 1;
 }
 
+void wait_for_keypress()
+{
+    reset_key_buffer();
+    while (key_buffer[0] == '\0')
+    {
+        // venter på at bruker trykker på en knapp
+    }
+}
+
+char get_key()
+{
+    reset_key_buffer();
+    while (key_buffer[0] == '\0')
+    {
+    }
+    char key = key_buffer[0];
+
+    return key;
+}
+
+void write_to_buffer(char c)
+{
+    for (int i = 0; i < BUFFER_SIZE; i++)
+    {
+        if (key_buffer[i] == '\0')
+        {
+            key_buffer[i] = c;
+            break;
+        }
+    }
+}
+
+void reset_key_buffer()
+{
+    for (int i = 0; i < BUFFER_SIZE; i++)
+    {
+        key_buffer[i] = '\0';
+        if (key_buffer[i + 1] == '\0')
+            break;
+    }
+}
+
 bool shiftPressed = false;
 bool capsEnabled = false;
 

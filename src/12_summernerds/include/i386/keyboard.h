@@ -23,6 +23,10 @@ char scanCodeToASCII(unsigned char *scanCode);
 void irq1_keyboard_handler(registers_t *regs, void *ctx);
 int has_user_pressed_esc();
 
+void wait_for_keypress();
+char get_key();
+void reset_key_buffer();
+
 static vector2D arrowKeys2D;
 
 #endif

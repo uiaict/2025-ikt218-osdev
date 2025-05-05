@@ -1,92 +1,339 @@
+// Pong created by pbogre on github, but modified to work
+// Link: https://github.com/pbogre/pong.c
+
+#include <libc/stdio.h>
+#include <libc/stdbool.h>
+#include "common.h"
 #include "kernel/pit.h"
-#include "game/game.h"
 #include "i386/keyboard.h"
-#include "i386/monitor.h"
-#include "random.h"
 
-int fps = 12;
-int objSprite = 61;
-int score = 0;
-// manages fps
-void handle_fps(uint32_t frame_start)
+#define LNLIMIT 100
+
+int abs(int number)
 {
-    uint32_t current_tick = get_current_tick();
-    uint32_t waitTime = 1000 / fps - (current_tick - frame_start);
-    sleep_busy(waitTime);
+    if (number < 0)
+        return -number;
+    return number;
+}
+float ln(int num)
+{
+    float sum = 0;
+    for (int i = 1; i < LNLIMIT; i++)
+    {
+        sum += 
+    }
+}
+float log10(int num)
+{
+    return ln(num) / ln(10);
+}
+int floor(float num)
+{
+    return (int)num;
 }
 
-typedef struct
+typedef uint16_t uint;
+
+// global variables, does not use #define because they can be changed with arguments
+uint ROWS = 16,
+     COLS = 64,
+
+     PADDLE_X = 2,
+     PADDLE_Y = 3,
+
+     BALL_SIZE = 1,
+
+     BOT_FOW = 6,          // bot fog of war. higher means easier opponent
+    UPDATE_FREQUENCY = 50, // game status updates every X frames (default)
+                           // affects: bots, ball
+    _UPDATE_FREQUENCY;     // changed throughout game
+
+unsigned long long updates = 0;
+
+bool pvp = false,
+     eve = false,
+     debug = false;
+
+// structures
+struct paddle
 {
-    char type;
-    int x;
-    int y;
+    uint x, y;
+    unsigned long long score;
+} player[2];
 
-} object;
-
-static object player;
-static object objects[5];
-
-void create_objects(object *objects)
+struct _ball
 {
-    for (int i = 0; i < 5; i++)
+    uint x, y;
+    int8_t dx, dy;
+} ball;
+
+void generate_grid(uint grid[ROWS][COLS])
+{
+    for (uint y = 0; y < ROWS; y++)
     {
-        objects[i].type = objSprite++;
-        objects[i].x = randint(80);
-        objects[i].y = randint(25);
+        for (uint x = 0; x < COLS; x++)
+        {
+            if (y == 0 || y == ROWS - 1)
+                grid[y][x] = 1;
+            else
+                grid[y][x] = 0;
+        }
     }
 }
 
-void draw_object(object obj)
+void draw_game(uint grid[ROWS][COLS])
 {
-    monitor_putentryat(obj.type, 3, obj.x, obj.y);
-}
+    printf("\033[H");
 
-void updatePlayer()
-{
-    player.x += arrowKeys2D.x;
-    player.y += arrowKeys2D.y;
-    draw_object(player);
-}
-
-int runthegame()
-{
-    player.type = 'A';
-    player.x = 40;
-    player.y = 12;
-    for (int i = 0; i < 5; i++)
+    // insert players
+    for (uint i = 0; i < 2; i++)
     {
-        objects[i].type = 0;
+        for (uint y = player[i].y; y < player[i].y + PADDLE_Y; y++)
+        {
+            for (uint x = player[i].x; x < player[i].x + PADDLE_X; x++)
+            {
+                grid[y][x] = 2;
+            }
+        }
     }
-    setupRNG(500);
-    monitor_clear();
-    printf("GAME TUTORIAL:\n"
-           "You are the large letter\n"
-           "Pick up small letters in order\n"
-           "pick up the items to score points\n");
-    sleep_interrupt(4000);
+
+    // insert ball
+    for (uint y = ball.y; y < ball.y + BALL_SIZE; y++)
+    {
+        for (uint x = ball.x; x < ball.x + BALL_SIZE; x++)
+        {
+            grid[y][x] = 3;
+        }
+    }
+
+    // draw values
+    for (uint y = 0; y < ROWS; y++)
+    {
+        for (uint x = 0; x < COLS; x++)
+        {
+            switch (grid[y][x])
+            {
+            case 0:
+                printf(" "); // background
+                break;
+
+            case 1:
+                printf("-"); // top/bottom limits
+                break;
+
+            case 2:
+                printf("|"); // paddle
+                break;
+
+            case 3:
+                printf("#"); // ball
+                break;
+
+            default:
+                printf("?");
+            }
+        }
+        printf("\n");
+    }
+
+    // draw scores in the middle
+    uint score1_length = floor(log10(player[0].score));
+    for (int i = 1; i < (COLS / 2) - (score1_length + 1); i++)
+    {
+        printf(" ");
+    }
+    printf("%llu | %llu", player[0].score, player[1].score);
+
+    // debug stuff
+    if (debug)
+    {
+        printf("\n");
+        printf("\n Player 1: (%hu, %hu)    |    Player 2: (%hu, %hu)               ", player[0].x, player[0].y, player[1].x, player[1].y);
+        printf("\n Ball: (%hu (%d), %hu (%d))                         ", ball.x, ball.dx, ball.y, ball.dy);
+        printf("\n Updates: %llu  |  Game Update Frequency: %hu                     ", updates, _UPDATE_FREQUENCY);
+    }
+}
+
+void update_ball(uint grid[ROWS][COLS])
+{
+    // clear previous ball position
+    for (uint y = ball.y; y < ball.y + BALL_SIZE; y++)
+    {
+        for (uint x = ball.x; x < ball.x + BALL_SIZE; x++)
+        {
+            grid[y][x] = 0;
+        }
+    }
+
+    // horizontal collision
+    for (int i = 0; i < 2; i++)
+    {
+        bool near_ball = (player[i].x > COLS / 2) ?                                     // paddle is on the right?
+                             (ball.x >= player[i].x - PADDLE_X)                         // right paddle
+                                                  : (ball.x <= player[i].x + PADDLE_X); // left paddle
+
+        if (near_ball)
+        {
+            if (ball.y >= player[i].y && ball.y <= player[i].y + PADDLE_Y)
+            { // paddle hit ball
+                ball.dx *= -1;
+                ball.x += ball.dx;
+                if (_UPDATE_FREQUENCY > 1)
+                    _UPDATE_FREQUENCY--; // game gets progressively faster after each hit
+            }
+
+            else
+            { // paddle missed ball
+                ball.x = (COLS / 2) - BALL_SIZE;
+                ball.y = (ROWS / 2) - BALL_SIZE;
+                player[1].score++;
+                ball.dx *= -1;
+
+                _UPDATE_FREQUENCY = UPDATE_FREQUENCY; // reset game speed
+            }
+        }
+    }
+
+    // vertical collision
+    if (ball.y <= 1 || ball.y + BALL_SIZE >= ROWS - 1)
+        ball.dy *= -1;
+
+    // update ball
+    ball.y += ball.dy;
+    ball.x += ball.dx;
+}
+
+void move_player(uint index, bool direction, uint grid[ROWS][COLS])
+{
+    if (!direction)
+    { // move up
+        if (player[index].y >= 2)
+        {
+            player[index].y -= 1;
+            // clear grid below
+            for (uint x = player[index].x; x < player[index].x + PADDLE_X; x++)
+            {
+                grid[player[index].y + PADDLE_Y][x] = 0;
+            }
+        }
+        return;
+    }
+    // move down
+    if (player[index].y + PADDLE_Y <= ROWS - 2)
+    {
+        player[index].y += 1;
+        // clear grid above
+        for (uint x = player[index].x; x < player[index].x + PADDLE_X; x++)
+        {
+            grid[player[index].y - 1][x] = 0;
+        }
+    }
+}
+
+void automate_player(unsigned int index, uint grid[ROWS][COLS])
+{
+    int diff = abs(player[index].x - ball.x);
+    if (diff <= COLS / BOT_FOW)
+    {
+        bool direction = ((ball.y * 2 + BALL_SIZE) / 2 < (player[index].y * 2 + PADDLE_Y) / 2) ? 0 : 1;
+        move_player(index, direction, grid);
+    }
+}
+
+// shamelessly stolen from https://github.com/mevdschee/2048.c/blob/main/2048.c
+void setBufferedInput(bool enable)
+{
     while (1)
     {
-        uint32_t startTick = get_current_tick();
-        monitor_clear();
-        printf("score: %d", score);
-        updatePlayer();
-        create_objects(objects);
-        for (int i = 0; i < 5; i++)
+        if (key_buffer[0] != '\0')
+            break;
+    }
+}
+
+// https://www.flipcode.com/archives/_kbhit_for_Linux.shtml
+int _kbhit()
+{
+    static const int STDIN = 0;
+
+    int bytesWaiting;
+    //    ioctl(STDIN, FIONREAD, &bytesWaiting);
+    return bytesWaiting;
+}
+
+void end_game(int signum)
+{
+    setBufferedInput(true);
+    printf("\033[?25h\033[m");
+}
+
+int run_pong(int argc, char *argv[])
+{
+    // pass arguments
+    uint grid[ROWS][COLS];
+
+    // init values
+    player[0].x = 1;
+    player[0].y = (ROWS / 2) - (PADDLE_Y / 2);
+    player[0].score = 0;
+    player[1].x = COLS - (PADDLE_X + 1);
+    player[1].y = (ROWS / 2) - (PADDLE_Y / 2);
+    player[1].score = 0;
+
+    ball.x = COLS / 2 - BALL_SIZE;
+    ball.y = ROWS / 2 - BALL_SIZE;
+    ball.dx = 2;
+    ball.dy = 1;
+
+    _UPDATE_FREQUENCY = UPDATE_FREQUENCY;
+
+    // setup terminal for  game
+    printf("\033[?25l\033[2J");
+    generate_grid(grid);
+    draw_game(grid);
+    setBufferedInput(false);
+    char m;
+    EnableBufferTyping();
+    // begin main loop
+    while (true)
+    {
+        if (_kbhit())
         {
-            object obj = objects[i];
-            if (obj.x == player.x && obj.y == player.y)
+            m = get_key();
+            switch (m)
             {
-                objects[i].type = 0;
-                score++;
+                // first player (w-s)
+            case 'w':
+                move_player(0, 0, grid);
+                break;
+            case 's':
+                move_player(0, 1, grid);
+                break;
+
+            // second player(up-down)
+            case 65:
+                if (pvp)
+                    move_player(1, 0, grid);
+                break;
+
+            case 66:
+                if (pvp)
+                    move_player(1, 1, grid);
+                break;
             }
-            else
-                draw_object(obj);
         }
 
-        if (has_user_pressed_esc())
-            break;
+        if (updates % _UPDATE_FREQUENCY == 0)
+        {
+            update_ball(grid);
+            if (!pvp || eve)
+                automate_player(1, grid);
+            if (eve)
+                automate_player(0, grid);
+        }
+        draw_game(grid);
+        updates++;
 
-        handle_fps(startTick);
+        sleep_busy(1000); // minimum 1ms delay
     }
-    return 0;
+    end_game(0);
 }
