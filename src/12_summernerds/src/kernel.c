@@ -9,9 +9,9 @@
 #include "libc/stdbool.h"
 #include "common.h"
 #include <screen.h>
-// #include "i386/ISR.h"
-// #include <kheap.h>
-// #include <paging.h>
+#include "i386/ISR.h"
+#include <kheap.h>
+#include <paging.h>
 
 extern uint32_t end; // Linker symbol marking the end of kernel
 
@@ -41,18 +41,18 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     void *mem3 = malloc(3331);
 
     // print if we get any problem with allocating memory
-    printf("Allocated memory blocks at: 0x%x, 0x%x, 0x%x\n", mem1, mem2, mem3);
+    // printf("Allocated memory blocks at: 0x%x, 0x%x, 0x%x\n", mem1, mem2, mem3);
 
     // Test PIT sleep
     int counter = 0;
     while (true)
     {
         printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);
-        // sleep_interrupt(1000);
+        sleep_interrupt(1000);
         printf("[%d]: Slept using interrupts.\n", counter++);
 
         printf("[%d]: Sleeping with busy-waiting (HIGH CPU)...\n", counter);
-        // sleep_busy(1000);
+        sleep_busy(1000);
         printf("[%d]: Slept using busy-waiting.\n", counter++);
     }
 
