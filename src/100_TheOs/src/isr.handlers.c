@@ -8,16 +8,19 @@ extern void terminal_printf(const char* format, ...);
 // This function is called when a division by zero interrupt occurs
 void division_by_zero_controller(registers_t* regs, void* context) {
     terminal_printf("Interrupt 0: Division by Zero Error\n");
+    return;
 }
 // Debug controller
 // This function is called when a debug interrupt occurs
 void debug_controller(registers_t* regs, void* context) {
     terminal_printf("Interrupt 1: Debug Exception\n");
+    return;
 }
 // Non-Maskable Interrupt controller
 // This function is called when a non-maskable interrupt occurs
 void nmi_controller(registers_t* regs, void* context) {
     terminal_printf("Interrupt 2: Non-Maskable Interrupt\n");
+    return;
 }
 
 // Starts the interrupt service routine (ISR) controllers

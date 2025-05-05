@@ -108,9 +108,11 @@ isr_common_stub:
     mov fs, ax
     mov gs, ax
 
-    call isr_controller
+    push esp                 ; CRITICAL FIX: Pass pointer to registers structure
+    call isr_controller      ; Call the C handler
+    add esp, 4               ; Clean up the pushed parameter
 
-    pop ebx                   ; reload the original data segment descriptor
+    pop ebx                  ; reload the original data segment descriptor
     mov ds, bx
     mov es, bx
     mov fs, bx
@@ -120,7 +122,6 @@ isr_common_stub:
     add esp, 8     ; Cleans up the pushed error code and pushed ISR number
     sti
     iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
-
 ; isr controller in isr.c
 extern irq_controller
 
@@ -140,17 +141,18 @@ irq_common_stub:
     mov fs, ax
     mov gs, ax
 
-    call irq_controller
+    push esp                 ; CRITICAL FIX: Pass pointer to registers structure
+    call irq_controller      ; Call the C handler
+    add esp, 4               ; Clean up the pushed parameter
 
-    pop ebx        ; reload the original data segment descriptor
+    pop ebx                  ; reload the original data segment descriptor
     mov ds, bx
     mov es, bx
     mov fs, bx
     mov gs, bx
 
     popa                     ; Pops edi,esi,ebp...
-    add esp, 8     ; Cleans up the pushed error code and pushed ISR number
-
-    iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
+    add esp, 8               ; Cleans up the pushed error code and pushed ISR number
+    iret                     ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
 
 

@@ -1,4 +1,5 @@
 #include "gdt.h"
+#include "common.h"
 
 struct GdtEntry gdt_entries[3];
 struct GdtPtr gdt_ptr;
@@ -29,4 +30,8 @@ void init_gdt() {
     gdt_set_gate(2, 0, 0xFFFFF, 0x92, 0xCF);
     
     gdt_flush((uint32_t)&gdt_ptr);
+}
+
+void start_gdt(void){
+    init_gdt();
 }

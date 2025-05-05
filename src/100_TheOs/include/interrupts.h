@@ -110,18 +110,18 @@ void start_irq();
 void start_interrupts();
 
 // Struct for registers
-typedef struct registers
-  {
-      uint32_t ds;                 
-      uint32_t edi, esi, ebp, useless_value, ebx, edx, ecx, eax; 
-      uint32_t int_no, err_code;    
-      uint32_t eip, cs, eflags, esp, ss;
-  } registers_t;
-
+typedef struct registers {
+  uint32_t ds;                 
+  uint32_t edi, esi, ebp, useless_value, ebx, edx, ecx, eax; 
+  uint32_t int_no, err_code;    
+  uint32_t eip, cs, eflags, esp, ss;
+} registers_t;
 
 // Isr and registers function
 typedef void (*isr_t)(registers_t*, void*);
 
+void register_interrupt_handler(uint8_t n, isr_t handler, void* context);
+void register_irq_handler(uint8_t irq, isr_t handler, void* context);
 
 // Int controller struct
 struct int_controller_t {
@@ -140,6 +140,8 @@ void load_interrupt_controller(uint8_t n, isr_t controller, void*);
 static struct int_controller_t int_controllers[IDT_ENTRIES];
 static struct int_controller_t irq_controllers[IRQ_COUNT];
 
-
+void init_irq(void);   // If you're calling it internally
+void start_irq(void);  // If calling from kernel.cpp
+void start_idt(void);
 
 #endif
