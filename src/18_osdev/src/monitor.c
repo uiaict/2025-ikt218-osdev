@@ -1,12 +1,21 @@
 #include "../include/libc/monitor.h"
-
+#include "libc/common.h"
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
-#define VGA_COLOR 0x0F
 
 static uint16_t* const video_memory = (uint16_t*) 0xB8000;
 static size_t cursor_row = 0;
 static size_t cursor_col = 0;
+
+
+void move_cursor() {
+    uint16_t cursor_location = cursor_row * VGA_WIDTH + cursor_col;
+
+    outb(0x3D4, 14); // High byte
+    outb(0x3D5, cursor_location >> 8);
+    outb(0x3D4, 15); // Low byte
+    outb(0x3D5, cursor_location & 0xFF);
+}
 
 static void scroll_if_needed() {
     if (cursor_row >= VGA_HEIGHT) {
@@ -38,22 +47,30 @@ void monitor_clear(void) {
     cursor_col = 0;
 }
 
-void monitor_put(char c) {
-    if (c == '\n') {
+void monitor_put(char c, int color) {
+    if (c == 0x08 && cursor_col > 0) { // Backspace
+        cursor_col--;
+    } else if (c == 0x09) { // Tab
+        cursor_col = (cursor_col + 8) & ~(8 - 1);
+    } else if (c == '\r') { // Carriage return
+        cursor_col = 0;
+    } else if (c == '\n') { // Newline
         cursor_col = 0;
         cursor_row++;
         scroll_if_needed();
-        return;
+    } else if (c >= ' ') { // Printable character
+        video_memory[cursor_row * VGA_WIDTH + cursor_col] = (uint16_t)c | (color << 8);
+        cursor_col++;
     }
 
-    video_memory[cursor_row * VGA_WIDTH + cursor_col] = (uint16_t)c | (VGA_COLOR << 8);
-    cursor_col++;
-
+    // Wrap to new line if we go past the screen width
     if (cursor_col >= VGA_WIDTH) {
         cursor_col = 0;
         cursor_row++;
         scroll_if_needed();
     }
+
+    move_cursor(); // Update hardware cursor
 }
 
 void monitor_remove_char(){
@@ -68,21 +85,29 @@ void monitor_remove_char(){
 
     uint16_t* location = (uint16_t*)video_memory + (cursor_row * VGA_WIDTH + cursor_col);
     *location = ' ' ;// Clear the character
-    // move_cursor(); // Update hardware cursor
+    move_cursor(); // Update hardware cursor
 
 }
 
 void monitor_write(const char* str) {
-    while (*str) {
-        monitor_put(*str++);
+    int i = 0;
+    while (str[i]) {
+        monitor_put(str[i++], 15);
     }
 }
 
-
+void monitor_write_color(int color, const char* str){
+    int i = 0;
+    while (str[i])
+    {
+        monitor_put(str[i++], color);
+    }
+    
+}
 
 void monitor_write_dec(uint32_t n) {
     if (n == 0) {
-        monitor_put('0');
+        monitor_put('0',15);
         return;
     }
 
@@ -95,7 +120,7 @@ void monitor_write_dec(uint32_t n) {
     }
 
     while (i--) {
-        monitor_put(buf[i]);
+        monitor_put(buf[i],15);
     }
 }
 

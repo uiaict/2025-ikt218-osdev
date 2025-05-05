@@ -49,21 +49,22 @@ Song all_songs[] = {
 static bool shell_running = true;
 
 void init_shell() {
-    monitor_write("  ____..--'    ,-----.    .-------.  ____     __  \n");
-    monitor_write(" |        |  .'  .-,  '.  \\  _(`)_ \\ \\   \\   /  / \n");
-    monitor_write(" |   .-'  ' / ,-.|  \\ _ \\ | (_ o._)|  \\  _. /  '  \n");
-    monitor_write(" |.-'.'   /;  \\  '_ /  | :|  (_,_) /   _( )_ .'   \n");
-    monitor_write("    /   _/ |  _`,/ \\ _/  ||   '-.-'___(_ o _)'    \n");
-    monitor_write("  .'._( )_ : (  '\\_/ \\   ;|   |   |   |(_,_)'     \n");
-    monitor_write(".'  (_'o._) \\ `\"/  \\  ) / |   |   |   `-'  /      \n");
-    monitor_write("|    (_,_)|  '. \\_/``\".'  /   )    \\      /       \n");
-    monitor_write("|_________|    '-----'    `---'     `-..-'        \n");
+    // Cool blue-cyan themed colors
+    monitor_write_color(9, "  ____..--'    ,-----.    .-------.  ____     __  \n");
+    monitor_write_color(9, " |        |  .'  .-,  '.  \\  _(`)_ \\ \\   \\   /  / \n");
+    monitor_write_color(11, " |   .-'  ' / ,-.|  \\ _ \\ | (_ o._)|  \\  _. /  '  \n");
+    monitor_write_color(11, " |.-'.'   /;  \\  '_ /  | :|  (_,_) /   _( )_ .'   \n");
+    monitor_write_color(3, "    /   _/ |  _`,/ \\ _/  ||   '-.-'___(_ o _)'    \n");
+    monitor_write_color(3, "  .'._( )_ : (  '\\_/ \\   ;|   |   |   |(_,_)'     \n");
+    monitor_write_color(1, ".'  (_'o._) \\ `\"/  \\  ) / |   |   |   `-'  /      \n");
+    monitor_write_color(1, "|    (_,_)|  '. \\_/``\".'  /   )    \\      /       \n");
+    monitor_write_color(8, "|_________|    '-----'    `---'     `-..-'        \n");
     
-
-    monitor_write("              Welcome to OSDEV 18 Kernel             \n\n");
-
-    monitor_write("Type 'song' to play music, 'piano' to open piano, 'game' to play text adventure game.\n");
-    monitor_write("Type 'help' for available commands.\n");
+    // Title and instructions with bright colors
+    monitor_write_color(11, "              Welcome to OSDEV 18 Kernel             \n\n");
+    
+    monitor_write_color(15, "Type 'song' to play music, 'piano' to open piano, 'game' to play text adventure game.\n");
+    monitor_write_color(7, "Type 'help' for available commands.\n");
 }
 
 void run_shell() {

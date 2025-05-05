@@ -96,7 +96,7 @@ void keyboard_handler(registers_t regs)
 
         if (scancode == 0x01) { // ESC key to exit piano mode
             piano_mode_enabled = false;
-            monitor_write("\nExited piano mode.\n");
+            monitor_write("\nExited piano mode.\n> ");
             stop_sound(); // stops the speaker
             return;
         }
@@ -134,7 +134,7 @@ void keyboard_handler(registers_t regs)
         
         if (c) {
             // Echo character to screen
-            monitor_put(c);
+            monitor_put(c,15);
             
             // Handle special characters
             if (c == '\n') {
