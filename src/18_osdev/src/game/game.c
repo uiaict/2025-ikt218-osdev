@@ -100,7 +100,7 @@ void run_game() {
         process_game_command(input, &state);
     }
     
-    monitor_write("\nShell exited.\n");
+    monitor_write("\nGame exited.\n");
 }
 
 void process_game_command(char* command, GameState* state) {

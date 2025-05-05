@@ -6,7 +6,6 @@
 #include "libc/monitor.h"
 #include "keyboard/keyboard.h"
 #include "gdt/descriptor_tables.h"
-#include "PIT/timer.h"
 #include "PIT/pit.h"
 #include "memory/memory.h"
 #include "memory/paging.h"

@@ -2,6 +2,7 @@
 #include "libc/common.h"
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
+#define VGA_COLOR 15
 
 static uint16_t* const video_memory = (uint16_t*) 0xB8000;
 static size_t cursor_row = 0;
