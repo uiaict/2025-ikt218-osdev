@@ -11,7 +11,7 @@ Room rooms[] = {
     {
         "Showroom",
         "Shelves of premium strains line the walls. A torch lies beside a hookah.",
-        0, 2, 3, -1,
+        0, 2, -1, 3,
         false, true, false, false, false
     },
     {
@@ -23,31 +23,31 @@ Room rooms[] = {
     {
         "VIP Lounge",
         "Dimly lit with lava lamps and bean bags. A faint smell of pine and citrus fills the air.",
-        -1, -1, 5, 1,
+        -1, -1, 1, 5,
         false, false, false, true, false
     },
     {
         "Secret Grow Room",
         "The glow of UV lights reveals rows of vibrant plants. It's humid and buzzing with fans.",
-        -1, 6, -1, 8,
+        -1, 6, 8, -1,
         false, false, false, true, false
     },
     {
         "Hydro Lab",
         "Pipes, pumps, and nutrients galore. You can hear bubbling water and the faint hum of machines. In the corner you see a key",
-        -1, -1, -1, 3,
+        -1, -1, 3, -1,
         true, false, true, false, false
     },
     {
         "Security Hallway",
         "Flashing red lights and motion sensors line the hallway. It's pitch black without a torch, but you see the shine of a key.",
-        4, -1, 7, -1,
+        4, -1, -1, 7,
         true, false, true, false, false
     },
     {
         "Owner's Office",
-        "A sleek office with glass walls, a safe, and luxury rolling gear. You feel like you're being watched.",
-        2, -1, -1, 6,
+        "A sleek office with glass walls, a safe, and luxury rolling gear. You feel like you're being watched. In the corner there lies a torch",
+        2, -1, 6, -1,
         false, true, false, false, false
     },
     {
@@ -122,14 +122,23 @@ void process_game_command(char* command, GameState* state) {
         try_move(state, rooms, "west");
       
 
-    } else if (strcmp(command, "take key") == 0 && current->has_key) {
-        state->has_key = state->has_key + 1; //updates player's state
-        current->has_key = 0; //updates room state
-        monitor_write("You took the key.\n");
-    } else if (strcmp(command, "take torch") == 0 && current->has_torch) {
-        state->has_torch = state->has_torch + 1;
-        current->has_torch = 0;
-        monitor_write("You took the torch.\n");
+    } else if (strcmp(command, "take key") == 0) {
+        if (current->has_key) {
+            state->has_key = state->has_key + 1; //updates player's state
+            current->has_key = 0; //updates room state
+            monitor_write("You took the key.\n");
+        }else {
+            monitor_write("There is no key here.\n");
+        }
+        
+    } else if (strcmp(command, "take torch") == 0) {
+        if (current->has_torch) {
+            state->has_torch = state->has_torch + 1;
+            current->has_torch = 0;
+            monitor_write("You took the torch.\n");
+        }else {
+            monitor_write("There is no torch here.\n");
+        }
 
     } else if (strcmp(command, "inventory") == 0) {
         bool empty = true;
@@ -221,15 +230,6 @@ void try_move(GameState *state, Room rooms[], const char *direction) {
     // Exit check
     if (next->is_exit) {
         monitor_write("You found the exit! Well done.\n");
-        monitor_write("$$\\     $$\\  $$$$$$\\  $$\\   $$\\   $$\\      $$\\ $$$$$$\\$$\\   $$\\\n");
-        monitor_write("\\$$\\   $$  |$$  __$$\\ $$ |  $$ |    $$ | $\\  $$ |\\_$$  _|$$$\\  $$ |\n");
-        monitor_write(" \\$$\\ $$  / $$ /  $$ |$$ |  $$ |     $$ |$$$\\ $$ |  $$ |   $$$$\\ $$ |\n");
-        monitor_write("  \\$$$$  /  $$ |  $$ |$$ |  $$ |      $$ $$ $$\\$$ |  $$ |   $$ $$\\$$ |\n");
-        monitor_write("   \\$$  /   $$ |  $$ |$$ |  $$ |      $$$$  _$$$$ |   $$ |   $$ \\$$$$ |\n");
-        monitor_write("    $$ |    $$ |  $$ |$$ |  $$ |       $$$  / \\$$$ |  $$ |   $$ |\\$$$ |\n");
-        monitor_write("    $$ |     $$$$$$  |\\$$$$$$  |      $$  /   \\$$ |$$$$$$\\ $$ | \\$$ |\n");
-        monitor_write("    \\__|     \\______/  \\______/       \\__/     \\__|\\______|\\__|  \\__|\n");
-        monitor_write("                                                                      \n");
         return;
     }
 
