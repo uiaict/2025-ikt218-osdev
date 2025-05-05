@@ -66,11 +66,12 @@ add_executable(uiaos-kernel
     src/matrix_effect/matrix.c
     #src/song.c
     src/common.c
-    src/multiboot2.s
+    src/random.c
+
     # SYSTEM
     src/arch/i386/IRQ.c
     src/arch/i386/ISR.c
-    src/arch/i386/Keyboard.c
+    src/arch/i386/keyboard.c
     src/arch/i386/IDT.c
     src/arch/i386/gdt.c
     src/arch/i386/stdio.c
@@ -79,32 +80,29 @@ add_executable(uiaos-kernel
     src/arch/i386/system.c
     src/arch/i386/pit.c
     src/arch/i386/string.c
-    #src/arch/i386/gdt.asm
 
     # MEMORY
     src/memory/malloc.c
-    src/memory/memory.c
     src/memory/memutils.c
+    src/memory/paging.c
 
     # SONG
     src/song/songPlayer.c
 
+    # Game
+    src/game/game.c
+
+    # ASSEMBLY 
+    src/arch/i386/descriptor_tables.asm
+    src/arch/i386/ISR.asm
+    src/multiboot2.asm
 )
 
-
-
-add_library(gdt_asm OBJECT src/arch/i386/gdt.asm)
-set_target_properties(gdt_asm PROPERTIES LANGUAGE ASM_NASM)
-target_link_libraries(uiaos-kernel gdt_asm)
-set_source_files_properties(src/arch/i386/gdt.asm PROPERTIES LANGUAGE ASM_NASM)
+# Necessary for .asm files to be in the add_executable function
+set_source_files_properties(src/arch/i386/descriptor_tables.asm PROPERTIES LANGUAGE ASM_NASM)
 set_source_files_properties(src/arch/i386/ISR.asm PROPERTIES LANGUAGE ASM_NASM)
-add_library(isr_asm OBJECT src/arch/i386/ISR.asm)
-target_link_libraries(uiaos-kernel isr_asm)
+set_source_files_properties(src/multiboot2.asm PROPERTIES LANGUAGE ASM_NASM)
 
-
-
-# Link gdt_asm med uiaos-kernel
-#target_link_libraries(uiaos-kernel gdt_asm)
 
 # Include directories for the kernel target
 target_include_directories(uiaos-kernel PUBLIC include)
@@ -159,7 +157,13 @@ add_custom_target(
 	uiaos-create-image
 	COMMAND rm -rf ${ISO_DIR}
 	COMMAND mkdir -p ${ISO_DIR}
-	COMMAND cp -v $<TARGET_FILE:uiaos-kernel> 
+    COMMAND mkdir -p ${ISO_DIR}/boot
+    COMMAND cp -v $<TARGET_FILE:uiaos-kernel> ${ISO_DIR}/boot/kernel.bin
+    COMMAND cp -v ${LIMINE_CONFIG_DIR}/limine.cfg ${ISO_DIR}/limine.cfg
+    COMMAND cp -v ${LIMINE_DIR}/limine-bios.sys ${ISO_DIR}/
+    COMMAND cp -v ${LIMINE_DIR}/limine-bios-cd.bin ${ISO_DIR}/
+    COMMAND cp -v ${LIMINE_DIR}/limine-uefi-cd.bin ${ISO_DIR}/
+        COMMAND cp -v $<TARGET_FILE:uiaos-kernel> 
 	 	${LIMINE_CONFIG_DIR}/limine.cfg ${LIMINE_DIR}/limine-bios.sys ${LIMINE_DIR}/limine-bios-cd.bin
 		${LIMINE_DIR}/limine-uefi-cd.bin ${ISO_DIR}/
 	COMMAND mkdir -p ${ISO_DIR}/EFI/BOOT

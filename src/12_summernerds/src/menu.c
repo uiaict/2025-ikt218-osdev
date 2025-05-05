@@ -5,8 +5,9 @@
 #include "matrix_effect/matrix.h"
 #include "song/song.h"
 #include "common.h"
-#include "screen.h"
-char key_buffer[255];
+#include "menu.h"
+#include "game/game.h"
+
 void reset_key_buffer();
 
 void shutdown()
@@ -42,9 +43,21 @@ char get_key()
     return key;
 }
 
+void write_to_buffer(char c)
+{
+    for (int i = 0; i < BUFFER_SIZE; i++)
+    {
+        if (key_buffer[i] == '\0')
+        {
+            key_buffer[i] = c;
+            break;
+        }
+    }
+}
+
 void reset_key_buffer()
 {
-    for (int i = 0; i < 255; i++)
+    for (int i = 0; i < BUFFER_SIZE; i++)
     {
         key_buffer[i] = '\0';
         if (key_buffer[i + 1] == '\0')
@@ -54,8 +67,7 @@ void reset_key_buffer()
 
 void print_menu()
 {
-    clear_the_screen();
-    printf("\n");
+    monitor_clear();
     printf("Welcome to the os for summernerds!\n");
     printf("\n");
     printf(" 1. Play Startup Song\n");
@@ -68,12 +80,13 @@ void print_menu()
 
 void handle_menu()
 {
+    EnableBufferTyping();
     while (1)
     {
         print_menu();
         char choice = get_key();
-        printf("%d", choice);
-        printf("\n");
+        putchar(choice);
+        putchar('\n');
 
         switch (choice)
         {
@@ -89,10 +102,11 @@ void handle_menu()
         {
             printf("Starting Matrix Rain effect...\n");
             init_matrix();
+            reset_key_buffer();
             while (1)
             {
                 draw_matrix_frame();
-                sleep_interrupt(100);
+                sleep_interrupt(80);
                 if (key_buffer[0] != '\0')
                     break;
             }
@@ -108,7 +122,9 @@ void handle_menu()
 
         case '4':
         {
-            // call runthegame function when finished to be made
+            // call runthegame function when it is finished
+            runthegame();
+            break;
         }
 
         case '5':

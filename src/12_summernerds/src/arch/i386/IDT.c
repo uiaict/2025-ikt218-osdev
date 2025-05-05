@@ -1,6 +1,8 @@
 #include "i386/descriptorTables.h"
-#include "i386/IRQ.h"
+#include "i386/interruptRegister.h"
 #include "common.h"
+
+// IDT.c
 
 extern void idt_flush(uint32_t);
 
@@ -9,7 +11,7 @@ void init_idt()
   idt_ptr.limit = sizeof(struct IDTEntry) * IDT_entries - 1;
   idt_ptr.base = (uint32_t)&idt;
 
-  for (int a = 0; a < IDT_entries /*eller idt_entries*/; a++)
+  for (int a = 0; a < IDT_entries; a++)
   {
     idt[a].base_low = 0x0000;
     idt[a].base_high = 0x0000;
@@ -21,7 +23,7 @@ void init_idt()
   }
   init_interrupts(); // Initialize the interrupts
   idt_flush((uint32_t)&idt_ptr);
-  idt_load();
+  // idt_load();
 }
 
 void idt_load()
@@ -87,9 +89,6 @@ void init_interrupts()
   set_idt_gate(29, (uint32_t)isr29, 0x08, 0x8E);
   set_idt_gate(30, (uint32_t)isr30, 0x08, 0x8E);
   set_idt_gate(31, (uint32_t)isr31, 0x08, 0x8E);
-
-  // set_idt_gate(128, (uint32_t)isr128, 0x08, 0x8E);
-  // set_idt_gate(177, (uint32_t)isr177, 0x08, 0x8E);
 
   set_idt_gate(32, (uint32_t)irq0, 0x08, 0x8E);
   set_idt_gate(33, (uint32_t)irq1, 0x08, 0x8E);

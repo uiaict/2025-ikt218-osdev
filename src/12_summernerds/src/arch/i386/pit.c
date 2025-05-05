@@ -1,6 +1,5 @@
 #include "i386/descriptorTables.h"
-#include "i386/IRQ.h"
-#include "i386/ISR.h"
+#include "i386/interruptRegister.h"
 #include <kernel/pit.h>
 #include <libc/stdint.h>
 #include <libc/stdio.h>
@@ -16,7 +15,7 @@ void pit_callback(registers_t *regs, void *ctx)
 
 void init_pit()
 {
-    register_irq_handler(IRQ0, pit_callback, NULL); // THIS IS NOT IMPLEMENTED
+    register_irq_handler(IRQ0, pit_callback, NULL);
 
     uint32_t divisor = PIT_BASE_FREQUENCY / TARGET_FREQUENCY;
 
@@ -28,26 +27,27 @@ void init_pit()
     printf("Initialize PIT with %d Hz\n", TARGET_FREQUENCY);
 }
 
+// A safe way to access pit_ticks
 uint32_t get_current_tick()
 {
     return pit_ticks;
 }
 
-// Infinite loop problem
+// Sleeps with high processor power
 void sleep_busy(uint32_t wait_ms)
 {
     uint32_t start_tick = get_current_tick();
-    uint32_t wait_ticks = wait_ms * TICKS_PER_MS;
+    uint32_t wait_ticks = wait_ms;
     uint32_t waited_ticks = 0;
     while ((waited_ticks) < wait_ticks)
     {
-        // while (get_current_tick() == start_tick + waited_ticks)
-        ;
+        while (get_current_tick() == start_tick + waited_ticks)
+            ;
         waited_ticks++;
     }
 }
 
-// Reboots OS problem
+// Sleeps with low processor power
 void sleep_interrupt(uint32_t wait_ticks)
 {
     uint32_t end_tick = get_current_tick() + wait_ticks;
