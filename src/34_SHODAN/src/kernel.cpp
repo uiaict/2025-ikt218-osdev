@@ -5,6 +5,10 @@ extern "C" {
     #include "irq.h"
     #include "memory.h"
     #include "pit.h"
+    #include "song/song.h"
+    #include "song/song_player.h"
+    #include "song/song_data.h"
+    #include "port_io.h" 
 }
 
 extern "C" uint32_t end;
@@ -15,9 +19,9 @@ extern "C" void kernel_main() {
     idt_install();
     init_kernel_memory(&end);
     
-    terminal_initialize();  // ✅ Now VGA memory is safely mapped
+    terminal_initialize();  //  Now VGA memory is safely mapped
     terminal_write("Hello from kernel_main!\n");
-    init_paging();  // 🛠 Enable paging BEFORE touching VGA memory
+    init_paging();  // Enable paging BEFORE touching VGA memory
 
     terminal_write("GDT is installed!\n");
     terminal_write("IRQs remapped!\n");
@@ -34,7 +38,12 @@ extern "C" void kernel_main() {
     void* b = malloc(5678);
     terminal_write("Allocated memory!\n");
 
+    
+
+
+
     __asm__ __volatile__("sti");
+
 
     // Trigger software interrupts (ISRs)
     __asm__ __volatile__("int $0x0");
@@ -47,6 +56,14 @@ extern "C" void kernel_main() {
     terminal_write("Back from interrupts.\n");
     terminal_write("\nPress a key:\n");
     terminal_write("Press keys now:\n");
+    terminal_write("Playing epic melody...\n");
+    Song song = {
+        .notes = epic_melody,
+        .note_count = epic_melody_length
+    };
+    play_song_impl(&song);
+    terminal_write("Finished playing melody.\n");
+    
 
     int counter = 0;
     while (1) {

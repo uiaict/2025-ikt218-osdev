@@ -25,7 +25,7 @@ void terminal_initialize(void) {
     terminal_column = 0;
 }
 
-// 🟡 Scroll screen up by one line
+// Scroll screen up by one line
 static void terminal_scroll() {
     for (size_t y = 1; y < VGA_HEIGHT; y++) {
         for (size_t x = 0; x < VGA_WIDTH; x++) {

@@ -459,6 +459,54 @@ src/multiboot2.asm.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o
 .PHONY : src/multiboot2.asm.o
 
+src/song_data.o: src/song_data.c.o
+.PHONY : src/song_data.o
+
+# target to build an object file
+src/song_data.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/song_data.c.o
+.PHONY : src/song_data.c.o
+
+src/song_data.i: src/song_data.c.i
+.PHONY : src/song_data.i
+
+# target to preprocess a source file
+src/song_data.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/song_data.c.i
+.PHONY : src/song_data.c.i
+
+src/song_data.s: src/song_data.c.s
+.PHONY : src/song_data.s
+
+# target to generate assembly for a file
+src/song_data.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/song_data.c.s
+.PHONY : src/song_data.c.s
+
+src/song_player.o: src/song_player.c.o
+.PHONY : src/song_player.o
+
+# target to build an object file
+src/song_player.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/song_player.c.o
+.PHONY : src/song_player.c.o
+
+src/song_player.i: src/song_player.c.i
+.PHONY : src/song_player.i
+
+# target to preprocess a source file
+src/song_player.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/song_player.c.i
+.PHONY : src/song_player.c.i
+
+src/song_player.s: src/song_player.c.s
+.PHONY : src/song_player.s
+
+# target to generate assembly for a file
+src/song_player.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/song_player.c.s
+.PHONY : src/song_player.c.s
+
 src/terminal.o: src/terminal.c.o
 .PHONY : src/terminal.o
 
@@ -532,6 +580,12 @@ help:
 	@echo "... src/memory.i"
 	@echo "... src/memory.s"
 	@echo "... src/multiboot2.o"
+	@echo "... src/song_data.o"
+	@echo "... src/song_data.i"
+	@echo "... src/song_data.s"
+	@echo "... src/song_player.o"
+	@echo "... src/song_player.i"
+	@echo "... src/song_player.s"
 	@echo "... src/terminal.o"
 	@echo "... src/terminal.i"
 	@echo "... src/terminal.s"

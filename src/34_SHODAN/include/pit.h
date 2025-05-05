@@ -14,7 +14,7 @@
 void init_pit();
 void sleep_busy(uint32_t milliseconds);
 void sleep_interrupt(uint32_t milliseconds);
-void pit_callback();  // 👈 Add this line
-uint32_t get_current_tick();  // 👈 Helpful if not already there
+void pit_callback(); 
+uint32_t get_current_tick();  
 
 #endif

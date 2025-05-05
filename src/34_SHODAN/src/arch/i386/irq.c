@@ -1,7 +1,7 @@
 #include "irq.h"
 #include "port_io.h"
 #include "terminal.h"
-#include "pit.h" // 👈 Include PIT so we can call pit_callback()
+#include "pit.h" //Include PIT so we can call pit_callback()
 
 #define PIC1 0x20
 #define PIC2 0xA0
