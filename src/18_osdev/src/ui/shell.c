@@ -1,70 +1,22 @@
 #include "shell.h"
-
+// Global variables
+static bool shell_running = true;
+volatile bool stop_song_requested = false;
+volatile int color = 15;
 
 Song all_songs[] = {
-    {
-        .name = "mario theme",
-        .notes = music_1,
-        .length = sizeof(music_1) / sizeof(Note)
-    },
-    {
-        .name = "star wars theme",
-        .notes = starwars_theme,
-        .length = sizeof(starwars_theme) / sizeof(Note)
-    },
-    {
-        .name = "battlefield 1942",
-        .notes = battlefield_1942_theme,
-        .length = sizeof(battlefield_1942_theme) / sizeof(Note)
-    },
-    {
-        .name = "music 2",
-        .notes = music_2,
-        .length = sizeof(music_2) / sizeof(Note)
-    },
-    {
-        .name = "music 3",
-        .notes = music_3,
-        .length = sizeof(music_3) / sizeof(Note)
-    },
-    {
-        .name = "music 4",
-        .notes = music_4,
-        .length = sizeof(music_4) / sizeof(Note)
-    },
-    {
-        .name = "music 5",
-        .notes = music_5,
-        .length = sizeof(music_5) / sizeof(Note)
-    },
-    {
-        .name = "music 6",
-        .notes = music_6,
-        .length = sizeof(music_6) / sizeof(Note)
-    }
+    { .name = "mario theme",      .notes = music_1,            .length = sizeof(music_1) / sizeof(Note) },
+    { .name = "star wars theme",  .notes = starwars_theme,     .length = sizeof(starwars_theme) / sizeof(Note) },
+    { .name = "battlefield 1942", .notes = battlefield_1942_theme, .length = sizeof(battlefield_1942_theme) / sizeof(Note) },
+    { .name = "music 2",          .notes = music_2,            .length = sizeof(music_2) / sizeof(Note) },
+    { .name = "music 3",          .notes = music_3,            .length = sizeof(music_3) / sizeof(Note) },
+    { .name = "music 4",          .notes = music_4,            .length = sizeof(music_4) / sizeof(Note) },
+    { .name = "music 5",          .notes = music_5,            .length = sizeof(music_5) / sizeof(Note) },
+    { .name = "music 6",          .notes = music_6,            .length = sizeof(music_6) / sizeof(Note) }
 };
 
-
-// Global flag to track shell running state
-static bool shell_running = true;
-
 void init_shell() {
-    // Cool blue-cyan themed colors
-    monitor_write_color(9, "  ____..--'    ,-----.    .-------.  ____     __  \n");
-    monitor_write_color(9, " |        |  .'  .-,  '.  \\  _(`)_ \\ \\   \\   /  / \n");
-    monitor_write_color(11, " |   .-'  ' / ,-.|  \\ _ \\ | (_ o._)|  \\  _. /  '  \n");
-    monitor_write_color(11, " |.-'.'   /;  \\  '_ /  | :|  (_,_) /   _( )_ .'   \n");
-    monitor_write_color(3, "    /   _/ |  _`,/ \\ _/  ||   '-.-'___(_ o _)'    \n");
-    monitor_write_color(3, "  .'._( )_ : (  '\\_/ \\   ;|   |   |   |(_,_)'     \n");
-    monitor_write_color(1, ".'  (_'o._) \\ `\"/  \\  ) / |   |   |   `-'  /      \n");
-    monitor_write_color(1, "|    (_,_)|  '. \\_/``\".'  /   )    \\      /       \n");
-    monitor_write_color(8, "|_________|    '-----'    `---'     `-..-'        \n");
-    
-    // Title and instructions with bright colors
-    monitor_write_color(11, "              Welcome to OSDEV 18 Kernel             \n\n");
-    
-    monitor_write_color(15, "Type 'song' to play music, 'piano' to open piano, 'game' to play text adventure game.\n");
-    monitor_write_color(7, "Type 'help' for available commands.\n");
+   print_osdev_banner();
 }
 
 void run_shell() {
@@ -83,9 +35,6 @@ void run_shell() {
     monitor_write("\nShell exited.\n");
 }
 
-
-volatile bool stop_song_requested = false;
-
 // Function to check if a key has been pressed while playing
 // This should be called by the song player periodically
 bool should_stop_song() {
@@ -96,7 +45,6 @@ bool should_stop_song() {
 void reset_stop_flag() {
     stop_song_requested = false;
 }
-
 
 void process_command(char* command) {
     if (strcmp(command, "song") == 0) {
@@ -125,6 +73,21 @@ void process_command(char* command) {
     else if (strcmp(command, "game") == 0) {
         run_game();
     } 
+    else if(strcmp(command, "color") == 0){
+        // Display all color options with their numbers
+        display_colors();
+        
+        char selection[128];
+        read_line(selection);
+        int new_color = atoi(selection);
+
+        if (new_color < 1 || new_color > 15) {
+            monitor_write("Invalid selection.\n");
+            return;
+        }
+
+        color = new_color ;
+    }
 
     else if (strcmp(command, "stop") == 0) {
         stop_song_requested = true;
@@ -137,13 +100,7 @@ void process_command(char* command) {
     } 
 
     else if (strcmp(command, "help") == 0) {
-        monitor_write("Available commands:\n");
-        monitor_write("  song - Play a song from the list\n");
-        monitor_write("  piano - Open the piano interface\n");
-        monitor_write("  game - Play the text adventure game\n");
-        monitor_write("  q    - Quit the shell\n");
-        monitor_write("  help - Display this help message\n");
-        monitor_write("  cls  - Clear the screen\n");
+        print_commands();
     }
 
     else if (strcmp(command, "cls") == 0 || strcmp(command, "clear") == 0) {

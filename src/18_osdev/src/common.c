@@ -1,4 +1,4 @@
-// followd https://wiki.osdev.org/Inline_Assembly/Examples#I/O_access for I/O access functions
+// followed https://wiki.osdev.org/Inline_Assembly/Examples#I/O_access for I/O access functions
 #include "../include/libc/common.h"
 #include "libc/stdbool.h"
 
@@ -18,7 +18,6 @@ uint8_t inb(uint16_t port)
                    : "memory");
     return ret;
 }
-
 
 uint16_t inw(uint16_t port)
 {

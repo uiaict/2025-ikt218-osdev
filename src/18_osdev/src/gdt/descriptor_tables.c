@@ -1,4 +1,5 @@
-#include "../../include/libc/common.h"
+// adopted from jamesM's kernel development tutorials the GDT and IDT: https://archive.is/L3pyA
+
 #include "descriptor_tables.h"
 
 // assembly functions
@@ -12,6 +13,7 @@ static void gdt_set_gate(int32_t, uint32_t, uint32_t, uint8_t , uint8_t);
 static void init_idt();
 static void idt_set_gate(uint8_t, uint32_t, uint16_t, uint8_t);
 
+// gdt and idt 
 gdt_entry_t gdt_entries[5];
 gdt_ptr_t   gdt_ptr;
 idt_entry_t idt_entries[256];
@@ -31,8 +33,8 @@ void init_descriptor_tables()
 // inits gdt with set gate and also sets the gdtptr values
 static void init_gdt()
 {
-   gdt_ptr.limit = (sizeof(gdt_entry_t) * 5) - 1;
-   gdt_ptr.base  = (uint32_t)&gdt_entries;
+   gdt_ptr.limit = (sizeof(gdt_entry_t) * 5) - 1; // 5 entries
+   gdt_ptr.base  = (uint32_t)&gdt_entries; // point to gdt_entries
 
    gdt_set_gate(0, 0, 0, 0, 0);                // Null segment
    gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF); // Code segment
@@ -43,11 +45,10 @@ static void init_gdt()
    gdt_flush((uint32_t)&gdt_ptr);
 }
 
-
 // Idt:
 static void init_idt()
 {
-   idt_ptr.limit = sizeof(idt_entry_t) * 256 -1;
+   idt_ptr.limit = sizeof(idt_entry_t) * 256 -1; // 256 entries
    idt_ptr.base  = (uint32_t)&idt_entries;
 
    // dont have memset so lets just manually clear the IDT
@@ -105,7 +106,7 @@ static void init_idt()
    idt_set_gate(30,  (uint32_t)isr30,  0x08, 0x8E);
    idt_set_gate(31,  (uint32_t)isr31,  0x08, 0x8E);
 
-   // Set the IRQ gates
+   // Set the IRQ gates 0-15
    idt_set_gate(32, (uint32_t)irq0, 0x08, 0x8E);
    idt_set_gate(33, (uint32_t)irq1, 0x08, 0x8E);
    idt_set_gate(34, (uint32_t)irq2, 0x08, 0x8E);

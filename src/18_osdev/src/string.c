@@ -1,5 +1,5 @@
-#include "../include/libc/stddef.h"
-#include "../include/libc/string.h"
+#include "libc/stddef.h"
+#include "libc/string.h"
 
 size_t strlen(const char* str) {
     size_t len = 0;
@@ -14,7 +14,6 @@ int strcmp(const char *s1, const char *s2) {
     }
     return *(const unsigned char*)s1 - *(const unsigned char*)s2;
 }
-
 
 int atoi(const char *str) {
     int result = 0;

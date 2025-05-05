@@ -1,6 +1,4 @@
 #include "memory.h"
-#include "libc/stdint.h"
-#include "libc/monitor.h"
 
 // stores the top of the heap
 static uint8_t* heap_ptr = 0;

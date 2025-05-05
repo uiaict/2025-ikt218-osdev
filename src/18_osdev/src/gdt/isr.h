@@ -1,5 +1,11 @@
-#include "../../include/libc/common.h"
-// this is just done to make it easier, so that we dont have to remember irq numbers 
+// adopted from jamesM's kernel development tutorials the GDT and IDT: https://archive.is/L3pyA
+#ifndef ISR_H
+#define ISR_H
+
+#include "libc/common.h"
+#include "libc/monitor.h"
+
+// defining irq numbers to make life easier
 #define IRQ0  32  
 #define IRQ1  33  
 #define IRQ2  34  
@@ -27,3 +33,5 @@ typedef struct registers
 
 typedef void (*isr_t)(registers_t);
 void register_interrupt_handler(uint8_t n, isr_t handler);
+
+#endif

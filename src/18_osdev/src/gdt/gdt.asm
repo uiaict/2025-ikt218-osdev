@@ -1,3 +1,5 @@
+; adopted from jamesM's kernel development tutorials the GDT and IDT: https://archive.is/L3pyA
+
 [GLOBAL gdt_flush]    ; Allows the C code to call gdt_flush().
 
 gdt_flush:

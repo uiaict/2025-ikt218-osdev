@@ -1,4 +1,4 @@
-#include "../include/libc/system.h"
+#include "libc/system.h"
 
 __attribute__((noreturn)) void panic(const char*);
 void* _impure_ptr = NULL;

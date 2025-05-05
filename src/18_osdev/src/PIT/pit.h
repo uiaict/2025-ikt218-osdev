@@ -2,6 +2,8 @@
 #define PIT_H
 
 #include "libc/stdint.h"
+#include "libc/common.h"
+#include "../gdt/isr.h"
 
 // PIT (Programmable Interval Timer) related macros
 #define PIT_CMD_PORT 0x43

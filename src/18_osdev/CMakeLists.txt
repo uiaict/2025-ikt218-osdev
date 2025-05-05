@@ -75,6 +75,7 @@ add_executable(uiaos-kernel
 	src/ui/shell.c
 	src/piano/piano.c
 	src/game/game.c
+	src/ui/uiElements.c
 )
 
 # Include directories for the kernel target

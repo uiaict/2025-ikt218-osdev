@@ -1,4 +1,3 @@
-
 #ifndef UIAOS_FREQUENCIES_H
 #define UIAOS_FREQUENCIES_H
 

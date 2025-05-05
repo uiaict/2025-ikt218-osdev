@@ -2,28 +2,19 @@
 #define SONGPLAYER_H
 
 #include "song.h"
+#include "libc/common.h"
+#include "libc/stdio.h"
+#include "libc/monitor.h"
+#include "libc/system.h"
+#include "../PIT/pit.h"
+#include "../memory/memory.h"
 
-// Function to enable PC speaker
 void enable_speaker();
-
-// Function to disable PC speaker
 void disable_speaker();
-
 void stop_sound();
-
-// Function to play a single sound frequency
 void play_sound(uint32_t frequency);
-
-// Function to stop sound
 void stop_sound();
-
-// Function to play an entire song
 void play_song(Song *song);
-
-// Function to create a song player object
-SongPlayer* create_song_player();
-
-
 
 extern volatile bool stop_song_requested;
 

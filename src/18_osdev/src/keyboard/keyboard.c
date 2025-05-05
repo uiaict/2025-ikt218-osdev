@@ -1,10 +1,5 @@
-// http://www.osdever.nsavet/bkerndev/Docs/keyboard.htm (brans kernel dev)
+// adopted from http://www.osdever.net/bkerndev/Docs/keyboard.htm (brans kernel dev)
 #include "keyboard.h"
-#include "libc/stdbool.h"
-#include "libc/common.h"
-#include "../piano/piano.h"
-#include "../song/SongPlayer.h"
-#include "../ui/shell.h"
 
 #define INPUT_BUFFER_SIZE 128
 static char input_buffer[INPUT_BUFFER_SIZE];
@@ -13,8 +8,7 @@ static bool line_ready = false;
 
 extern bool piano_mode_enabled;
 
-
-
+// standard keyboard layout for us keyboards
 unsigned char kbdus[128] =
 {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
@@ -55,12 +49,9 @@ unsigned char kbdus[128] =
     0,	/* All other keys are undefined */
 };	
 
-
 void read_line(char* buffer) {
   // Wait until a full line is entered (user pressed Enter)
-  while (!line_ready) {
-      // You can add a CPU halt or yield here if needed
-  }
+  while (!line_ready);
 
   // Copy input to provided buffer
   int i;
@@ -73,23 +64,21 @@ void read_line(char* buffer) {
   buffer_index = 0; // Reset buffer index for next line
 }
 
-
-// funksjon som initialiserer keyboard. keyboard er assigna til "irq1" så vi binder keyboard_handler funksjonen til den med register_interrupt_handler
+// initializing keyboard. keyboard is normally assigned to irq1. Here we bind keyboard_handler() to irq1 with register_interrupt_handler
 void init_keyboard() {
     monitor_write("Initializing keyboard\n");
     register_interrupt_handler(IRQ1, &keyboard_handler);
 }
 
-/* Handles the keyboard interrupt - kan legge til handling for andre ting som f.eks backspace ++ */
+// Handles the keyboard interrupt
 void keyboard_handler(registers_t regs)
 {
-    /* Read from the keyboard's data buffer*/
+    // Read from the keyboard's data buffer
     unsigned char scancode = inb(0x60);
 
-    // checks if were in piano mode
+    // checks if we are in piano mode
     if (piano_mode_enabled) {
-        if (scancode & 0x80) {
-            // Ignore key releases
+        if (scancode & 0x80) { // Ignore key releases
             stop_sound(); // stops the speaker
             return;
         }
@@ -108,33 +97,31 @@ void keyboard_handler(registers_t regs)
     *  set, that means that a key has just been released */
     if (scancode & 0x80)
     {
-        /* We don't handle key releases right now */
+        /* We don't handle key releases */
         return;
     }
     else
     {
-
         /* Check for ESC key (scancode 0x01) to stop music */
         if (scancode == 0x01) {
             stop_song_requested = true;  // Set the flag to stop any playing song
             return;
         }
-        /* Check for backspace first - special handling */
+        /* Check for backspace first*/
         if (scancode == 0x0E) {
             if (buffer_index > 0) {
-                buffer_index--;
-                monitor_remove_char();
+                buffer_index--; // remove char from buffer index
+                monitor_remove_char(); // remove char from display
             }
             return;
         }
-        
 
         /* For other keys, get the character */
         char c = kbdus[scancode];
         
         if (c) {
             // Echo character to screen
-            monitor_put(c,15);
+            monitor_put(c,color);
             
             // Handle special characters
             if (c == '\n') {

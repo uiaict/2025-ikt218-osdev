@@ -1,6 +1,6 @@
-#include "../../include/libc/common.h"
+// adopted from jamesM's kernel development tutorials the GDT and IDT: https://archive.is/L3pyA
+
 #include "isr.h"
-#include "../../include/libc/monitor.h"
 
 isr_t interrupt_handlers[256];
 

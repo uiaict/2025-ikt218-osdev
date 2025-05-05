@@ -1,10 +1,4 @@
 #include "piano.h"
-#include "../song/SongPlayer.h"  // for play_sound(), stop_sound()
-#include "../song/frequencies.h"
-#include "libc/monitor.h"
-#include "libc/stdbool.h"
-
-
 
 void handle_piano_key(unsigned char scancode) {
     switch (scancode) {
@@ -19,7 +13,6 @@ void handle_piano_key(unsigned char scancode) {
         default: break;
     }
 }
-
 
 void init_piano() {
     // Optional: print instructions to screen

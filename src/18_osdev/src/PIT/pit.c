@@ -1,10 +1,6 @@
 #include "pit.h"
-#include "../gdt/isr.h"
-#include "libc/common.h"
-#include "libc/stdint.h"
 
 static volatile uint64_t tick_count = 0;
-
 
 void pit_callback(registers_t regs) {
     tick_count++;
@@ -28,7 +24,6 @@ uint64_t get_tick() {
     return tick_count;
 }
 
-
 void sleep_interrupt(uint32_t milliseconds) {
     uint64_t end_tick = get_tick() + (milliseconds * TICKS_PER_MS);
 
@@ -36,7 +31,6 @@ void sleep_interrupt(uint32_t milliseconds) {
         asm volatile("sti\n\thlt");
     }
 }
-
 
 void sleep_busy(uint32_t milliseconds) {
     uint64_t start_tick = get_tick();
@@ -46,7 +40,6 @@ void sleep_busy(uint32_t milliseconds) {
         // do nothing (busy wait)
     }
 }
-
 
 void test_pit_timing() {
     monitor_write("Starting PIT timing tests...\n");

@@ -1,10 +1,4 @@
-#include "song.h"
-#include "../PIT/pit.h"
-#include "libc/common.h"
-#include "libc/stdio.h"
-#include "libc/monitor.h"
-#include "libc/system.h"
-#include "../memory/memory.h"
+// implemented from given pseudocode
 #include "SongPlayer.h"
 
 void enable_speaker() {
@@ -82,15 +76,6 @@ void play_song_impl(Song *song) {
     disable_speaker();
     
     monitor_write(stop_song_requested ? "Song stopped.\n" : "Song finished!\n");
-}
-
-
-SongPlayer* create_song_player() {
-    SongPlayer* player = (SongPlayer*)malloc(sizeof(SongPlayer));
-    if (player) {
-        player->play_song = play_song_impl;
-    }
-    return player;
 }
 
 void play_song(Song *song) {

@@ -1,19 +1,11 @@
 #include "paging.h"
-#include "libc/stdint.h"
-#include "libc/string.h"
-
-
 
 #define PAGE_DIRECTORY_ENTRIES 1024
 #define PAGE_TABLE_ENTRIES 1024
 #define PAGE_SIZE 4096
 
-
 __attribute__((aligned(4096))) uint32_t page_directory[PAGE_DIRECTORY_ENTRIES];
 __attribute__((aligned(4096))) uint32_t first_page_table[PAGE_TABLE_ENTRIES];
-
-
-
 
 // identity map the first 4MB of memory, aka setting virtual = physical
 void init_paging() {
@@ -32,10 +24,8 @@ void init_paging() {
     // load the page directory into CR3
     asm volatile("mov %0, %%cr3" : : "r"(page_directory)); 
 
-
     uint32_t cr0;
     asm volatile("mov %%cr0, %0" : "=r"(cr0));
     cr0 |= 0x80000000; // set paging bit (bit 31)
     asm volatile("mov %0, %%cr0" : : "r"(cr0));
-    }
-
+}

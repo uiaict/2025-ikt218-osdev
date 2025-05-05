@@ -2,8 +2,8 @@
 #define SONG_H
 
 #include "libc/string.h"
-#include "frequencies.h"
 #include "libc/system.h"
+#include "frequencies.h"
 
 // Define a struct to represent a single musical note
 typedef struct {
@@ -25,7 +25,6 @@ typedef struct {
 
 // Function prototype for creating a new SongPlayer instance
 // Returns a pointer to a newly created SongPlayer object
-SongPlayer* create_song_player();
 void play_song_impl(Song *song) ;
 
 static Note music_1[] = {

@@ -1,5 +1,10 @@
+// adopted from jamesM's kernel development tutorials the GDT and IDT: https://archive.is/L3pyA
+
 #ifndef DESCRIPTOR_TABLES_H
 #define DESCRIPTOR_TABLES_H
+
+#include "../../include/libc/common.h"
+
 // struct for gdt entry
 struct gdt_entry_struct
 {

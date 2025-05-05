@@ -8,7 +8,6 @@ static uint16_t* const video_memory = (uint16_t*) 0xB8000;
 static size_t cursor_row = 0;
 static size_t cursor_col = 0;
 
-
 void move_cursor() {
     uint16_t cursor_location = cursor_row * VGA_WIDTH + cursor_col;
 
@@ -87,7 +86,6 @@ void monitor_remove_char(){
     uint16_t* location = (uint16_t*)video_memory + (cursor_row * VGA_WIDTH + cursor_col);
     *location = ' ' ;// Clear the character
     move_cursor(); // Update hardware cursor
-
 }
 
 void monitor_write(const char* str) {
@@ -103,7 +101,6 @@ void monitor_write_color(int color, const char* str){
     {
         monitor_put(str[i++], color);
     }
-    
 }
 
 void monitor_write_dec(uint32_t n) {

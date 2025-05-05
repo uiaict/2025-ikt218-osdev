@@ -4,6 +4,7 @@
 #include "libc/string.h"
 #include "libc/monitor.h"
 #include "libc/stdbool.h"
+#include "uiElements.h"
 #include "../keyboard/keyboard.h"
 #include "../song/song.h" // Include your songs header
 #include "../piano/piano.h"
@@ -20,6 +21,7 @@ void run_shell();
 void process_command(char* command);
 
 extern volatile bool stop_song_requested;
+extern volatile int color;
 
 // Function to check if a key has been pressed while playing
 bool should_stop_song();

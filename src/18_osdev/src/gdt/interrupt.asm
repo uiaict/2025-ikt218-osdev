@@ -1,3 +1,4 @@
+; adopted from jamesM's kernel development tutorials the GDT and IDT: https://archive.is/L3pyA
 
 ; macros for no error code, errorcode and irq
 %macro ISR_NOERRCODE 1  
@@ -26,7 +27,7 @@
     jmp irq_common_stub
 %endmacro
 
-; ISRs 0 - 31
+; ISRs 0 - 31 and what they are for
 ISR_NOERRCODE 0    ; Divide-by-zero
 ISR_NOERRCODE 1    ; Debug
 ISR_NOERRCODE 2    ; Non-maskable interrupt
@@ -82,7 +83,7 @@ IRQ  15,    47   ; Secondary IDE
 [EXTERN isr_handler]
 [EXTERN irq_handler]
 
-; This is our common ISR stub. It saves the processor state, sets
+; common ISR stub. It saves the processor state, sets
 ; up for kernel mode segments, calls the C-level fault handler,
 ; and finally restores the stack frame.
 isr_common_stub:
@@ -110,7 +111,7 @@ isr_common_stub:
   sti
   iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
 
-; This is our common IRQ stub. It saves the processor state, sets
+; common IRQ stub. It saves the processor state, sets
 ; up for kernel mode segments, calls the C-level fault handler,
 ; and finally restores the stack frame.
 irq_common_stub:
