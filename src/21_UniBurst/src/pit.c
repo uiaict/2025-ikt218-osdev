@@ -3,11 +3,11 @@
 #include "io.h"
 
 
-volatile uint32_t tick = 0;                      // The number of PIT ticks
+volatile uint32_t tick = 0;                      
 
 // The PIT handler
 void pitHandler(registers_t regs) {
-    tick++;                                      // Increment the number of ticks
+    tick++;                                      
 }
 
 // Returns the current tick
@@ -18,61 +18,61 @@ uint32_t getCurrentTick() {
 // Initializes the PIT
 void initPit() {
 
-    outb(PIT_CMD_PORT, 0x36);                    // Send the command byte to the PIT
-    outb(PIT_CHANNEL0_PORT, DIVIDER & 0xFF);     // Low byte of divisor
-    outb(PIT_CHANNEL0_PORT, DIVIDER >> 8);       // High byte of divisor
+    outb(PIT_CMD_PORT, 0x36);                                      
+    outb(PIT_CHANNEL0_PORT, (uint8_t)(DIVIDER & 0xFF));            
+    outb(PIT_CHANNEL0_PORT, (uint8_t)((DIVIDER >> 8) & 0xFF));     
 
-    registerInterruptHandler(IRQ0, &pitHandler); // Register the PIT handler
+    registerInterruptHandler(IRQ0, &pitHandler); 
 }
 
 // These sleep functions are based on the pseudo code provided by Per-Arne Andersen at https://perara.notion.site/Assignment-4-Memory-and-PIT-83eabc342fd24b88b00733a78b5a86e0 
 
 // Sleeps using busy-waiting
 void sleepBusy(uint32_t ms) {
-    uint32_t startTick = getCurrentTick();      // Get the current tick
-    uint32_t ticksToWait = ms * TICKS_PER_MS;   // Calculate the number of ticks to wait
-    uint32_t endTick = startTick + ticksToWait; // Calculate the end tick
+    uint32_t startTick = getCurrentTick();     
+    uint32_t ticksToWait = ms * TICKS_PER_MS;   
+    uint32_t endTick = startTick + ticksToWait; 
 
-    if (endTick < startTick) {                  // If an overflow is expected
+    if (endTick < startTick) {                  
         
-        while (getCurrentTick() >= startTick) { // Sleep until the overflow
-            // Do nothing (busy wait)
+        while (getCurrentTick() >= startTick) { 
+            // Do nothing 
         }
-        while (getCurrentTick() < endTick) {    // Sleep until the end tick after the overflow
-            // Do nothing (busy wait)
+        while (getCurrentTick() < endTick) {    
+            // Do nothing 
         }
-    } else {                                    // If no overflow is expected
+    } else {                                    
         while (getCurrentTick() < endTick) {
-            // Do nothing (busy wait)
+            // Do nothing 
         }
     }
 }
 
 // Sleeps using interrupts
 void sleepInterrupt(uint32_t ms) {
-    uint32_t startTick = getCurrentTick();      // Get the current tick
-    uint32_t ticksToWait = ms * TICKS_PER_MS;   // Calculate the number of ticks to wait
-    uint32_t endTick = startTick + ticksToWait; // Calculate the end tick
+    uint32_t startTick = getCurrentTick();      
+    uint32_t ticksToWait = ms * TICKS_PER_MS;   
+    uint32_t endTick = startTick + ticksToWait; 
 
-    if (endTick < startTick) {                         // If an overflow is expected
+    if (endTick < startTick) {                         
         
-        while (getCurrentTick() >= startTick) {        // Sleep until the overflow
+        while (getCurrentTick() >= startTick) {        
             asm volatile (
-                "sti\n\t"                              // Enable interrupts
-                "hlt\n\t"                              // Halt the CPU until the next interrupt
+                "sti\n\t"                              
+                "hlt\n\t"                              
             );
         }
-        while (getCurrentTick() < endTick) {           // Sleep until the end tick after the overflow
+        while (getCurrentTick() < endTick) {           
             asm volatile (
-                "sti\n\t"                              // Enable interrupts
-                "hlt\n\t"                              // Halt the CPU until the next interrupt
+                "sti\n\t"                            
+                "hlt\n\t"                             
             );
         }
-    } else {                                           // If no overflow is expected
+    } else {                                          
         while (getCurrentTick() < endTick) {
             asm volatile (
-                "sti\n\t"                              // Enable interrupts
-                "hlt\n\t"                              // Halt the CPU until the next interrupt
+                "sti\n\t"                              
+                "hlt\n\t"                              
             );
         }
     }

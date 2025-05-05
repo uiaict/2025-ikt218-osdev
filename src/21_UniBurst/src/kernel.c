@@ -13,6 +13,8 @@
 #include "memory.h"
 #include "kernelutils.h"
 #include "pit.h"
+#include "songPlayer/frequencies.h"
+
 
 extern uint32_t end; 
 
@@ -47,7 +49,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     hex32_to_str(test_buffer, test_value);
     printf("Direct test: %s\n", test_buffer);
     
-    char strTest[] = "Hello World!";                // Creates test variables to be used for printf testing
+    char strTest[] = "Hello World!";               
     int intTest = 123;
     unsigned int uintTest = 1234567890;
     float floatTest = 3.14;
