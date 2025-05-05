@@ -1,5 +1,6 @@
 #include "shell.h"
 
+
 Song all_songs[] = {
     {
         .name = "mario theme",
@@ -48,7 +49,20 @@ Song all_songs[] = {
 static bool shell_running = true;
 
 void init_shell() {
-    monitor_write("Simple Shell Ready. Type 'song' to play music, 'piano' to open piano.\n");
+    monitor_write("  ____..--'    ,-----.    .-------.  ____     __  \n");
+    monitor_write(" |        |  .'  .-,  '.  \\  _(`)_ \\ \\   \\   /  / \n");
+    monitor_write(" |   .-'  ' / ,-.|  \\ _ \\ | (_ o._)|  \\  _. /  '  \n");
+    monitor_write(" |.-'.'   /;  \\  '_ /  | :|  (_,_) /   _( )_ .'   \n");
+    monitor_write("    /   _/ |  _`,/ \\ _/  ||   '-.-'___(_ o _)'    \n");
+    monitor_write("  .'._( )_ : (  '\\_/ \\   ;|   |   |   |(_,_)'     \n");
+    monitor_write(".'  (_'o._) \\ `\"/  \\  ) / |   |   |   `-'  /      \n");
+    monitor_write("|    (_,_)|  '. \\_/``\".'  /   )    \\      /       \n");
+    monitor_write("|_________|    '-----'    `---'     `-..-'        \n");
+    
+
+    monitor_write("              Welcome to OSDEV 18 Kernel             \n\n");
+
+    monitor_write("Type 'song' to play music, 'piano' to open piano, 'game' to play text adventure game.\n");
     monitor_write("Type 'help' for available commands.\n");
 }
 
@@ -107,6 +121,14 @@ void process_command(char* command) {
     else if (strcmp(command, "piano") == 0) {
         init_piano();
     } 
+    else if (strcmp(command, "game") == 0) {
+        run_game();
+    } 
+
+    else if (strcmp(command, "stop") == 0) {
+        stop_song_requested = true;
+        monitor_write("Stopping song...\n");
+    }
     
     else if (strcmp(command, "q") == 0 || strcmp(command, "quit") == 0 || strcmp(command, "exit") == 0) {
         monitor_write("Exiting shell...\n");
@@ -116,6 +138,8 @@ void process_command(char* command) {
     else if (strcmp(command, "help") == 0) {
         monitor_write("Available commands:\n");
         monitor_write("  song - Play a song from the list\n");
+        monitor_write("  piano - Open the piano interface\n");
+        monitor_write("  game - Play the text adventure game\n");
         monitor_write("  q    - Quit the shell\n");
         monitor_write("  help - Display this help message\n");
         monitor_write("  cls  - Clear the screen\n");
