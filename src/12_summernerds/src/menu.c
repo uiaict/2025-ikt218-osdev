@@ -29,24 +29,23 @@ void shutdown()
 void print_menu()
 {
     monitor_clear();
-    monitor_setcolor(13);
+    monitor_setcolor(VGA_COLOR_LIGHT_MAGENTA);
     printf(" "
-"       __ _.--..--._ _\n"
-"     .-' _/   _/\\_   \\_'-.\n"
-"    |__ /   _/\\__/\\_   \\__|\n"
-"       |___/\\_\\__/  \\___|\n"
-"              \\__/\n"
-"              \\__/\n"
-"               \\__/\n"
-"                \\__/\n"
-"             ____\\__/___\n"
-"       . - '             ' -.\n"
-"      /                      \\ \n");
-    monitor_setcolor(9);
+           "       __ _.--..--._ _\n"
+           "     .-' _/   _/\\_   \\_'-.\n"
+           "    |__ /   _/\\__/\\_   \\__|\n"
+           "       |___/\\_\\__/  \\___|\n"
+           "              \\__/\n"
+           "              \\__/\n"
+           "               \\__/\n"
+           "                \\__/\n"
+           "             ____\\__/___\n"
+           "       . - '             ' -.\n"
+           "      /                      \\ \n");
+    monitor_setcolor(VGA_COLOR_LIGHT_BLUE);
     printf("~~~~~~~  ~~~~~ ~~~~~  ~~~ ~~~  ~~~~~\n");
-    
 
-    monitor_setcolor(12);
+    monitor_setcolor(VGA_COLOR_LIGHT_CYAN);
     printf("Welcome to the os for summernerds!\n"
            "\n"
            " 1. Play Startup Song\n"
@@ -105,10 +104,8 @@ void handle_menu()
         {
             DisableBufferTyping();
             monitor_clear();
-            printf("Press 'Esc' to exit typing\n");
+            printf("\nPress 'Esc' to exit typing\n");
             EnableTyping();
-
-            printf("\n\n\nPress ESC to exit\n\n");
 
             while (true)
             {

@@ -72,6 +72,10 @@ int main(uint32_t magic, uint32_t mb_info_addr)
     void *mem2 = malloc(4321);
     void *mem3 = malloc(3331);
 
+    free(mem1);
+    free(mem2);
+    free(mem3);
+
     // print if we get any problem with allocating memory
     // printf("Allocated memory blocks at: 0x%x, 0x%x, 0x%x\n", mem1, mem2, mem3);
 
