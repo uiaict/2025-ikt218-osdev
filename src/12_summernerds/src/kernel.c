@@ -9,14 +9,8 @@
 #include "libc/stdbool.h"
 #include "song/song.h"
 #include "common.h"
-<<<<<<< HEAD
-#include <screen.h>
-#include "i386/ISR.h"
-#include <kheap.h>
-#include <paging.h>
-=======
-#include "menu.h"
->>>>>>> e55351e9892d3940a5d0172130a1facbccec447c
+
+static char key_buffer[BUFFER_SIZE];
 
 extern uint32_t end; // Linker symbol marking the end of kernel
 
@@ -52,20 +46,6 @@ int main(uint32_t magic, uint32_t mb_info_addr)
 
     // EnableTyping(); // Enables free typing
     handle_menu(); // opens the menu
-
-    while (true)
-    {
-<<<<<<< HEAD
-        printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);
-
-        printf("[%d]: Sleeping with busy-waiting (HIGH CPU)...\n", counter);
-        sleep_busy(1000);
-        printf("[%d]: Slept using busy-waiting.\n", counter++);
-=======
->>>>>>> e55351e9892d3940a5d0172130a1facbccec447c
-    }
 
     // Usually shouldnt get here, since it then quits kernel main.
     return 0;
