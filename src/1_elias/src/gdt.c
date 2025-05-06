@@ -1,7 +1,9 @@
 #include "libc/gdt.h"
+#include "libc/idt.h"
 #include "libc/util.h"
 
 extern void gdt_flush(addr_t);
+extern void tss_flush();
 
 struct gdt_entry_struct gdt_entries[6];
 struct gdt_ptr_struct gdt_ptr;
