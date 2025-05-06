@@ -13,7 +13,8 @@ void reset_key_buffer();
 
 void shutdown()
 {
-
+    sleep_interrupt(500);
+    monitor_clear();
     outb(0x604, 0x20);
     outb(0xB004, 0x20);
 
@@ -47,6 +48,7 @@ void print_menu()
            " 5. Play pong.\n"
            " 6. Exit\n"
            "\n");
+    monitor_setcolor(11);
 }
 
 void handle_menu()
@@ -95,6 +97,7 @@ void handle_menu()
         {
             DisableBufferTyping();
             monitor_clear();
+            printf("Press 'Esc' to exit typing\n");
             EnableTyping();
 
             printf("\n\n\nPress ESC to exit\n\n");
