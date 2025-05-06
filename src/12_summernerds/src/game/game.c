@@ -55,7 +55,7 @@ int floor(float num)
 typedef uint16_t uint;
 
 // global variables, does not use #define because they can be changed with arguments
-uint ROWS = 25,
+uint ROWS = 24,
      COLS = 80,
 
      PADDLE_X = 2,
@@ -64,14 +64,14 @@ uint ROWS = 25,
      BALL_SIZE = 1,
 
      BOT_FOW = 6,          // bot fog of war. higher means easier opponent
-    UPDATE_FREQUENCY = 50, // game status updates every X frames (default)
+    UPDATE_FREQUENCY = 20, // game status updates every X frames (default)
                            // affects: bots, ball
     _UPDATE_FREQUENCY;     // changed throughout game
 
 unsigned long long updates = 0;
 
 bool pvp = false,
-     eve = false,
+     eve = true,
      debug = false;
 
 // structures
@@ -319,7 +319,7 @@ int run_pong(int argc, char *argv[])
         {
             return 0;
         }
-        sleep_interrupt(100); // minimum 1ms delay
+        sleep_interrupt(50); // minimum 1ms delay
     }
     return 0;
 }
