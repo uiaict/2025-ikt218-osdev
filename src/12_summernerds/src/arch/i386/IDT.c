@@ -6,9 +6,6 @@ extern void idt_flush(uint32_t);
 
 void init_idt()
 {
-  extern void irq1(); // legg til på toppen hvis ikke definert
-  set_idt_gate(32 + 1, (uint32_t)irq1, 0x08, 0x8E); // IRQ1 = int 33
-
   idt_ptr.limit = sizeof(struct IDTEntry) * IDT_entries - 1;
   idt_ptr.base = (uint32_t)&idt;
   idt_ptr.limit = sizeof(struct idt_entry) * IDT_ENTRIES - 1;
