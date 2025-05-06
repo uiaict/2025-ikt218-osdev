@@ -18,43 +18,36 @@ extern size_t music_1_length;
 
 bool memory_initialized = false;
 
-
+// Displays ASCII art and menu
 void show_ascii_homepage() {
-    clear_screen();  
+    clear_screen();
 
-    // John Pork ASCII-art 
-    printf("\n\n");
-    printf("               +#*=====-=--=+++      \n");
-    printf("             .+*==+=+===++**+=-@%%    \n");
-    printf("            -@.=+++=====--::::  @@   \n");
-    printf("           :@@ .   .-=--:....   +@%%  \n");
-    printf("          %%@  *##*=--:+##+--*@  #@@ \n");
-    printf("          @..-  =@%%-:-=#@@@@@@%. @@ \n");
-    printf("          @ -@@@@@:.--..:%#-. .:  @  \n");
-    printf("          @              ...:--=+ %% \n");
-    printf("          @ -:=-  =+#=:   -+=***=. .\n");
-    printf("          @.+=- ::%%.:-@@-+  .+*#.*  \n");
-    printf("          :::-=:-@@@:.@%%-+ :@=--.== \n");
-    printf("          *+:-+--   ::..-@@+.:=::+= \n");
-    printf("          *=:-+.+@@@@@@@%%*  :++--=%%\n");
-    printf("          :#-:=  ...-::--....--.:#@ \n");
-    printf("           @%%--:..-.. . .::-:+=+#@  \n");
-    printf("            =@#+=*++*@###%%%*===@@  \n");
-    printf("             +#==-++**#*++====*@@   \n");
-    printf("              @%%###*===++##%%@@@    \n");
-    printf(" John Pork     @%%*-=+*#*+-:-@@      \n");
-    
-    // Meny
-    printf("\n");
-    printf("    [1] Show assignment print/test functions\n");
-    printf("    [2] Keyboard Piano\n");
-    printf("    [3] Stop song\n");
-    printf("    [4] Play song\n");
-    printf("\nCurrently playing: Anthem of the Soviet Union");
-    printf("\nType your choice and press Enter: ");
+    // Main UI with menu 
+    printf("---------------------------------------------------------------------------------\n"); 
+    printf("                                                                              \n"); 
+    printf("  [1] Show assignment print/test functions              +#*=====-=--=+++      \n");
+    printf("  [2] Keyboard Piano                                  .+*==+=+===++**+=-@%%    \n");
+    printf("  [3] Stop song                                     -@.=+++=====--::::  @@   \n");
+    printf("  [4] Play song                                   :@@ .   .-=--:....   +@%%  \n");
+    printf("  Currently playing:                             %%@  *##*=--:+##+--*@  #@@ \n");
+    printf("  Anthem of the Soviet Union                      @..-  =@%%-:-=#@@@@@@%. @@ \n");
+    printf("  Type your choice and press Enter:             @ -@@@@@:.--..:%#-. .:  @  \n");
+    printf("                                                @              ...:--=+ %% \n");
+    printf("                                                 @ -:=-  =+#=:   -+=***=. .\n");
+    printf("                                                 @.+=- ::%%.:-@@-+  .+*#.*  \n");
+    printf("                                                 :::-=:-@@@:.@%%-+ :@=--.== \n");
+    printf("                                                 *+:-+--   ::..-@@+.:=::+= \n");
+    printf("               Group 19.                         *=:-+.+@@@@@@@%%*  :++--=%%\n");
+    printf("                                                 :#-:=  ...-::--....--.:#@ \n");
+    printf("                                                   @%%--:..-.. . .::-:+=+#@  \n");
+    printf("                                                   =@#+=*++*@###%%%*===@@  \n");
+    printf("                                                    +#==-++**#*++====*@@   \n");
+    printf("                                                     @%%###*===++##%%@@@    \n");
+    printf("  John Pork                                           @%%*-=+*#*+-:-@@      \n");
+    printf("---------------------------------------------------------------------------------\n"); 
 }
 
-
+// Assignment test screen: runs malloc, paging, and sleep tests
 void show_assignment_output(uint32_t magic, void* mb_info_addr) {
     printf("\n--- Assignment Output ---\n");
 
@@ -88,11 +81,21 @@ void show_assignment_output(uint32_t magic, void* mb_info_addr) {
         printf("[%d] Done interrupt sleep.\n", i);
     }
 
-    printf("\nReturning to main menu...\n");
-    sleepBusy(1000);
+    printf("Press q to return to homepage.\n");
+    bufferIndex = 0;
+    
+    while (1) {
+        if (bufferIndex > 0) {
+            char input = charBuffer[0];
+            bufferIndex = 0;
+    
+            if (input == 'q') return;
+        }
+        asm volatile("hlt");
+    }
 }
 
-
+// Piano mode – press keys to play notes
 void piano() {
     clear_screen();
     printf("\n--- Piano Keyboard ---\n");
@@ -130,17 +133,17 @@ void piano() {
     }
 }
 
+// Kernel entry point
 void kmain(uint32_t magic, void* mb_info_addr) {
-    // Minimal init for homepage
     initDesTables();
     initKeyboard();
     initPit();
 
-    // Start music in background
+    // Start background music
     Song song = { music_1, music_1_length };
     play_song(&song);
 
-    // Main loop
+    // Main menu loop
     while (1) {
         show_ascii_homepage();
         bufferIndex = 0;
@@ -154,7 +157,7 @@ void kmain(uint32_t magic, void* mb_info_addr) {
                     clear_screen();
                     show_assignment_output(magic, mb_info_addr);
                     clear_screen();
-                    break; // Gå tilbake til meny
+                    break;
                 } else if (input == '2') {
                     clear_screen();
                     piano();

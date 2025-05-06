@@ -15,6 +15,7 @@ static uint8_t color = 0x07;
 
 static void scroll();
 
+// Writes a single character to the screen
 int putchar(int ic) {
     char c = (char)ic;
 
@@ -38,6 +39,7 @@ int putchar(int ic) {
     return ic;
 }
 
+// Scrolls the screen up one line
 static void scroll() {
     for (size_t y = 1; y < VGA_HEIGHT; y++) {
         for (size_t x = 0; x < VGA_WIDTH; x++) {
@@ -53,6 +55,7 @@ static void scroll() {
     col = 0;
 }
 
+// Prints a string of given length
 bool print(const char* data, size_t length) {
     for (size_t i = 0; i < length; i++) {
         putchar(data[i]);
@@ -60,6 +63,7 @@ bool print(const char* data, size_t length) {
     return true;
 }
 
+// Prints a signed decimal integer
 static void print_dec(int value) {
     char buffer[16];
     int i = 0;
@@ -76,6 +80,7 @@ static void print_dec(int value) {
     while (i--) putchar(buffer[i]);
 }
 
+// Prints a hexadecimal (base 16) number
 static void print_hex(uint32_t value) {
     char buffer[9];
     buffer[8] = '\0';
@@ -87,6 +92,7 @@ static void print_hex(uint32_t value) {
     print(buffer, 8);
 }
 
+// Minimal printf implementation with support for %s, %d, %x, %c, %%
 int printf(const char* __restrict__ format, ...) {
     va_list args;
     va_start(args, format);
@@ -130,6 +136,7 @@ int printf(const char* __restrict__ format, ...) {
     return written;
 }
 
+// Clears the screen
 void clear_screen() {
     uint16_t blank = ((uint16_t)color << 8) | ' ';
     for (size_t i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++) {

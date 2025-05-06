@@ -1,7 +1,14 @@
 #pragma once
 #include "libc/stdint.h"
 
-size_t strlen(char *str);                       // Get the length of a string
-char *strchr(char *str, int c);                 // Get the first occurrence of a character in a string
-void strrev(char str[], int length);            // Reverse a string
-int strcmp(const char *str1, const char *str2); // Compare two strings
+// Returns the length of a null-terminated string
+size_t strlen(char *str);
+
+// Returns a pointer to the first occurrence of character 'c' in the string
+char *strchr(char *str, int c);
+
+// Reverses a string in place
+void strrev(char str[], int length);
+
+// Compares two strings; returns 0 if equal, negative if str1 < str2, positive if str1 > str2
+int strcmp(const char *str1, const char *str2);

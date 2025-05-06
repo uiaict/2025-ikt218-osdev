@@ -3,8 +3,9 @@
 struct GDT_entry gdt[3];
 struct GDT_ptr GDT_descriptor;
 
-extern void GDT_flush(uint32_t); 
+extern void GDT_flush(uint32_t); // ASM function to load new GDT
 
+// Sets a single GDT entry
 static void GDT_set_entry(int i, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran) {
     gdt[i].base_low    = (base & 0xFFFF);
     gdt[i].base_middle = (base >> 16) & 0xFF;
@@ -15,10 +16,11 @@ static void GDT_set_entry(int i, uint32_t base, uint32_t limit, uint8_t access, 
     gdt[i].access      = access;
 }
 
+// Initializes and loads the GDT
 void gdt_init() {
-    GDT_set_entry(0, 0, 0, 0, 0);                
-    GDT_set_entry(1, 0, 0xFFFFFFFF, 0x9A, 0xA0); 
-    GDT_set_entry(2, 0, 0xFFFFFFFF, 0x92, 0xA0); 
+    GDT_set_entry(0, 0, 0, 0, 0);                // Null segment
+    GDT_set_entry(1, 0, 0xFFFFFFFF, 0x9A, 0xA0); // Code segment
+    GDT_set_entry(2, 0, 0xFFFFFFFF, 0x92, 0xA0); // Data segment
 
     GDT_descriptor.limit = (sizeof(struct GDT_entry) * 3) - 1;
     GDT_descriptor.base  = (uint32_t)&gdt;

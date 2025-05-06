@@ -7,18 +7,21 @@
 
 static void (*irq_handlers[NUM_IRQS])() = { 0 };
 
+// Registers a handler for a specific IRQ
 void irq_install_handler(int irq, void (*handler)()) {
     if (irq < NUM_IRQS) {
         irq_handlers[irq] = handler;
     }
 }
 
+// Removes a registered IRQ handler
 void irq_uninstall_handler(int irq) {
     if (irq < NUM_IRQS) {
         irq_handlers[irq] = 0;
     }
 }
 
+// Called on IRQ, runs handler and sends EOI
 void irq_handler(uint32_t irq_num) {
     if (irq_num >= 32 && irq_num < 32 + NUM_IRQS) {
         int irq = irq_num - 32;
@@ -28,10 +31,9 @@ void irq_handler(uint32_t irq_num) {
         }
     }
 
-    // Send EOI uansett
+    // Send End Of Interrupt (EOI)
     if (irq_num >= 40) {
         outb(0xA0, 0x20); // Slave PIC
     }
     outb(0x20, 0x20);     // Master PIC
 }
-

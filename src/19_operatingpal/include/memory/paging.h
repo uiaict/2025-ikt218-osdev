@@ -3,8 +3,13 @@
 
 #include "libc/stdint.h"
 
-void init_paging(); // Setter opp paging og aktiverer det
-void paging_map(uint32_t virt_addr, uint32_t phys_addr); // Mapper én side (4KB)
-void paging_enable(); // Aktiverer paging i CR0
+// Sets up page tables and initial mappings
+void init_paging();
+
+// Maps one 4KB page from virtual to physical address
+void paging_map(uint32_t virt_addr, uint32_t phys_addr);
+
+// Enables paging by setting CR0 bit
+void paging_enable();
 
 #endif

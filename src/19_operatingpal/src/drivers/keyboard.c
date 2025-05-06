@@ -7,12 +7,12 @@
 char charBuffer[CHARACTER_BUFFER_SIZE];
 int bufferIndex = 0;
 
-// Initializes the keyboard
+// Sets up the keyboard interrupt handler
 void initKeyboard() {
     registerInterruptHandler(IRQ1, &keyboardHandler);
 }
 
-// Handles the keyboard interrupt
+// Handles keyboard input and writes characters to buffer and screen
 void keyboardHandler(registers_t regs) {
     uint8_t scanCode = inb(KEYBOARD_DATA_PORT);
 
@@ -47,6 +47,7 @@ void keyboardHandler(registers_t regs) {
     }
 }
 
+// Writes a character to screen, handles backspace
 void freeWrite(char ascii) {
     switch (ascii) {
         case '\b':

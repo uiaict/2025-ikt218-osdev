@@ -11,6 +11,7 @@ static uint32_t current_note = 0;
 static uint32_t note_elapsed = 0;
 static uint32_t current_freq = 0; // Track last played frequency
 
+// Starts playing a song
 void play_song(Song* song) {
     current_song = song;
     current_note = 0;
@@ -19,12 +20,14 @@ void play_song(Song* song) {
     is_song_playing = true;
 }
 
+// Stops the song
 void stop_song() {
     is_song_playing = false;
     stop_sound();
     current_freq = 0;
 }
 
+// Called from PIT tick; advances the song
 void update_song_tick() {
     if (!is_song_playing || current_song == NULL) return;
 

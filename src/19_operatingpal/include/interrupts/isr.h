@@ -1,10 +1,10 @@
-/* Adapted from the James Molloy's GDT/IDT implementation totorial at https://archive.is/L3pyA */
-
+/* Adapted from James Molloy's GDT/IDT implementation tutorial: https://archive.is/L3pyA */
 #ifndef ISR_H
 #define ISR_H
 
 #include "libc/stdint.h"
 
+// IRQ interrupt vector offsets after remapping PIC
 #define IRQ0  32
 #define IRQ1  33
 #define IRQ2  34
@@ -22,17 +22,21 @@
 #define IRQ14 46
 #define IRQ15 47
 
+// Represents the CPU state during an interrupt
 typedef struct registers {
-	uint32_t ds;  											// Data segment selector
-	uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;  		// Register states
-	uint32_t intNum, errCode;  								// Interrupt number and error code
-	uint32_t eip, cs, eflags, useresp, ss;  				// Instruction pointer, code segment selector, flags, stack pointer, and stack segment selector
+	uint32_t ds;
+	uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
+	uint32_t intNum, errCode;
+	uint32_t eip, cs, eflags, useresp, ss;
 } registers_t;
 
-typedef void (*isr_t)(registers_t); 						// Define a type for interrupt service routines
-void registerInterruptHandler(uint8_t n, isr_t handler); 	// Registers an interrupt handler
+// Function pointer type for custom ISR handlers
+typedef void (*isr_t)(registers_t);
 
-// Gives more info on the interrupt
+// Registers a custom interrupt handler for a specific interrupt number
+void registerInterruptHandler(uint8_t n, isr_t handler);
+
+// Human-readable exception messages for CPU exceptions (0–31)
 static const char *exceptionMessages[] = {
 	"Division By Zero",
 	"Debug",
@@ -52,7 +56,7 @@ static const char *exceptionMessages[] = {
 	"Unknown Interrupt",
 	"Coprocessor Fault",
 	"Alignment Check",
-	"Machine Check"
+	"Machine Check",
 	"SIMD Floating-Point Exception",
 	"Virtualization Exception",
 	"Control Protection Exception",
@@ -64,7 +68,7 @@ static const char *exceptionMessages[] = {
 	"Reserved",
 	"Hypervisor Injection Exception",
 	"VMM Communication Exception",
-	"Reserved" 
+	"Reserved"
 };
 
 #endif

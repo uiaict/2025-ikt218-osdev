@@ -2,7 +2,7 @@
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 
-// Implementation of strlen
+// Returns length of a string
 size_t strlen(char *str) {
 	size_t len = 0;
 	while (str[len])
@@ -10,24 +10,19 @@ size_t strlen(char *str) {
 	return len;
 }
 
-// Implementation of strchr
+// Finds first occurrence of character in string
 char *strchr(char *str, int c) {
-
-	// Loop through the string until the null terminator
     while (*str != '\0') {
-		// Return the pointer if the character is found
         if (*str == c) 
             return str;
         str++;
     }
-
-	// Return null if the character is not found
     if (c == '\0')
         return str;
     return NULL;
 }
 
-// Implementation of strrev function adapted from https://www.geeksforgeeks.org/implement-itoa/
+// Reverses a string in-place
 void strrev(char str[], int length) {
     int start = 0;
     int end = length - 1;
@@ -40,6 +35,7 @@ void strrev(char str[], int length) {
     }
 }
 
+// Compares two strings
 int strcmp(const char *str1, const char *str2) {
     while (*str1 && (*str1 == *str2)) {
         str1++;
@@ -48,6 +44,7 @@ int strcmp(const char *str1, const char *str2) {
     return *(unsigned char *)str1 - *(unsigned char *)str2;
 }
 
+// Sets memory to a value
 void* memset(void* dest, int val, size_t len) {
     unsigned char* ptr = dest;
     while (len-- > 0)

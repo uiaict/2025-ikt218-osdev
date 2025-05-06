@@ -17,49 +17,46 @@ idtEntry_t idtEntries[256];
 gdtPtr_t gdtPtr;
 idtPtr_t idtPtr;
 
-
+// Initializes both GDT and IDT
 void initDesTables() {
     initGdt();
     initIdt();
     asm volatile("sti");
 }
 
-// Initializes the GDT
+// Initializes the GDT with 5 entries
 void initGdt() {
-    // Sets the size and base of the GDT pointer
     gdtPtr.limit = (sizeof(gdtEntry_t) * 5) - 1;
     gdtPtr.base  = (uint32_t)&gdtEntries;
     
-    // Sets the default entries of the GDT
-    gdtSetGate(0, 0, 0, 0, 0); // Null segment
-    gdtSetGate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF); // Code segment
-    gdtSetGate(2, 0, 0xFFFFFFFF, 0x92, 0xCF); // Data segment
-    gdtSetGate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF); // User mode code segment
-    gdtSetGate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF); // User mode data segment
+    gdtSetGate(0, 0, 0, 0, 0);                
+    gdtSetGate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF); 
+    gdtSetGate(2, 0, 0xFFFFFFFF, 0x92, 0xCF); 
+    gdtSetGate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF); 
+    gdtSetGate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF); 
 
-    gdtFlush((uint32_t)&gdtPtr); // Flushes the old GDT and installs the new one
+    gdtFlush((uint32_t)&gdtPtr);
 }
 
-// Set the value of one GDT entry.
+// Sets a single GDT entry
 static void gdtSetGate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran) {
-    gdtEntries[num].baseLow = (base & 0xFFFF); // Lower 16 bits of the base
-    gdtEntries[num].baseMiddle = (base >> 16) & 0xFF; // Middle 8 bits of the base
-    gdtEntries[num].baseHigh = (base >> 24) & 0xFF; // Upper 8 bits of the base
-    gdtEntries[num].limitLow = (limit & 0xFFFF); // Lower 16 bits of the limit
-    gdtEntries[num].granularity = (limit >> 16) & 0x0F; // Upper 4 bits of the limit
-    gdtEntries[num].granularity |= gran & 0xF0; // Add the granularity to the limit
-    gdtEntries[num].access = access; // Access flags
+    gdtEntries[num].baseLow = (base & 0xFFFF);
+    gdtEntries[num].baseMiddle = (base >> 16) & 0xFF;
+    gdtEntries[num].baseHigh = (base >> 24) & 0xFF;
+    gdtEntries[num].limitLow = (limit & 0xFFFF);
+    gdtEntries[num].granularity = (limit >> 16) & 0x0F;
+    gdtEntries[num].granularity |= gran & 0xF0;
+    gdtEntries[num].access = access;
 }
 
-// Initializes the IDT
+// Initializes the IDT with ISRs and IRQs
 void initIdt() {
-    // Sets the size and base of the IDT pointer
     idtPtr.limit = (sizeof(idtEntry_t) * 256) - 1;
     idtPtr.base  = (uint32_t)&idtEntries;
 
-    memset(&idtEntries, 0, sizeof(idtEntry_t) * 256); // Zeroes the IDT
+    memset(&idtEntries, 0, sizeof(idtEntry_t) * 256);
 
-    // Remap the IRQ table
+    // Remap PIC
     outb(0x20, 0x11);
     outb(0xA0, 0x11);
     outb(0x21, 0x20);
@@ -71,7 +68,7 @@ void initIdt() {
     outb(0x21, 0x0);
     outb(0xA1, 0x0);
 
-    // Sets the default entries of the IDT
+    // Set ISRs (0–31)
     idtSetGate(0, (uint32_t)isr0, 0x08, 0x8E);
     idtSetGate(1, (uint32_t)isr1, 0x08, 0x8E);
     idtSetGate(2, (uint32_t)isr2, 0x08, 0x8E);
@@ -105,7 +102,7 @@ void initIdt() {
     idtSetGate(30, (uint32_t)isr30, 0x08, 0x8E);
     idtSetGate(31, (uint32_t)isr31, 0x08, 0x8E);
 
-    // Set the IRQ gates
+    // Set IRQs (32–47)
     idtSetGate(32, (uint32_t)irq0, 0x08, 0x8E);
     idtSetGate(33, (uint32_t)irq1, 0x08, 0x8E);
     idtSetGate(34, (uint32_t)irq2, 0x08, 0x8E);
@@ -123,17 +120,14 @@ void initIdt() {
     idtSetGate(46, (uint32_t)irq14, 0x08, 0x8E);
     idtSetGate(47, (uint32_t)irq15, 0x08, 0x8E);
 
-
-    idtFlush((uint32_t)&idtPtr); // Flushes the old IDT and installs the new one
+    idtFlush((uint32_t)&idtPtr);
 }
 
-// Set the value of one IDT entry.
+// Sets a single IDT entry
 static void idtSetGate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags) {
-    idtEntries[num].baseLow = base & 0xFFFF; // Lower 16 bits of the base
-    idtEntries[num].baseHigh = (base >> 16) & 0xFFFF; // Upper 16 bits of the base
-
+    idtEntries[num].baseLow = base & 0xFFFF;
+    idtEntries[num].baseHigh = (base >> 16) & 0xFFFF;
     idtEntries[num].sel = sel;
     idtEntries[num].always0 = 0;
-
-    idtEntries[num].flags = flags; //| 0x60; 
+    idtEntries[num].flags = flags;
 }

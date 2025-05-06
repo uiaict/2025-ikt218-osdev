@@ -3,6 +3,8 @@
 #ifndef NOTES_H
 #define NOTES_H
 
+// Note definitions with frequencies in Hz
+
 // Octave 0
 #define NOTE_B0  31
 
@@ -48,7 +50,7 @@
 #define NOTE_AS3 233
 #define NOTE_B3  247
 
-// Octave 4 (Middle C octave)
+// Octave 4
 #define NOTE_C4  262
 #define NOTE_CS4 277
 #define NOTE_D4  294
@@ -110,15 +112,13 @@
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
 
-// Pause (rest)
+// Special value for silence
 #define NOTE_REST 0
 
 #endif
 
-
-
+// Note sequence (song) using Note {frequency, duration}
 Note music_1[] = {
-
     {NOTE_AS4, 300}, 
     {NOTE_REST, 100},
     {NOTE_DS5, 300}, 
@@ -215,8 +215,7 @@ Note music_1[] = {
     {NOTE_C5, 300},
     {NOTE_REST, 100},
     {NOTE_AS4, 600}, 
-    
 };
 
+// Number of notes in the song
 size_t music_1_length = sizeof(music_1) / sizeof(Note);
-
