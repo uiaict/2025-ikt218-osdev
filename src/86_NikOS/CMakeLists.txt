@@ -40,7 +40,7 @@ set(CMAKE_C_STANDARD 99)
 ########################################
 # Assembly Configuration
 ########################################
-set(CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS "s;S;asm")
+set(CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS "s;S;asm;ASM;nasm")
 if(OS_ARCH_TARGET STREQUAL "i386")
 	set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf32")
 elseif(OS_ARCH_TARGET STREQUAL "x86_64")
@@ -58,12 +58,31 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 
 # Add executable target for the kernel
 add_executable(uiaos-kernel 
-	# src/multiboot2.asm # TODO: Add multiboot2 support
+	src/multiboot2.asm # TODO: Add multiboot2 support
     src/kernel.c
+	src/terminal.c
+	
+	src/gdt.c
+    src/gdt_flush.asm
+	src/idt.c
+	src/idt_flush.asm
+	src/isr.c
+	src/isr_stubs.asm
+	src/pic.c
+	src/ports.c
+	src/irq.c
+	src/irq_stubs.asm
+
+	src/keyboard.c
+
 )
 
 # Include directories for the kernel target
-target_include_directories(uiaos-kernel PUBLIC include)
+target_include_directories(uiaos-kernel PUBLIC
+    include
+    include/libc
+)
+
 
 
 # Specify compile options for C and C++
