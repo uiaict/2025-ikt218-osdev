@@ -46,8 +46,8 @@ void write_line_to_terminal(const char* str, int line) {
 int main(uint32_t magic, uint32_t mb_info_addr)
 {
 
-    write_line_to_terminal("Hello", 1);  // Første linje
-    write_line_to_terminal("Summernerds!!!", 2);  // Andre linje
+//    write_line_to_terminal("Hello", 1);
+//    write_line_to_terminal("Summernerds!!!", 2);
 
  
     // initializing basic systems
