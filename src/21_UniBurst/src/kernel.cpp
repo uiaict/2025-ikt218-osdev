@@ -12,7 +12,7 @@ extern "C"
 #include "songPlayer/song.h"
 
 
-// Existing global operator new overloads
+
 void *operator new(size_t size)
 {
     return malloc(size);
@@ -23,7 +23,7 @@ void *operator new[](size_t size)
     return malloc(size);
 }
 
-// Existing global operator delete overloads
+
 void operator delete(void *ptr) noexcept
 {
     free(ptr);
@@ -34,16 +34,16 @@ void operator delete[](void *ptr) noexcept
     free(ptr);
 }
 
-// Add sized-deallocation functions
+
 void operator delete(void *ptr, size_t size) noexcept
 {
-    (void)size; // Size parameter is unused, added to match required signature
+    (void)size; 
     free(ptr);
 }
 
 void operator delete[](void *ptr, size_t size) noexcept
 {
-    (void)size; // Size parameter is unused, added to match required signature
+    (void)size; 
     free(ptr);
 }
 
@@ -69,21 +69,14 @@ int kernel_main()
     */
     // Create an array of songs
     Song *songs[] = {
-        new Song{music1, sizeof(music1) / sizeof(Note)},
-        new Song{music2, sizeof(music2) / sizeof(Note)},
-        new Song{music3, sizeof(music3) / sizeof(Note)},
-        new Song{music4, sizeof(music4) / sizeof(Note)},
-        new Song{music5, sizeof(music5) / sizeof(Note)},
-        new Song{music6, sizeof(music6) / sizeof(Note)},
-        new Song{starwarsTheme, sizeof(starwarsTheme) / sizeof(Note)},
-        new Song{battlefield1942Theme, sizeof(battlefield1942Theme) / sizeof(Note)},
+        new Song{mariosong, sizeof(mariosong) / sizeof(Note)},
     };
 
-    uint32_t nSongs = sizeof(songs) / sizeof(Song *); // Get the number of songs
+    uint32_t nSongs = sizeof(songs) / sizeof(Song *); 
 
-    SongPlayer *player = createSongPlayer(); // Create a new SongPlayer instance
+    SongPlayer *player = createSongPlayer();
 
-    // Play the songs
+    // Play the song
     while (true)
     {
         for (uint32_t i = 0; i < nSongs; i++)
