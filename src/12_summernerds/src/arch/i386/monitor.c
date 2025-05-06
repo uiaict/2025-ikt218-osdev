@@ -99,7 +99,6 @@ void monitor_putentryat(char c, uint8_t color, size_t x, size_t y)
     terminal_buffer[index] = vga_entry(c, color);
 }
 
-
 void _monitor_put(char c)
 {
     // Deal with special character behavior
