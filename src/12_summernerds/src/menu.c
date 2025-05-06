@@ -106,6 +106,9 @@ void handle_menu()
             monitor_clear();
             printf("Press 'Esc' to exit typing\n");
             EnableTyping();
+
+            printf("\n\n\nPress ESC to exit\n\n");
+
             while (true)
             {
                 if (has_user_pressed_esc())
