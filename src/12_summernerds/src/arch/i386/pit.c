@@ -1,12 +1,9 @@
 #include "i386/descriptorTables.h"
 #include "i386/interruptRegister.h"
-#include "i386/ISR.h"
 #include <kernel/pit.h>
 #include <libc/stdint.h>
 #include <libc/stdio.h>
 #include "common.h"
-
-#define BRUTE_FORCE_CONSTANT 140000
 
 static uint32_t pit_ticks = 0;
 
@@ -30,26 +27,27 @@ void init_pit()
     printf("Initialize PIT with %d Hz\n", TARGET_FREQUENCY);
 }
 
+// A safe way to access pit_ticks
 uint32_t get_current_tick()
 {
     return pit_ticks;
 }
 
-// Brute forced since pit timer doesn't work
+// Sleeps with high processor power
 void sleep_busy(uint32_t wait_ms)
 {
     uint32_t start_tick = get_current_tick();
-    uint32_t wait_ticks = wait_ms * BRUTE_FORCE_CONSTANT;
+    uint32_t wait_ticks = wait_ms;
     uint32_t waited_ticks = 0;
     while ((waited_ticks) < wait_ticks)
     {
-        // while (get_current_tick() == start_tick + waited_ticks)
-        ;
+        while (get_current_tick() == start_tick + waited_ticks)
+            ;
         waited_ticks++;
     }
 }
 
-// Reboots OS problem (do not use until fixed)
+// Sleeps with low processor power
 void sleep_interrupt(uint32_t wait_ticks)
 {
     uint32_t end_tick = get_current_tick() + wait_ticks;

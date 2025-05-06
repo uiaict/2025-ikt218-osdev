@@ -44,7 +44,7 @@ static void nosound()
 void beep()
 {
     play_sound(1000);
-    sleep_interrupt(10);
+    sleep_busy(100);
     nosound();
 }
 
@@ -63,7 +63,7 @@ void play_song_impl(Song *song)
         Note *note = &song->notes[i];
         printf("Playing note with frequency %d in length %d.\n", note->frequency, note->duration);
         play_sound(note->frequency);
-        sleep_interrupt(note->duration);
+        sleep_busy(note->duration);
         stop_sound();
     }
 

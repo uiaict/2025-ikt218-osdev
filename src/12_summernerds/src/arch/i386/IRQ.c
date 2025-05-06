@@ -19,7 +19,7 @@ void register_irq_handler(int irq, isr_t handler, void *ctx)
     irq_handlers[irq - 32].data = ctx;
 }
 
-// Main IRQ handler
+// Main IRQ handler, called from assembly defined irq0-15 funcs
 void irq_handler(registers_t regs)
 {
     // Send an EOI (end of interrupt) signal to the PICs.
@@ -29,14 +29,12 @@ void irq_handler(registers_t regs)
         outb(0xA0, 0x20); // Send reset signal to slave.
     }
     outb(0x20, 0x20); // Send reset signal to master.
-
-    printf("IRQ %d triggered\n", regs.int_no);
-
-
-    // Call the IRQ handler
     int irq = regs.int_no - 32;
+
     if (irq < 0 || irq > IRQ_COUNT)
         return;
+    if (irq > 2)
+        printf("IRQ %d triggered\n", irq);
 
     struct int_handler_t intrpt = irq_handlers[irq];
     if (intrpt.handler)

@@ -5,8 +5,10 @@
 #include "matrix_effect/matrix.h"
 #include "song/song.h"
 #include "common.h"
-#include "screen.h"
-char key_buffer[255];
+#include "menu.h"
+#include "game/game.h"
+#include "i386/monitor.h"
+
 void reset_key_buffer();
 
 void shutdown()
@@ -22,58 +24,38 @@ void shutdown()
     }
 }
 
-void wait_for_keypress()
-{
-    reset_key_buffer();
-    while (key_buffer[0] == '\0')
-    {
-        // venter på at bruker trykker på en knapp
-    }
-}
-
-char get_key()
-{
-    reset_key_buffer();
-    while (key_buffer[0] == '\0')
-    {
-    }
-    char key = key_buffer[0];
-
-    return key;
-}
-
-void reset_key_buffer()
-{
-    for (int i = 0; i < 255; i++)
-    {
-        key_buffer[i] = '\0';
-        if (key_buffer[i + 1] == '\0')
-            break;
-    }
-}
-
 void print_menu()
 {
-    clear_the_screen();
-    printf("\n");
-    printf("Welcome to the os for summernerds!\n");
-    printf("\n");
-    printf(" 1. Play Startup Song\n");
-    printf(" 2. Matrix Rain Effect\n");
-    printf(" 3. Play beep Sound\n");
-    printf(" 4. Play pong (or some ganme)\n");
-    printf(" 5. Turn of bye\n");
-    printf("\n");
+    monitor_clear();
+    printf("\\\\                            //\n"
+           " \\\\                          // \n"
+           "  \\\\                        //  \n"
+           "   \\\\                      //   \n"
+           "    \\\\        //\\\\        //    \n" // for wanted result, it looks weird here
+           "     \\\\      //  \\\\      //     \n"
+           "      \\\\    //    \\\\    //      \n"
+           "       \\\\  //      \\\\  //       \n"
+           "        \\\\//        \\\\//        \n"
+           "Welcome to the os for summernerds!\n"
+           "\n"
+           " 1. Play Startup Song\n"
+           " 2. Matrix Rain Effect\n"
+           " 3. Play beep Sound\n"
+           " 4. Write text (similar to notepad)\n"
+           " 5. Play pong.\n"
+           " 6. Exit\n"
+           "\n");
 }
 
 void handle_menu()
 {
+    EnableBufferTyping();
     while (1)
     {
         print_menu();
         char choice = get_key();
-        printf("%c", choice); //bruk %c for char, %d er for int
-        printf("\n");
+        putchar(choice);
+        putchar('\n');
 
         switch (choice)
         {
@@ -88,12 +70,13 @@ void handle_menu()
         case '2':
         {
             printf("Starting Matrix Rain effect...\n");
+            reset_key_buffer();
             init_matrix();
             while (1)
             {
                 draw_matrix_frame();
-                //sleep_interrupt(100);
-                if (key_buffer[0] != '\0')
+                sleep_interrupt(80);
+                if (get_first_buffer())
                     break;
             }
             break;
@@ -108,10 +91,24 @@ void handle_menu()
 
         case '4':
         {
-            // call runthegame function when finished to be made
+            DisableBufferTyping();
+            monitor_clear();
+            EnableTyping();
+            while (true)
+            {
+                if (has_user_pressed_esc())
+                {
+                    DisableTyping();
+                    break;
+                }
+            }
+            EnableBufferTyping();
+            break;
         }
-
         case '5':
+            run_pong();
+            break;
+        case '6':
         {
             printf("Shutting down...\n");
             shutdown();

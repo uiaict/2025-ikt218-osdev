@@ -14,7 +14,7 @@ void init_idt()
   idt_ptr.limit = sizeof(struct IDTEntry) * IDT_entries - 1;
   idt_ptr.base = (uint32_t)&idt;
 
-  for (int a = 0; a < IDT_entries /*eller idt_entries*/; a++)
+  for (int a = 0; a < IDT_entries; a++)
   {
     idt[a].base_low = 0x0000;
     idt[a].base_high = 0x0000;

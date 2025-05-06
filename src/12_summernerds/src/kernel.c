@@ -7,14 +7,16 @@
 #include <libc/stdint.h>
 #include <libc/stddef.h>
 #include "libc/stdbool.h"
+#include "song/song.h"
 #include "common.h"
-#include "menu.h"
+<<<<<<< HEAD
 #include <screen.h>
-#include <multiboot2.h>
-
-// #include "i386/ISR.h"
-// #include <kheap.h>
-// #include <paging.h>
+#include "i386/ISR.h"
+#include <kheap.h>
+#include <paging.h>
+=======
+#include "menu.h"
+>>>>>>> e55351e9892d3940a5d0172130a1facbccec447c
 
 #define VGA_HEIGHT 25
 #define VGA_WIDTH 80
@@ -56,47 +58,48 @@ int main(uint32_t magic, uint32_t mb_info_addr)
  
     // initializing basic systems
     monitor_initialize();
+
+    //-- assignment 2 --
     init_gdt();
+    printf("Hello world!\n");
+
+    //-- assignment 3 --
     init_idt();
     init_irq();
+    testThreeISRs();
+    register_irq_handler(IRQ1, irq1_keyboard_handler, 0);
 
-     register_irq_handler(IRQ1, irq1_keyboard_handler, 0);
-     asm volatile("sti");
-
-    // Initializing the kernel memory manager
-    init_kernel_memory(&end);
-
-    // call function to activate paging
-    init_paging();
-
-    // primt memory layout to screen
-    print_memory_layout();
-
-    // Initialize PIT (programmable interval timer)
-    init_pit();
-
+    // assignment 4
+    init_kernel_memory(&end); // Initializing the kernel memory manager
+    init_paging();            // call function to activate paging
+    print_memory_layout();    // print memory layout to screen
+    init_pit();               // Initialize PIT (programmable interval timer)
     // Here we test the memory allocation
     void *mem1 = malloc(2345);
     void *mem2 = malloc(4321);
     void *mem3 = malloc(3331);
 
     // print if we get any problem with allocating memory
-    printf("Allocated memory blocks at: 0x%x, 0x%x, 0x%x\n", mem1, mem2, mem3);
+    // printf("Allocated memory blocks at: 0x%x, 0x%x, 0x%x\n", mem1, mem2, mem3);
 
-    // Test PIT sleep
-    int counter = 0;
+    beep();
+
+    // EnableTyping(); // Enables free typing
+    handle_menu(); // opens the menu
 
     while (true)
     {
+<<<<<<< HEAD
+        printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);
+        sleep_interrupt(1000);
+        printf("[%d]: Slept using interrupts.\n", counter++);
+
         printf("[%d]: Sleeping with busy-waiting (HIGH CPU)...\n", counter);
         sleep_busy(1000);
         printf("[%d]: Slept using busy-waiting.\n", counter++);
-
-        /*printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);*/
+=======
+>>>>>>> e55351e9892d3940a5d0172130a1facbccec447c
     }
-    handle_menu();
 
     // Usually shouldnt get here, since it then quits kernel main.
     return 0;
