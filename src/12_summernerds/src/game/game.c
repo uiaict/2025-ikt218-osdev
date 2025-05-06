@@ -55,7 +55,7 @@ int floor(float num)
 typedef uint16_t uint;
 
 // global variables, does not use #define because they can be changed with arguments
-uint ROWS = 24,
+uint ROWS = 12,
      COLS = 80,
 
      PADDLE_X = 2,
@@ -64,7 +64,7 @@ uint ROWS = 24,
      BALL_SIZE = 1,
 
      BOT_FOW = 6,          // bot fog of war. higher means easier opponent
-    UPDATE_FREQUENCY = 20, // game status updates every X frames (default)
+    UPDATE_FREQUENCY = 4, // game status updates every X frames (default)
                            // affects: bots, ball
     _UPDATE_FREQUENCY;     // changed throughout game
 

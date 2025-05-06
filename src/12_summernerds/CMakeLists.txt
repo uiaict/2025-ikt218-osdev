@@ -62,7 +62,6 @@ enable_language(ASM)  #  Fortell CMake at vi bruker Assembly
 add_executable(uiaos-kernel 
     src/kernel.c
     src/menu.c
-    src/screen.c
     src/matrix_effect/matrix.c
     #src/song.c
     src/common.c
