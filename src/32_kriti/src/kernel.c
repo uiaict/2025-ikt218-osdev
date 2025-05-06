@@ -149,6 +149,7 @@ void run_memory_test(void) {
     kprint("===========\n\n");
     
     kprint("Allocating test memory blocks...\n");
+    sleep_interrupt(1000);  // Sleep for 1 second
     
     void* block1 = malloc(10000);
     void* block2 = malloc(20000);
@@ -175,7 +176,7 @@ void run_memory_test(void) {
     kprint("Freeing remaining blocks...\n");
     free(block1);
     free(block3);
-    
+    sleep_interrupt(3000);  // Sleep for 1 second
     kprint("\nPress any key to return to menu...\n");
     menu_wait_for_key();
 }
