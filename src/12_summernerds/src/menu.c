@@ -13,11 +13,11 @@ void reset_key_buffer();
 
 void shutdown()
 {
-    //a function that clears out the screen
+    // a function that clears out the screen
     sleep_interrupt(500);
     monitor_clear();
-    outb(0x604, 0x20);
-    outb(0xB004, 0x20);
+    outw(0x604, 0x2000);
+    outw(0xB004, 0x2000);
 
     asm volatile("cli");
     while (1)
