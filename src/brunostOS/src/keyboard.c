@@ -2,15 +2,16 @@
 #include "io.h"
 #include "libc/stdio.h"
 
+volatile unsigned char buffer[256];
+int buffer_index = 0;
+
 void init_keyboard(){
-    
     register_interrupt_handler(IRQ1, &keyboard_handler);
     return;
 }
+
 void keyboard_handler(struct registers reg){
     uint8_t scan_code = inb(KEYBOARD_DATA_PORT);
-
-    
     
     if (scan_code & 0x80){
         // If first bit of scancode is 1, a key was just released
@@ -33,7 +34,6 @@ void keyboard_handler(struct registers reg){
                 return; // We dont want to print on release
         }
         
-        
     } else{
         
         switch (scan_code){
@@ -50,15 +50,16 @@ void keyboard_handler(struct registers reg){
             case CAPSLOCK_CODE:
                 capslock = !capslock;
                 return;
+            case ESCAPE_CODE:
+                escaped = !escaped;
+                return;
                 
             default:
                 break;
         }
     }
         
-    
-    uint8_t c = 0;
-    
+    uint8_t c = 0;   
     // If it works, it works
     if (shift && !capslock && !altgr){
         c = ASCII_shift[scan_code];
@@ -85,14 +86,45 @@ void keyboard_handler(struct registers reg){
         c = ASCII[scan_code];
     }
     
-    
-    if ((int)c <= 255 && (int)c != 0){
+    if (!((int)c <= 255 && (int)c != 0)){
+        return;
+    }
+
+    buffer_index++;
+    buffer[buffer_index] = c;
+
+    if (is_freewrite){
+        // Prints as interrupts occur. Will not pull from buffer. non-blocking
         printf("%c", c);
+        if (!shift && c == '\n'){
+            // Generally, we want CRLF when we hit enter
+            printf("%c", '\r');
+        }  
     }
     
-    if (!shift && scan_code == 0x1C){
-        // Generally, we want CRLF when we hit enter
-        printf("%c", '\r');
-    }   
-    
+
+
+}
+
+void freewrite(){
+    // Independent of is_freewrite. Prints from buffer
+    bool escaped_snapshot = escaped;
+
+    while (escaped_snapshot == escaped){
+
+        while (buffer_index == 0){
+        }
+
+        unsigned char c = buffer[buffer_index];
+        printf("%c", c);
+        buffer_index--;
+        if (!shift && c == 'n'){
+            // Generally, we want CRLF when we hit enter
+            printf("%c", '\r');
+        }  
+    }
+}
+
+void set_freewrite(bool b){
+    is_freewrite = b;
 }

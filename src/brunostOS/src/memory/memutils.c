@@ -1,6 +1,6 @@
 #include "memory/memutils.h"
 
-void* memcpy(void* dest, const void* src, size_t count){
+void* memcpy(void *dest, const void *src, size_t count){
 
     char* dst8 = (char*)dest;       // Cast the destination pointer to char*
     const char* src8 = (char*)src;  // Cast the source pointer to char*

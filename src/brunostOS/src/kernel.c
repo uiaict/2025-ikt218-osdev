@@ -28,9 +28,11 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     init_keyboard();
     init_pit(500);
     enable_speaker();
+    stop_sound();
+    set_freewrite(true);
+    // freewrite();
 
 
-    printf("%.10f", 0.4294967295);
     
 
     struct song songs[] = {
@@ -66,7 +68,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     
     
 //TODO: 
-//printf scanf
+//scanf
 //memory
 //malloc musicplayer
 //improv

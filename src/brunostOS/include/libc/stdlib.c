@@ -38,7 +38,6 @@ void itoa(long int n, char s[]){
     strrev(s);
     s[i] = '\0'; // Append string terminator
  
-    return s;
 }
 
 void utoa(unsigned long int n, char s[]){
@@ -64,7 +63,6 @@ void utoa(unsigned long int n, char s[]){
     strrev(s);
     s[i] = '\0'; // Append string terminator
  
-    return s;
 }
 
 void ftoa(double n, char s[], int precision){
@@ -89,4 +87,96 @@ void ftoa(double n, char s[], int precision){
     
     utoa((unsigned long int)f_part, s+i+1);
     int x = 0;
+}
+
+
+void xtoa(unsigned long int n, char s[]){
+    unsigned char hex_digits[] = "0123456789ABCDEF";
+
+    int i = 0;
+    while(n != 0){
+        s[i] = hex_digits[n%16];
+        n = n/16;
+        i++;
+    }
+    strrev(s);
+    s[i] = '\0';
+}
+
+
+void atoi(const char s[], long int *n){
+
+    bool is_negative = false;
+    int i = 0;
+
+    if (s[i] == '-'){
+        is_negative = true;
+        i++;
+    }
+    
+    while (i < strlen(s)){
+
+        *n *= 10;
+        int num = ((int)s[i] - (int)('0'));
+        *n += num;
+
+        i++;
+    }
+
+    if (is_negative){
+        *n = -(*n);
+    }
+}
+
+void atou(const char s[], unsigned long int *n){
+
+    int i = 0;
+    while (i < strlen(s)){
+
+        *n *= 10;
+        unsigned int num = ((unsigned int)s[i] - (unsigned int)('0'));
+        *n += num;
+
+        i++;
+    }
+}
+
+void atof(const char s[], double *n){
+
+    bool is_negative = false;
+    int i = 0;
+
+    if (s[i] == '-'){
+        is_negative = true;
+        i++;
+    }
+    
+    while (i < strlen(s)){
+        if (s[i] == '.' || s[i] == ','){ // check for ',' doen't hurt
+            i++;
+            break;
+        }
+
+        *n *= 10;
+        int num = ((int)s[i] - (int)('0'));
+        *n += (double)num;
+        i++;
+    }
+
+    double decimals = 0;
+    int stop = i;
+    i = strlen(s)-1;
+
+    while (i >= stop){
+    
+        int num = ((int)s[i] - (int)('0'));
+        decimals += (double)num;
+        i--;
+        decimals /= 10;
+    }
+    *n += decimals;
+
+    if (is_negative){
+        *n = -(*n);
+    }
 }

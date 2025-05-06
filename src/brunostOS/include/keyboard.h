@@ -11,10 +11,10 @@
 #define LSHIFT_CODE 0x2A
 #define RSHIFT_CODE 0x36
 #define CAPSLOCK_CODE 0x3A
-#define ALTGR_CODE 0x38   // Sends 0xE0 first
+#define ALTGR_CODE 0x38
+#define ESCAPE_CODE 0x01
 
-// relevant CP437 extended ASCII
-// OS uses CP437, but something else (compiler?) uses othert encodeing for extended ASCII
+// OS uses CP437 for extended ASCII, but something else (compiler?) uses othert encoding for extended ASCII
 // https://www.ascii-codes.com/
 #define å 134
 #define Å 143
@@ -33,6 +33,8 @@
 static bool shift = false;
 static bool capslock = false;
 static bool altgr = false;
+static bool escaped = false;
+static bool is_freewrite = false;
 
 static bool us_keyboard_layout = false;
 
@@ -60,7 +62,7 @@ static const uint8_t ASCII_shift[] = {
     'B', 'N', 'M', ';', ':', '_', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, '7', '8', '9', '-', '4', '5', '6', '+', '1',
     '2', '3', '0', ',', 0, 0, '>'
-    // enter is only \n and not \r also
+    // enter is only \n
 };
 static const uint8_t ASCII_caps[] = {
     // can't be typed: ¨
@@ -79,7 +81,7 @@ static const uint8_t ASCII_caps_shift[] = {
     'B', 'N', 'M', ';', ':', '_', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, '7', '8', '9', '-', '4', '5', '6', '+', '1',
     '2', '3', '0', ',', 0, 0, '>'
-    // enter is only \n and not \r also
+    // enter is only \n
 };
 static const uint8_t ASCII_altgr[] = {
     0, 0, 0, '@', GBP, '$', 0, 0, '{', '[', ']', '}', 0, ´, 0, 0,
@@ -94,6 +96,9 @@ static const uint8_t ASCII_altgr[] = {
 
 void init_keyboard();
 void keyboard_handler(struct registers);
+void freewrite(); // independent of is_freewrite. Prints from buffer, is blocking
+void set_freewrite(bool); // non-blocking, repeats keystrokes directly
+
 
 
 #endif // KEYBOARD_H

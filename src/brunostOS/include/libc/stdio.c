@@ -6,6 +6,7 @@
 #include "speaker.h"
 #include "io.h"
 #include "libc/stdarg.h"
+#include "memory/memutils.h"
 
 extern uint8_t terminal_color;
 extern int cursor_xpos;
@@ -151,13 +152,15 @@ int printf(const char* __restrict__ format, ...) {
 
         // %c for char
         if (*format == 'c'){
-            const unsigned char c = va_arg(parameters, int); // const unsigned char is promoted to int, would abort as uchar
+            // const unsigned char is promoted to int, would abort if uchar
+            const unsigned char c = va_arg(parameters, int); 
             format++;
             written++;
             putchar((int)c);
             continue;
         }
 
+        // %u for unsigned int
         if (*format == 'u'){
             unsigned int num = va_arg(parameters, unsigned int);
             unsigned char strnum[15] = {0};
@@ -168,6 +171,18 @@ int printf(const char* __restrict__ format, ...) {
             continue;
         } 
 
+        // %x for hex
+        if (*format == 'x'){
+            unsigned int num = va_arg(parameters, unsigned int);
+            unsigned char strnum[15] = {0};
+            xtoa(num, (char*)strnum);
+            format++;
+            written += strlen((char*)strnum);
+            print(strnum);
+            continue;
+        } 
+
+        // %f for double
         if (*format == 'f'){
             double num = va_arg(parameters, double);
             unsigned char strnum[15] = {0};
@@ -208,4 +223,90 @@ int printf(const char* __restrict__ format, ...) {
 	va_end(parameters);
     update_cursor();
 	return written;
+}
+
+
+int getchar(){
+    int buffer_snapshot = buffer_index;
+
+    while (buffer_index == buffer_snapshot){
+    }
+
+    unsigned char c = buffer[buffer_index];
+    buffer_index--;
+
+    return (int)c;
+}
+
+void scanf(unsigned char* __restrict__ format, ...){
+
+    va_list parameters;
+	va_start(parameters, format);
+ 
+	while (*format != '\0') {
+
+        if (*format != '%'){
+            format++;
+            putchar(*format);
+            continue;
+        }
+
+        //Char was '%', check what is next
+        format++;
+
+        unsigned char scanned_str[80]; // Same as terminal width
+        for (size_t i = 0; true; i++){
+            int c = getchar();
+            if (c == '\n'){
+                scanned_str[i] = '\0';
+                break;
+            }
+            scanned_str[i] = (unsigned char)c;
+        }
+
+
+        // %i and %d for int
+        if (*format == 'd' || *format == 'i'){
+            int *num = va_arg(parameters, int*);
+            atoi(scanned_str, num);
+            continue;
+        }   
+
+        // %s for string (char*)
+        if(*format == 's'){
+            unsigned char *string = va_arg(parameters, unsigned char*);
+            memcpy(string, scanned_str, strlen(scanned_str));
+            format++;
+            continue;
+        }
+
+        // %c for char
+        if (*format == 'c'){
+            unsigned char *string = va_arg(parameters, int*);
+            *string = scanned_str[0];
+            format++;
+            continue;
+        }
+
+        // %u for unsigned int
+        if (*format == 'u'){
+            unsigned int *num = va_arg(parameters, unsigned int*);
+            atou(scanned_str, num);
+            continue;
+        } 
+
+        // %f for double
+        if (*format == 'f'){
+            double *num = va_arg(parameters, double*);
+            atof(scanned_str, num);
+            continue;
+        } 
+            
+        //Invalid flag, skip over
+        format++;  
+    }
+
+ 
+	va_end(parameters);
+        
 }
