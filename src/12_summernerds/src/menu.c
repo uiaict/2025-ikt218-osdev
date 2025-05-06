@@ -29,15 +29,22 @@ void print_menu()
 {
     monitor_clear();
     monitor_setcolor(13);
-    printf("\\\\                            //\n"
-           " \\\\                          // \n"
-           "  \\\\                        //  \n"
-           "   \\\\                      //   \n"
-           "    \\\\        //\\\\        //    \n" // for wanted result, it looks weird here in editor
-           "     \\\\      //  \\\\      //     \n"
-           "      \\\\    //    \\\\    //      \n"
-           "       \\\\  //      \\\\  //       \n"
-           "        \\\\//        \\\\//        \n");
+    printf(" "
+"       __ _.--..--._ _\n"
+"     .-' _/   _/\\_   \\_'-.\n"
+"    |__ /   _/\\__/\\_   \\__|\n"
+"       |___/\\_\\__/  \\___|\n"
+"              \\__/\n"
+"              \\__/\n"
+"               \\__/\n"
+"                \\__/\n"
+"             ____\\__/___\n"
+"       . - '             ' -.\n"
+"      /                      \\ \n");
+    monitor_setcolor(9);
+    printf("~~~~~~~  ~~~~~ ~~~~~  ~~~ ~~~  ~~~~~\n");
+    
+
     monitor_setcolor(12);
     printf("Welcome to the os for summernerds!\n"
            "\n"
