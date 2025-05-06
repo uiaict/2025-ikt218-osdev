@@ -30,6 +30,8 @@ void init_matrix()
 }
 
 void draw_matrix_frame()
+// The function that make the matrix effect
+//(draws one frame for the matrix effect for each raining character)
 {
     monitor_clear();
     for (int x = 0; x < WIDTH; x++)
