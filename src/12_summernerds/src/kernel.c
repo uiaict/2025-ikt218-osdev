@@ -9,14 +9,7 @@
 #include "libc/stdbool.h"
 #include "song/song.h"
 #include "common.h"
-<<<<<<< HEAD
-#include <screen.h>
-#include "i386/ISR.h"
-#include <kheap.h>
-#include <paging.h>
-=======
 #include "menu.h"
->>>>>>> e55351e9892d3940a5d0172130a1facbccec447c
 
 #define VGA_HEIGHT 25
 #define VGA_WIDTH 80
@@ -36,25 +29,10 @@ struct multiboot_info {
 };
 
 
-// Skriver til terminalen linje for linje
-void write_line_to_terminal(const char* str, int line) {
-    if (line >= VGA_HEIGHT) return; // Unngår å skrive utenfor skjermen
-
-    volatile uint16_t* vga = VGA_MEMORY + (VGA_WIDTH * line); // Flytter til riktig linje
-
-    for (int i = 0; str[i] && i < VGA_WIDTH; i++) {
-        vga[i] = (rainbow_colours[i % 4] << 8) | str[i]; // Skriver tegn med farge
-    }
-}
-
 
 
 int main(uint32_t magic, uint32_t mb_info_addr)
 {
-
-    write_line_to_terminal("Hello", 1);  // Første linje
-    write_line_to_terminal("Summernerds!!!", 2);  // Andre linje
-
  
     // initializing basic systems
     monitor_initialize();
@@ -89,16 +67,6 @@ int main(uint32_t magic, uint32_t mb_info_addr)
 
     while (true)
     {
-<<<<<<< HEAD
-        printf("[%d]: Sleeping with interrupts (LOW CPU)...\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);
-
-        printf("[%d]: Sleeping with busy-waiting (HIGH CPU)...\n", counter);
-        sleep_busy(1000);
-        printf("[%d]: Slept using busy-waiting.\n", counter++);
-=======
->>>>>>> e55351e9892d3940a5d0172130a1facbccec447c
     }
 
     // Usually shouldnt get here, since it then quits kernel main.
