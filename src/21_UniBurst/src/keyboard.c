@@ -97,21 +97,14 @@ void freeWrite(char ascii) {
 }
 
 
-/* 
-Drawing function. This function is called when the user is in drawing mode and types a key. 
-The drawing mode is toggled by pressing the escape key.
-You can toggle the color of the drawing by pressing the number keys 0-9 and the letters q-t.
-Drawing is done by pressing the x key.
-Navigation is done as normal with backspace, enter, and tab.
 
-*/
 
 
 void draw(uint8_t scanCode) {
     
     char ascii = defaultLookup[scanCode];
 
-    // Sets the color to the key typed in. 0-9 are normal and q-t are treated as 11-15
+    // Sets the color to the key typed in. 0-9 are normal and q-t are 11-15
     if (ascii >= '0' && ascii <= '9') {
         drawingColor = ascii - '0';
     } 

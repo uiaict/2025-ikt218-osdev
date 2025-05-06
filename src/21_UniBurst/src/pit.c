@@ -10,7 +10,7 @@ void pitHandler(registers_t regs) {
     tick++;                                      
 }
 
-// Returns the current tick
+
 uint32_t getCurrentTick() {
     return tick;
 }
@@ -27,7 +27,7 @@ void initPit() {
 
 // These sleep functions are based on the pseudo code provided by Per-Arne Andersen at https://perara.notion.site/Assignment-4-Memory-and-PIT-83eabc342fd24b88b00733a78b5a86e0 
 
-// Sleeps using busy-waiting
+
 void sleepBusy(uint32_t ms) {
     uint32_t startTick = getCurrentTick();     
     uint32_t ticksToWait = ms * TICKS_PER_MS;   
@@ -36,14 +36,14 @@ void sleepBusy(uint32_t ms) {
     if (endTick < startTick) {                  
         
         while (getCurrentTick() >= startTick) { 
-            // Do nothing 
+       
         }
         while (getCurrentTick() < endTick) {    
-            // Do nothing 
+        
         }
     } else {                                    
         while (getCurrentTick() < endTick) {
-            // Do nothing 
+          
         }
     }
 }
