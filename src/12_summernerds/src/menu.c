@@ -13,6 +13,7 @@ void reset_key_buffer();
 
 void shutdown()
 {
+    //a function that clears out the screen
     sleep_interrupt(500);
     monitor_clear();
     outb(0x604, 0x20);
