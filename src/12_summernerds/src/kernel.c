@@ -69,7 +69,7 @@ int main(uint32_t magic, uint32_t mb_info_addr)
 
     // beep();
 
-    beep();
+    // beep();
 
     // EnableTyping(); // Enables free typing
     handle_menu(); // opens the menu
