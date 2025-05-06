@@ -1,6 +1,6 @@
 {
-    "cmake.buildDirectory": "${workspaceFolder}/build/group_name",
-    "cmake.sourceDirectory": "${workspaceFolder}/src/group_name",
+    "cmake.buildDirectory": "${workspaceFolder}/build/17_Ikt_Agder",
+    "cmake.sourceDirectory": "${workspaceFolder}/src/17_Ikt_Agder",
     "cmake.useCMakePresets": "never",
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
@@ -15,7 +15,9 @@
         "multiboot2.h": "c",
         "interrupts.h": "c",
         "memory.h": "c",
-        "limits.h": "c"
+        "limits.h": "c",
+        "idt.h": "c",
+        "sound.h": "c"
     }
 
 }

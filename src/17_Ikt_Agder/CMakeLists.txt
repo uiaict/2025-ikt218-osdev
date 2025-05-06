@@ -1,4 +1,4 @@
-########################################
+ ########################################
 # The University of Agder Operating System: UiAOS
 # Languages: C, C++, and NASM Assembly
 # Tip: Use Ctrl+Shift+P in Visual Studio Code to get started with CMake.
@@ -12,7 +12,10 @@ set(CMAKE_CXX_COMPILER_WORKS 1)
 cmake_minimum_required(VERSION 3.22.1)
 
 # Project name and languages used
-project(UiAOS LANGUAGES C CXX ASM_NASM)
+project(UiAOS 
+LANGUAGES C CXX ASM_NASM
+VERSION 0.0.1
+) 
 
 # Create a lock file to prevent parallel runs of CMake
 file(LOCK ${CMAKE_SOURCE_DIR} DIRECTORY GUARD FILE)
@@ -58,12 +61,37 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 
 # Add executable target for the kernel
 add_executable(uiaos-kernel 
-	# src/multiboot2.asm # TODO: Add multiboot2 support
+	src/multiboot2.asm # TODO: Add multiboot2 support
     src/kernel.c
+	#src/kernel.cpp
+	src/string.c
+	src/gdt.c #ny
+	src/gdt.asm #ny
+	src/printf.c #ny
+	src/itoa.c #ny
+	src/idt.asm #ny
+	src/idt.c #ny
+    src/memory.c #oppg 4
+    src/paging.c #oppg 4
+    src/heap.c #oppg 4
+	src/pit.c #oppg 4
+	src/io.c #oppg4
+	src/interrupts.c #oppg4
+	src/music.c #oppg 5
+	src/sound.c #oppg 5
+	src/fs.c #oppg 5
+	
 )
 
 # Include directories for the kernel target
-target_include_directories(uiaos-kernel PUBLIC include)
+#target_include_directories(uiaos-kernel PUBLIC include)	#original
+target_include_directories(uiaos-kernel PUBLIC ${CMAKE_SOURCE_DIR}/include)
+
+add_compile_definitions(OS_ARCH_TARGET=${OS_ARCH_TARGET}) #							testing testing
+
+set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)  # Ensure NASM outputs ELF 32-bit format
+enable_language(ASM_NASM)  # Enable NASM support in CMake
+
 
 
 # Specify compile options for C and C++
@@ -101,11 +129,11 @@ set_target_properties(uiaos-kernel PROPERTIES
 ########################################
 set(DISK_IMAGE "${CMAKE_CURRENT_BINARY_DIR}/disk.iso")
 
-# Custom target to create an empty FAT32 disk image of 32MB
+# Custom target to create an empty FAT32 disk image of 32MB ,Harddisk om en vil ha filsystem
 add_custom_target(
     create-fat32-disk
-    COMMAND dd if=/dev/zero of=${DISK_IMAGE} bs=1M count=32
-    COMMAND mkfs.fat -F 32 ${DISK_IMAGE}
+    COMMAND dd if=/dev/zero of=${DISK_IMAGE} bs=1M count=100
+    COMMAND mkfs.fat -F 100 ${DISK_IMAGE}
     VERBATIM
 )
 

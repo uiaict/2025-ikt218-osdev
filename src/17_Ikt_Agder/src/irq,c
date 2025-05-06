@@ -1,0 +1,22 @@
+#include "libc/irq.h"
+#include "libc/stdio.h"
+
+// IRQ0 handler
+void irq0() {
+    irq_handler(0);
+}
+
+// IRQ1 handler
+void irq1() {
+    irq_handler(1);
+}
+
+// IRQ2 handler
+void irq2() {
+    irq_handler(2);
+}
+
+// General IRQ handler
+void irq_handler(uint32_t irq_number) {
+    printf("IRQ triggered: %d\n", irq_number);
+}
