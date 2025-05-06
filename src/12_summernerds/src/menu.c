@@ -27,16 +27,18 @@ void shutdown()
 void print_menu()
 {
     monitor_clear();
+    monitor_setcolor(13);
     printf("\\\\                            //\n"
            " \\\\                          // \n"
            "  \\\\                        //  \n"
            "   \\\\                      //   \n"
-           "    \\\\        //\\\\        //    \n" // for wanted result, it looks weird here
+           "    \\\\        //\\\\        //    \n" // for wanted result, it looks weird here in editor
            "     \\\\      //  \\\\      //     \n"
            "      \\\\    //    \\\\    //      \n"
            "       \\\\  //      \\\\  //       \n"
-           "        \\\\//        \\\\//        \n"
-           "Welcome to the os for summernerds!\n"
+           "        \\\\//        \\\\//        \n");
+    monitor_setcolor(12);
+    printf("Welcome to the os for summernerds!\n"
            "\n"
            " 1. Play Startup Song\n"
            " 2. Matrix Rain Effect\n"
