@@ -11,6 +11,7 @@ typedef struct
 {
     int y_pos;
     int speed;
+    int color;
 } ColumnState;
 
 static ColumnState columns[WIDTH];
@@ -24,6 +25,7 @@ void init_matrix()
     {
         columns[i].y_pos = randint(HEIGHT);
         columns[i].speed = 1 + randint(3);
+        columns[i].color = color_palette[randint(4)];
     }
 }
 
@@ -34,8 +36,6 @@ void draw_matrix_frame()
     {
         int y_max = columns[x].y_pos;
 
-        uint8_t color = color_palette[randint(4)];
-
         for (int y = 0; y < y_max; y++)
         {
             char ch = 33 + randint(94);
@@ -43,7 +43,7 @@ void draw_matrix_frame()
             {
                 volatile char *cell = (char *)0xB8000 + 2 * (y * WIDTH + x);
                 cell[0] = ch;
-                cell[1] = color;
+                cell[1] = columns[x].color;
             }
         }
 
@@ -53,6 +53,7 @@ void draw_matrix_frame()
         {
             columns[x].y_pos = 0;
             columns[x].speed = 1 + randint(3);
+            // columns[x].color = color_palette[randint(4)];
         }
     }
 }

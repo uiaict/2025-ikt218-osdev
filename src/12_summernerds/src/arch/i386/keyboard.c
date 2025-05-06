@@ -9,6 +9,8 @@ int cannotType = 1;
 int menu_buffer = 0;
 int escpressed = 0;
 
+static char key_buffer[BUFFER_SIZE];
+
 void EnableBufferTyping()
 {
     menu_buffer = 1;
@@ -29,6 +31,62 @@ void DisableTyping()
     cannotType = 1;
 }
 
+int has_user_pressed_esc()
+{
+    if (!escpressed)
+    {
+        return 0;
+    }
+    escpressed = 0;
+    return 1;
+}
+
+char get_first_buffer()
+{
+    return key_buffer[0];
+}
+
+void wait_for_keypress()
+{
+    reset_key_buffer();
+    while (key_buffer[0] == '\0')
+    {
+        // venter på at bruker trykker på en knapp
+    }
+}
+
+char get_key()
+{
+    reset_key_buffer();
+    while (key_buffer[0] == '\0')
+    {
+    }
+    char key = key_buffer[0];
+
+    return key;
+}
+
+void write_to_buffer(char c)
+{
+    for (int i = 0; i < BUFFER_SIZE; i++)
+    {
+        if (key_buffer[i] == '\0')
+        {
+            key_buffer[i] = c;
+            break;
+        }
+    }
+}
+
+void reset_key_buffer()
+{
+    for (int i = 0; i < BUFFER_SIZE; i++)
+    {
+        key_buffer[i] = '\0';
+        if (key_buffer[i + 1] == '\0')
+            break;
+    }
+}
 void irq1_keyboard_handler(registers_t *regs, void *ctx)
 {
     uint8_t scancode = inb(0x60);
@@ -51,16 +109,6 @@ void irq1_keyboard_handler(registers_t *regs, void *ctx)
 
     (void)regs;
     (void)ctx;
-}
-
-int has_user_pressed_esc()
-{
-    if (!escpressed)
-    {
-        return 0;
-    }
-    escpressed = 0;
-    return 1;
 }
 
 bool shiftPressed = false;
@@ -189,7 +237,7 @@ char large_scancode_ascii[128] =
 char scanCodeToASCII(unsigned char *scanCode)
 {
     unsigned char word = *scanCode;
-    switch (word) ///////hvilke flere caser trenger jeg? tab pressed(0x0F)???? og released(0x8F)??????
+    switch (word)
     {
     case 0x3A: // CapsLock pressed
         capsEnabled = !capsEnabled;
