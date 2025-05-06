@@ -26,5 +26,6 @@ void keyboard_init();
 void keyboard_handler(registers_t regs);
 char keyboard_get_last_char();
 void keyboard_buffer_clear();
+int is_key_pressed(char key);
 
 #endif // KEYBOARD_H

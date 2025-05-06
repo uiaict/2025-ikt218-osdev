@@ -112,3 +112,13 @@ void keyboard_buffer_clear() {
     buffer_index = 0;
     buffer_read_index = 0;
 }
+
+int is_key_pressed(char key) {
+    char last_key = keyboard_get_last_char();
+    
+    if (last_key >= 'A' && last_key <= 'Z') {
+        return (last_key - ('a' - 'A') == key);
+    }
+    
+    return (last_key == key);
+}

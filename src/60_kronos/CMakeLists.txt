@@ -79,6 +79,9 @@ add_executable(uiaos-kernel
 	src/libc/string.c
 	src/libcpp/stddef.cpp
 	src/musicplayer/musicplayer.cpp
+	src/libc/math.c
+	src/fun/donut.c
+	src/fun/menu.cpp
 )
 
 # Include directories for the kernel target

@@ -112,13 +112,36 @@ void itoa(int num, char *str, int base) {
 
 // https://www.geeksforgeeks.org/convert-floating-point-number-string/?ref=ml_lbp
 void ftoa(float num, char *str, int afterpoint) {
+    // Check if the number is negative
+    bool is_neg = false;
+    if (num < 0) {
+        is_neg = true;
+        num = -num; // Make it positive for processing
+    }
+    
     int ipart = (int) num;
     float fpart = num - (float) ipart;
-
-    itoa(ipart, str, 10);
     
-    int i = strlen(str);
-
+    // Handle integer part
+    int i = 0;
+    if (ipart == 0) {
+        str[i++] = '0';
+    } else {
+        itoa(ipart, str, 10);
+        i = strlen(str);
+    }
+    
+    // Add negative sign if needed
+    if (is_neg) {
+        // Shift characters to make room for the negative sign
+        for (int j = i; j >= 0; j--) {
+            str[j + 1] = str[j];
+        }
+        str[0] = '-';
+        i++;
+    }
+    
+    // Handle fractional part
     if (afterpoint != 0) {
         str[i] = '.';
         i++;
@@ -129,7 +152,7 @@ void ftoa(float num, char *str, int afterpoint) {
             fpart -= frac;
         }
     }
-
+    
     str[i] = '\0';
 }
 

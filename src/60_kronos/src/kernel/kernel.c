@@ -57,6 +57,5 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     sleep_interrupt(1000);
     printf("[%d]: Slept using interrupts.\n", counter++);
 
-
     return kernel_main();
 }
