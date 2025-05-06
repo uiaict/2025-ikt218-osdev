@@ -20,8 +20,11 @@ gdt_flush:
 
 [GLOBAL idt_flush]    ; Allows the C code to call idt_flush.
 
+<<<<<<< HEAD:src/12_summernerds/src/arch/i386/gdt.asm
+=======
 idt_flush:
    mov eax, [esp+4]  ; Get the pointer to the IDT, passed as a parameter.
    lidt [eax]        ; Load the IDT pointer.
    ret
 
+>>>>>>> 88dd27d724e8ebadce9fa19d22b22ef2489674e7:src/12_summernerds/src/arch/i386/descriptor_tables.asm
