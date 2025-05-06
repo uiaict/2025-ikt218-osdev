@@ -176,7 +176,8 @@ void draw_game(uint grid[ROWS][COLS])
     }
 }
 
-/ Moves the ball, deals with collisions, sets game speed, updates score.void update_ball(uint grid[ROWS][COLS])
+// Moves the ball, deals with collisions, sets game speed, updates score.
+void update_ball(uint grid[ROWS][COLS])
 {
     // clear previous ball position
     for (uint y = ball.y; y < ball.y + BALL_SIZE; y++)
