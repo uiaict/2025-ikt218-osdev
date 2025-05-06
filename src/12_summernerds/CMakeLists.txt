@@ -93,13 +93,18 @@ add_executable(uiaos-kernel
 )
 
 
+# Assembly (NASM)
 add_library(gdt_asm OBJECT src/arch/i386/gdt.asm)
 set_target_properties(gdt_asm PROPERTIES LANGUAGE ASM_NASM)
-target_link_libraries(uiaos-kernel gdt_asm)
-set_source_files_properties(src/arch/i386/gdt.asm PROPERTIES LANGUAGE ASM_NASM)
-set_source_files_properties(src/arch/i386/ISR.asm PROPERTIES LANGUAGE ASM_NASM)
+
 add_library(isr_asm OBJECT src/arch/i386/ISR.asm)
-target_link_libraries(uiaos-kernel isr_asm)
+set_target_properties(isr_asm PROPERTIES LANGUAGE ASM_NASM)
+
+add_library(idt_asm OBJECT src/arch/i386/IDT.asm)
+set_target_properties(idt_asm PROPERTIES LANGUAGE ASM_NASM)
+
+# Link alle ASM-libraries til hovedkernel
+target_link_libraries(uiaos-kernel gdt_asm isr_asm idt_asm)
 
 
 

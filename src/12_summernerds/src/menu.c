@@ -72,7 +72,7 @@ void handle_menu()
     {
         print_menu();
         char choice = get_key();
-        printf("%d", choice);
+        printf("%c", choice); //bruk %c for char, %d er for int
         printf("\n");
 
         switch (choice)

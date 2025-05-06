@@ -4,132 +4,85 @@
 #include "i386/interruptRegister.h"
 #include "screen.h"
 
+bool shiftPressed = false;
+bool capsEnabled = false;
+
+char small_scancode_ascii[128] = {
+    0,  27, '1','2','3','4','5','6','7','8','9','0','-','=','\b',
+    '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n', 0,
+    'a','s','d','f','g','h','j','k','l',';','\'','`', 0, '\\',
+    'z','x','c','v','b','n','m',',','.','/', 0, '*', 0, ' ', 0,
+};
+
+char large_scancode_ascii[128] = {
+    0,  27, '!','@','#','$','%','^','&','*','(',')','_','+','\b',
+    '\t','Q','W','E','R','T','Y','U','I','O','P','{','}','\n', 0,
+    'A','S','D','F','G','H','J','K','L',':','"','~', 0, '|',
+    'Z','X','C','V','B','N','M','<','>','?', 0, '*', 0, ' ', 0,
+};
+
+char scanCodeToASCII(uint8_t* scancode) {
+    if (*scancode >= 128) return 0;
+    bool upper = (shiftPressed && !capsEnabled) || (!shiftPressed && capsEnabled);
+    return upper ? large_scancode_ascii[*scancode] : small_scancode_ascii[*scancode];
+}
+
 void irq1_keyboard_handler(registers_t *regs, void *ctx)
 {
-    printf("IRQ1 handler triggered!\n");
     uint8_t scancode = inb(0x60);
-    char ascii = scanCodeToASCII(&scancode);
 
-    if (ascii != 0 && ascii != 2 && ascii != 3)
+    switch (scancode)
     {
-        char msg[2] = {ascii, '\0'};
-        printf(msg); // Eller bruk printf
+        // Shift pressed
+        case 0x2A: // Left Shift
+        case 0x36: // Right Shift
+            shiftPressed = true;
+            break;
+
+        // Shift released
+        case 0xAA: // Left Shift
+        case 0xB6: // Right Shift
+            shiftPressed = false;
+            break;
+
+        // Caps Lock toggle
+        case 0x3A:
+            capsEnabled = !capsEnabled;
+            break;
+
+        // Backspace
+        case 0x0E:
+            printf("\b \b"); // visuell sletting
+            break;
+
+        // Enter
+        case 0x1C:
+            printf("\n");
+            break;
+
+        // Tab
+        case 0x0F:
+            printf("    "); // fire mellomrom
+            break;
+
+        // Escape
+        case 0x01:
+            printf("[ESC]");
+            break;
+
+        default:
+            if (scancode < 128)
+            {
+                char ascii = scanCodeToASCII(&scancode);
+                if (ascii != 0 && ascii != 2 && ascii != 3)
+                {
+                    char msg[2] = {ascii, '\0'};
+                    printf(msg);
+                }
+            }
+            break;
     }
 
     (void)regs;
     (void)ctx;
-}
-
-bool shiftPressed = false;
-bool capsEnabled = false;
-
-// 1. Scancode-tabell
-char small_scancode_ascii[128] =
-    {
-        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
-        '=', '-', '+', '*', '+', '?', '!', 'a', 'b', 'c',
-        'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
-        'x', 'z', 'y', '.', ',', ' '
-
-};
-
-char large_scancode_ascii[128] =
-    {
-        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
-        '=', '-', '+', '*', '+', '?', '!', 'A', 'B', 'C',
-        'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
-        'X', 'Z', 'Y', '.', ',', ' '
-
-};
-
-// 2. Buffer for tastetrykk
-// char key_buffer[256];
-// int key_index = 0;
-
-// switch Casene
-char scanCodeToASCII(unsigned char *scanCode)
-{
-    unsigned char word = *scanCode;
-    switch (word) ///////hvilke flere caser trenger jeg? tab pressed(0x0F)???? og released(0x8F)??????
-    {
-    case 0x3A: // CapsLock pressed
-        capsEnabled = !capsEnabled;
-        return 0;
-
-    case 0xBA: // CapsLock released
-        capsEnabled = !capsEnabled;
-        return 0;
-
-    case 0x53: // delete pressed
-        return 0;
-
-    case 0xD3: // delete released
-        return 0;
-
-    case 0x39: // space pressed
-        return 3;
-
-    case 0x1C: // enter pressed
-        return 2;
-
-    case 0x9C: // enter released
-        return 2;
-
-    case 0x2A: // Left shift pressed
-        shiftPressed = true;
-        return 0;
-
-    case 0xAA: // left shift released
-        shiftPressed = false;
-        return 0;
-
-    case 0x36: /// right shift pressed
-        shiftPressed = true;
-        return 0;
-
-    case 0xB6: // right shift released
-        shiftPressed = false;
-        return 0;
-
-    case 0x48: // cursor up
-        return 0;
-
-    case 0x50: // cursor down
-        return 0;
-
-    case 0x49: // cursor høyre
-        return 0;
-
-    case 0x4B: // cursor venstre
-        return 0;
-
-    case 0x01: // esc pressed
-        return 0;
-
-    case 0x81: // esc released
-        return 0;
-
-    case 0x0E: // backspce pressed
-        return 0;
-
-    case 0x8E: // backspce released
-        return 0;
-
-    default:
-
-        if (word < 128)
-        {
-            if (capsEnabled ^ shiftPressed)
-            {
-                return large_scancode_ascii[word];
-            }
-            else
-            {
-                return small_scancode_ascii[word];
-            }
-        }
-        return 0;
-    }
 }
