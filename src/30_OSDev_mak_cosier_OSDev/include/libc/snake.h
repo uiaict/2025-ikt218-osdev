@@ -1,4 +1,4 @@
-// games/snake.h
+
 #ifndef SNAKE_H
 #define SNAKE_H
 
@@ -11,7 +11,7 @@
 
 typedef enum { DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT } Direction;
 
-// Call this after all inits; never returns
+
 void snake_run(void);
 
-#endif // SNAKE_H
+#endif 
