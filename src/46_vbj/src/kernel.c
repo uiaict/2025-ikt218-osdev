@@ -9,7 +9,7 @@
 #include "memory.h" 
 #include "pit.h"
 
-extern uint32_t end; // This is defined in arch/i386/linker.ld
+extern uint32_t end; // Defined in arch/i386/linker.ld
 
 
 struct multiboot_info {

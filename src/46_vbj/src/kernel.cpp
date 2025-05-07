@@ -91,5 +91,7 @@ int kernel_main(){
     for (uint32_t i = 0; i < n_songs; i++) {
         delete songs[i];  
     }
-    delete player;  
+    delete player; 
+    
+    printf("\n\n Try to write something!:\n");
 }

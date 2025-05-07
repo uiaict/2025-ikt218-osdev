@@ -2,7 +2,7 @@
 #include "terminal.h"  
 #include "libc/stdint.h"
 
-// PANIC FUNCTION
+// PANIC FUNCTION 
 void panic(const char *message)
 {
     // Print the panic message
