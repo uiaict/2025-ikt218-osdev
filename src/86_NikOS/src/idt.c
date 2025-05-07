@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include "stdint.h"
 
 struct idt_entry {
     uint16_t base_low;

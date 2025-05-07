@@ -1,47 +1,19 @@
 extern isr_handler
 
 %macro ISR_NOERR 1
-global isr%1
-isr%1:
-    cli
-    push dword 0         ; Dummy error code
-    push dword %1        ; Interrupt number
+  global isr%1
+  isr%1:
+    push byte 0
+    push  %1
     jmp isr_common_stub
 %endmacro
 
 %macro ISR_ERR 1
-global isr%1
-isr%1:
-    cli
-    push dword %1        ; Interrupt number (real error code on stack)
+  global isr%1
+  isr%1:
+    push %1
     jmp isr_common_stub
 %endmacro
-
-section .text
-isr_common_stub:
-    pusha                 ; Push registers in this order:
-                          ; edi, esi, ebp, esp, ebx, edx, ecx, eax
-
-    push dword [esp + 32] ; Push original esp before pusha (so it's preserved)
-    push dword [esp + 32] ; Push original ebp
-    push dword [esp + 32] ; Push original esi
-    push dword [esp + 32] ; Push original edi
-
-    ; Push pointer to struct (esp points to eax)
-    mov eax, esp
-    push eax
-    call isr_handler
-    add esp, 4
-
-    ; Remove manually-pushed edi/esi/ebp/esp
-    add esp, 16
-
-    popa
-    add esp, 8
-    sti
-    iret
-
-
 
 ; ISRs 0–31
 ISR_NOERR 0
@@ -76,3 +48,34 @@ ISR_NOERR 28
 ISR_NOERR 29
 ISR_NOERR 30
 ISR_NOERR 31
+
+extern isr_handler
+
+section .text
+isr_common_stub:
+    pusha
+
+    mov eax, ds
+    push eax
+
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    mov eax, esp
+    push eax
+    call isr_handler
+    add esp, 4
+
+    pop eax
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    popa
+    add esp, 8
+    sti
+    iret

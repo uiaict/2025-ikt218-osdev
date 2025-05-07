@@ -1,83 +1,24 @@
-#include <stddef.h>
-#include <stdint.h>
+#include "stddef.h"
+#include "stdint.h"
 #include "terminal.h"
+#include "libc/conv.h"
+#include "libc/string.h"
 
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
 static uint16_t* const VGA_BUFFER = (uint16_t*)0xB8000;
-
-enum vga_color {
-	VGA_COLOR_BLACK = 0,
-	VGA_COLOR_BLUE = 1,
-	VGA_COLOR_GREEN = 2,
-	VGA_COLOR_CYAN = 3,
-	VGA_COLOR_RED = 4,
-	VGA_COLOR_MAGENTA = 5,
-	VGA_COLOR_BROWN = 6,
-	VGA_COLOR_LIGHT_GREY = 7,
-	VGA_COLOR_DARK_GREY = 8,
-	VGA_COLOR_LIGHT_BLUE = 9,
-	VGA_COLOR_LIGHT_GREEN = 10,
-	VGA_COLOR_LIGHT_CYAN = 11,
-	VGA_COLOR_LIGHT_RED = 12,
-	VGA_COLOR_LIGHT_MAGENTA = 13,
-	VGA_COLOR_YELLOW = 14,
-	VGA_COLOR_WHITE = 15,
-};
 
 static size_t terminal_row;
 static size_t terminal_column;
 static uint8_t terminal_color;
 static uint16_t* terminal_buffer;
 
-size_t strlen(const char* str) {
-    size_t len = 0;
-    while (str[len] != '\0') {
-        len++;
-    }
-    return len;
-}
-
-void itoa(int value, char* str) {
-    char* ptr = str;
-    char* ptr1 = str;
-    char tmp_char;
-    int tmp_value;
-
-    if (value == 0) {
-        *ptr++ = '0';
-        *ptr = '\0';
-        return;
-    }
-
-    if (value < 0) {
-        *ptr++ = '-';
-        value = -value;
-        ptr1 = ptr;
-    }
-
-    while (value) {
-        tmp_value = value;
-        value /= 10;
-        *ptr++ = '0' + (tmp_value - value * 10);
-    }
-
-    *ptr = '\0';
-
-    while (ptr1 < --ptr) {
-        tmp_char = *ptr;
-        *ptr = *ptr1;
-        *ptr1 = tmp_char;
-        ptr1++;
-    }
-}
-
 uint8_t get_color(uint8_t fg, uint8_t bg) {
     return (bg << 4) | (fg & 0x0F);
 }
 
 uint16_t create_vga_entry(char c, uint8_t color) {
-    return (uint16_t)(color << 8 | c);
+    return (uint16_t)(color << 8 | (uint8_t)c);
 }
 
 void terminal_initialize() {
@@ -148,9 +89,15 @@ void terminal_writestring(const char* data) {
     terminal_write(data, strlen(data));
 }
 
-void terminal_writeint(int value) {
+void terminal_writeint(int32_t value) {
     char buffer[32];
     itoa(value, buffer);
+    terminal_writestring(buffer);
+}
+
+void terminal_writeuint(uint32_t value) {
+    char buffer[32];
+    uitoa(value, buffer);
     terminal_writestring(buffer);
 }
 
@@ -163,6 +110,7 @@ void terminal_setcursor(size_t x, size_t y) {
         terminal_column = x;
         terminal_row = y;
     }
+    move_cursor(terminal_column, terminal_row);
 }
 
 void terminal_clear() {
@@ -174,4 +122,66 @@ void terminal_clear() {
     }
     terminal_row = 0;
     terminal_column = 0;
+}
+
+void terminal_hello() {
+    terminal_writestring("Hello, World!\n> ");
+}
+
+size_t terminal_get_column(void) {
+    return terminal_column;
+}
+
+size_t terminal_get_row(void) {
+    return terminal_row;
+}
+
+void terminal_putchar_color(char c, uint8_t color) {
+    if (c == '\n') {
+        terminal_row++;
+        terminal_column = 0;
+    } else {
+        terminal_putentryat(c, color, terminal_column, terminal_row);
+        terminal_column++;
+    }
+    if (terminal_column >= VGA_WIDTH) {
+        terminal_column = 0;
+        terminal_row++;
+    }
+    if (terminal_row >= VGA_HEIGHT) {
+        scroll();
+        terminal_row = VGA_HEIGHT - 1;
+    }
+    move_cursor(terminal_column, terminal_row);
+}
+
+void terminal_write_color(const char* data, size_t size, uint8_t color) {
+    for (size_t i = 0; i < size; i++) {
+        terminal_putchar_color(data[i], color);
+    }
+}
+
+void terminal_writestring_color(const char* data, uint8_t color) {
+    terminal_write_color(data, strlen(data), color);
+}
+
+void terminal_writeint_color(int32_t value, uint8_t color) {
+    char buffer[32];
+    itoa(value, buffer);
+    terminal_writestring_color(buffer, color);
+}
+
+void terminal_writeuint_color(uint32_t value, uint8_t color) {
+    char buffer[32];
+    uitoa(value, buffer);
+    terminal_writestring_color(buffer, color);
+}
+
+void clear_input_line() {
+    for (size_t i = 0; i < VGA_WIDTH; i++) {
+        terminal_putentryat(' ', terminal_color, i, terminal_row);
+    }
+    terminal_column = 0;
+    move_cursor(terminal_column, terminal_row);
+    terminal_writestring("> ");
 }

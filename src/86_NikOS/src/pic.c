@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include "stdint.h"
 #include "ports.h"
 
 #define PIC1         0x20    // Master PIC

@@ -9,12 +9,7 @@
 extern void keyboard_handler(); // Declare it
 
 void irq_handler(struct isr_regs* regs) {
-    terminal_writestring("IRQ: ");
-    terminal_writeint(regs->int_no);
-    terminal_putchar('\n');
-    
     if (regs->int_no == 33) {
-        terminal_writestring("IRQ!\n");
         keyboard_handler(); // IRQ1 = Keyboard
     }
 

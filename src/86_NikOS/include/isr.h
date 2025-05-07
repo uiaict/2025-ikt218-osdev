@@ -3,11 +3,22 @@
 
 #include <stdint.h>
 
-struct isr_regs {
-    uint32_t eax, ecx, edx, ebx;
-    uint32_t esp, ebp, esi, edi;
-    uint32_t int_no, err_code;
-};
+typedef struct isr_regs {
+    uint32_t edi;
+    uint32_t esi;
+    uint32_t ebp;
+    uint32_t esp_dummy; // just from pusha, not real ESP
+    uint32_t ebx;
+    uint32_t edx;
+    uint32_t ecx;
+    uint32_t eax;
+
+    uint32_t ds;         // pushed manually after pusha
+    uint32_t int_no;     // pushed manually
+    uint32_t err_code;   // pushed manually
+} isr_regs_t;
+
+typedef void (*isr_t)(isr_regs_t*, void*);
 
 void isr_handler(struct isr_regs* regs);
 void isr_install(void);

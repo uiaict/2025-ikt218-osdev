@@ -1,8 +1,9 @@
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
-#include <multiboot2.h>
-#include <terminal.h>
+#include "libc/string.h"
+#include "multiboot2.h"
+#include "terminal.h"
 #include "gdt.h"
 #include "idt.h"
 #include "isr.h"
@@ -10,6 +11,11 @@
 #include "irq.h"
 #include "keyboard.h"
 #include "ports.h"
+#include "welcome.h"
+#include "memory.h"
+#include "paging.h"
+#include "pit.h"
+#include "rng.h"
 
 
 struct multiboot_info {
@@ -17,6 +23,8 @@ struct multiboot_info {
     uint32_t reserved;
     struct multiboot_tag *first;
 };
+
+extern uint32_t end;
 
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
@@ -27,9 +35,15 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     irq_install();
 
     keyboard_install();
+
+    kernel_memory_init(&end);
+    paging_init();
+    enable_virtual_memory();
+
+    pit_init();
     
     terminal_initialize();
-    terminal_writestring("Hello, World!\n");
+    welcome_message();
 
     __asm__ __volatile__("sti");
 
