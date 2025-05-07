@@ -99,7 +99,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
                             break;
                         case 'q'|'Q':
                             terminal_clear();
-                            printf("Shutting down!");
+                            printf("Shutting down!\n");
                             return 0;
                     }
                     break;
