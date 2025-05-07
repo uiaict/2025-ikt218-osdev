@@ -2,8 +2,9 @@
 #include "kernel/idt.h"
 #include "kernel/keyboard.h"
 #include "kernel/pit.h"
-#include "libc/stdio.h"
 #include "kernel/system.h"
+#include "kernel/keyboard.h"
+#include "libc/stdio.h"
 #include "shell/command.h"
 #include "shell/shell.h"
 
@@ -41,9 +42,7 @@ void keyboard_handler() {
     // Convert scancode to ASCII
     if (scancode < SCANCODE_MAX) {
       char ascii = scancode_to_ascii[scancode];
-      if (shell_active) {
-	      shell_input(ascii);
-      }
+      input_route_keystroke(ascii);
     }
   }
 
@@ -64,6 +63,8 @@ void init_interrupts() {
   set_idt_entry(IRQ0, (uint32_t)pit_interrupt_handler_wrapper);
   set_idt_entry(IRQ1, (uint32_t)keyboard_handler_wrapper);
   set_idt_entry(IRQ7, (uint32_t)spurious_interrupt_handler_wrapper);
+
+  input_init();
 
   load_idt();
 }

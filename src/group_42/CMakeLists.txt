@@ -25,7 +25,7 @@ include(FetchContent)
 ########################################
 # UiAOS: Variables
 ########################################
-set(OS_ARCH_TARGET "i386")  # x86_64 
+set(OS_ARCH_TARGET "i386") # x86_64 
 set(OS_NAME "UiA Operating System")
 set(OS_KERNEL_NAME "uiaos")
 set(OS_KERNEL_BINARY "kernel.bin")
@@ -42,13 +42,13 @@ set(CMAKE_C_STANDARD 99)
 ########################################
 set(CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS "s;S;asm")
 if(OS_ARCH_TARGET STREQUAL "i386")
-	set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf32")
+    set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf32")
 elseif(OS_ARCH_TARGET STREQUAL "x86_64")
-	set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf64")
+    set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf64")
 endif()
 
 # Command to compile NASM files
-set(CMAKE_ASM_NASM_COMPILE_OBJECT 
+set(CMAKE_ASM_NASM_COMPILE_OBJECT
     "<CMAKE_ASM_NASM_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
 
 ########################################
@@ -57,26 +57,27 @@ set(CMAKE_ASM_NASM_COMPILE_OBJECT
 set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/linker.ld")
 
 # Add executable target for the kernel
-add_executable(uiaos-kernel 
-	src/multiboot2.asm # TODO: Add multiboot2 support
-	src/system.c
+add_executable(uiaos-kernel
+    src/multiboot2.asm # TODO: Add multiboot2 support
+    src/system.c
     src/kernel.c
-	src/libc/string.c
-	src/libc/stdio.c
-	src/gdt.c
-	src/gdt.asm
-	src/idt.c
-	src/interrupt_wrappers.asm
-	src/interrupts.c
-	src/pic.c
-	src/memory/memory.c
-	src/memory/malloc.c
-	src/memory/memutils.c
-	src/pit.c
-	src/apps/shell/shell.c
-	src/apps/shell/command.c
-	src/apps/song_player/song_player.c
-	src/apps/song_player/song_commands.c
+    src/libc/string.c
+    src/libc/stdio.c
+    src/gdt.c
+    src/gdt.asm
+    src/idt.c
+    src/interrupt_wrappers.asm
+    src/interrupts.c
+    src/pic.c
+    src/memory/memory.c
+    src/memory/malloc.c
+    src/memory/memutils.c
+    src/pit.c
+    src/keyboard.c
+    src/apps/shell/shell.c
+    src/apps/shell/command.c
+    src/apps/song_player/song_player.c
+    src/apps/song_player/song_commands.c
 )
 
 # Include directories for the kernel target
@@ -98,12 +99,12 @@ target_link_options(uiaos-kernel PUBLIC
 
 
 target_link_options(
-	uiaos-kernel
-	PUBLIC "-ffreestanding"
-	PUBLIC "-nostdlib"
-	PUBLIC "-static"
-	PUBLIC "-pie"
-	PUBLIC "-T${OS_KERNEL_LINKER}"
+    uiaos-kernel
+    PUBLIC "-ffreestanding"
+    PUBLIC "-nostdlib"
+    PUBLIC "-static"
+    PUBLIC "-pie"
+    PUBLIC "-T${OS_KERNEL_LINKER}"
 )
 
 
@@ -133,22 +134,22 @@ set(ISO_DIR ${CMAKE_CURRENT_BINARY_DIR}/iso)
 set(LIMINE_CONFIG_DIR ${CMAKE_SOURCE_DIR})
 set(LIMINE_DIR /usr/local/limine)
 add_custom_target(
-	uiaos-create-image
-	COMMAND rm -rf ${ISO_DIR}
-	COMMAND mkdir -p ${ISO_DIR}
-	COMMAND cp -v $<TARGET_FILE:uiaos-kernel> 
-	 	${LIMINE_CONFIG_DIR}/limine.cfg ${LIMINE_DIR}/limine-bios.sys ${LIMINE_DIR}/limine-bios-cd.bin
-		${LIMINE_DIR}/limine-uefi-cd.bin ${ISO_DIR}/
-	COMMAND mkdir -p ${ISO_DIR}/EFI/BOOT
-	COMMAND cp -v ${LIMINE_DIR}/BOOTX64.EFI ${ISO_DIR}/EFI/BOOT/
-	COMMAND cp -v ${LIMINE_DIR}/BOOTIA32.EFI ${ISO_DIR}/EFI/BOOT/
-	COMMAND xorriso -as mkisofs -b limine-bios-cd.bin
-	 	-no-emul-boot -boot-load-size 4 -boot-info-table
-	 	--efi-boot limine-uefi-cd.bin
-	 	-efi-boot-part --efi-boot-image --protective-msdos-label
-	 	${ISO_DIR} -o ${CMAKE_CURRENT_BINARY_DIR}/kernel.iso
-	COMMAND ${LIMINE_DIR}/limine bios-install ${CMAKE_CURRENT_BINARY_DIR}/kernel.iso
-	#COMMAND sudo rm -rf ${ISO_DIR}
-	DEPENDS create-fat32-disk uiaos-kernel
-	VERBATIM
+    uiaos-create-image
+    COMMAND rm -rf ${ISO_DIR}
+    COMMAND mkdir -p ${ISO_DIR}
+    COMMAND cp -v $<TARGET_FILE:uiaos-kernel>
+    ${LIMINE_CONFIG_DIR}/limine.cfg ${LIMINE_DIR}/limine-bios.sys ${LIMINE_DIR}/limine-bios-cd.bin
+    ${LIMINE_DIR}/limine-uefi-cd.bin ${ISO_DIR}/
+    COMMAND mkdir -p ${ISO_DIR}/EFI/BOOT
+    COMMAND cp -v ${LIMINE_DIR}/BOOTX64.EFI ${ISO_DIR}/EFI/BOOT/
+    COMMAND cp -v ${LIMINE_DIR}/BOOTIA32.EFI ${ISO_DIR}/EFI/BOOT/
+    COMMAND xorriso -as mkisofs -b limine-bios-cd.bin
+    -no-emul-boot -boot-load-size 4 -boot-info-table
+    --efi-boot limine-uefi-cd.bin
+    -efi-boot-part --efi-boot-image --protective-msdos-label
+    ${ISO_DIR} -o ${CMAKE_CURRENT_BINARY_DIR}/kernel.iso
+    COMMAND ${LIMINE_DIR}/limine bios-install ${CMAKE_CURRENT_BINARY_DIR}/kernel.iso
+    #COMMAND sudo rm -rf ${ISO_DIR}
+    DEPENDS create-fat32-disk uiaos-kernel
+    VERBATIM
 )

@@ -2,20 +2,18 @@
 #include "libc/stdio.h"
 #include "kernel/system.h"
 #include "libc/stdint.h"
-
-bool shell_active = false;
+#include "kernel/keyboard.h"
 
 char input_buffer[SCREEN_WIDTH];
 
 void shell_init() {
-  shell_active = true;
-
   clear_shell();
 
   cursor_enable(0, 0);
   update_cursor(0, 1);
 
   init_commands();
+  input_set_keyboard_subscriber(shell_input);
 }
 
 void clear_shell() {

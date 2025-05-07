@@ -5,7 +5,37 @@
 
 #define SCANCODE_MAX 0x58
 
-// Basic scancode to ASCII lookup table (US keyboard layout)
+/**
+ * @brief Function pointer type for keyboard callback functions.
+ * @param ch The character that was pressed.
+ */
+typedef void (*keyboard_callback_t)(char ch);
+
+/**
+ * @brief Initialize the keyboard input system.
+ * This function sets up the necessary structures and configurations for
+ * keyboard input.
+ */
+void input_init();
+
+/**
+ * @brief Set the keyboard subscriber callback function.
+ * @param callback The function to be called when a key is pressed.
+ */
+void input_set_keyboard_subscriber(keyboard_callback_t callback);
+
+/**
+ * @brief Route a keystroke to the current keyboard subscriber.
+ * @param ch The character to be sent to the subscriber.
+ */
+void input_route_keystroke(char ch);
+
+/**
+ * @brief Convert a scancode to its corresponding ASCII character.
+ * @param scancode The scancode to be converted.
+ * @return The corresponding ASCII character, or 0 if the scancode is invalid.
+ */
+
 static const char scancode_to_ascii[SCANCODE_MAX] = {
     0,    // 0x00 - Empty
     0x1B, // 0x01 - ESC
