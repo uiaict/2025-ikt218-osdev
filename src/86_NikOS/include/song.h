@@ -1,6 +1,6 @@
 #ifndef SONG_H
 #define SONG_H
-#include <cstdint>
+#include "libc/stdint.h"
 #include "frequencies.h"
 
 // Define a struct to represent a single musical note
@@ -24,6 +24,23 @@ typedef struct {
 // Returns a pointer to a newly created SongPlayer object
 SongPlayer* create_song_player();
 
+static Note starwars_theme[] = {
+    // Opening phrase
+    {A4, 500}, {A4, 500}, {A4, 500}, 
+    {F4, 375}, {C5, 125}, 
+    {A4, 500}, {F4, 375}, {C5, 125}, {A4, 1000}, 
+    {E5, 500}, {E5, 500}, {E5, 500}, 
+    {F5, 375}, {C5, 125},
+    
+    // Next phrase
+    {G4, 500}, {F4, 375}, {C5, 125}, {A4, 1000}, 
+    {A5, 500}, {A4, 375}, {A4, 125}, 
+    {A5, 500}, {G5, 375}, {F5, 125}, {E5, 125}, {D5, 125}, 
+    {C5, 250}, {B4, 250}, {A4, 500},
+
+    // End note
+    {R, 500}
+};
 
 static Note music_1[] = {
     {E5, 250}, {R, 125}, {E5, 125}, {R, 125}, {E5, 125}, {R, 125},
@@ -78,5 +95,21 @@ static Note music_6[] = {
     {A_SHARP4, 250}, {A_SHARP4, 250}, {A_SHARP4, 250}, {F5, 250}, {D5, 250}, {C5, 250}, {A_SHARP4, 500},
     {A_SHARP4, 250}, {A_SHARP4, 250}, {A_SHARP4, 250}, {F5, 250}, {D5, 250}, {C5, 250}, {A_SHARP4, 500},
 };
+
+void play_song_impl(Song *song);
+void enable_speaker();
+void disable_speaker();
+void play_sound(uint32_t frequency);
+void play_song(Song *song);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void play_star_wars();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

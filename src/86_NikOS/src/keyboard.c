@@ -7,6 +7,7 @@
 #include "rng.h"
 #include "libc/stdbool.h"
 #include "libc/stddef.h"
+#include "song.h"
 
 int32_t shift_pressed = 0;
 static bool extended_scancode = false;
@@ -166,6 +167,9 @@ void execute_command(const char* cmd) {
         } else {
             terminal_writestring_color("Invalid roll command format. Use <count>d<sides>.\n", get_color(VGA_COLOR_RED, VGA_COLOR_BLACK));
         }
+    } else if (strncmp(argv[0], "music", 5) == 0) {
+        terminal_writestring_color("Execute order 66\n", get_color(VGA_COLOR_RED, VGA_COLOR_BLACK));
+        play_star_wars();
     } else {
         terminal_writestring("Unknown command: ");
         terminal_writestring(argv[0]);
