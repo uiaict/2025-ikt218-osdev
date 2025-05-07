@@ -66,8 +66,13 @@ typedef struct {
 // Function declarations
 SongPlayer* create_song_player(void);
 
-// Low-level sound control functions - for internal use only
-void speaker_control(bool on);  // Replace individual on/off functions
+// Background music control functions
+void start_background_music(Song *song, bool loop);
+void stop_background_music(void);
+void song_tick(uint32_t tick_ms);
+
+// Low-level sound control functions
+void speaker_control(bool on);
 void set_frequency(uint32_t hz);
 void delay_ms(uint32_t ms);
 

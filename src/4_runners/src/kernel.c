@@ -19,7 +19,6 @@
 #define COLOR_SCORE 0x0B      // Cyan
 #define COLOR_FOOD 0x0C
 
-
 /* ==========================================================================
    External Symbols and Declarations
    ========================================================================== */
@@ -31,6 +30,8 @@ extern char end;
 void terminal_write(const char *str);
 void terminal_put_char(char c);
 void initkeyboard(void);
+void sleep_busy(int milliseconds);
+
 
 /* ==========================================================================
    Multiboot Structure
@@ -40,6 +41,25 @@ struct multiboot_info
     uint32_t size;
     uint32_t reserved;
     struct multiboot_tag *first;
+};
+
+/* ==========================================================================
+   Snake Game Background Music
+   ========================================================================== */
+static Note snake_music[] = {
+    {.frequency = NOTE_C4, .duration = 150}, // C4 - Start low
+    {.frequency = NOTE_E4, .duration = 150}, // E4 - Quick jump
+    {.frequency = NOTE_G4, .duration = 300}, // G4 - Hold for emphasis
+    {.frequency = NOTE_E4, .duration = 150}, // E4 - Descend
+    {.frequency = NOTE_D4, .duration = 150}, // D4 - Continue descending
+    {.frequency = NOTE_E4, .duration = 150}, // E4 - Bounce back
+    {.frequency = NOTE_G4, .duration = 150}, // G4 - Ascend again
+    {.frequency = NOTE_C5, .duration = 150}  // C5 - End high
+};
+
+static Song snake_song = {
+    .notes = snake_music,
+    .length = sizeof(snake_music) / sizeof(Note)
 };
 
 /* ==========================================================================
@@ -147,6 +167,17 @@ int kernel_main(void)
     asm volatile("int $1");
     asm volatile("int $2");
 
+//   int counter = 0;
+//   while (1) {
+//       printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+//       sleep_busy(1000);
+//       printf("[%d]: Slept using busy-waiting.\n", counter++);
+ 
+//       printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+//       sleep_interrupt(1000);
+//       printf("[%d]: Slept using interrupts.\n", counter++);
+//   }
+
     terminal_write("Initializing Programmable Interval Timer (PIT)...\n");
     init_pit();
     verify_pit_channel2();
@@ -154,11 +185,6 @@ int kernel_main(void)
 
     // Add after PIT initialization
     terminal_write("Initializing PC Speaker...\n");
-    // Reset Channel 2 to known state
-    // outb(PIT_CMD_PORT, 0xB6);   // Channel 2, square wave mode
-    // outb(PIT_CHANNEL2_PORT, 0); // Low byte
-    // outb(PIT_CHANNEL2_PORT, 0); // High byte
-
     delay(5);
 
     terminal_write("Initializing memory...\n");
@@ -172,10 +198,10 @@ int kernel_main(void)
     speaker_control(true);
     // Sound player testing
     static Note test_notes[] = {
-        {.frequency = NOTE_C4, .duration = 1000},  // C4
-        {.frequency = NOTE_E4, .duration = 1000},  // E4
-        {.frequency = NOTE_G4, .duration = 1000},  // G4
-        {.frequency = NOTE_C5, .duration = 1000}   // C5
+        {.frequency = NOTE_C4, .duration = 500}, // C4
+        {.frequency = NOTE_E4, .duration = 500}, // E4
+        {.frequency = NOTE_G4, .duration = 500}, // G4
+        {.frequency = NOTE_C5, .duration = 500}  // C5
     };
 
     Song test_song = {
@@ -197,8 +223,8 @@ int kernel_main(void)
     delay(5);
 
     terminal_write("System initialized successfully!\n");
-    delay(5);
-   speaker_control(false); // Turn off speaker
+    delay(10);
+    speaker_control(false); // Turn off speaker
 
     // Enable interrupts globally
     asm volatile("sti");
@@ -208,12 +234,13 @@ menu_start:
        Display Menu
        ---------------------------------------------------------------------- */
     terminal_clear();
-    printf("Welcome to 4_runners!\n");
+    printf("Welcome to 4_runners Os!\n");
     printf("================\n\n");
     printf("Available Options:\n");
     printf("1. Snake Game\n");
-    printf("2. Memory Layout\n\n");
-    printf("Press 1-2 to select option...\n");
+    printf("2. Memory Layout\n");
+    printf("3. Play music\n\n");
+    printf("Press 1-3 to select option...\n");
 
     /* ----------------------------------------------------------------------
        Main Loop
@@ -221,6 +248,23 @@ menu_start:
     while (1)
     {
         char key = keyboard_getchar();
+       
+        if (key != 0) // Only play sound if a key is pressed
+        {
+            static Note feedback_note[] = {
+                {.frequency = NOTE_E4, .duration = 200}  // E4 - Short feedback sound
+            };
+            Song feedback_sound = {
+                .notes = feedback_note,
+                .length = sizeof(feedback_note) / sizeof(Note)
+            };
+            SongPlayer *feedback_player = create_song_player();
+            if (feedback_player)
+            {
+                feedback_player->play_song(&feedback_sound);
+                delay_ms(5); // Ensure the note finishes playing
+            }
+        }
         if (key == '1')
         {
             terminal_clear();
@@ -228,7 +272,7 @@ menu_start:
             printf("\n");
             printf("  ____       _    _         _          _   __     _____ \n");
             printf(" / ___|     | \\ | |       / \\       | | / /    | ____|\n");
-            printf(" \\_ \\     |  \\| |      / _ \\      |  | /     |  _|  \n");
+            printf(" \\_ \\      |  \\| |      / _ \\      |  | /     |  _|  \n");
             printf("  ___) |    | |\\  |     / ___ \\     | . \\     | |___ \n");
             printf(" |____/     |_| \\_|    /_/   \\_\\   |_|  \\_    |_____|\n");
             printf("\n");
@@ -266,6 +310,8 @@ menu_start:
                 terminal_clear();
                 snake->init();
                 set_game_mode(true);
+                // Start background music for Snake game
+                start_background_music(&snake_song, true);
 
                 bool running = true;
                 while (running)
@@ -274,7 +320,8 @@ menu_start:
                     {
                         // Game mode was disabled (e.g., by pressing ESC in snake.c)
                         running = false;
-                        goto menu_start; // Return to the menu
+                        stop_background_music(); // Stop music when exiting
+                        goto menu_start;         // Return to the menu
                     }
 
                     uint8_t input = keyboard_getchar();
@@ -294,6 +341,84 @@ menu_start:
             print_memory_layout();
             printf("\nPress any key to return to menu...\n");
 
+            while (keyboard_getchar() == 0)
+            {
+                asm volatile("hlt");
+            }
+            goto menu_start;
+        }
+        else if (key == '3')
+        {
+            terminal_clear();
+            terminal_set_color(COLOR_FOOD);
+            printf("Playing 'Twinkle, twinkle, little star' ...\n");
+            terminal_set_color(0x07); // Reset color
+            printf("=====================\n\n");
+            delay(5);
+            speaker_control(true);
+            static Note test_melody[] = {
+                // First verse: "Twinkle, twinkle, little star"
+                {.frequency = NOTE_C4, .duration = 500},  // Twin-
+                {.frequency = NOTE_C4, .duration = 500},  // -kle
+                {.frequency = NOTE_G4, .duration = 500},  // twin-
+                {.frequency = NOTE_G4, .duration = 500},  // -kle
+                {.frequency = NOTE_A4, .duration = 500},  // lit-
+                {.frequency = NOTE_A4, .duration = 500},  // -tle
+                {.frequency = NOTE_G4, .duration = 1000}, // star
+                {.frequency = 0,      .duration = 300},   // Rest
+        
+                // Second line: "How I wonder what you are"
+                {.frequency = NOTE_F4, .duration = 500},  // How
+                {.frequency = NOTE_F4, .duration = 500},  // I
+                {.frequency = NOTE_E4, .duration = 500},  // won-
+                {.frequency = NOTE_E4, .duration = 500},  // -der
+                {.frequency = NOTE_D4, .duration = 500},  // what
+                {.frequency = NOTE_D4, .duration = 500},  // you
+                {.frequency = NOTE_C4, .duration = 1000}, // are
+                {.frequency = 0,      .duration = 300},   // Rest
+        
+                // Third line: "Up above the world so high"
+                {.frequency = NOTE_G4, .duration = 500},  // Up
+                {.frequency = NOTE_G4, .duration = 500},  // a-
+                {.frequency = NOTE_F4, .duration = 500},  // -bove
+                {.frequency = NOTE_F4, .duration = 500},  // the
+                {.frequency = NOTE_E4, .duration = 500},  // world
+                {.frequency = NOTE_E4, .duration = 500},  // so
+                {.frequency = NOTE_D4, .duration = 1000}, // high
+                {.frequency = 0,      .duration = 300},   // Rest
+        
+                // Fourth line: "Like a diamond in the sky"
+                {.frequency = NOTE_G4, .duration = 500},  // Like
+                {.frequency = NOTE_G4, .duration = 500},  // a
+                {.frequency = NOTE_F4, .duration = 500},  // dia-
+                {.frequency = NOTE_F4, .duration = 500},  // -mond
+                {.frequency = NOTE_E4, .duration = 500},  // in
+                {.frequency = NOTE_E4, .duration = 500},  // the
+                {.frequency = NOTE_D4, .duration = 1000}, // sky
+                {.frequency = 0,      .duration = 300},   // Rest
+        
+             
+            };
+            Song test_song = {
+                .notes = test_melody,
+                .length = sizeof(test_melody) / sizeof(Note)
+            };
+            printf("\nTesting PC Speaker...\n");
+            SongPlayer *player = create_song_player();
+            if (player)
+            {
+                printf("Playing melody...\n");
+                player->play_song(&test_song);
+                printf("Melody complete.\n");
+            }
+            else
+            {
+                printf("Failed to create song player.\n");
+            }
+            delay(5);
+            printf("\nPress any key to return to menu...\n");
+    
+            speaker_control(false);
             while (keyboard_getchar() == 0)
             {
                 asm volatile("hlt");
@@ -345,45 +470,3 @@ int main(uint32_t structAddr, uint32_t magic, struct multiboot_info *mb_info_add
     return kernel_main();
 }
 
-/* ==========================================================================
-   Commented-Out Experimental Code (For Submission Context)
-   ========================================================================== */
-/*
- * Initial "Hello, World!" test
- * terminal_write("Hello, World!\n");
- *
- * Interrupt testing
- * asm volatile("int $0");
- * asm volatile("int $1");
- * asm volatile("int $2");
- *
- * Sleep testing with busy-waiting and interrupts
- * int counter = 0;
- * while (1) {
- *     printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
- *     sleep_busy(1000);
- *     printf("[%d]: Slept using busy-waiting.\n", counter++);
- *
- *     printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
- *     sleep_interrupt(1000);
- *     printf("[%d]: Slept using interrupts.\n", counter++);
- * }
- *
- * Sound player testing
- * static Note test_notes[] = {
- *     {440, 1000}, // A4 - 1 second
- *     {880, 1000}  // A5 - 1 second
- * };
- * Song test_song = {
- *     .notes = test_notes,
- *     .length = sizeof(test_notes) / sizeof(Note)
- * };
- * printf("\nTesting PC Speaker...\n");
- * SongPlayer *player = create_song_player();
- * if (player)
- * {
- *     printf("Playing test notes...\n");
- *     player->play_song(&test_song);
- *     printf("Test complete\n");
- * }
- */

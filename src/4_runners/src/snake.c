@@ -4,7 +4,8 @@
 #include "pit.h"
 #include "io.h"
 #include "irq.h"
-#include "libc/stdio.h"  
+#include "libc/stdio.h"
+#include "song.h" // Include song.h for song_tick
 
 // Forward declarations of static functions
 static void init_impl(void);
@@ -54,7 +55,7 @@ static struct {
     uint8_t color_index;       // For color cycling
 } game_state;
 
-// Color definitions 
+// Color definitions
 #define COLOR_BACKGROUND  0x00  // Black
 #define COLOR_BORDER      0x09  // Bright Blue
 #define COLOR_SNAKE_HEAD  0x0A  // Bright Green
@@ -286,7 +287,6 @@ static void draw_border(void)
     terminal_set_color(0x07);
 }
 
-
 static void place_food(void) {
     static uint32_t seed = 12345;
     uint8_t x, y;
@@ -498,6 +498,8 @@ void snake_tick(void) {
             game_state.tick_accumulator = 0;
             update_snake();
         }
+        // Advance background music
+        song_tick(TICK_INCREMENT);
     }
 }
 
