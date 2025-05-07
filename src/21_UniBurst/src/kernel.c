@@ -13,7 +13,7 @@
 #include "memory.h"
 #include "kernelutils.h"
 #include "pit.h"
-#include "songPlayer/frequencies.h"
+#include "applications/frequencies.h"
 
 
 extern uint32_t end; 
@@ -44,21 +44,6 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     asm volatile("sti");
 
     
-    char test_buffer[16];
-    uint32_t test_value = 0x12345678;
-    hex32_to_str(test_buffer, test_value);
-    printf("Direct test: %s\n", test_buffer);
-    
-    char strTest[] = "Hello World!";               
-    int intTest = 123;
-    unsigned int uintTest = 1234567890;
-    float floatTest = 3.14;
-    double doubleTest = 3.14159;
-    char hexTest[] = "0x01";
-
-    // Trigger page fault intentionally
-/*     uint32_t *ptr = (uint32_t*)0xE0000000;
-    uint32_t do_page_fault = *ptr; */
 
  
     return kernel_main(); // Call the kernel_main function

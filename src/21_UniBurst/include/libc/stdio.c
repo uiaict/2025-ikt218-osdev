@@ -4,33 +4,27 @@
 #include "libc/string.h"
 #include "libc/stdlib.h"
 #include "io.h"
+#include "keyboard.h"
 
 int putchar(int ic) { 
-
-    
     if (ic < 0 || ic > 255) {
         return EOF;
     } 
 
-    
     char c = (char) ic; 
 
     switch (c) {
         case '\n': 
             cursorPos = (cursorPos / 160 + 1) * 160; 
             break;
-
         case '\r': 
             cursorPos = cursorPos / 160 * 160; 
             break;
-
         case '\t': 
             cursorPos = (cursorPos / 8 + 1) * 8; 
             break;
-
         case '\b': 
-        
-           
+
             if (cursorPos == 0) {
                 break;
             }
@@ -61,10 +55,8 @@ int putchar(int ic) {
 
 bool print(const char* data, size_t length) {
 
-  
 	const unsigned char* bytes = (const unsigned char*) data; 
 
-    
 	for (size_t i = 0; i < length; i++) {
         if (putchar(bytes[i]) == EOF) {
             return false;
@@ -75,15 +67,13 @@ bool print(const char* data, size_t length) {
 } 
 
 
-// Printf implementation
+// Printf 
 int printf(const char* __restrict__ format, ...) {
 
-  
     va_list parameters;
     va_start(parameters, format);
 
     int written = 0;
-
 
     while (*format != '\0') {
         if (*format != '%') {
@@ -178,9 +168,62 @@ int printf(const char* __restrict__ format, ...) {
 }
 
 char getchar() {
-    char c = 0;
-    while (c == 0) {
-        c = inb(0x60);
+    while (bufferIndex == 0) {}
+    char c = charBuffer[0];
+    for (int i = 0; i < bufferIndex - 1; i++) {
+        charBuffer[i] = charBuffer[i + 1];
     }
+
+    bufferIndex--;
+
     return c;
+}
+
+int isspace(int c) {
+    return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r');
+}
+
+// Scanf implementation inspired by https://www.geeksforgeeks.org/how-to-create-your-own-scanf-in-c/
+void scanf(const char* __restrict__ format, ...) {
+
+    va_list args;                                               
+    va_start(args, format);                                    
+
+    for (int i = 0; format[i] != '\0'; i++) {                   
+        if (format[i] == '%') {                                
+            i++;
+            if (format[i] == 's') {                            
+                char* var = va_arg(args, char*);              
+                int j = 0;
+                char ch = getchar();                            
+                
+                while (ch != '\n' && j < 99) {                 
+                    if (ch == '\b' && j > 0) {                  
+                        j--;
+                    } else if (!isspace(ch)) {
+                        var[j] = ch;
+                        j++;
+                    }
+                    ch = getchar();
+                }
+                var[j] = '\0';
+            } 
+            if (format[i] == 'd' || format[i] == 'i') {        
+                int* var = va_arg(args, int*);                  
+                char str[32];
+                int j = 0;
+                char ch = getchar();                         
+                
+                while (!isspace(ch) && j < 99) {              
+                    str[j] = ch;
+                    j++;
+                    ch = getchar();
+                }
+                str[j] = '\0';
+                *var = atoi(str);
+            }
+        }
+    }
+
+    va_end(args);
 }

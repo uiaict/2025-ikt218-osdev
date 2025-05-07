@@ -3,13 +3,6 @@
 #include "stdint.h"
 #include "stddef.h"
 
-// Panic function - halts the system with an error message
-//void panic(const char* reason) {
-   // asm volatile("cli");
-   // while(1) {
-        //asm volatile("hlt");
-    //}
-//}
 
 // Convert a 32-bit hex value to a string
 char* hex32_to_str(char buffer[], unsigned int val) {

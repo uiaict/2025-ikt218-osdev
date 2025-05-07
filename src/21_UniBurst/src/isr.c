@@ -13,13 +13,14 @@ void registerInterruptHandler(uint8_t n, isr_t handler) {
 
 
 void isrHandler(registers_t regs) {
-	terminal_write("Received interrupt: ");
-  char int_str[3];
-  int32_to_str(int_str, regs.intNum);
-  terminal_write(int_str);
-  terminal_write(" - ");
-  terminal_write(exceptionMessages[regs.intNum]);
-  terminal_write("\n");
+  if (interruptHandlers[regs.intNum] != 0) {
+		isr_t handler = interruptHandlers[regs.intNum];
+		handler(regs);
+   	}
+
+	else {
+		printf("Received interrupt: %d - %s\n", regs.intNum, exceptionMessages[regs.intNum]);
+	}
 }
 
 // IRQ handler. Handles hardware interrupts

@@ -73,14 +73,14 @@ add_executable(uiaos-kernel
 	include/libc/string.c
 	include/libc/stdio.c
 	include/libc/stdlib.c
-	include/libc/math.c
 	include/libc/system.c
 	src/memory/memory.c     
     src/memory/malloc.c     
     src/memory/memutils.c   
     src/kernelutils.c       
     src/pit.c  
-	src/songPlayer.cpp
+	src/applications/songPlayer.cpp
+	src/applications/demos.cpp
 )
 
 # Include directories for the kernel target

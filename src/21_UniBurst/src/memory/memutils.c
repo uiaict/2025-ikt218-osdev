@@ -37,3 +37,10 @@ void* memset16 (void *ptr, uint16_t value, size_t num) {
     return ptr;                         
 }
 
+void* memset (void * ptr, int value, size_t num ) {
+    unsigned char* p=ptr;                               
+    while(num--)
+        *p++ = (unsigned char)value;                    
+    return ptr;                                        
+}
+

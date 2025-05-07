@@ -76,11 +76,6 @@
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/21_UniBurst",
-  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/21_UniBurst/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/include/libc/math.c.o -c /workspaces/2025-ikt218-osdev/src/21_UniBurst/include/libc/math.c",
-  "file": "/workspaces/2025-ikt218-osdev/src/21_UniBurst/include/libc/math.c"
-},
-{
-  "directory": "/workspaces/2025-ikt218-osdev/build/21_UniBurst",
   "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/21_UniBurst/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/include/libc/system.c.o -c /workspaces/2025-ikt218-osdev/src/21_UniBurst/include/libc/system.c",
   "file": "/workspaces/2025-ikt218-osdev/src/21_UniBurst/include/libc/system.c"
 },
@@ -111,7 +106,12 @@
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/21_UniBurst",
-  "command": "/usr/local/bin/i686-elf-g++ -I/workspaces/2025-ikt218-osdev/src/21_UniBurst/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -g -Wno-unused-variable -Wno-unused-parameter -std=gnu++20 -o CMakeFiles/uiaos-kernel.dir/src/songPlayer.cpp.o -c /workspaces/2025-ikt218-osdev/src/21_UniBurst/src/songPlayer.cpp",
-  "file": "/workspaces/2025-ikt218-osdev/src/21_UniBurst/src/songPlayer.cpp"
+  "command": "/usr/local/bin/i686-elf-g++ -I/workspaces/2025-ikt218-osdev/src/21_UniBurst/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -g -Wno-unused-variable -Wno-unused-parameter -std=gnu++20 -o CMakeFiles/uiaos-kernel.dir/src/applications/songPlayer.cpp.o -c /workspaces/2025-ikt218-osdev/src/21_UniBurst/src/applications/songPlayer.cpp",
+  "file": "/workspaces/2025-ikt218-osdev/src/21_UniBurst/src/applications/songPlayer.cpp"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/21_UniBurst",
+  "command": "/usr/local/bin/i686-elf-g++ -I/workspaces/2025-ikt218-osdev/src/21_UniBurst/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -g -Wno-unused-variable -Wno-unused-parameter -std=gnu++20 -o CMakeFiles/uiaos-kernel.dir/src/applications/demos.cpp.o -c /workspaces/2025-ikt218-osdev/src/21_UniBurst/src/applications/demos.cpp",
+  "file": "/workspaces/2025-ikt218-osdev/src/21_UniBurst/src/applications/demos.cpp"
 }
 ]

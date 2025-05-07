@@ -1,7 +1,4 @@
 ;Adapted from the James Molloy's GDT/IDT implementation totorial at https://archive.is/L3pyA
-;The ISR stubs are defined here. The ISR stubs are the entry points for each interrupt service routine. 
-;They are responsible for saving the state of the CPU, and then calling the C handler for the interrupt.
-;If we dont save the state of the CPU we could get weird bugs. Rund saveStateTest() from main to see that the state is saved correctly.
 
 ; Macro for Interrupt Service Routine (ISR)
 %macro ISR 1

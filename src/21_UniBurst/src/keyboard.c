@@ -7,17 +7,19 @@
 
 uint8_t drawingColor = DEFAULT_BACKGROUND_COLOR;
 
-// Initializes the keyboard
+char charBuffer[0];
+int bufferIndex = 0;
+
+// Initializ keyuboard
 void initKeyboard() {
     terminal_write("Keyboard initialized\n");
     registerInterruptHandler(IRQ1, &keyboardHandler);
 }
 
-// Handles the keyboard interrupt
+// interrupts
 void keyboardHandler(registers_t regs) {
     uint8_t scanCode = inb(KEYBOARD_DATA_PORT);
     
-    // If the top bit of the scan code is set, a key was just released
     if (scanCode & 0x80) {
         if ((scanCode & 0x7F) == LEFT_SHIFT || (scanCode & 0x7F) == RIGHT_SHIFT) {
             shiftPressed = false;
@@ -75,6 +77,11 @@ void keyboardHandler(registers_t regs) {
                 ascii = defaultLookup[scanCode];
             }
 
+            if (bufferIndex < CHARACTER_BUFFER_SIZE) {
+                charBuffer[bufferIndex] = ascii;
+                bufferIndex++;
+            }
+
             freeWrite(ascii); 
         }
     }
@@ -84,13 +91,13 @@ void keyboardHandler(registers_t regs) {
 void freeWrite(char ascii) {
     switch (ascii) {
     
-        case '\b': // Backspace
+        case '\b': // backspace
             putchar('\b');
             videoMemory[cursorPos] = ' '; 
             break;
-        case 0: // Do nothing if we get an unknown key
+        case 0: // dont do anything if unknown key
             break;
-        default: // Any other character
+        default: // other character
             putchar(ascii);
             break;
     }

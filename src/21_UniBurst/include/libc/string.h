@@ -4,5 +4,4 @@
 size_t strlen(char *str); 
 char *strchr(char *str, int c); 
 void strrev(char str[], int length); 
-void *memset(void *str, int c, size_t n); 
-
+int strcmp(const char *str1, const char *str2);

@@ -10,7 +10,8 @@ size_t strlen(char *str)
 	return len;
 }
 
-char *strchr(char *str, int c) {
+char *strchr(char *str, int c) 
+{
     while (*str != '\0') {
         if (*str == c) 
             return str;
@@ -36,9 +37,11 @@ void strrev(char str[], int length)
     }
 }
 
-void *memset(void *str, int c, size_t n) {
-    unsigned char* ptr = (unsigned char*) str;
-    for (size_t i = 0; i < n; i++)
-        ptr[i] = c;
-    return str;
+
+int strcmp(const char *str1, const char *str2) {
+    while (*str1 && (*str1 == *str2)) {
+        str1++;
+        str2++;
+    }
+    return *(unsigned char *)str1 - *(unsigned char *)str2;
 }
