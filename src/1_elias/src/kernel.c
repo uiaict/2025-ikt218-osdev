@@ -6,6 +6,7 @@
 #include "libc/gdt.h"
 #include "libc/idt.h"
 #include "libc/keyboard.h"
+#include "libc/PitTimer.h"
 #include <multiboot2.h>
 
 
@@ -22,6 +23,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     initGdt();
     initIdt();
     initKeyboard();
+    initTimer();
 
     return 0;
 
