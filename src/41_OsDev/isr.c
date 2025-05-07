@@ -1,7 +1,6 @@
-// isr.c
 #include "terminal.h"
 #include "port_io.h"
-
+#include "pit.h"           // now brings in pit_ticks
 
 void itoa(int value, char* buffer) {
     char* p = buffer;
@@ -18,19 +17,17 @@ void itoa(int value, char* buffer) {
         }
     }
     *p++ = '\n';
-    *p = '\0';
+    *p   = '\0';
 }
 
-extern void keyboard_handler();
+extern void keyboard_handler(void);
 
 void isr_handler(int interrupt) {
     if (interrupt == 32) {
-        // IRQ0: Timer — do nothing (or throttle if needed)
         return;
     }
 
     if (interrupt == 33) {
-        // IRQ1: Keyboard
         keyboard_handler();
         return;
     }

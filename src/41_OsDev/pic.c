@@ -19,15 +19,15 @@ void pic_remap(int offset1, int offset2) {
     outb(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4);
     outb(PIC2_COMMAND, ICW1_INIT | ICW1_ICW4);
 
-    outb(PIC1_DATA, offset1); // PIC1 vector offset
-    outb(PIC2_DATA, offset2); // PIC2 vector offset
+    outb(PIC1_DATA, offset1); 
+    outb(PIC2_DATA, offset2); 
 
-    outb(PIC1_DATA, 4); // Tell PIC1 about PIC2 at IRQ2 (0000 0100)
-    outb(PIC2_DATA, 2); // Tell PIC2 its cascade identity (0000 0010)
+    outb(PIC1_DATA, 4); 
+    outb(PIC2_DATA, 2); 
 
     outb(PIC1_DATA, ICW4_8086);
     outb(PIC2_DATA, ICW4_8086);
 
-    outb(PIC1_DATA, a1); // Restore masks
+    outb(PIC1_DATA, a1); 
     outb(PIC2_DATA, a2);
 }

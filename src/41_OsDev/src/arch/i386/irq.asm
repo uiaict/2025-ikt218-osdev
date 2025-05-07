@@ -1,6 +1,6 @@
 ;irq.asm
 [bits 32]
-
+extern pit_ticks    
 global irq0
 global irq1
 global irq2
@@ -32,6 +32,10 @@ extern isr_handler
     push dword %2
     call isr_handler
     add esp, 4
+    
+%ifidni %1, irq0         
+    inc dword [pit_ticks] 
+%endif
 
     ; Send EOI
     mov eax, %2
