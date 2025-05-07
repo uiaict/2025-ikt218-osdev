@@ -10,21 +10,31 @@
 #include "pit.h"
 #include "io.h"
 #include "memory.h"
+#include "snake.h"
 #include "song.h"
 #include <multiboot2.h>
-// #include "memvis.h"
-#include "snake.h"
 
-// External symbols
+#define COLOR_TITLE 0x0E      // Yellow
+#define COLOR_SNAKE_BODY 0x0A // Green
+#define COLOR_SCORE 0x0B      // Cyan
+#define COLOR_FOOD 0x0C
+
+
+/* ==========================================================================
+   External Symbols and Declarations
+   ========================================================================== */
 extern char end;
 
-// Function declarations
+/* ==========================================================================
+   Function Declarations
+   ========================================================================== */
 void terminal_write(const char *str);
 void terminal_put_char(char c);
 void initkeyboard(void);
 
-
-// Multiboot structure
+/* ==========================================================================
+   Multiboot Structure
+   ========================================================================== */
 struct multiboot_info
 {
     uint32_t size;
@@ -32,7 +42,12 @@ struct multiboot_info
     struct multiboot_tag *first;
 };
 
-// Helper to print hex
+/* ==========================================================================
+   Helper Functions
+   ========================================================================== */
+/**
+ * Prints a 32-bit value in hexadecimal format.
+ */
 void print_hex(uint32_t value)
 {
     const char *hex_digits = "0123456789ABCDEF";
@@ -45,13 +60,17 @@ void print_hex(uint32_t value)
     terminal_write(buffer);
 }
 
-// Simple add function for testing
+/**
+ * Simple addition function for testing.
+ */
 int compute(int a, int b)
 {
     return a + b;
 }
 
-// Sample struct for testing multiboot cast
+/**
+ * Sample struct for testing multiboot cast.
+ */
 typedef struct
 {
     uint8_t a;
@@ -61,6 +80,9 @@ typedef struct
     uint8_t e[6];
 } myStruct;
 
+/**
+ * Verifies the state of PIT Channel 2.
+ */
 void verify_pit_channel2()
 {
     // Read back command
@@ -81,108 +103,158 @@ void verify_pit_channel2()
     outb(PIT_CMD_PORT, 0xB6); // Channel 2, square wave mode
 }
 
-/* --------------------------------------------------------------------------
-   KERNEL MAIN LOOP
-   -------------------------------------------------------------------------- */
+/**
+ * Simple busy-wait delay for approximately 'seconds' seconds.
+ */
+void delay(int seconds)
+{
+    // Increased delay to approximately 5 seconds per step
+    for (int i = 0; i < seconds * 5000000; i++)
+    {
+        asm volatile("nop"); // No-op instruction to consume CPU cycles
+    }
+}
+
+/* ==========================================================================
+   Kernel Main Loop
+   ========================================================================== */
 int kernel_main(void)
 {
-    // terminal_write("Hello, World!\n");
+    /* ----------------------------------------------------------------------
+       Initialize Core Components with Visible Boot Messages
+       ---------------------------------------------------------------------- */
+    terminal_clear();
+    terminal_write("System initializing...\n");
+    delay(5);
 
-    // // Trigger some test interrupts
-    // asm volatile("int $0");
-    // asm volatile("int $1");
-    // asm volatile("int $2");
+    terminal_write("Initializing Global Descriptor Table (GDT)...\n");
+    gdt_init();
+    delay(5);
 
-    // Keyboard
+    terminal_write("Initializing Interrupt Descriptor Table (IDT)...\n");
+    idt_init();
+    delay(5);
+
+    terminal_write("Initializing hardware interrupts (IRQ)...\n");
+    irq_init();
+    delay(5);
+
+    // Initial "Hello, World!" test
+    terminal_write("Hello, World!\n");
+
+    // Interrupt testing
+    asm volatile("int $0");
+    asm volatile("int $1");
+    asm volatile("int $2");
+
+    terminal_write("Initializing Programmable Interval Timer (PIT)...\n");
+    init_pit();
+    verify_pit_channel2();
+    delay(5);
+
+    // Add after PIT initialization
+    terminal_write("Initializing PC Speaker...\n");
+    // Reset Channel 2 to known state
+    // outb(PIT_CMD_PORT, 0xB6);   // Channel 2, square wave mode
+    // outb(PIT_CHANNEL2_PORT, 0); // Low byte
+    // outb(PIT_CHANNEL2_PORT, 0); // High byte
+
+    delay(5);
+
+    terminal_write("Initializing memory...\n");
+    init_kernel_memory((uint32_t *)&end);
+    init_paging();
+    delay(5);
+
     terminal_write("Initializing keyboard...\n");
     initkeyboard();
-    terminal_write("Keyboard initialized.\n");
+    delay(5);
+    speaker_control(true);
+    // Sound player testing
+    static Note test_notes[] = {
+        {.frequency = NOTE_C4, .duration = 1000},  // C4
+        {.frequency = NOTE_E4, .duration = 1000},  // E4
+        {.frequency = NOTE_G4, .duration = 1000},  // G4
+        {.frequency = NOTE_C5, .duration = 1000}   // C5
+    };
 
-    // Move to new line
-    int row, col;
-    terminal_get_cursor(&row, &col);
-    terminal_set_cursor(row + 1, 0);
+    Song test_song = {
+        .notes = test_notes,
+        .length = sizeof(test_notes) / sizeof(Note)
+    };
+    printf("\nTesting PC Speaker...\n");
+    SongPlayer *player = create_song_player();
+    if (player)
+    {
+        printf("Playing test notes...\n");
+        player->play_song(&test_song);
+        printf("Test complete\n");
+    }
+    else
+    {
+        printf("Failed to create song player.\n");
+    }
+    delay(5);
 
-    // Initialize PIT
-    init_pit();
-    asm volatile("sti"); // Enable interrupts globally
+    terminal_write("System initialized successfully!\n");
+    delay(5);
+   speaker_control(false); // Turn off speaker
 
-    // int counter = 0;
-    // while (1) {
-    //     printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-    //     sleep_busy(1000);
-    //     printf("[%d]: Slept using busy-waiting.\n", counter++);
+    // Enable interrupts globally
+    asm volatile("sti");
 
-    //     printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-    //     sleep_interrupt(1000);
-    //     printf("[%d]: Slept using interrupts.\n", counter++);
-    // }
-    // Try out the music
-    // static Note test_notes[] = {
-    //     {440, 1000}, // A4 - 1 second
-    //     {880, 1000}  // A5 - 1 second
-    // };
-
-    // // In kernel_main()
-    // Song test_song = {
-    //     .notes = test_notes,
-    //     .length = sizeof(test_notes) / sizeof(Note)};
-
-    // printf("\nTesting PC Speaker...\n");
-    // SongPlayer *player = create_song_player();
-
-    // if (player)
-    // {
-    //     printf("Playing test notes...\n");
-    //     player->play_song(&test_song);
-    //     printf("Test complete\n");
-    // }
-    //--- memory visualizer -------//
-    // printf("Initializing Memory Visualizer...\n");
-    // MemVisualizer *vis = create_memory_visualizer();
-    // vis->init();
-
-    // // Main loop
-    // while (1)
-    // {
-    //     char c = keyboard_getchar();
-    //     if (c != 0)
-    //     {
-    //         vis->handle_key(c);
-    //     }
-    //     if (vis->auto_refresh)
-    //     { // Now this will work
-    //         vis->refresh();
-    //     }
-    // }
-    // Clear screen and show menu
+menu_start:
+    /* ----------------------------------------------------------------------
+       Display Menu
+       ---------------------------------------------------------------------- */
     terminal_clear();
-    printf("Welcome to UIAOS!\n");
+    printf("Welcome to 4_runners!\n");
     printf("================\n\n");
     printf("Available Options:\n");
     printf("1. Snake Game\n");
-    printf("2. Memory Visualizer\n");
-    printf("3. Sound Player\n\n");
-    printf("Press 1-3 to select option...\n");
+    printf("2. Memory Layout\n\n");
+    printf("Press 1-2 to select option...\n");
 
-    // Wait for valid selection
+    /* ----------------------------------------------------------------------
+       Main Loop
+       ---------------------------------------------------------------------- */
     while (1)
     {
         char key = keyboard_getchar();
-        // In the snake game section
-        // In the snake game section
         if (key == '1')
         {
             terminal_clear();
-            printf("Starting Snake Game...\n");
-            printf("Controls:\n");
-            printf("Arrow keys - Move snake\n");
-            printf("P - Pause game\n");
-            printf("R - Restart when game over\n");
-            printf("ESC - Return to menu\n\n");
-            printf("Press any key to begin...\n");
+            terminal_set_color(COLOR_TITLE);
+            printf("\n");
+            printf("  ____       _    _         _          _   __     _____ \n");
+            printf(" / ___|     | \\ | |       / \\       | | / /    | ____|\n");
+            printf(" \\_ \\     |  \\| |      / _ \\      |  | /     |  _|  \n");
+            printf("  ___) |    | |\\  |     / ___ \\     | . \\     | |___ \n");
+            printf(" |____/     |_| \\_|    /_/   \\_\\   |_|  \\_    |_____|\n");
+            printf("\n");
+            terminal_set_color(COLOR_SNAKE_BODY);
+            printf("          /^\\/^\\                                                      \n");
+            printf("        _|__|  O|                                                     \n");
+            printf(" \\/     /~     \\_/ \\                                                 \n");
+            printf("  \\____|__________/  \\                                                \n");
+            printf("         \\_______      \\                                              \n");
+            printf("                 `\\     \\                 \\                           \n");
+            printf("                   |     |                  \\                         \n");
+            printf("                  /      /                    \\                       \n");
+            printf("                 /     /                       \\\\                    \n");
+            printf("               /      /                         \\ \\                  \n");
+            printf("              /     /                            \\  \\                \n");
+            printf("            /     /             _----_            \\   \\              \n");
+            printf("           /     /           _-~      ~-_         |   |              \n");
+            printf("          (      (        _-~    _--_    ~-_     _/   |              \n");
+            printf("           \\      ~-____-~    _-~    ~-_    ~-_-~    /               \n");
+            printf("             ~-_           _-~          ~-_       _-~                 \n");
+            printf("                ~--______-~                ~-___-~                    \n");
 
-            // Wait for key press
+            terminal_set_color(COLOR_FOOD);
+            printf("  Press any key to start!\n");
+            terminal_set_color(0x07); // Reset color
+
             while (keyboard_getchar() == 0)
             {
                 asm volatile("hlt");
@@ -193,38 +265,40 @@ int kernel_main(void)
             {
                 terminal_clear();
                 snake->init();
-                set_game_mode(true); // Enable game mode
+                set_game_mode(true);
 
-                // Game loop
                 bool running = true;
                 while (running)
                 {
-                    // Handle input
-                    char input = keyboard_getchar();
-                    if (input == 27)
-                    { // ESC
+                    if (!get_game_mode())
+                    {
+                        // Game mode was disabled (e.g., by pressing ESC in snake.c)
                         running = false;
+                        goto menu_start; // Return to the menu
                     }
-                    else
+
+                    uint8_t input = keyboard_getchar();
+                    if (input != 0)
                     {
                         snake->handle_input(input);
                     }
-
-                    // Update game state
-                    snake->update();
-
-                    // Use hlt to reduce CPU usage
                     asm volatile("hlt");
                 }
-
-                set_game_mode(false); // Disable game mode
-                terminal_clear();
             }
         }
-        // For now, other options return to menu
-        else if (key == '2' || key == '3')
+        else if (key == '2')
         {
-            printf("Option not implemented yet. Press 1 for Snake game.\n");
+            terminal_clear();
+            printf("Current Memory Layout:\n");
+            printf("=====================\n\n");
+            print_memory_layout();
+            printf("\nPress any key to return to menu...\n");
+
+            while (keyboard_getchar() == 0)
+            {
+                asm volatile("hlt");
+            }
+            goto menu_start;
         }
         asm volatile("hlt");
     }
@@ -232,31 +306,19 @@ int kernel_main(void)
     return 0;
 }
 
-/* --------------------------------------------------------------------------
-   BOOT ENTRY
-   -------------------------------------------------------------------------- */
+/* ==========================================================================
+   Boot Entry
+   ========================================================================== */
 int main(uint32_t structAddr, uint32_t magic, struct multiboot_info *mb_info_addr)
 {
-    terminal_write("System initializing...\n");
-
     // Kernel end
     terminal_write("Kernel end = ");
     print_hex((uint32_t)&end);
     terminal_write("\n");
 
-    // Setup core components
-    gdt_init();
-    idt_init();
-    irq_init();
-
-    // Memory setup
-    terminal_write("Initializing memory...\n");
-    init_kernel_memory((uint32_t *)&end);
-    init_paging();
-
-    // Initial layout
-    terminal_write("\nInitial Memory Layout:\n");
-    print_memory_layout();
+    // Testing multiboot struct
+    myStruct *myStructPtr = (myStruct *)structAddr;
+    int result = compute(1, 2);
 
     // Test malloc
     terminal_write("\nAllocating 64 bytes...\n");
@@ -280,10 +342,48 @@ int main(uint32_t structAddr, uint32_t magic, struct multiboot_info *mb_info_add
     terminal_write("\nMemory Layout After Deallocation:\n");
     print_memory_layout();
 
-    // Testing multiboot struct
-    myStruct *myStructPtr = (myStruct *)structAddr;
-    int result = compute(1, 2);
-
-    terminal_write("System initialized\n\n");
     return kernel_main();
 }
+
+/* ==========================================================================
+   Commented-Out Experimental Code (For Submission Context)
+   ========================================================================== */
+/*
+ * Initial "Hello, World!" test
+ * terminal_write("Hello, World!\n");
+ *
+ * Interrupt testing
+ * asm volatile("int $0");
+ * asm volatile("int $1");
+ * asm volatile("int $2");
+ *
+ * Sleep testing with busy-waiting and interrupts
+ * int counter = 0;
+ * while (1) {
+ *     printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+ *     sleep_busy(1000);
+ *     printf("[%d]: Slept using busy-waiting.\n", counter++);
+ *
+ *     printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+ *     sleep_interrupt(1000);
+ *     printf("[%d]: Slept using interrupts.\n", counter++);
+ * }
+ *
+ * Sound player testing
+ * static Note test_notes[] = {
+ *     {440, 1000}, // A4 - 1 second
+ *     {880, 1000}  // A5 - 1 second
+ * };
+ * Song test_song = {
+ *     .notes = test_notes,
+ *     .length = sizeof(test_notes) / sizeof(Note)
+ * };
+ * printf("\nTesting PC Speaker...\n");
+ * SongPlayer *player = create_song_player();
+ * if (player)
+ * {
+ *     printf("Playing test notes...\n");
+ *     player->play_song(&test_song);
+ *     printf("Test complete\n");
+ * }
+ */

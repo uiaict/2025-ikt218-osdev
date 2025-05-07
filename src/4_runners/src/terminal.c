@@ -143,7 +143,7 @@ void terminal_write_centered(int row, const char* str) {
     size_t len = strlen(str);
     if (len > VGA_WIDTH) len = VGA_WIDTH;
     size_t col = (VGA_WIDTH - len) / 2;
-    terminal_set_cursor(row , col);
+    terminal_set_cursor(row , col - 4 );
     terminal_write(str);
 }
 

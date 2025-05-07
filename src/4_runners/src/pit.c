@@ -63,24 +63,16 @@ uint32_t get_current_tick(void) {
 }
 
 void init_pit(void) {
-    // Calculate divisor for ~1ms ticks (1000 Hz)
-    uint16_t divisor = PIT_BASE_FREQUENCY / TARGET_FREQUENCY;
-
-    // Configure channel 0 (system timer)
+    // Set frequency to 100Hz (10ms per tick)
+    uint16_t divisor = PIT_BASE_FREQUENCY / 100;
+    
     outb(PIT_CMD_PORT, 0x36);    // Channel 0, lobyte/hibyte, square wave mode
     outb(PIT_CHANNEL0_PORT, divisor & 0xFF);
     outb(PIT_CHANNEL0_PORT, (divisor >> 8) & 0xFF);
 
-    // Reset tick counter
     pit_ticks = 0;
-
-    // Log initialization
-    char freq_str[16];
-    int_to_string(TARGET_FREQUENCY, freq_str);
-    terminal_write("PIT initialized at ");
-    terminal_write(freq_str);
-    terminal_write(" Hz\n");
 }
+
 
 void pit_set_speaker_freq(uint32_t frequency)
 {

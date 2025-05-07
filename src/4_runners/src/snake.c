@@ -3,7 +3,8 @@
 #include "memory.h"
 #include "pit.h"
 #include "io.h"
-#include "libc/stdio.h"
+#include "irq.h"
+#include "libc/stdio.h"  
 
 // Forward declarations of static functions
 static void init_impl(void);
@@ -21,14 +22,14 @@ static void game_over(void);
 static void draw_title(void);
 
 // Display constants
-#define BOARD_OFFSET_X    2
+#define BOARD_OFFSET_X    10
 #define BOARD_OFFSET_Y    5
 #define BORDER_CHAR       '#'
 #define SNAKE_HEAD_CHAR   'O'
 #define SNAKE_BODY_CHAR   'o'
 #define FOOD_CHAR         '+'
 #define EMPTY_CHAR        ' '
-#define TICK_INCREMENT    10   // ms per timer tick
+#define TICK_INCREMENT    5   // ms per timer tick
 
 // Snake node structure
 typedef struct SnakeNode {
@@ -53,7 +54,7 @@ static struct {
     uint8_t color_index;       // For color cycling
 } game_state;
 
-// Color definitions
+// Color definitions 
 #define COLOR_BACKGROUND  0x00  // Black
 #define COLOR_BORDER      0x09  // Bright Blue
 #define COLOR_SNAKE_HEAD  0x0A  // Bright Green
@@ -75,9 +76,9 @@ static void init_impl(void) {
     game_state.score = 0;
     game_state.direction = DIRECTION_RIGHT;
     game_state.next_direction = DIRECTION_RIGHT;
-    game_state.state = GAME_STATE_RUNNING;
+    game_state.state = GAME_STATE_PAUSED;  // Start in paused state
     game_state.tick_accumulator = 0;
-    game_state.speed = SNAKE_TICK_MS;
+    game_state.speed = SNAKE_TICK_MS;  // Initial speed (200ms, set in snake.h)
     game_state.growing = false;
     game_state.color_index = 0;
 
@@ -130,6 +131,13 @@ static void init_impl(void) {
     // Place initial food and show score
     place_food();
     render_score();
+    
+    // Display a "Press S to Start" message
+    terminal_set_color(COLOR_TITLE);
+    terminal_set_cursor(BOARD_OFFSET_Y + SNAKE_BOARD_HEIGHT/2, 
+                        BOARD_OFFSET_X + SNAKE_BOARD_WIDTH/2 - 8);
+    printf("Press S to Start");
+    terminal_set_color(0x07); // Reset color
 }
 
 static void update_impl(void) {
@@ -140,9 +148,33 @@ static void update_impl(void) {
 }
 
 static void handle_input_impl(uint8_t key) {
-    // Ignore input if game is over (except restart/exit)
-    if (game_state.state == GAME_STATE_OVER && 
-        key != SCANCODE_R && key != SCANCODE_ESC) {
+    // Handle starting the game with 'S' key
+    if (game_state.state == GAME_STATE_PAUSED && key == SCANCODE_S) {
+        game_state.state = GAME_STATE_RUNNING;
+        
+        // Clear the "Press S to Start" message
+        terminal_set_color(COLOR_BACKGROUND);
+        terminal_set_cursor(BOARD_OFFSET_Y + SNAKE_BOARD_HEIGHT/2, 
+                           BOARD_OFFSET_X + SNAKE_BOARD_WIDTH/2 - 8);
+        for (int i = 0; i < 18; i++) {
+            terminal_put_char(' ');
+        }
+        terminal_set_color(0x07); // Reset color
+        return;
+    }
+
+    // Handle exiting the game with 'Esc' key
+    if (key == SCANCODE_ESC) {
+        // Disable game mode to return to terminal
+        set_game_mode(false);
+        cleanup_snake();
+        terminal_clear();
+        return;
+    }
+
+    // Ignore input if game is over (except restart/exit) or paused (except start)
+    if ((game_state.state == GAME_STATE_OVER && key != SCANCODE_R) ||
+        (game_state.state == GAME_STATE_PAUSED)) {
         return;
     }
 
@@ -164,13 +196,28 @@ static void handle_input_impl(uint8_t key) {
                 game_state.next_direction = DIRECTION_RIGHT;
             break;
         case SCANCODE_P:
-            if (game_state.state == GAME_STATE_RUNNING)
+            if (game_state.state == GAME_STATE_RUNNING) {
                 game_state.state = GAME_STATE_PAUSED;
-            else if (game_state.state == GAME_STATE_PAUSED)
+                // Show pause message
+                terminal_set_color(COLOR_TITLE);
+                terminal_set_cursor(BOARD_OFFSET_Y + SNAKE_BOARD_HEIGHT/2, 
+                                   BOARD_OFFSET_X + SNAKE_BOARD_WIDTH/2 - 5);
+                printf("Game Paused");
+                terminal_set_color(0x07); // Reset color
+            } else if (game_state.state == GAME_STATE_PAUSED) {
                 game_state.state = GAME_STATE_RUNNING;
+                // Clear pause message
+                terminal_set_color(COLOR_BACKGROUND);
+                terminal_set_cursor(BOARD_OFFSET_Y + SNAKE_BOARD_HEIGHT/2, 
+                                   BOARD_OFFSET_X + SNAKE_BOARD_WIDTH/2 - 5);
+                for (int i = 0; i < 11; i++) {
+                    terminal_put_char(' ');
+                }
+                terminal_set_color(0x07); // Reset color
+            }
             break;
         case SCANCODE_R:
-            if (game_state.state == GAME_STATE_OVER)
+            if (game_state.state == GAME_STATE_OVER || game_state.state == GAME_STATE_PAUSED)
                 init_impl();
             break;
     }
@@ -200,61 +247,45 @@ static void clear_board(void) {
 }
 
 static void draw_title(void) {
-    const int title_row = 1;
+    const int title_row = 2;
     terminal_set_color(COLOR_TITLE);
     
     // Draw centered title box
-    terminal_write_centered(title_row, "S N A K E");
+    terminal_write_centered(title_row, "+--[ S N A K E ]--+");
     
     terminal_set_color(0x07); // Reset color
 }
 
-static void draw_border(void) {
+static void draw_border(void)
+{
     terminal_set_color(COLOR_BORDER);
 
-    // Calculate proper dimensions for the play area
-    int top_row = BOARD_OFFSET_Y - 1;
-    int bottom_row = BOARD_OFFSET_Y + SNAKE_BOARD_HEIGHT -1 ; // Fixed bottom border position
-    int left_col = BOARD_OFFSET_X - 1;
-    int right_col = BOARD_OFFSET_X + SNAKE_BOARD_WIDTH - 1;
-    int width = right_col - left_col + 1;
+    const int top_row    = BOARD_OFFSET_Y - 1;
+    const int bottom_row = BOARD_OFFSET_Y + SNAKE_BOARD_HEIGHT;
+    const int left_col   = BOARD_OFFSET_X - 1;
+    const int right_col  = BOARD_OFFSET_X + SNAKE_BOARD_WIDTH;
 
-    // Draw the top border (horizontal line)
-    for (int x = 0; x < width; x++) {
-        terminal_set_cursor(top_row, left_col + x);
-        terminal_put_char('═');
+    /* horizontal lines */
+    for (int x = left_col; x <= right_col; ++x) {
+        terminal_set_cursor(top_row   , x); terminal_put_char('-');
+        terminal_set_cursor(bottom_row, x); terminal_put_char('-');
     }
 
-    // Draw the bottom border (horizontal line)
-    for (int x = 0; x < width; x++) {
-        terminal_set_cursor(bottom_row, left_col + x );
-        terminal_put_char('i');
+    /* vertical lines */
+    for (int y = top_row + 1; y <= bottom_row - 1; ++y) {
+        terminal_set_cursor(y, left_col ); terminal_put_char('|');
+        terminal_set_cursor(y, right_col); terminal_put_char('|');
     }
 
-    // Draw the left border (vertical line)
-    for (int y = 0; y < SNAKE_BOARD_HEIGHT; y++) {
-        terminal_set_cursor(top_row + 1 + y, left_col);
-        terminal_put_char('║');
-    }
+    /* corners */
+    terminal_set_cursor(top_row   , left_col ); terminal_put_char('+');
+    terminal_set_cursor(top_row   , right_col); terminal_put_char('+');
+    terminal_set_cursor(bottom_row, left_col ); terminal_put_char('+');
+    terminal_set_cursor(bottom_row, right_col); terminal_put_char('+');
 
-    // Draw the right border (vertical line)
-    for (int y = 0; y < SNAKE_BOARD_HEIGHT; y++) {
-        terminal_set_cursor(top_row + 1 + y, right_col + 1);
-        terminal_put_char('║');
-    }
-
-    // Draw the corners
-    terminal_set_cursor(top_row, left_col);
-    terminal_put_char('╔');
-    terminal_set_cursor(top_row, right_col + 1);
-    terminal_put_char('╗');
-    terminal_set_cursor(bottom_row , left_col);
-    terminal_put_char('╚');
-    terminal_set_cursor(bottom_row, right_col + 1);
-    terminal_put_char('╝');
-
-    terminal_set_color(0x07); // Reset color
+    terminal_set_color(0x07);
 }
+
 
 static void place_food(void) {
     static uint32_t seed = 12345;
@@ -293,6 +324,11 @@ static void place_food(void) {
 }
 
 static void render_score(void) {
+    const int panel_x   = BOARD_OFFSET_X + SNAKE_BOARD_WIDTH + 3; /* gap=2 */
+    const int panel_w   = 28;
+    const int start_row = BOARD_OFFSET_Y - 1;
+    const int end_row   = BOARD_OFFSET_Y + SNAKE_BOARD_HEIGHT;
+
     // Clear the score area first with background color
     terminal_set_color(COLOR_BACKGROUND);
     for (int x = 0; x < SNAKE_BOARD_WIDTH; x++) {
@@ -305,10 +341,30 @@ static void render_score(void) {
     terminal_set_color(COLOR_SCORE);
     printf("Score: %u", game_state.score);
     
-    // Show controls on the right side
-    terminal_set_cursor(BOARD_OFFSET_Y - 2, BOARD_OFFSET_X + SNAKE_BOARD_WIDTH - 18);
-    printf("P:Pause R:Restart");
-    
+
+     /* header */
+     terminal_set_color(COLOR_TITLE);
+     terminal_set_cursor(start_row, panel_x);
+    //  printf("+--[ S N A K E ]--+");
+ 
+     /* stats */
+     terminal_set_color(COLOR_SCORE);
+     terminal_set_cursor(start_row + 2, panel_x);
+     printf("Score: %u", game_state.score);
+ 
+     terminal_set_cursor(start_row + 3, panel_x);
+     printf("Speed : %u ms", game_state.speed);
+ 
+     /* controls */
+     terminal_set_color(COLOR_BORDER);
+     int r = start_row + 5;
+     terminal_set_cursor(r++, panel_x); printf("Controls : -> <- ");
+     terminal_set_cursor(r++, panel_x); printf("  Arrows : Move");
+     terminal_set_cursor(r++, panel_x); printf("  S      : Start");
+     terminal_set_cursor(r++, panel_x); printf("  P      : Pause");
+     terminal_set_cursor(r++, panel_x); printf("  R      : Restart");
+     terminal_set_cursor(r  , panel_x); printf("  Esc    : Exit");
+     
     terminal_set_color(0x07); // Reset color
 }
 
@@ -401,9 +457,9 @@ static void update_snake(void) {
         game_state.growing = true;
         render_score();
         
-        // Increase speed every 5 points
-        if (game_state.score % 5 == 0 && game_state.speed > 20) {
-            game_state.speed -= 5;
+        // Increase speed every 5 points (slower increment)
+        if (game_state.score % 5 == 0 && game_state.speed > 50) {
+            game_state.speed -= 10;  // Reduce by 10ms instead of 5ms
         }
         
         place_food();
@@ -445,7 +501,6 @@ void snake_tick(void) {
     }
 }
 
-
 void snake_on_key(uint8_t scancode) {
     handle_input_impl(scancode);
     
@@ -466,5 +521,7 @@ static SnakeGame snake_game = {
 };
 
 SnakeGame* create_snake_game(void) {
+    // Initialize the game automatically
+    init_impl();
     return &snake_game;
 }

@@ -10,7 +10,8 @@
 #define SNAKE_BOARD_HEIGHT 20
 #define SNAKE_START_X      10
 #define SNAKE_START_Y      10
-#define SNAKE_TICK_MS     100  /* Base tick rate in milliseconds */
+#define SNAKE_TICK_MS     50  /* Base tick rate in milliseconds */
+
 
 /* Game direction */
 typedef enum {

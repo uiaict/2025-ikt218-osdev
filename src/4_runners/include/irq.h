@@ -3,13 +3,14 @@
 #include "libc/stdbool.h"
 
 // Keyboard scan codes (used by both IRQ and Snake)
-#define SCANCODE_UP     0x48
+#define SCANCODE_UP     0x48 
 #define SCANCODE_DOWN   0x50
 #define SCANCODE_LEFT   0x4B
 #define SCANCODE_RIGHT  0x4D
 #define SCANCODE_ESC    0x01
 #define SCANCODE_P      0x19
 #define SCANCODE_R      0x13
+#define SCANCODE_S      0x1F  // Added S key for starting the game
 
 // Function declarations
 void irq_init(void);
