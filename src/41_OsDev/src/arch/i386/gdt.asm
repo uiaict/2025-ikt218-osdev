@@ -1,3 +1,5 @@
+;gdt.asm
+
 [bits 32]
 global gdt_flush
 
