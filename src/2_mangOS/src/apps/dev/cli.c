@@ -90,7 +90,6 @@ void start_cli(void)
             printf("  clear       - clear the screen\n");
             printf("  echo <text> - echo text\n");
             printf("  exit        - exit CLI\n");
-            // add your own here: snake, play, meminfo, etc.
         }
         else if (strcmp(cmd, "clear") == 0)
         {
