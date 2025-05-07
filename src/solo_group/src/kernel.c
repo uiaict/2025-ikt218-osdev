@@ -3,9 +3,10 @@
 #include "libc/stdbool.h"
 #include "libc/stdio.h"
 #include <multiboot2.h>
-#include "gdt.h"
+#include "descriptorTables.h"
 #include "monitor.h"
 #include "libc/string.h"
+#include "interupts.h"
 
 struct multiboot_info {
     uint32_t size;
@@ -16,14 +17,11 @@ struct multiboot_info {
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     initGdt();
+    initIdt();
+    initIrq();
     monitorInitialize();
     
     printf("Hello World\n");
 
-    for (size_t i = 0; i < 24; i++)
-    {
-        printf("%d: This is working\n", i);
-    }
-
-    return 0;
+    return kernel_main();
 }

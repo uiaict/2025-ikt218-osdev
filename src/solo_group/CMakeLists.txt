@@ -66,6 +66,11 @@ add_executable(uiaos-kernel
 	src/monitor.c
 	src/common.c
 	src/libc/string.c
+	src/idt.c
+	src/isr.c
+	src/irq.c
+	src/isr_asm.asm
+	src/input.c
 )
 
 # Include directories for the kernel target

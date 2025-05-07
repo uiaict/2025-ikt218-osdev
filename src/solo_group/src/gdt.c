@@ -1,4 +1,4 @@
-#include "gdt.h"
+#include "descriptorTables.h"
 
 // Defines theGDT and pointer
 struct gdtEntry gdt[GDT_ENTRIES];
