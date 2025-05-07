@@ -35,11 +35,11 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     io_wait();
   }
 
+  print("Enabling protected mode...\n");
   switch_to_protected_mode();
-  print("Protected mode enabled.\n");
 
+  print("Enabling interrupts...\n");
   asm volatile("sti");
-  print("Interrupts enabled.\n");
 
   print("Initializing kernel memory...\n");
   init_kernel_memory(&end);

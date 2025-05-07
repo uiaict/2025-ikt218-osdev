@@ -80,7 +80,7 @@ add_executable(uiaos-kernel
 )
 
 # Include directories for the kernel target
-target_include_directories(uiaos-kernel PUBLIC include src/apps)
+target_include_directories(uiaos-kernel PUBLIC include include/apps)
 
 
 # Specify compile options for C and C++
