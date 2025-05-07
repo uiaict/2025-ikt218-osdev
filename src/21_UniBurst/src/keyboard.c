@@ -10,32 +10,49 @@ uint8_t drawingColor = DEFAULT_BACKGROUND_COLOR;
 char charBuffer[0];
 int bufferIndex = 0;
 
-// Initializ keyuboard
+
+static uint8_t lastScanCode = 0;
+
+
+uint8_t checkKeyInput() {
+    return lastScanCode;
+}
+
+
+// Initialize keyuboard
 void initKeyboard() {
-    terminal_write("Keyboard initialized\n");
+    printf("Initializing keyboard\n");
     registerInterruptHandler(IRQ1, &keyboardHandler);
 }
 
 // interrupts
 void keyboardHandler(registers_t regs) {
     uint8_t scanCode = inb(KEYBOARD_DATA_PORT);
-    
+
+    //piano part
+    if (!(scanCode & 0x80)) {
+        lastScanCode = scanCode;
+    } else {
+        if ((scanCode & 0x7F) == lastScanCode) {
+            lastScanCode = 0;
+        }
+    }
+   
     if (scanCode & 0x80) {
         if ((scanCode & 0x7F) == LEFT_SHIFT || (scanCode & 0x7F) == RIGHT_SHIFT) {
             shiftPressed = false;
         }
-    } 
-
+    }
     else if (scanCode == ESCAPE) {
         drawingMode = !drawingMode;
         clearScreen();
-
         if (drawingMode) {
             printf("Color:\n");
             videoMemory[14 + 1] = (videoMemory[14 + 1] & 0x0F) | (drawingColor << 4);
         }
-
     }
+   
+
 
     else if (drawingMode) {
         draw(scanCode);

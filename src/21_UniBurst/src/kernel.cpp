@@ -51,8 +51,10 @@ void operator delete[](void *ptr, size_t size) noexcept
     free(ptr);
 }
 
+
+
 int kernel_main(){
-    // Loading screen. Not needed at all, but looks cool
+    // loading screen
     disableCursor();
     printf("Starting OS [");
     videoMemory[cursorPos + 60] = ']';
@@ -65,10 +67,10 @@ int kernel_main(){
     cursorVertical;  
     clearScreen();
 
-    charBuffer[0];
+    charBuffer[0] = 0;
     bufferIndex = 0;
     
-    // Full group name us UniBurst but its been shortened to UB OS to fit on screen
+    // full group name us UniBurst but its been shortened to UB OS to fit on screen
     printf("U     U  BBBBB        OOO    SSSSS \n");
     printf("U     U  B    B      O   O  S      \n");
     printf("U     U  B    B      O   O  S      \n");
@@ -85,12 +87,12 @@ int kernel_main(){
 
 
 
-    // Demo loop
+    // demo loop
     while (true){
         char input[100];
         scanf("%s", input);
 
-        // Prints the help menu
+        // prints the help menu
         if (strcmp(input, "help") == 0){ 
             printf("Available commands:\n");
             printf("'print' - Runs printf demo\n");
@@ -101,15 +103,16 @@ int kernel_main(){
             printf("'song' - Runs song demo\n");
             printf("'color' - Color change demo\n");
             printf("'cursor' - Cursor change demo\n");
+            printf("'piano' - Runs keyboard piano demo\n");
             printf("'exit' - Exits demo mode and allows for free typing\n");
         }
 
-        // Runs printf demo
+        // runs printf demo
         else if (strcmp(input, "print") == 0){
             printDemo();
         }
 
-        // Runs memory demo
+        // runs memory demo
         else if (strcmp(input, "memory") == 0){
             void* someMemory = malloc(12345); 
             void* memory2 = malloc(54321); 
@@ -117,12 +120,12 @@ int kernel_main(){
             char* memory4 = new char[1000](); 
         }
 
-        // Runs page fault demo
+        // runs page fault demo
         else if (strcmp(input, "pagefault") == 0){
             pageFaultDemo();
         }
 
-        // Runs pit demo
+        // runs pit demo
         else if (strcmp(input, "pit") == 0){
             pitDemo();
         }
@@ -131,7 +134,7 @@ int kernel_main(){
             isrDemo();
         }
 
-        // Runs song demo. Implementation direcly in main. Implementing in demos.cpp caused issues.
+        // runs song demo. Implementation direcly in main. Implementing in demos.cpp caused issues.
         else if (strcmp(input, "song") == 0){
             printf("Available songs:\n");
             printf("0. Play mariosong\n");
@@ -153,7 +156,7 @@ int kernel_main(){
 
             SongPlayer* player = createSongPlayer(); 
             
-            // Play the songs
+            // play the songs
             if (choice == 0) {
                 for(uint32_t i = 0; i < nSongs; i++){
                     printf("Playing Song...\n");
@@ -170,16 +173,22 @@ int kernel_main(){
         }
 
 
-        // Runs color change demo
+        // runs color change demo
         else if (strcmp(input, "color") == 0){
             changeColorDemo();
         }
 
-        // Runs cursor change demo
+        // runs cursor change demo
         else if (strcmp(input, "cursor") == 0){
             changeCursorDemo();
         }
-        // Exits demo mode
+
+        // runs the piano keyboard demo
+        else if (strcmp(input, "piano") == 0) {
+            keyboardPianoDemo();
+        }
+
+        // exits demo mode
         else if (strcmp(input, "exit") == 0){
             printf("Exiting demo mode. You can still enter drawing mode by pressing 'esc'\n");
             break;

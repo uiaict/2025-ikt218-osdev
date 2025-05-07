@@ -17,6 +17,7 @@ void initKeyboard();
 void keyboardHandler(registers_t reg);
 void freeWrite(char ascii);
 void draw(uint8_t scanCode);
+uint8_t checkKeyInput();
 
 // Keeps track of shift key and caps lock
 static bool shiftPressed = false; 

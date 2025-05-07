@@ -24,6 +24,7 @@ typedef struct {
 
 SongPlayer* createSongPlayer();
 void playSongImpl(Song *song) ;
+void keyboardPianoDemo();
 
 static Note mariosong[] = {
     {E5, 250}, {R, 125}, {E5, 125}, {R, 125}, {E5, 125}, {R, 125},
