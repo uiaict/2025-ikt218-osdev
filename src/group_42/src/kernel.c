@@ -12,6 +12,7 @@
 #include "kernel/system.h"
 
 #include "shell/shell.h"
+#include "matrix/matrix.h"
 
 extern uint32_t end; // This is defined in arch/i386/linker.ld
 
@@ -28,15 +29,12 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
   print("Initialising PIC...\n");
   remap_pic();
 
-  print("Initialising interrupts...\n");
-  init_interrupts();
-
-  for (int i = 0; i < 1000000; i++) {
-    io_wait();
-  }
 
   print("Enabling protected mode...\n");
   switch_to_protected_mode();
+
+  print("Initialising interrupts...\n");
+  init_interrupts();
 
   print("Enabling interrupts...\n");
   asm volatile("sti");
@@ -68,6 +66,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
 
   print("Initializing shell...\n");
   sleep_busy(1000);
+  
   shell_init();
 
   while (true) {

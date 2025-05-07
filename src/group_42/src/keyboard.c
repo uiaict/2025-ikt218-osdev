@@ -1,7 +1,7 @@
 #include "kernel/keyboard.h"
 #include "libc/stddef.h"
 
-static keyboard_callback_t current_keyboard_subscriber = NULL;
+static volatile keyboard_callback_t current_keyboard_subscriber = NULL;
 
 void input_init() {
     current_keyboard_subscriber = NULL;

@@ -5,10 +5,9 @@
 #include "libc/stdint.h"
 #include "kernel/system.h"
 
-static uint32_t ticks = 0;
+static volatile uint32_t ticks = 0;
 
-// Define the IRQ handler function
-void pit_irq_handler(registers_t *regs, void *context) {
+void pit_irq_handler(void) {
   ticks++;
   outb(0x20, 0x20);
 }

@@ -6,11 +6,13 @@
 #include "shell/shell.h"
 #include "song_player/song_player.h"
 #include "song_player/song_commands.h"
+#include "matrix/matrix.h"
 
 static int command_count = 0;
 static command_t registry[MAX_COMMANDS];
 
 void init_commands() {
+  clear_registry();
   reg_command("help", list_commands);
   reg_command("clear", clear_shell);
   reg_command("memory", print_memory_layout);
@@ -23,6 +25,7 @@ void init_commands() {
   reg_command("music4", play_music_4);
   reg_command("music5", play_music_5);
   reg_command("music6", play_music_6);
+  reg_command("matrix", matrix_start_command);
 }
 
 void reg_command(const char *name, command_func_t func) {
@@ -49,4 +52,12 @@ void list_commands() {
   for (int i = 0; i < command_count; i++) {
     printf("- %s\n", registry[i].name);
   }
+}
+
+void clear_registry() {
+  for (int i = 0; i < command_count; i++) {
+    registry[i].name = NULL;
+    registry[i].func = NULL;
+  }
+  command_count = 0;
 }
