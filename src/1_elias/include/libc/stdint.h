@@ -1,6 +1,7 @@
 #pragma once
 
-
+typedef signed long long int int64_t;
+typedef unsigned long long int uint64_t;
 typedef long unsigned int size_t;
 typedef long unsigned int uint32_t;
 typedef unsigned short uint16_t;

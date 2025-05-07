@@ -1,10 +1,11 @@
+#include "libc/stdint.h"
 #include "libc/vga.h"
 
 uint16_t column = 0;
 uint16_t row = 0;
 uint16_t* const video_memory = (uint16_t* const) 0xB8000;
-const uint16_t defaultColor = (COLOR8_BLACK << 12) |
-(COLOR8_LIGHT_GREY << 8);
+const uint16_t defaultColor = (COLOR8_LIGHT_GREY << 12) |
+(COLOR8_BLACK << 8);
 uint16_t currentColor = defaultColor;
 
 void Reset() {
@@ -38,8 +39,7 @@ void scrollUp() {
     }
 
     for (uint16_t x = 0; x < vgaWidth; x++) {
-        video_memory[(vgaHeight-1) * vgaWidth + x] = ' ' |
-        currentColor;
+        video_memory[(vgaHeight-1) * vgaWidth + x] = ' ' | currentColor;
     }
 }
 
@@ -51,6 +51,14 @@ void print(const char* s) {
                 break;
             case '\r':
                 column = 0;
+                break;
+            case '\b':
+                if( column == 0 && row != 0) {
+                    row--;
+                    column = vgaWidth;
+                }
+                video_memory[row * vgaWidth + (--column)] = ' ' | 
+                currentColor;
                 break;
             case '\t':
                 if(column == vgaWidth) {
