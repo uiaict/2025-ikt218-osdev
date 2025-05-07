@@ -67,9 +67,12 @@ add_executable(uiaos-kernel
     pic.c
     kmem.c         
     pit.c
+    test_speaker.c
     paging.c
     bootinfo.c
     keyboard.c
+    serial.c
+    song_player.c
     src/arch/i386/gdt.asm
     src/arch/i386/isr.asm
     src/arch/i386/irq.asm
@@ -79,7 +82,23 @@ add_executable(uiaos-kernel
 target_include_directories(uiaos-kernel PUBLIC include)
 target_include_directories(uiaos-kernel PUBLIC include/libc)
 target_sources(uiaos-kernel PRIVATE printf.c)
+target_sources(uiaos-kernel PRIVATE song_player.c)
 
+
+# Define a custom target for running the kernel in QEMU with proper audio enabled
+add_custom_target(
+    run-qemu
+    COMMAND qemu-system-i386
+        -kernel $<TARGET_FILE:uiaos-kernel>
+        -audiodev id=snd0,driver=sdl
+        -machine pcspk-audiodev=snd0
+        -serial stdio
+        -m 128
+    DEPENDS uiaos-kernel
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Running kernel in QEMU with speaker support..."
+    VERBATIM
+)
 
 
 # Specify compile options for C and C++

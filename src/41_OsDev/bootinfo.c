@@ -1,4 +1,4 @@
-// bootinfo.c – print Multiboot2 memory map in a nice table
+// bootinfo.c 
 #include "bootinfo.h"
 #include "../terminal.h"
 #include <stddef.h>

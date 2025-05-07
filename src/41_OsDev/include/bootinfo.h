@@ -1,3 +1,5 @@
+//bootinfo.h
+
 #pragma once
 #include <stdint.h>
 #include <multiboot2.h>

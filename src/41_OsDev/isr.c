@@ -1,6 +1,8 @@
+//isr.c
+
 #include "terminal.h"
 #include "port_io.h"
-#include "pit.h"           // now brings in pit_ticks
+#include "pit.h"           
 
 void itoa(int value, char* buffer) {
     char* p = buffer;
