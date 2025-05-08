@@ -90,7 +90,7 @@ void isr_handler(registers_t regs) {
         printf("At EIP: 0x%x, CS: 0x%x, EFLAGS: 0x%x\n", regs.eip, regs.cs, regs.eflags);
         
         // Critical exceptions that we cannot recover from
-        if (regs.int_no == 8 || regs.int_no == 13 || regs.int_no == 14) {
+        if (regs.int_no == 0 || regs.int_no == 8 || regs.int_no == 13 || regs.int_no == 14) {
             printf("CRITICAL: System halted due to unrecoverable exception\n");
             for(;;) { 
                 asm volatile("cli; hlt"); // Halt the CPU
