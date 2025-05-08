@@ -30,14 +30,16 @@ section .text
 bits 32
 
 _start:
-    cli
+    cli                  ; Disable interrupts
 
-    mov esp, stack_top
+    mov esp, stack_top   ; Set up stack
+    and esp, 0xFFFFFFF0
+    push ebx
+    push eax
 
-	push ebx
-	push eax
+    call main            ; Jump to main function
 
-    call main ; Jump main function
+    hlt                  ; Halt CPU if main returns
 
 section .bss
 stack_bottom:
