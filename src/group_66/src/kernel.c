@@ -39,7 +39,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("  / /_/ (  <_> |  <_> )  Y Y  \\   (  <_> )___ \\      \n");
     printf("  \\____ |\\____/ \\____/|__|_|  /____\\____/____  >   \n");
     printf("       \\/                   \\/_____/         \\/     \n");
-    printf("    Developed by a bunch of retards for IKT218         \n");
+    printf("      Developed by a bunch of nerds for IKT218         \n");
     printf("                 Welcome to hell!                      \n");
     printf("               Aris, Marcus, Albert                    \n");
     printf("=======================================================\n");
