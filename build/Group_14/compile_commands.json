@@ -251,6 +251,11 @@
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/Group_14/include -f elf32 -g -o CMakeFiles/uiaos-kernel.dir/src/serial_debug_utils.asm.o /workspaces/2025-ikt218-osdev/src/Group_14/src/serial_debug_utils.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/serial_debug_utils.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
   "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/Group_14/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -D KLOG_LEVEL_DEBUG -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/slab.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/src/slab.c",
   "file": "/workspaces/2025-ikt218-osdev/src/Group_14/src/slab.c"
 },
@@ -322,6 +327,16 @@
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
   "command": "/usr/bin/nasm -f elf32 -g -o CMakeFiles/hello_elf.dir/entry.asm.o /workspaces/2025-ikt218-osdev/src/Group_14/entry.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/entry.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/local/bin/i686-elf-gcc -g -m32 -Wall -Wextra -nostdlib -fno-builtin -fno-stack-protector -g -std=gnu99 -o CMakeFiles/shell_elf.dir/shell.c.o -c /workspaces/2025-ikt218-osdev/src/Group_14/shell.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/Group_14/shell.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/Group_14",
+  "command": "/usr/bin/nasm -f elf32 -g -o CMakeFiles/shell_elf.dir/entry.asm.o /workspaces/2025-ikt218-osdev/src/Group_14/entry.asm",
   "file": "/workspaces/2025-ikt218-osdev/src/Group_14/entry.asm"
 }
 ]
