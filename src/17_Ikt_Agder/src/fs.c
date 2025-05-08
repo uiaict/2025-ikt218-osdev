@@ -2,6 +2,7 @@
 #include "libc/stdio.h"
 #include "libc/stdlib.h"
 #include "libc/stdint.h"
+#include "libc/string.h"
 
 // Simulate reading a file from disk (e.g., from an image or a simple memory-based FS)
 uint8_t* read_file(const char *path, size_t *length) {

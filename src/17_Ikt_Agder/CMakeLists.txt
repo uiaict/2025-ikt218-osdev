@@ -133,7 +133,7 @@ set(DISK_IMAGE "${CMAKE_CURRENT_BINARY_DIR}/disk.iso")
 add_custom_target(
     create-fat32-disk
     COMMAND dd if=/dev/zero of=${DISK_IMAGE} bs=1M count=100
-    COMMAND mkfs.fat -F 100 ${DISK_IMAGE}
+    COMMAND mkfs.fat -F 32 ${DISK_IMAGE}
     VERBATIM
 )
 
