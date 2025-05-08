@@ -80,6 +80,7 @@ add_executable(uiaos-kernel
 	src/arch/i386/pit.c
 	src/song_player.c
 	src/song_data.c
+	src/piano.c
 
 
 )

@@ -459,6 +459,30 @@ src/multiboot2.asm.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o
 .PHONY : src/multiboot2.asm.o
 
+src/piano.o: src/piano.c.o
+.PHONY : src/piano.o
+
+# target to build an object file
+src/piano.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/piano.c.o
+.PHONY : src/piano.c.o
+
+src/piano.i: src/piano.c.i
+.PHONY : src/piano.i
+
+# target to preprocess a source file
+src/piano.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/piano.c.i
+.PHONY : src/piano.c.i
+
+src/piano.s: src/piano.c.s
+.PHONY : src/piano.s
+
+# target to generate assembly for a file
+src/piano.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uiaos-kernel.dir/build.make CMakeFiles/uiaos-kernel.dir/src/piano.c.s
+.PHONY : src/piano.c.s
+
 src/song_data.o: src/song_data.c.o
 .PHONY : src/song_data.o
 
@@ -580,6 +604,9 @@ help:
 	@echo "... src/memory.i"
 	@echo "... src/memory.s"
 	@echo "... src/multiboot2.o"
+	@echo "... src/piano.o"
+	@echo "... src/piano.i"
+	@echo "... src/piano.s"
 	@echo "... src/song_data.o"
 	@echo "... src/song_data.i"
 	@echo "... src/song_data.s"
