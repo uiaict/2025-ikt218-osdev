@@ -6,8 +6,8 @@
 
 
 typedef struct {
-    uint32_t frequency; // The frequency of the note hz
-    uint32_t duration;  // The duration of the note ms
+    uint32_t frequency; // frequency of the note hz
+    uint32_t duration;  // duration of the note ms
 } Note;
 
 
@@ -23,7 +23,7 @@ typedef struct {
 
 
 SongPlayer* createSongPlayer();
-void playSongImpl(Song *song) ;
+void playmariosong(Song *song) ;
 void keyboardPianoDemo();
 
 static Note mariosong[] = {

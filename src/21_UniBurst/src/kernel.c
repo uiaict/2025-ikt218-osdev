@@ -38,9 +38,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     initPaging();                                   // Initializes the paging
     printMemoryLayout();                            // Prints the memory layout
 
-    cursorVertical;                                 // Makes the cursor vertical
-    changeBackgroundColor(vgaColorDarkGrey);        // Changes the background color to dark grey
-    changeTextColor(vgaColorWhite);                 // Changes the text color to white
+    
     asm volatile("sti");
 
     

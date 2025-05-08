@@ -6,7 +6,6 @@
 #include <libc/stdio.h>
 #include <libc/string.h>
 
-// Function to copy memory from source to destination
 void* memcpy(void* dest, const void* src, size_t count ) {
     char* dst8 = (char*)dest;                          
     char* src8 = (char*)src;                           

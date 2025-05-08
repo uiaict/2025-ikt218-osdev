@@ -13,7 +13,6 @@ static uint32_t* pageDir = 0;
 static uint32_t pageDirLoc = 0;                     
 static uint32_t* lastPage = 0;                             
 
-// Function top map a virtual to a physical address
 void pagingMapVirtualToPhys(uint32_t virt, uint32_t phys) {
     uint16_t id = virt >> 22;                               
 
@@ -26,7 +25,6 @@ void pagingMapVirtualToPhys(uint32_t virt, uint32_t phys) {
     lastPage = (uint32_t*)(((uint32_t)lastPage) + 4096);    
 }
 
-// Function to enable paging
 void enablePaging() {
     asm volatile("mov %%eax, %%cr3": :"a"(pageDirLoc));    
     asm volatile("mov %cr0, %eax");                         
@@ -35,7 +33,6 @@ void enablePaging() {
 }
 
 
-// Function to initialize the paging
 void initPaging() {
     printf("Initializing paging\n");                       
     registerInterruptHandler(14, &pageFaultHandler);        
@@ -65,7 +62,6 @@ void pageFaultHandler(registers_t regs)
    int reserved = regs.errCode & 0x8;                      
    int id = regs.errCode & 0x10;                           
 
-   // Output an error message.
    printf("Page fault! ( ");                              
    if (present) {printf("present ");}                      
    if (rw) {printf("read-only ");}                        

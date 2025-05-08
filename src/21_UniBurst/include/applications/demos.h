@@ -5,7 +5,6 @@ void printDemo();
 void isrDemo();
 void pitDemo();
 void pageFaultDemo();
-void changeColorDemo();
-void changeCursorDemo();
+
 
 #endif

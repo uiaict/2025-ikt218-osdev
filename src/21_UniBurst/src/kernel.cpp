@@ -101,8 +101,6 @@ int kernel_main(){
             printf("'pit' - Runs pit demo\n");
             printf("'isr' - Runs isr demo\n");
             printf("'song' - Runs song demo\n");
-            printf("'color' - Color change demo\n");
-            printf("'cursor' - Cursor change demo\n");
             printf("'piano' - Runs keyboard piano demo\n");
             printf("'exit' - Exits demo mode and allows for free typing\n");
         }
@@ -134,7 +132,7 @@ int kernel_main(){
             isrDemo();
         }
 
-        // runs song demo. Implementation direcly in main. Implementing in demos.cpp caused issues.
+        // runs song demo
         else if (strcmp(input, "song") == 0){
             printf("Available songs:\n");
             printf("0. Play mariosong\n");
@@ -144,7 +142,7 @@ int kernel_main(){
             scanf("%d", &choice);
 
             if (choice < 0 || choice > 1){
-                printf("Invalid song number. Exiting demo.\n");
+                printf("Invalid song number. Exiting...\n");
                 continue;
             }
             
@@ -173,15 +171,6 @@ int kernel_main(){
         }
 
 
-        // runs color change demo
-        else if (strcmp(input, "color") == 0){
-            changeColorDemo();
-        }
-
-        // runs cursor change demo
-        else if (strcmp(input, "cursor") == 0){
-            changeCursorDemo();
-        }
 
         // runs the piano keyboard demo
         else if (strcmp(input, "piano") == 0) {
