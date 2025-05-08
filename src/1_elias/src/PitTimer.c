@@ -4,7 +4,6 @@
 #include "libc/PitTimer.h"
 
 uint64_t ticks;
-const uint32_t frequency = 100;
 
 void onIrq0(struct InterruptRegisters *regs) {
     ticks += 1;
@@ -15,9 +14,29 @@ void initTimer() {
     irq_install_handler(0, &onIrq0);
 
     //119318.16666 Hz
-    uint32_t divisor = 1193180/frequency;
 
-    outPortB(0x43, 0x36); //0011 0110
-    outPortB(0x40, (uint8_t) (divisor & 0xFF));
-    outPortB(0x40, (uint8_t) ((divisor >> 8) & 0xFF));
+    outPortB(PIT_CMD_PORT, 0xB6);
+    outPortB(PIT_CHANNEL0_PORT, (uint8_t) (DIVIDER & 0xFF));
+    outPortB(PIT_CHANNEL0_PORT, (uint8_t) ((DIVIDER >> 8) & 0xFF));
+}
+
+void sleep_interrupt(uint32_t milliseconds) {
+    uint64_t currentTicks = ticks;
+    uint64_t ticksToWait = milliseconds * TICKS_PER_MS;
+    uint64_t endTicks = currentTicks + ticksToWait;
+    while( currentTicks < endTicks) {
+        asm volatile("sti;hlt");
+        currentTicks = ticks;
+    }
+}
+
+void sleep_busy(uint32_t milliseconds) {
+    uint64_t startTick = ticks;
+    uint64_t ticksToWait = milliseconds * TICKS_PER_MS;
+    uint64_t elapsedTicks = 0;
+    while( elapsedTicks < ticksToWait) {
+        while( ticks == startTick + elapsedTicks) {
+        }
+        elapsedTicks++;
+    }
 }

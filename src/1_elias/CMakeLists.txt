@@ -70,6 +70,7 @@ add_executable(uiaos-kernel
 	src/idt.c
 	src/keyboard.c
 	src/PitTimer.c
+	src/songPlayer.c
 )
 
 # Include directories for the kernel target
