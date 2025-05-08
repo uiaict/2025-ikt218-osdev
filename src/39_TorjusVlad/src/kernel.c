@@ -87,7 +87,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
         printf("Select an option:\n");
         printf("  [1] Play Music\n");
         printf("  [2] Play Snake\n");
-        printf("  [Q] Shutting down\n");
+        printf("  [Q] Shut down\n");
     
         while (1) {
             char choice = keyboard_get_char();
