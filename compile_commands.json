@@ -1,8 +1,0 @@
-
-[
-  {
-    "directory": "/home/william/Desktop/2025-ikt218-osdev",
-    "file": "src/28_aquila/src/idt.c",
-    "command": "clang -I./src/28_aquila/include -I./src/group_name/include -I./src/group_name/src -c src/28_aquila/src/idt.c"
-  }
-]
