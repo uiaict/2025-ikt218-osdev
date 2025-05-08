@@ -13,6 +13,7 @@
 
 #include "shell/shell.h"
 #include "matrix/matrix.h"
+#include "apps/pong/pong.h"
 
 extern uint32_t end; // This is defined in arch/i386/linker.ld
 

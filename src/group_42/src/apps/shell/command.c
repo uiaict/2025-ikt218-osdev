@@ -7,6 +7,7 @@
 #include "song_player/song_player.h"
 #include "song_player/song_commands.h"
 #include "matrix/matrix.h"
+#include "../pong/pong.h"
 
 static int command_count = 0;
 static command_t registry[MAX_COMMANDS];
@@ -26,6 +27,7 @@ void init_commands() {
   reg_command("music5", play_music_5);
   reg_command("music6", play_music_6);
   reg_command("matrix", matrix_start_command);
+  reg_command("pong", pong_init);
 }
 
 void reg_command(const char *name, command_func_t func) {

@@ -79,6 +79,8 @@ add_executable(uiaos-kernel
     src/apps/song_player/song_player.c
     src/apps/song_player/song_commands.c
     src/apps/matrix/matrix.c
+    src/apps/pong/pong.h
+    src/apps/pong/pong.c
 )
 
 # Include directories for the kernel target
