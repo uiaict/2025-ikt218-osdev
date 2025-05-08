@@ -60,7 +60,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
 
     printf("\n");
     
-    int sleep_time = 0;
+    int sleep_time = 3;
     bool play_music_on_startup = true;
 
     if (play_music_on_startup) {

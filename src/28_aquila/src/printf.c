@@ -30,7 +30,7 @@ void update_cursor(int x, int y) {
   }
 
 void scroll() {
-    // Copy each line one row up
+    // copy each line one row up
     for (int y = 1; y < VGA_HEIGHT; y++) {
         for (int x = 0; x < VGA_WIDTH; x++) {
             int from = (y * VGA_WIDTH + x) * 2;
@@ -40,26 +40,25 @@ void scroll() {
         }
     }
 
-    // Clear the last line
+    // clear the last line
     for (int x = 0; x < VGA_WIDTH; x++) {
         int i = ((VGA_HEIGHT - 1) * VGA_WIDTH + x) * 2;
         vga[i] = ' ';
         vga[i + 1] = 0x07;
     }
 
-    // Move the cursor to the first column of the last line
     cursor = (VGA_HEIGHT - 1) * VGA_WIDTH;
 }
 
 
 void putchar(char c) {
     if (c == '\n') {
-        cursor += VGA_WIDTH - (cursor % VGA_WIDTH); // Move to start of next line
+        cursor += VGA_WIDTH - (cursor % VGA_WIDTH); // move to start of next line
     } else if (c == '\b') {
         if (cursor > 0) {
             cursor--;
             vga[cursor * 2] = ' ';
-            vga[cursor * 2 + 1] = 0x07; // Default attribute
+            vga[cursor * 2 + 1] = 0x07; 
         }
 
     } else {

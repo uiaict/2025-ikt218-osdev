@@ -72,19 +72,19 @@ void cmd_nano(char *filename) {
 void buffer_handler(int action, char ascii) {
     if (in_nano == 1) {
         switch (action) {
-            case 0: // add character to buffer
+            case 0: // add char to buffer
                 if (input_len < INPUT_BUFFER_MAX - 1) { 
-                    buffer[input_len] = ascii; // add character to buffer
+                    buffer[input_len] = ascii; // add char to buffer
                     buffer[input_cursor] = ascii;
                     input_len++;
                     input_cursor++;
                 }
                 break;
-            case 1: // remove character from cursor position    
+            case 1: // remove char from cursor position    
                 if (input_cursor <= input_len) {
                     
                     for (int i = input_cursor; i <= input_len; i++) {
-                        buffer[i-1] = buffer[i]; // shift characters left
+                        buffer[i-1] = buffer[i]; // shift char left
                     }
                     input_len--;
                     input_cursor--;
@@ -102,7 +102,7 @@ void buffer_handler(int action, char ascii) {
                 break;
             case 4: // enter key pressed
             if (input_len < INPUT_BUFFER_MAX - 1) { 
-                buffer[input_len] = '\n'; // add character to buffer
+                buffer[input_len] = '\n'; // add char to buffer
                 input_len++;
                 input_cursor++;
             }                
@@ -110,19 +110,19 @@ void buffer_handler(int action, char ascii) {
         }
     } else {
         switch (action) {
-            case 0: // add character to buffer
+            case 0: // add char to buffer
                 if (input_len < INPUT_BUFFER_MAX - 1) { 
-                    buffer[input_len] = ascii; // add character to buffer
+                    buffer[input_len] = ascii; // add char to buffer
                     buffer[input_cursor] = ascii; 
                     input_len++;
                     input_cursor++;
                 }
                 break;
-            case 1: // remove character from cursor position
+            case 1: // remove char from cursor position
 
                 if (input_cursor <= input_len) {
                     for (int i = input_cursor; i <= input_len; i++) {
-                        buffer[i-1] = buffer[i]; // shift characters left
+                        buffer[i-1] = buffer[i]; // shift char left
                     }
                     input_len--;
                     input_cursor--;
@@ -180,7 +180,7 @@ void buffer_handler(int action, char ascii) {
                 }
                 if (in_nano == 0) {
                     printf("\naquila: ");
-                    input_start = cursor; // prevent deletion of "aquila: "
+                    input_start = cursor; // prevent delete of "aquila: "
                 }
                 input_len = 0; // reset buffer
                 input_cursor = 0;
