@@ -29,6 +29,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     playSong(music_6, sizeof(music_6));
 
 
+    while(true) {};
     return 0;
 
 }
