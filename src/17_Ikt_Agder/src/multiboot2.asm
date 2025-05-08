@@ -43,16 +43,16 @@ endstruc
 
 %define MYSTRUC_SIZE 10
 
-section .bss
-mystruct_instance resb MYSTRUC_SIZE
-stack_bottom:
-    resb 4096 * 16
-stack_top:
+;section .bss
+;mystruct_instance resb MYSTRUC_SIZE
+;stack_bottom:
+;    resb 4096 * 16
+;stack_top:
 
 section .bss
-    align 4
-    global end
-end:
+    mystruct_instance resb 10
+    stack_bottom: resb 4096 * 16
+    stack_top:
 
 section .text
 bits 32

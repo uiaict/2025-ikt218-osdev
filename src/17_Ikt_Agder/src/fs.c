@@ -10,7 +10,7 @@ uint8_t* read_file(const char *path, size_t *length) {
     // You can replace this with a file system implementation or a static address that holds the data.
 
     // Here we simulate a small file for testing purposes.
-    if (path == "/assets/music/example.wav") {
+    if (strcmp(path, "/assets/music/example.wav")) {
         // Dummy data for example.wav (you should replace this with real file data)
         static uint8_t example_wav_data[] = {
             0x52, 0x49, 0x46, 0x46, // 'RIFF' header

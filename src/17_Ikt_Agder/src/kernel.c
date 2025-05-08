@@ -83,7 +83,7 @@ void kernel_main(uint32_t mystruct, uint32_t magic, struct multiboot_info* mb_in
     // Now call your print_welcome_message
     print_welcome_message();
       // Delay for 1 second (1000 milliseconds)
-    delay(1000);
+    //delay(1000);
     
     
     // Install the IDT

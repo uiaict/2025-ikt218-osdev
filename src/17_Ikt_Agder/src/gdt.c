@@ -34,7 +34,7 @@ extern void gdt_flush(uint8_t);
 // Initialize the GDT
 void gdt_init() {
     gp.limit = (sizeof(struct gdt_entry) * 3) - 1; // Size of the GDT minus 1
-    gp.base = (uint8_t)&gdt; // Base address of the GDT
+    gp.base = (uint32_t)&gdt; // Base address of the GDT
 
     // Set up the three GDT entries
     gdt_set_entry(0, 0, 0, 0, 0);                // NULL segment
@@ -45,5 +45,5 @@ void gdt_init() {
      print("GDT initialized, before flush\n");  // Your custom printing function
 
     // Load the GDT and switch to protected mode
-    gdt_flush((uint8_t)&gp);
+    gdt_flush((uint32_t)&gp);
 }
