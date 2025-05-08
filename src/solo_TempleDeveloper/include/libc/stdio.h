@@ -1,5 +1,9 @@
 #pragma once
+#include "stdbool.h"
+#include "stdint.h"
 
-int putchar(int ic);
-bool print(const char* data, size_t length);
-int printf(const char* __restrict__ format, ...);
+// Writes a single character to the screen
+int putchar(int c);
+
+// Prints a formatted string (supports %s, %d, %u, %x, %%)
+int printf(const char* format, ...);

@@ -57,9 +57,25 @@ set(CMAKE_ASM_NASM_COMPILE_OBJECT
 set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/linker.ld")
 
 # Add executable target for the kernel
+# HUBERT: THE srx/multiboot2.asm HERE GOT UNCOMMENTED
+# HUBERT: added stirng function
 add_executable(uiaos-kernel 
-	# src/multiboot2.asm # TODO: Add multiboot2 support
+	src/multiboot2.asm # TODO: Add multiboot2 support
     src/kernel.c
+	src/string.c
+
+	#GTD
+	src/gdt.c
+	src/gdt_flush.asm
+	
+	#IDT and IRQ supports (with logger)
+	src/idt.c
+	src/idt_asm.asm
+	src/irq.c
+	src/irq_asm.asm
+
+	#LibC
+	src/libc/stdio.c
 )
 
 # Include directories for the kernel target
