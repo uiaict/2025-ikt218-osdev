@@ -71,10 +71,13 @@ add_executable(uiaos-kernel
 	src/libc/portio.c
 	src/libc/string.c
 	src/libc/stdio.c
+	src/libc/stdlib.c
+	src/libc/random.c
 	src/kernel.c
 	src/pit.c
 	src/sound.c
 	src/song_player.c
+	src/games/snake.c
 )
 
 # Include directories for the kernel target

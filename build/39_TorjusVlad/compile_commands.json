@@ -66,6 +66,16 @@
 },
 {
   "directory": "/workspaces/2025-ikt218-osdev/build/39_TorjusVlad",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/39_TorjusVlad/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/libc/stdlib.c.o -c /workspaces/2025-ikt218-osdev/src/39_TorjusVlad/src/libc/stdlib.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/39_TorjusVlad/src/libc/stdlib.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/39_TorjusVlad",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/39_TorjusVlad/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/libc/random.c.o -c /workspaces/2025-ikt218-osdev/src/39_TorjusVlad/src/libc/random.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/39_TorjusVlad/src/libc/random.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/39_TorjusVlad",
   "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/39_TorjusVlad/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2025-ikt218-osdev/src/39_TorjusVlad/src/kernel.c",
   "file": "/workspaces/2025-ikt218-osdev/src/39_TorjusVlad/src/kernel.c"
 },
@@ -83,5 +93,10 @@
   "directory": "/workspaces/2025-ikt218-osdev/build/39_TorjusVlad",
   "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/39_TorjusVlad/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/song_player.c.o -c /workspaces/2025-ikt218-osdev/src/39_TorjusVlad/src/song_player.c",
   "file": "/workspaces/2025-ikt218-osdev/src/39_TorjusVlad/src/song_player.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/39_TorjusVlad",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/39_TorjusVlad/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/games/snake.c.o -c /workspaces/2025-ikt218-osdev/src/39_TorjusVlad/src/games/snake.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/39_TorjusVlad/src/games/snake.c"
 }
 ]

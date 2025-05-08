@@ -53,6 +53,4 @@ void sleep_interrupt(uint32_t milliseconds) {
     while (get_current_tick() < end) {
         asm volatile("sti\nhlt");
     }
-    printf("[%d] ticks have passed\n", (end - start));
-    printf("\nCurrent tict is: %d\n", get_current_tick());
 }

@@ -1,17 +1,23 @@
 #include "song_player.h"
 #include "sound.h"
 #include "pit.h"
+#include "keyboard.h"
 #include "libc/stdio.h"
 #include "libc/memory.h"
+#include "libc/stdbool.h"
 //#include "song/music_1.h"
 #include "song/music.h"
 #include "song/mario.h"
 #include "song/tetris.h"
 #include "song/zelda.h"
 
-void play_song_impl(Song *song) {
+bool play_song_impl(Song *song) {
     enable_speaker();
     for (size_t i = 0; i < song->note_count; i++) {
+        char c = keyboard_get_char();
+        if (c == 'q' || c == 'Q') {
+            return true; 
+        }
         Note note = song->notes[i];
         //speaker_beep(note.frequency, note.duration_ms);
         play_sound(note.frequency);
@@ -19,8 +25,8 @@ void play_song_impl(Song *song) {
         sleep_busy(note.duration_ms);
         disable_speaker();
         printf("Playing note: %u Hz for %u ms\n", note.frequency, note.duration_ms);
-        //sleep_busy(10);
     }
+    return false;
 }
 
 SongPlayer* create_song_player() {
@@ -48,7 +54,14 @@ void play_music() {
     while (1) {
         for (uint32_t i = 0; i < n_songs; i++) {
             printf("Playing Song...\n");
-            player->play_song(&songs[i]);
+
+            char c = keyboard_get_char();
+            if (c == 'q' || c == 'Q') {
+                printf("Exiting music player...\n");
+                return;
+            }
+
+            if (player->play_song(&songs[i])) return;
             printf("Finished playing the song.\n");
             sleep_busy(2000); // pause between songs
             reset_ticker();

@@ -3,6 +3,7 @@
 #include "libc/stddef.h"
 #include "arch/i386/console.h"
 #include "libc/stdio.h"
+#include "libc/stdlib.h"
 
 int puts(const char* str) {
     if (!str) return -1;
@@ -60,6 +61,12 @@ int printf(const char* __restrict__ format, ...) {
                     break;
                 case 'x':
                     print_number(va_arg(args, unsigned int), 16, false); // hex
+                    break;
+                case 'f': 
+                    float f = (float)va_arg(args, double); // floats are promoted to double
+                    char buf[64];
+                    ftoa(f, buf, 6); // 6 digits after decimal
+                    console_write(buf);
                     break;
                 case '%':
                     console_write_char('%');

@@ -2,6 +2,7 @@
 #define SONG_PLAYER_H
 
 #include "song/note.h"
+#include "libc/stdbool.h"
 #include <libc/stddef.h>
 
 typedef struct {
@@ -10,10 +11,10 @@ typedef struct {
 } Song;
 
 typedef struct {
-    void (*play_song)(Song* song);
+    bool (*play_song)(Song* song);
 } SongPlayer;
 
 SongPlayer* create_song_player();
-void play_song_impl(Song* song);
+bool play_song_impl(Song* song);
 
 #endif
