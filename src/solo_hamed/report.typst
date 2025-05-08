@@ -2,11 +2,12 @@
 #set text(font: "New Computer Modern")
 
 // Title
-= Understanding the Boot Process in Computer Systems
+#align(center)[
+  = Advanced Operating Systems - HamedOS
+\
+University of Agder, Spring 2025, IKT218
 
-Operating Systems Development Course - IKT218  
-University of Agder  
-Spring 2025
+]
 
 == Introduction
 
@@ -57,7 +58,7 @@ Bootloaders fascinate me because they bridge the gap between the hardware-focuse
 
 Through my research, I've found that there are several popular bootloaders, each with unique features:
 
-1. **GRUB (Grand Unified Bootloader)**: This is perhaps the most widely used bootloader in the Linux world. GRUB has evolved from GRUB Legacy to GRUB 2, which offers a more powerful scripting environment, support for more file systems, and greater flexibility. GRUB can load various operating systems and supports the Multiboot specification. 
+1. **GRUB (Grand Unified Bootloader)**: This is perhaps the most widely used bootloader in the Linux world. GRUB has evolved from GRUB Legacy to GRUB 2, which offers a more powerful scripting environment, support for more file systems, and greater flexibility. GRUB can load various operating systems and supports the Multiboot specification.
 
 2. **LILO (Linux Loader)**: An older bootloader for Linux systems. While less common today, it was notable for its simplicity and reliability, though it lacked the flexibility of GRUB.
 
