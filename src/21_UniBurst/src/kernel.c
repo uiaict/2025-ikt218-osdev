@@ -11,7 +11,7 @@
 #include "macros.h"
 #include "keyboard.h"
 #include "memory.h"
-#include "kernelutils.h"
+#include "kernelstuff.h"
 #include "pit.h"
 #include "frequencies.h"
 
@@ -36,7 +36,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     initPit();                                      // Initializes the PIT 
     initKernelMemory(&end);                         // Initializes the kernel memory
     initPaging();                                   // Initializes the paging
-    printMemoryLayout();                            // Prints the memory layout
+    printMemory();                            // Prints the memory layout
 
     
     asm volatile("sti");

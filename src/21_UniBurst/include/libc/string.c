@@ -10,19 +10,6 @@ size_t strlen(char *str)
 	return len;
 }
 
-char *strchr(char *str, int c) 
-{
-    while (*str != '\0') {
-        if (*str == c) 
-            return str;
-        str++;
-    }
-
-    if (c == '\0')
-        return str;
-    return NULL;
-}
-
 // Implementation of strrev function adapted from https://www.geeksforgeeks.org/implement-itoa/
 void strrev(char str[], int length)
 {
@@ -45,3 +32,18 @@ int strcmp(const char *str1, const char *str2) {
     }
     return *(unsigned char *)str1 - *(unsigned char *)str2;
 }
+
+
+char *strchr(char *str, int c) 
+{
+    while (*str != '\0') {
+        if (*str == c) 
+            return str;
+        str++;
+    }
+
+    if (c == '\0')
+        return str;
+    return NULL;
+}
+

@@ -26,8 +26,6 @@ void initPit() {
 }
 
 // These sleep functions are based on the pseudo code provided by Per-Arne Andersen at https://perara.notion.site/Assignment-4-Memory-and-PIT-83eabc342fd24b88b00733a78b5a86e0 
-
-
 void sleepBusy(uint32_t ms) {
     uint32_t startTick = getCurrentTick();     
     uint32_t ticksToWait = ms * TICKS_PER_MS;   

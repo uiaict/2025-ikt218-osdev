@@ -9,18 +9,19 @@
 #define DEFAULT_TEXT_COLOR 0x07
 #define DEFAULT_BACKGROUND_COLOR 0x00
 
-extern uint8_t currentTextColor;
-extern uint8_t currentBackgroundColor;
+
 extern int cursorPos;
 extern char* videoMemory;
+extern uint8_t currentTextColor;
+extern uint8_t currentBackgroundColor;
 
 
 void enableCursor(uint8_t cursorStart, uint8_t cursorEnd);
 void disableCursor();
-void setCursorPosition(uint16_t position);
-void clearScreen();
 void changeTextColor(uint8_t color);
 void changeBackgroundColor(uint8_t color);
+void setCursorPosition(uint16_t position);
+void clearScreen();
 uint16_t getCursorPosition();
 void outb(unsigned short port, unsigned char val);
 uint8_t inb(uint16_t port);

@@ -4,14 +4,46 @@
 // Video memory begins at address 0xb8000
 char* videoMemory = (char*) 0xb8000;
 
-// To change the text color change the currentTextColor variable. To change the background color change the currentBackgroundColor variable.
+
 uint8_t currentTextColor = DEFAULT_TEXT_COLOR;
 uint8_t currentBackgroundColor = DEFAULT_BACKGROUND_COLOR;
-int cursorPos = 0; // The position of the cursor on the screen
+int cursorPos = 0; 
+
+
+// Clears the screen
+void clearScreen() {
+    for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT * 2; i += 2) { 
+        videoMemory[i] = ' ';
+        videoMemory[i + 1] = currentTextColor; 
+        videoMemory[i + 1] |= currentBackgroundColor << 4; 
+    }
+
+    cursorPos = 0; 
+    setCursorPosition(cursorPos); 
+}
+
+// Changes the text color
+void changeTextColor(uint8_t color) {
+    for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT * 2; i += 2) { 
+        videoMemory[i + 1] = (videoMemory[i + 1] & 0xF0) | (color & 0x0F); 
+    }
+
+    currentTextColor = color; 
+}
+
+// Changes the background color 
+void changeBackgroundColor(uint8_t color) {
+    for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT * 2; i += 2) { 
+        videoMemory[i + 1] = (videoMemory[i + 1] & 0x0F) | (color << 4); 
+    }
+    
+    currentBackgroundColor = color; 
+}
+
 
 
 void outb(unsigned short port, unsigned char val) {
-    asm volatile ("outb %0, %1" : : "a"(val), "Nd"(port)); // Send the value to the port
+    asm volatile ("outb %0, %1" : : "a"(val), "Nd"(port)); 
 }
 
 
@@ -57,32 +89,3 @@ void scroll() {
 }
 
 
-// Clears the screen
-void clearScreen() {
-    for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT * 2; i += 2) { 
-        videoMemory[i] = ' ';
-        videoMemory[i + 1] = currentTextColor; 
-        videoMemory[i + 1] |= currentBackgroundColor << 4; 
-    }
-
-    cursorPos = 0; 
-    setCursorPosition(cursorPos); 
-}
-
-// Changes the text color
-void changeTextColor(uint8_t color) {
-    for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT * 2; i += 2) { 
-        videoMemory[i + 1] = (videoMemory[i + 1] & 0xF0) | (color & 0x0F); 
-    }
-
-    currentTextColor = color; 
-}
-
-// Changes the background color 
-void changeBackgroundColor(uint8_t color) {
-    for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT * 2; i += 2) { 
-        videoMemory[i + 1] = (videoMemory[i + 1] & 0x0F) | (color << 4); 
-    }
-    
-    currentBackgroundColor = color; 
-}

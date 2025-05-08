@@ -54,15 +54,6 @@ void operator delete[](void *ptr, size_t size) noexcept
 
 
 int kernel_main(){
-    // loading screen
-    disableCursor();
-    printf("Starting OS [");
-    videoMemory[cursorPos + 60] = ']';
-    
-    for (int i = 0; i < 30; i++){
-        putchar('|');
-        sleepInterrupt(100);
-    }
 
     cursorVertical;  
     clearScreen();
@@ -71,13 +62,15 @@ int kernel_main(){
     bufferIndex = 0;
     
     // full group name us UniBurst but its been shortened to UB OS to fit on screen
-    printf("    U     U  BBBBB        OOO    SSSSS \n");
-    printf("    U     U  B    B      O   O  S      \n");
-    printf("    U     U  B    B      O   O  S      \n");
-    printf("    U     U  BBBBB       O   O   SSSS  \n");
-    printf("    U     U  B    B      O   O       S \n");
-    printf("    U     U  B    B      O   O       S \n");
-    printf("     UUUUU   BBBBB        OOO    SSSSS \n");
+    printf("                                                   \n");
+    printf("                                                   \n");
+    printf("                U     U  BBBBB        OOO    SSSSS \n");
+    printf("                U     U  B    B      O   O  S      \n");
+    printf("                U     U  B    B      O   O  S      \n");
+    printf("                U     U  BBBBB       O   O   SSSS  \n");
+    printf("                U     U  B    B      O   O       S \n");
+    printf("                U     U  B    B      O   O       S \n");
+    printf("                 UUUUU   BBBBB        OOO    SSSSS \n");
 
    
     printf("\n              Created by Saw John Thein, Max Meyer Hellwege, Tamim Norani\n");

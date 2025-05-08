@@ -6,14 +6,14 @@
 #include <libc/stdio.h>
 #include <libc/string.h>
 #include <isr.h>
-#include <kernelutils.h>
+#include <kernelstuff.h>
 
 
 static uint32_t* pageDir = 0;                               
 static uint32_t pageDirLoc = 0;                     
 static uint32_t* lastPage = 0;                             
 
-void pagingMapVirtualToPhys(uint32_t virt, uint32_t phys) {
+void pagingMap(uint32_t virt, uint32_t phys) {
     uint16_t id = virt >> 22;                               
 
     for (int i = 0; i < 1024; i++){                        
@@ -44,8 +44,8 @@ void initPaging() {
         pageDir[i] = 0 | 2;                                 
     }      
         
-    pagingMapVirtualToPhys(0, 0);                           
-    pagingMapVirtualToPhys(0x400000, 0x400000);             
+    pagingMap(0, 0);                           
+    pagingMap(0x400000, 0x400000);             
     enablePaging();                                        
     printf("Paging initialized\n");                         
 }

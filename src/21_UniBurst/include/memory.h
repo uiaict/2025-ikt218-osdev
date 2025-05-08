@@ -16,7 +16,7 @@ typedef struct {
 void initKernelMemory(uint32_t* kernelEnd);                             
 
 extern void initPaging();                                               
-extern void pagingMapVirtualToPhys(uint32_t virt, uint32_t phys);       
+extern void pagingMap(uint32_t virt, uint32_t phys);       
 
 extern char* pmalloc(size_t size);                                     
 extern void* malloc(size_t size);                                  
@@ -29,7 +29,7 @@ extern void* memset (void * ptr, int value, size_t num );
 extern void* memset16 (void *ptr, uint16_t value, size_t num);         
 
 
-void printMemoryLayout();                                              
+void printMemory();                                              
 
 void pageFaultHandler(registers_t reg);                                
 

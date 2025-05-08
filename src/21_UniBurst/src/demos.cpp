@@ -14,34 +14,6 @@ extern "C" {
 #include "song.h"
 
 
-// shows printf function
-void printDemo() {
-
-    char strTest[] = "Hello World!";                
-    int intTest = 123;
-    unsigned int uintTest = 1234567890;
-    float floatTest = 3.14;
-    double doubleTest = 3.14159;
-    char hexTest[] = "0x01";
-
-    printf("Printing a string: %s\n", strTest);     
-    printf("Printing an integer: %d\n", intTest);
-    printf("Printing an unsigned integer: %u\n", uintTest);
-    printf("Printing a float: %f\n", floatTest);
-    printf("Printing a float with .1f precition: %.1f\n", floatTest);
-    printf("Printing a double: %f\n", doubleTest);
-    printf("Printing a hex: %s\n", hexTest);    
-}
-
-// shows sleep function using pit
-void pitDemo() {
-    printf("Using interrupt to sleep in ten intervals of 1sec\n");
-    for (int i = 1; i < 10; i++) {
-        printf("%dsec\n", i);
-        sleepInterrupt(1000);
-    }
-    printf("i just slept!\n");
-}
 
 // triggers interrupts
 void isrDemo() {
@@ -88,3 +60,31 @@ void pageFaultDemo() {
 }
 
 
+// shows printf function
+void printDemo() {
+
+    char strTest[] = "Hello World!";                
+    int intTest = 123;
+    unsigned int uintTest = 1234567890;
+    float floatTest = 3.14;
+    double doubleTest = 3.14159;
+    char hexTest[] = "0x01";
+
+    printf("Printing a string: %s\n", strTest);     
+    printf("Printing an integer: %d\n", intTest);
+    printf("Printing an unsigned integer: %u\n", uintTest);
+    printf("Printing a float: %f\n", floatTest);
+    printf("Printing a float with .1f precition: %.1f\n", floatTest);
+    printf("Printing a double: %f\n", doubleTest);
+    printf("Printing a hex: %s\n", hexTest);    
+}
+
+// shows sleep function using pit
+void pitDemo() {
+    printf("Using interrupt to sleep in ten intervals of 1sec\n");
+    for (int i = 1; i < 10; i++) {
+        printf("%dsec\n", i);
+        sleepInterrupt(1000);
+    }
+    printf("i just slept!\n");
+}

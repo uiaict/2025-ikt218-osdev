@@ -76,8 +76,8 @@ add_executable(uiaos-kernel
 	include/libc/system.c
 	src/memory.c     
     src/malloc.c     
-    src/memutils.c   
-    src/kernelutils.c       
+    src/memstuff.c   
+    src/kernelstuff.c       
     src/pit.c  
 	src/songPlayer.cpp
 	src/demos.cpp

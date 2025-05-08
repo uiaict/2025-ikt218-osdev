@@ -19,7 +19,7 @@ void isrHandler(registers_t regs) {
    	}
 
 	else {
-		printf("Received interrupt: %d - %s\n", regs.intNum, exceptionMessages[regs.intNum]);
+		printf("Received interupt: %d - %s\n", regs.intNum, exceptionMessages[regs.intNum]);
 	}
 }
 

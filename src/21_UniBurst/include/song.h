@@ -27,7 +27,6 @@ void playmariosong(Song *song) ;
 void keyboardPianoDemo();
 
 static Note mariosong[] = {
-    {E5, 250}, {R, 125}, {E5, 125}, {R, 125}, {E5, 125}, {R, 125},
     {C5, 125}, {E5, 125}, {G5, 125}, {R, 125}, {G4, 125}, {R, 250},
 
     {C5, 125}, {R, 250}, {G4, 125}, {R, 125}, {E4, 125}, {R, 125},

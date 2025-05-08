@@ -5,7 +5,7 @@
 #include <libc/limits.h>
 #include <libc/stdio.h>
 #include <libc/string.h>
-#include <kernelutils.h>
+#include <kernelstuff.h>
 
 #define MAX_PAGE_ALIGNED_ALLOCS 32                            
 
@@ -32,7 +32,7 @@ void initKernelMemory(uint32_t *kernelEnd) {
 }
 
 
-void printMemoryLayout() {
+void printMemory() {
     printf("Memory used: %d bytes\n", memoryUsed);                      
     printf("Memory free: %d bytes\n", heapEnd - heapBegin - memoryUsed);
     printf("Heap size: %d bytes\n", heapEnd - heapBegin);

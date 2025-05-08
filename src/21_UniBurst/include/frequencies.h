@@ -1,4 +1,3 @@
-// Header file to defines the frequencies of the notes in the music player. 
 // Sourced from: https://perara.notion.site/Assignment-5-Music-Player-ef529c6c32724b7ab626297d0dc9b34d
 #ifndef UIAOS_FREQUENCIES_H
 #define UIAOS_FREQUENCIES_H
