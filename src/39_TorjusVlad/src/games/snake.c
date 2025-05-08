@@ -184,5 +184,5 @@ void snake_main() {
         sleep_interrupt(50);
     }
 
-    while (!keyboard_get_char()) { console_clear(); }
+    while (!keyboard_get_char()) { }
 }

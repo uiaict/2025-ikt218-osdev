@@ -2,6 +2,7 @@
 #include "libc/stddef.h"
 #include "libc/stdbool.h"
 #include <libc/stdio.h>
+#include "libc/portio.h"
 #include <libc/memory.h>
 #include "arch/i386/fpu.h"
 #include "arch/i386/console.h"
@@ -25,6 +26,9 @@ struct multiboot_info {
     struct multiboot_tag *first;
 };
 
+static inline void shutdown_qemu() {
+    outw(0x604, 0x2000);
+}
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("Hello, World! Magic number: %d\n", magic);
@@ -98,6 +102,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
             } else if (choice == 'q' || choice == 'Q') {
                 console_clear();
                 printf("Shutting down...\n");
+                shutdown_qemu();
                 return 0;
             }
         }
