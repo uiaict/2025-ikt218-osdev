@@ -13,7 +13,7 @@ void play_song(struct song *song){
         struct note note = song->notes[i];
 
         play_sound(note.frequency);
-        interrupt_sleep(note.duration);
+        busy_sleep(note.duration);
         stop_sound();
 
     }

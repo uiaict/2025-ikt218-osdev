@@ -13,7 +13,8 @@
 #include "libc/stdlib.h"
 #include "memory/memory.h"
 #include "memory/paging.h"
-#include "wave.h"
+#include "paint.h"
+#include "demo.h"
 
 extern uint32_t end;
 
@@ -25,58 +26,83 @@ struct multiboot_info {
 
 
 int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
-    set_vga_color(VGA_GREEN, VGA_BLACK);
+    
+    set_vga_color(VGA_WHITE, VGA_BLACK);
     init_gdt();
     init_idt();
     init_keyboard();
-    init_pit(500);
-    init_kernel_memory(&end);
+    uint32_t begin = init_kernel_memory(&end);
     init_paging();
-    enable_speaker();
-    stop_sound();
+    uint32_t pit_Hz = 500;
+    init_pit(500);
+
+    // printf("initializing gdt...\n\r");
+    // busy_sleep(100);
+    // printf("initializing idt...\n\r");
+    // busy_sleep(100);
+    // printf("initializing memory...\n\r");
+    // busy_sleep(300);
+    // printf("kernel heap starts at 0x%x\n\r", begin);
+    // printf("enablling paging...\n\r");
+    // busy_sleep(100);
+    // printf("initializing keyboard with mapping:no...\n\r");
+    // busy_sleep(100);
+    // printf("initializing pit at %uHz...\n\r", pit_Hz);
+    // busy_sleep(100);
+    // printf("enabling speakers...\n\r");
+    // busy_sleep(400);
+
     set_freewrite(true);
-    // freewrite();
-
-    char painting1[STORAGE_SPACE];
-    char painting2[STORAGE_SPACE];
-    paint(painting1, painting2);
 
 
-    struct song songs[] = {
-        {SMB_1_1, sizeof(SMB_1_1) / sizeof(SMB_1_1[0])},
-        {imperial_march, sizeof(imperial_march) / sizeof(imperial_march[0])},
-        {battlefield_1942_theme, sizeof(battlefield_1942_theme) / sizeof(battlefield_1942_theme[0])},
-        {music_2, sizeof(music_2) / sizeof(music_2[0])},
-        {ode_to_joy, sizeof(ode_to_joy) / sizeof(ode_to_joy[0])},
-        {brother_john, sizeof(brother_john) / sizeof(brother_john[0])},
-        {music_5, sizeof(music_5) / sizeof(music_5[0])},
-        {music_6, sizeof(music_6) / sizeof(music_6[0])},
-        {megalovania, sizeof(megalovania) / sizeof(megalovania[0])}
-    };
-
-
-    struct song_player *player = create_song_player();
-    // uint32_t n_songs = sizeof(songs) / sizeof(songs[0]);
-    // player->play_song(&songs[1]);
-    free(player);
-
-    // print("       _.---._    /\\\n\r"
-    //    "    ./'       \"--`\\//\n\r"
-    //    "  ./              o \\          .-----.\n\r"
-    //    " /./\\  )______   \\__ \\        ( help! )\n\r"
-    //    "./  / /\\ \\   | \\ \\  \\ \\       /`-----'\n\r"
-    //    "   / /  \\ \\  | |\\ \\  \\7--- ooo ooo ooo ooo ooo ooo\n\r");
-
+    
+    enum vga_color txt_clr = get_vga_txt_clr();
+    enum vga_color bg_clr = get_vga_bg_clr();
 
     while (true){
-        /* code */
+        clear_terminal();
+        reset_cursor_pos();
+        print_main_menu();
+        int c = getchar();
+        clear_terminal();
+        reset_cursor_pos();
+        update_cursor();
+
+        switch (c){
+            case '1':
+                change_terminal_color();
+                txt_clr = get_vga_txt_clr();
+                bg_clr = get_vga_bg_clr();
+                break;
+            case '2':
+                freewrite();
+                break;
+            case '3':
+                print_memory_layout();
+                getchar(); // press any key to continue;
+                break;
+            case '4':
+                music_player();
+                break;
+            case '5':
+                txt_clr = get_vga_txt_clr();
+                bg_clr = get_vga_bg_clr();
+                paint(painting1, painting2);
+                break;
+            case '6':
+                suicide();
+                break;
+            
+            default:
+                break;
+        }
+        set_vga_color(txt_clr, bg_clr);
+        
     }
-    
+  
     
 //TODO: 
 //io buffer overflow
 //memory
-//malloc musicplayer
-//improv
     return 0;
 }

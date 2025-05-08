@@ -16,7 +16,7 @@ typedef struct {
 
 static bool do_print = false;
 
-void init_kernel_memory(uint32_t*);
+uint32_t init_kernel_memory(uint32_t*);
 void print_when_allocating(bool);
 void print_memory_layout();
 

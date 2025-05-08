@@ -17,21 +17,24 @@ void register_interrupt_handler(uint8_t i, void (*specific_isr_handler)(struct r
 
 
 
-void isr_handler(struct registers reg){
+void isr_handler(struct registers *reg){
     // Used for exceptions
 
-    if (isr_handlers[reg.int_no] != NULL){
+
+    if (isr_handlers[reg->int_no] != 0){
         // call handler for interrupt number "reg.int_no"
         // isr0 handler at index 0 etc.
-        isr_handlers[reg.int_no](reg);
+        isr_handlers[reg->int_no](*reg);
+   } else{
+        // printf("ISR without handler occured: %d-%s\n\r", reg->int_no, isr_type[reg->int_no]);
    }
 }
 
-void irq_handler(struct registers reg){
+void irq_handler(struct registers *reg){
     // IRQ0-7 / ISR32-39 master PIC
     // IRQ8-15 / ISR40-47 slave PIC
     
-   if (reg.int_no > IRQ7){
+   if (reg->int_no > IRQ7){
        // IRQ went through slave PIC
        // Needs End Of Interrupt signal
        outb(S_PIC_COMMAND, PIC_EOI);
@@ -41,9 +44,9 @@ void irq_handler(struct registers reg){
    outb(M_PIC_COMMAND, PIC_EOI);
 
    
-   if (isr_handlers[reg.int_no] != NULL){
+   if (isr_handlers[reg->int_no] != 0){
         // call handler for interrupt number "reg.int_no"
         // isr0 handler at index 0 etc.
-        isr_handlers[reg.int_no](reg);
+        isr_handlers[reg->int_no](*reg);
    }
 }

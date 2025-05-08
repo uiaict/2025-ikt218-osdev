@@ -1,6 +1,7 @@
 #include "memory/memory.h"
 #include "memory/memutils.h"
 #include "libc/stdio.h"
+#include "libc/system.h"
 
 #define MAX_PAGE_ALIGNED_ALLOCS 32 // Max pages allowed (maybe arbitrary?)
 
@@ -10,11 +11,11 @@ uint32_t heap_begin = 0;
 uint32_t heap_end = 0;
 uint32_t pheap_begin = 0;
 uint32_t pheap_end = 0;
-uint8_t *pheap_desc = 0;
+uint8_t *pheap_desc = 0; // array storing status of pages
 uint32_t memory_used = 0;
 
 // Initialize the kernel memory manager
-void init_kernel_memory(uint32_t* kernel_end){
+uint32_t init_kernel_memory(uint32_t* kernel_end){
 
     last_alloc = kernel_end + 0x1000; // Last alloc right after kernel (no allocs perfomed)
     heap_begin = last_alloc;          // Heap begins right after kernel
@@ -24,8 +25,7 @@ void init_kernel_memory(uint32_t* kernel_end){
 
     memset((char*)heap_begin, 0, heap_end - heap_begin); // Sets entire heap to 0
     pheap_desc = (uint8_t*)malloc(MAX_PAGE_ALIGNED_ALLOCS);
-
-    printf("Kernel heap starts at 0x%x\n\r", heap_begin);
+    return heap_begin;
 }
 
 void print_when_allocating(bool b){
@@ -92,7 +92,7 @@ void* malloc(size_t size){
 
     if(last_alloc + size + sizeof(alloc_t) >= heap_end){
         // not enough memory for the allocation
-        // panic("Cannot allocate bytes! Out of memory.\n\r");
+        panic("Cannot allocate bytes! Out of memory.\n\r");
     }
 
     // set header for new alloc
@@ -133,10 +133,10 @@ char* pmalloc(size_t size){
             continue;
         }
         pheap_desc[i] = 1;
-        if (do_print){printf("PAllocated from 0x%x to 0x%x\n\r", pheap_begin + i*4096, pheap_begin + (i+1)*4096);}
+        printf("PAllocated from 0x%x to 0x%x\n\r", pheap_begin + i*4096, pheap_begin + (i+1)*4096);
         return (char *)(pheap_begin + i*4096);
     }
-    if (do_print){printf("pmalloc: FATAL: failure!\n\r");}
+    printf("pmalloc: FATAL: failure!\n\r");
     return 0;
 }
 
@@ -144,7 +144,7 @@ char* pmalloc(size_t size){
 void pfree(void *mem){
 
     if(mem < pheap_begin || mem > pheap_end){
-         return;
+         return; // mem not in pheap
     }
 
     // Determine the page ID

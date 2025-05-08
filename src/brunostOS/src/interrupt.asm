@@ -1,23 +1,13 @@
-;CPU wil look up in IDT to find an interuppt handler when it encounter an inter. 
-;You get no info of whan interuppt caused it when handler is run, so we need a handler for each interrupt,
-;Instead of multiple C handlers, we have multiple ASM handlers. All will call a common C handler, but the 
-;parameters sent to C will vary depending on which ASM handler was called.
 
-;Some interrupts push an error to stack: if stack isnt uniform, we cant perform dynamically. 
-;Stack must be uniform. For those int that does NOT push error, we manually push an empty dummy error so 
-;that the stack is uniform no matter the interrupt.
-
-; CPU interrupt -> look in IDT for the handler for the interrupt it encountered -> isr0-13 runs -> isr_common_stub -> isr_handler()
   
 ; We want an isr for all interrupts, instead of copypaste, we make a macro  
-
 %macro ISR 1  
   [GLOBAL isr%1]        
   isr%1:
     cli                 ; disable interrupt
     push byte 0         ; push dummy error
     push byte %1        ; push interrupt number
-    jmp int_common_stub ; Go to our common handler.
+    jmp isr_common_stub ; Go to our common handler.
 %endmacro
 
 %macro ISR_ERRCODE 1
@@ -25,7 +15,7 @@
   isr%1:
     cli                 ; disable interrupt
     push byte %1        ; push interrupt number
-    jmp int_common_stub ; Go to our common handler.
+    jmp isr_common_stub ; Go to our common handler.
 %endmacro 
 
 %macro IRQ 2
@@ -34,12 +24,12 @@
     cli                 ; disable interrupt
     push byte 0         ; push dummy error
     push byte %2        ; push interrupt number
-    jmp int_common_stub
+    jmp irq_common_stub
 %endmacro
 
 ; define an ASM interrupt handler for each interrupt
 ; 0-31 used by CPU for exceptions, predetermined by CPU/OS/Arcitechture
-; 8, 10-14 push errors, so we use ISR_ERRCODE fo those (verify)
+; 8, 10-14, 17, 21 push errors, so we use ISR_ERRCODE for those (verify)
 ISR 0
 ISR 1
 ISR 2
@@ -91,50 +81,60 @@ IRQ 14, 46
 IRQ 15, 47
 
 
-[EXTERN isr_handler] ; Informs that the C-function isr_handler() exist
-[EXTERN irq_handler] ; Informs that the C-function irq_handler() exist
+; Common ISR handler
+[EXTERN isr_handler]    
+isr_common_stub:
+    pusha             ; Push all the general purpose registers onto the stack to save their state
 
-int_common_stub:
-; Puts current stuff away
-   pusha            ; Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax to stack
+    mov ax, ds        ; move data segment to ax (first 16bit of eax)
+    push eax          ; push eax to stack
 
-   mov ax, ds       ; move data segment to ax (first 16bit of eax)
-   push eax         ; push eax to stack
+    mov ax, 0x10      ; load the kernel data segment descriptor
+    mov ds, ax                
+    mov es, ax               
+    mov fs, ax             
+    mov gs, ax               
+    push esp          ; push pointer to struct registers 
 
-   mov ax, 0x10     ; load the kernel data segment descriptor
-   mov ds, ax
-   mov es, ax
-   mov fs, ax
-   mov gs, ax
-   
-; Calls function, that has its own stuff
+    call isr_handler  ; Call the ISR handler
+    pop eax           ; pop/remove esp from stack
 
-    ; pusha = 32 bytes
-    ; push eax = 4 bytes
-    ; int number at [esp + 36]
-   
-    mov eax, [esp + 36]
+    pop eax           ; restore to previous state
+    mov ds, ax               
+    mov es, ax             
+    mov fs, ax              
+    mov gs, ax              
 
-    cmp eax, 32
-    jl .call_isr_handler    ; if interrupt number < 32 -> ISR
-    jmp .call_irq_handler   ; else -> IRQ
+    popa              ; Pops edi,esi,ebp...          
+    add esp, 8                
+    sti                      
+    iret                    
+    
+; Common IRQ handler
+[EXTERN irq_handler]
+irq_common_stub:
+    pusha             ; Push all the general purpose registers onto the stack to save their state
 
-.call_isr_handler:
-    call isr_handler
-    jmp .restore_segments
+    mov ax, ds        ; move data segment to ax (first 16bit of eax)
+    push eax          ; push eax to stack
 
-.call_irq_handler:
-    call irq_handler
+    mov ax, 0x10      ; load the kernel data segment descriptor
+    mov ds, ax                
+    mov es, ax               
+    mov fs, ax             
+    mov gs, ax   
+    push esp          ; push pointer to struct registers    
 
-.restore_segments:
-; Retrieves earlier stuff
-   pop eax          ; reload the original data segment descriptor. ; THIS WAS EBX IN ORIGINAL CODE FOR THE IRQ STUB, PROBABLY MISTAKE, BUT MARKED JUST I CASE
-   mov ds, ax
-   mov es, ax
-   mov fs, ax
-   mov gs, ax
+    call irq_handler  ; Call the IRQ handler
+    pop ebx           ; pop/remove esp from stack
 
-   popa             ; Pops edi,esi,ebp...
-   add esp, 8       ; Cleans up the pushed error code and pushed ISR number
-   sti
-   iret             ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
+    pop ebx           ; restore to previous state
+    mov ds, bx               
+    mov es, bx             
+    mov fs, bx              
+    mov gs, bx              
+
+    popa              ; Pops edi,esi,ebp...          
+    add esp, 8                
+    sti                      
+    iret

@@ -10,7 +10,7 @@ uint32_t get_global_tick(){
 
 void init_pit(uint32_t frequency){
     // Lowest frequency = 18.207(19)Hz
-
+    // don't send in value as variable??
     if (frequency == 0){
         return;
     }

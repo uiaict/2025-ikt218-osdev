@@ -42,7 +42,42 @@ struct registers{
 
 
 void register_interrupt_handler(uint8_t, void (*)(struct registers)); 
-void isr_handler(struct registers);
-void irq_handler(struct registers);
+void isr_handler(struct registers*);
+void irq_handler(struct registers*);
+
+static const char *isr_type[] = {
+    "Divide Error",
+    "Debug Exception",
+    "NMI Interrupt",
+    "Breakpoint",
+    "Overflow",
+    "BOUND Range Exceeded",
+    "Invlaid Opcode (undefined opcode)",
+    "device not available (no math coprocessor)",
+    "double fault",
+    "coprocessor segment overrun (reserved)",
+    "invalid TSS",
+    "segment not present",
+    "stack-segment fault",
+    "general protection",
+    "page fault",
+    "Intel reserved, do not use",
+    "x87 FPU floating-point error (math fault)",
+    "alignment check",
+    "machine check",
+    "SIMD floating-point exception",
+    "virtualization exception",
+    "control protection exception",
+    "reserved for future use",
+    "reserved for future use",
+    "reserved for future use",
+    "reserved for future use",
+    "reserved for future use",
+    "reserved for future use",
+    "reserved for future use",
+    "reserved for future use",
+    "reserved for future use",
+    "reserved for future use"
+};
 
 #endif // ISR_H
