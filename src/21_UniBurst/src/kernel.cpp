@@ -13,8 +13,8 @@ extern "C"
     int kernel_main(void);
 }
 
-#include "applications/demos.h"
-#include "applications/song.h"
+#include "demos.h"
+#include "song.h"
 
 
 void *operator new(size_t size)
@@ -71,13 +71,13 @@ int kernel_main(){
     bufferIndex = 0;
     
     // full group name us UniBurst but its been shortened to UB OS to fit on screen
-    printf("U     U  BBBBB        OOO    SSSSS \n");
-    printf("U     U  B    B      O   O  S      \n");
-    printf("U     U  B    B      O   O  S      \n");
-    printf("U     U  BBBBB       O   O   SSSS  \n");
-    printf("U     U  B    B      O   O       S \n");
-    printf("U     U  B    B      O   O       S \n");
-    printf(" UUUUU   BBBBB        OOO    SSSSS \n");
+    printf("    U     U  BBBBB        OOO    SSSSS \n");
+    printf("    U     U  B    B      O   O  S      \n");
+    printf("    U     U  B    B      O   O  S      \n");
+    printf("    U     U  BBBBB       O   O   SSSS  \n");
+    printf("    U     U  B    B      O   O       S \n");
+    printf("    U     U  B    B      O   O       S \n");
+    printf("     UUUUU   BBBBB        OOO    SSSSS \n");
 
    
     printf("\n              Created by Saw John Thein, Max Meyer Hellwege, Tamim Norani\n");

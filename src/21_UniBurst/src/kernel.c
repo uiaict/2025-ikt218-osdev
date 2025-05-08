@@ -13,7 +13,7 @@
 #include "memory.h"
 #include "kernelutils.h"
 #include "pit.h"
-#include "applications/frequencies.h"
+#include "frequencies.h"
 
 
 extern uint32_t end; 

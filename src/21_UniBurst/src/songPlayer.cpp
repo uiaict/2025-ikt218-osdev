@@ -7,8 +7,8 @@ extern "C" {
     #include "keyboard.h"
 }
 
-#include "applications/song.h"
-#include "applications/frequencies.h"
+#include "song.h"
+#include "frequencies.h"
 
 
 

@@ -10,8 +10,8 @@ extern "C" {
     #include "macros.h"
 }
 
-#include "applications/demos.h"
-#include "applications/song.h"
+#include "demos.h"
+#include "song.h"
 
 
 // shows printf function
