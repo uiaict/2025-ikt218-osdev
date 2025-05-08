@@ -1,5 +1,5 @@
-//pic.c
-#include <stdint.h>
+// pic.c 
+#include <libc/stdint.h>
 #include "port_io.h"
 
 #define PIC1         0x20
@@ -25,9 +25,11 @@ void pic_remap(int offset1, int offset2) {
     outb(PIC1_DATA, 4); 
     outb(PIC2_DATA, 2); 
 
-    outb(PIC1_DATA, ICW4_8086);
-    outb(PIC2_DATA, ICW4_8086);
-
     outb(PIC1_DATA, a1); 
     outb(PIC2_DATA, a2);
+}
+
+// Simple init_irq function
+void init_irq(void) {
+    pic_remap(0x20, 0x28);
 }

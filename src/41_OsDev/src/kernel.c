@@ -1,100 +1,73 @@
-#include <stdint.h>
-#include <stddef.h>
-#include <stdbool.h>
+// Simplified kernel.c without external terminal.h dependency
+#include <libc/stdint.h>
+#include <libc/stddef.h>
 #include <multiboot2.h>
-
-#include "../terminal.h"
-#include "../gdt.h"
-
-#include "kmem.h"
-#include "paging.h"
-#include "pit.h"
+#include <kernel/memory.h>
+#include <kernel/pit.h>
+#include <libc/stdio.h>
+#include <song/song.h>
 #include "bootinfo.h"
-#include "printf.h"
-#include "song_player.h"
-#include "song.h"
-#include "../serial.h"       // Include the serial header
 
-extern void idt_install(void);
-extern void pic_remap(int offset1, int offset2);
-extern uint32_t end;    
+// Reference to the end address of the kernel
+extern uint32_t end;
 
-// Function to play music through the PC speaker
-void play_music(void) {
-    // Create a song using the predefined notes
-    Song song;
-    song.notes = music_1;
-    song.length = sizeof(music_1) / sizeof(Note);
-    song.id = 0;
-    
-    // Create a song player
-    SongPlayer* player = create_song_player();
-    
-    // Play the song
-    terminal_write("Playing music through PC Speaker...\n");
-    serial_write("Playing music through PC Speaker...\n");
-    
-    player->play_song(&song);
-    
-    terminal_write("Music playback completed.\n");
-    serial_write("Music playback completed.\n");
-}
+// Function prototypes to fix implicit declaration warnings
+void terminal_initialize(void);
+void gdt_install(void);
+void idt_install(void);
+void init_irq(void);
+void print_bootinfo_memory_layout(const struct multiboot_tag_mmap *mmap_tag, uint32_t kernel_end);
 
-int main(uint32_t magic, void *mb_addr) {
-    gdt_install();
+int main(uint32_t magic, struct multiboot_tag* mb_info_addr) {
+    // Initialize the terminal first
     terminal_initialize();
-    init_serial();  // Initialize serial port
+    
+    // Print hello world message
+    printf("Hello World\n\n");
+    
+    // Initialize the Global Descriptor Table
+    gdt_install();
 
-    pic_remap(0x20, 0x28);
+    // Initialize the Interrupt Descriptor Table
     idt_install();
 
+    // Initialize the hardware interrupts (remap PICs)
+    init_irq();
+
+    // Initialize the kernel's memory manager
     init_kernel_memory(&end);
+
+    // Initialize paging
     init_paging();
 
-    struct multiboot_tag *tag = (void *)((uint8_t *)mb_addr + 8);
-    const struct multiboot_tag *raw =
-        mb2_find_tag(tag, MULTIBOOT_TAG_TYPE_MMAP);
-    const struct multiboot_tag_mmap *mmap_tag =
-        (const struct multiboot_tag_mmap *)raw;
-    if (mmap_tag) {
-        print_memory_layout(mmap_tag, (uint32_t)&end);
-    }
-
+    // Initialize PIT
     init_pit();
+    
+    // Enable interrupts
     asm volatile("sti");
 
-    terminal_write("Hello from the IDT-enabled kernel!\n");
-    serial_write("Serial port initialized - logging enabled\n");
+    // Allocate memory for key components (silently)
+    void* some_memory = malloc(12345);
+    void* memory2 = malloc(54321);
+    void* memory3 = malloc(13331);
 
-    void *a = kmalloc(1024, 0);
-    void *b = kmalloc(2048, 0);
-    kfree(a);
-    kfree(b);
-    terminal_write("heap test OK\n");
-    serial_write("heap test OK\n");
+    // Print memory information in a more compact format
+    printf("Memory allocations complete.\n");
+    
+    // Play the Star Wars theme using predefined notes from song.h
+    Song song;
+    
+    // Use the Star Wars theme array defined in song.h
+    song.notes = starwars_theme;
+    song.length = sizeof(starwars_theme) / sizeof(Note);
+    
+    SongPlayer* player = create_song_player();
+    player->play_song(&song);
 
-    int counter = 0;
-    for (int count = 0; count < 5; count++) {
-        printf("[%d]: Sleeping with busy-waiting...\n", counter);
-        serial_write("Sleeping with busy-waiting...\n");
-        sleep_busy(1000);
-        printf("[%d]: Woke up from busy-waiting\n", counter++);
-        serial_write("Woke up from busy-waiting\n");
-
-        printf("[%d]: Sleeping with interrupts...\n", counter);
-        serial_write("Sleeping with interrupts...\n");
-        sleep_interrupt(1000);
-        printf("[%d]: Woke up from interrupts\n", counter++);
-        serial_write("Woke up from interrupts\n");
+    // Infinite loop to keep the kernel running
+    for(;;) {
+        asm volatile("hlt");
     }
-
-    terminal_write("Playing music through PC Speaker...\n");
-    serial_write("Playing music through PC Speaker...\n");
     
-    // Play the actual song
-    play_music();
-    
-    for (;;)
-        asm volatile ("hlt");
     return 0;
 }

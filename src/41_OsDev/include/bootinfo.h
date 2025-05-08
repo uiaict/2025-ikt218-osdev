@@ -16,5 +16,5 @@ mb2_find_mmap(const struct multiboot_tag* first)
 }
 
 
-void print_memory_layout(const struct multiboot_tag_mmap* mmap_tag,
+void print_bootinfor_memory_layout(const struct multiboot_tag_mmap* mmap_tag,
                          uint32_t kernel_end);

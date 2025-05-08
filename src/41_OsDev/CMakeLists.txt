@@ -42,9 +42,9 @@ set(CMAKE_C_STANDARD 99)
 ########################################
 set(CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS "s;S;asm")
 if(OS_ARCH_TARGET STREQUAL "i386")
-	set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf32")
+    set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf32")
 elseif(OS_ARCH_TARGET STREQUAL "x86_64")
-	set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf64")
+    set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf64")
 endif()
 
 # Command to compile NASM files
@@ -56,6 +56,13 @@ set(CMAKE_ASM_NASM_COMPILE_OBJECT
 ########################################
 set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/linker.ld")
 
+# Memory management files from Assignment 4
+set(MEMORY_SOURCES
+    src/memory/malloc.c
+    src/memory/memory.c
+    src/memory/memutils.c
+)
+
 # Add executable target for the kernel
 add_executable(uiaos-kernel
     src/multiboot2.asm
@@ -65,9 +72,7 @@ add_executable(uiaos-kernel
     idt.c
     isr.c
     pic.c
-    kmem.c         
     pit.c
-    test_speaker.c
     paging.c
     bootinfo.c
     keyboard.c
@@ -76,14 +81,23 @@ add_executable(uiaos-kernel
     src/arch/i386/gdt.asm
     src/arch/i386/isr.asm
     src/arch/i386/irq.asm
+    ${MEMORY_SOURCES}  # Add memory management files
+    printf.c
 )
 
 # Include directories for the kernel target
 target_include_directories(uiaos-kernel PUBLIC include)
 target_include_directories(uiaos-kernel PUBLIC include/libc)
-target_sources(uiaos-kernel PRIVATE printf.c)
-target_sources(uiaos-kernel PRIVATE song_player.c)
+target_include_directories(uiaos-kernel PUBLIC include/kernel)
+target_include_directories(uiaos-kernel PUBLIC include/song)
 
+# Add song library
+add_library(uiaos-song STATIC src/song.cpp)
+target_include_directories(uiaos-song PUBLIC include)
+target_include_directories(uiaos-song PRIVATE include/song)
+
+# Link song library to kernel
+target_link_libraries(uiaos-kernel PRIVATE uiaos-song)
 
 # Define a custom target for running the kernel in QEMU with proper audio enabled
 add_custom_target(
@@ -100,7 +114,6 @@ add_custom_target(
     VERBATIM
 )
 
-
 # Specify compile options for C and C++
 target_compile_options(uiaos-kernel PRIVATE
     $<$<COMPILE_LANGUAGE:C>:-Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g>
@@ -108,27 +121,19 @@ target_compile_options(uiaos-kernel PRIVATE
     $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-m32 -march=i386 -Wno-unused-variable -Wno-unused-parameter>
 )
 
+# Apply same compile options to song library
+target_compile_options(uiaos-song PRIVATE
+    $<$<COMPILE_LANGUAGE:CXX>:-Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -g>
+)
 
 # Specify link options for C and C++
 target_link_options(uiaos-kernel PUBLIC
-    $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-ffreestanding -nostdlib -fno-builtin -static -pie -O0 -T${OS_KERNEL_LINKER} -g>
+    -ffreestanding -nostdlib -fno-builtin -static -pie -O0 -T${OS_KERNEL_LINKER} -g
 )
-
-
-target_link_options(
-	uiaos-kernel
-	PUBLIC "-ffreestanding"
-	PUBLIC "-nostdlib"
-	PUBLIC "-static"
-	PUBLIC "-pie"
-	PUBLIC "-T${OS_KERNEL_LINKER}"
-)
-
 
 # Set properties for the kernel target
 set_target_properties(uiaos-kernel PROPERTIES
     OUTPUT_NAME "${OS_KERNEL_BINARY}"
-    #LINK_FLAGS "${OS_KERNEL_LINK_FLAGS}"
 )
 
 ########################################
@@ -151,22 +156,21 @@ set(ISO_DIR ${CMAKE_CURRENT_BINARY_DIR}/iso)
 set(LIMINE_CONFIG_DIR ${CMAKE_SOURCE_DIR})
 set(LIMINE_DIR /usr/local/limine)
 add_custom_target(
-	uiaos-create-image
-	COMMAND rm -rf ${ISO_DIR}
-	COMMAND mkdir -p ${ISO_DIR}
-	COMMAND cp -v $<TARGET_FILE:uiaos-kernel> 
-	 	${LIMINE_CONFIG_DIR}/limine.cfg ${LIMINE_DIR}/limine-bios.sys ${LIMINE_DIR}/limine-bios-cd.bin
-		${LIMINE_DIR}/limine-uefi-cd.bin ${ISO_DIR}/
-	COMMAND mkdir -p ${ISO_DIR}/EFI/BOOT
-	COMMAND cp -v ${LIMINE_DIR}/BOOTX64.EFI ${ISO_DIR}/EFI/BOOT/
-	COMMAND cp -v ${LIMINE_DIR}/BOOTIA32.EFI ${ISO_DIR}/EFI/BOOT/
-	COMMAND xorriso -as mkisofs -b limine-bios-cd.bin
-	 	-no-emul-boot -boot-load-size 4 -boot-info-table
-	 	--efi-boot limine-uefi-cd.bin
-	 	-efi-boot-part --efi-boot-image --protective-msdos-label
-	 	${ISO_DIR} -o ${CMAKE_CURRENT_BINARY_DIR}/kernel.iso
-	COMMAND ${LIMINE_DIR}/limine bios-install ${CMAKE_CURRENT_BINARY_DIR}/kernel.iso
-	#COMMAND sudo rm -rf ${ISO_DIR}
-	DEPENDS create-fat32-disk uiaos-kernel
-	VERBATIM
+    uiaos-create-image
+    COMMAND rm -rf ${ISO_DIR}
+    COMMAND mkdir -p ${ISO_DIR}
+    COMMAND cp -v $<TARGET_FILE:uiaos-kernel> 
+        ${LIMINE_CONFIG_DIR}/limine.cfg ${LIMINE_DIR}/limine-bios.sys ${LIMINE_DIR}/limine-bios-cd.bin
+        ${LIMINE_DIR}/limine-uefi-cd.bin ${ISO_DIR}/
+    COMMAND mkdir -p ${ISO_DIR}/EFI/BOOT
+    COMMAND cp -v ${LIMINE_DIR}/BOOTX64.EFI ${ISO_DIR}/EFI/BOOT/
+    COMMAND cp -v ${LIMINE_DIR}/BOOTIA32.EFI ${ISO_DIR}/EFI/BOOT/
+    COMMAND xorriso -as mkisofs -b limine-bios-cd.bin
+        -no-emul-boot -boot-load-size 4 -boot-info-table
+        --efi-boot limine-uefi-cd.bin
+        -efi-boot-part --efi-boot-image --protective-msdos-label
+        ${ISO_DIR} -o ${CMAKE_CURRENT_BINARY_DIR}/kernel.iso
+    COMMAND ${LIMINE_DIR}/limine bios-install ${CMAKE_CURRENT_BINARY_DIR}/kernel.iso
+    DEPENDS create-fat32-disk uiaos-kernel
+    VERBATIM
 )

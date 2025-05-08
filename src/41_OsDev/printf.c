@@ -1,8 +1,23 @@
 //printf.c
 #include "printf.h"
 #include "terminal.h"
-#include <stdarg.h>
-#include <stdint.h>
+#include <libc/stdarg.h>
+#include <libc/stdint.h>
+#include <libc/stdio.h>
+#include <libc/stdbool.h>
+#include <libc/stddef.h>
+
+
+void panic(const char* message) {
+    printf("KERNEL PANIC: %s\n", message);
+    
+    // Disable interrupts and halt the CPU
+    asm volatile("cli");
+    for(;;) {
+        asm volatile("hlt");
+    }
+}
+
 
 static void print_number(int value, int base) {
     char buffer[32];
@@ -25,7 +40,7 @@ static void print_number(int value, int base) {
     }
 }
 
-void printf(const char* fmt, ...) {
+int printf(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
 
@@ -55,4 +70,5 @@ void printf(const char* fmt, ...) {
     }
 
     va_end(args);
+    return 0;  // Add this line to return a success value
 }

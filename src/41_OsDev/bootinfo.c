@@ -50,7 +50,7 @@ mb2_find_tag(const struct multiboot_tag *first, uint32_t type)
 }
 
 /* pretty‑print the physical memory map */
-void print_memory_layout(const struct multiboot_tag_mmap *mmap_tag,
+void print_bootinfo_memory_layout(const struct multiboot_tag_mmap *mmap_tag,
                          uint32_t kernel_end)
 {
     if (!mmap_tag) {
