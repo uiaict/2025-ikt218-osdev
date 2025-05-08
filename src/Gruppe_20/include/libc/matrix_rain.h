@@ -6,8 +6,6 @@ extern "C" {
 #endif
 #include <libc/stdint.h>
 
-void matrix_rain_init();    // Initializes state
-void matrix_rain_tick(); // Updates the screen
 void matrix_rain_intro(uint32_t frames, uint32_t delay_ms);
 
 #ifdef __cplusplus

@@ -70,7 +70,7 @@ void matrix_rain_tick() {
 void matrix_rain_intro(uint32_t frames, uint32_t delay_ms) {
     clear_screen();
     printf("Welcome to our OS! We are group 20!\n");
-    sleep_interrupt(1000);  // pause for dramatic effect
+    sleep_interrupt(1000);
 
     for (uint32_t i = 0; i < frames; i++) {
         matrix_rain_tick();

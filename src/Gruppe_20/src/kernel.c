@@ -9,6 +9,7 @@
 #include "libc/gdt.h"
 #include "libc/idt.h"
 #include "libc/isr.h"
+#include "libc/keyboard.h"
 #include "libc/print.h"
 #include "pit.h"
 #include "interrupts.h"
@@ -32,21 +33,13 @@ extern uint32_t end;
 
 extern volatile uint32_t ticks;
 
-//void test_interrupts() {
-  //  uint32_t start = ticks;
-   // while (ticks - start < 1000) {
-    //    if ((ticks - start) % 100 == 0) {
-     //       printf("Tick: %d\n", ticks);
-     //   }
-   // }
-   // printf("Interrupts are working!\n");
-//}
 
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_gdt();
     init_idt();
     init_irq();
     init_interrupts();
+    register_interrupt_handler(IRQ1, keyboard_callback);
     init_kernel_memory(&end);
     init_paging();
     print_memory_layout();
@@ -54,7 +47,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     asm volatile("int $0x04"); // Trigger a timer interrupt for testing
 
     printf("Hello %s", "World\n");
-   sleep_interrupt(2000);
+    sleep_interrupt(2000);
     
     matrix_rain_intro(150, 20);
 

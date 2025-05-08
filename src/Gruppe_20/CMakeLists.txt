@@ -70,6 +70,7 @@ add_executable(uiaos-kernel
     src/Descriptor_tables/gdt.c
     src/Descriptor_tables/idt.c
     src/Descriptor_tables/isr.c
+    src/Descriptor_tables/keyboard.c
     src/Descriptor_tables/common.c
     src/Descriptor_tables/print.c
     src/Descriptor_tables/interrupts.c   

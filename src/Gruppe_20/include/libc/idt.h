@@ -22,15 +22,6 @@ typedef struct {
     uint32_t base;
 } __attribute__((packed)) idt_ptr_t;
 
-// IDT Gate Types
-#define IDT_TASK_GATE    0x5
-#define IDT_INT_GATE     0xE
-#define IDT_TRAP_GATE    0xF
-
-// IDT Flags
-#define IDT_FLAG_PRESENT  (1 << 7)
-#define IDT_FLAG_RING0    (0 << 5)
-#define IDT_FLAG_RING3    (3 << 5)
 
 // Function declarations
 void init_idt();
