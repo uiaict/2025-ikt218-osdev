@@ -44,7 +44,7 @@ static void draw_food() {
 
 static void draw_game_over() {
     const char* msg = "GAME OVER";
-    const char* prompt = "Press any key to exit...";
+    const char* prompt = "Press any key to continue...";
     int len = 9;
     int x = (WIDTH - len) / 2;
     int y = HEIGHT / 2;
@@ -154,35 +154,42 @@ static bool handle_input() {
 }
 
 void snake_main() {
-    draw_intro_screen();
-
-    // Wait for Enter key
     while (1) {
-        char c = keyboard_get_char();
-        if (c == '\r' || c == '\n') break;
-    }
+        snake_length = 5;
+        dir = RIGHT;
+        food = (Vec2){10, 10};
 
-    clear_screen();
+        for (int i = 0; i < snake_length; i++)
+            snake[i] = (Vec2){10 - i, 10};
 
-    for (int i = 0; i < snake_length; i++)
-        snake[i] = (Vec2){10 - i, 10};
+        draw_intro_screen();
 
-    while (1) {
-        clear_screen();
-        if (handle_input()) break;
-        move_snake();
-        
-        if (check_self_collision()) {
-            clear_screen();
-            draw_game_over();
-            break;
+        // Wait for Enter key
+        while (1) {
+            char c = keyboard_get_char();
+            if (c == '\r' || c == '\n') break;
         }
 
-        draw_snake();
-        draw_food();
-        draw_score(snake_length - 5);
-        sleep_interrupt(50);
-    }
+        clear_screen();
 
-    while (!keyboard_get_char()) { }
+        while (1) {
+            clear_screen();
+            if (handle_input()) return; // Exit entire snake game
+            move_snake();
+
+            if (check_self_collision()) {
+                clear_screen();
+                draw_game_over();
+                break;
+            }
+
+            draw_snake();
+            draw_food();
+            draw_score(snake_length - 5);
+            sleep_interrupt(50);
+        }
+
+        // Wait for any key to restart
+        while (!keyboard_get_char()) {} // consume key after game over
+    }
 }
