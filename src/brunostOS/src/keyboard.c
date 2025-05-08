@@ -50,9 +50,6 @@ void keyboard_handler(struct registers reg){
             case CAPSLOCK_CODE:
                 capslock = !capslock;
                 return;
-            case ESCAPE_CODE:
-                escaped = !escaped;
-                return;
                 
             default:
                 break;
@@ -108,14 +105,17 @@ void keyboard_handler(struct registers reg){
 
 void freewrite(){
     // Independent of is_freewrite. Prints from buffer
-    bool escaped_snapshot = escaped;
 
-    while (escaped_snapshot == escaped){
+    while (true){
 
         while (buffer_index == 0){
         }
 
         unsigned char c = buffer[buffer_index];
+        if ((int)c == 1){
+            return; // escape
+        }
+
         printf("%c", c);
         buffer_index--;
         if (!shift && c == 'n'){
@@ -127,4 +127,8 @@ void freewrite(){
 
 void set_freewrite(bool b){
     is_freewrite = b;
+}
+
+bool get_freewrite_state(){
+    return is_freewrite;
 }

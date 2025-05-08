@@ -15,7 +15,7 @@ enum vga_color {
 	VGA_MAGENTA = 5,
 	VGA_BROWN = 6,
 	VGA_LIGHT_GREY = 7,
-	VGA_DARK_GREY = 8,
+	VGA_GREY = 8,
 	VGA_LIGHT_BLUE = 9,
 	VGA_LIGHT_GREEN = 10,
 	VGA_LIGHT_CYAN = 11,
@@ -29,10 +29,16 @@ enum vga_color {
 // https://wiki.osdev.org/Inline_Assembly/Examples
 
 void set_vga_color(enum vga_color, enum vga_color);
+enum vga_color get_vga_txt_clr();
+enum vga_color get_vga_bg_clr();
+
 void enable_cursor(uint8_t, uint8_t); // non-functional visual cursor
 void disable_cursor(); // non-functional visual cursor
 void update_cursor(); // non-functional visual cursor
-// void clear_terminal();
+
+void clear_terminal();
+void reset_cursor_pos();
+
 
 void outb(uint16_t, uint8_t);
 uint8_t inb(uint16_t port);

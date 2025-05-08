@@ -75,6 +75,7 @@ add_executable(uiaos-kernel
 	src/memory/memory.c
 	src/memory/paging.c
 	src/memory/memutils.c
+	src/wave.c
 )
 
 # Include directories for the kernel target

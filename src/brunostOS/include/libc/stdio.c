@@ -113,9 +113,9 @@ int printf(const char* __restrict__ format, ...) {
 	while (*format != '\0') {
 
         if (*format != '%'){
+            putchar(*format);
             format++;
             written++;
-            putchar(*format);
             continue;
         }
 
@@ -124,9 +124,9 @@ int printf(const char* __restrict__ format, ...) {
 
         // %% prints %
         if (*format == '%'){
+            putchar(*format);
             format++;
             written++;
-            putchar(*format);
             continue;
         }
 
@@ -135,18 +135,18 @@ int printf(const char* __restrict__ format, ...) {
             int num = va_arg(parameters, int);
             unsigned char strnum[15] = {0};
             itoa(num, (char*)strnum);
+            print(strnum);
             format++;
             written += strlen((char*)strnum);
-            print(strnum);
             continue;
         }   
 
         // %s for string (char*)
         if(*format == 's'){
             const unsigned char *string = va_arg(parameters, const unsigned char*);
+            print(string);
             format++;
             written += strlen((char*)string);
-            print(string);
             continue;
         }
 
@@ -154,9 +154,9 @@ int printf(const char* __restrict__ format, ...) {
         if (*format == 'c'){
             // const unsigned char is promoted to int, would abort if uchar
             const unsigned char c = va_arg(parameters, int); 
+            putchar((int)c);
             format++;
             written++;
-            putchar((int)c);
             continue;
         }
 
@@ -165,9 +165,9 @@ int printf(const char* __restrict__ format, ...) {
             unsigned int num = va_arg(parameters, unsigned int);
             unsigned char strnum[15] = {0};
             utoa(num, (char*)strnum);
+            print(strnum);
             format++;
             written += strlen((char*)strnum);
-            print(strnum);
             continue;
         } 
 
@@ -176,9 +176,9 @@ int printf(const char* __restrict__ format, ...) {
             unsigned int num = va_arg(parameters, unsigned int);
             unsigned char strnum[15] = {0};
             xtoa(num, (char*)strnum);
+            print(strnum);
             format++;
             written += strlen((char*)strnum);
-            print(strnum);
             continue;
         } 
 
@@ -187,9 +187,9 @@ int printf(const char* __restrict__ format, ...) {
             double num = va_arg(parameters, double);
             unsigned char strnum[15] = {0};
             ftoa(num, (char*)strnum, 6);
+            print(strnum);
             format++;
             written += strlen((char*)strnum);
-            print(strnum);
             continue;
         } 
 
@@ -206,9 +206,9 @@ int printf(const char* __restrict__ format, ...) {
                 double num = va_arg(parameters, double);
                 unsigned char strnum[15] = {0};
                 ftoa(num, (char*)strnum, precision);
+                print(strnum);
                 format++;
                 written += strlen((char*)strnum);
-                print(strnum);
                 continue;
             }
             
@@ -269,6 +269,7 @@ void scanf(unsigned char* __restrict__ format, ...){
         if (*format == 'd' || *format == 'i'){
             int *num = va_arg(parameters, int*);
             atoi(scanned_str, num);
+            format++;
             continue;
         }   
 
@@ -292,6 +293,7 @@ void scanf(unsigned char* __restrict__ format, ...){
         if (*format == 'u'){
             unsigned int *num = va_arg(parameters, unsigned int*);
             atou(scanned_str, num);
+            format++;
             continue;
         } 
 
@@ -299,6 +301,7 @@ void scanf(unsigned char* __restrict__ format, ...){
         if (*format == 'f'){
             double *num = va_arg(parameters, double*);
             atof(scanned_str, num);
+            format++;
             continue;
         } 
             

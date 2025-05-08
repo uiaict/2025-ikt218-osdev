@@ -11,8 +11,11 @@
 #include "song/song.h"
 #include "io.h"
 #include "libc/stdlib.h"
+#include "memory/memory.h"
+#include "memory/paging.h"
+#include "wave.h"
 
-
+extern uint32_t end;
 
 struct multiboot_info {
     uint32_t size;
@@ -27,13 +30,17 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     init_idt();
     init_keyboard();
     init_pit(500);
+    init_kernel_memory(&end);
+    init_paging();
     enable_speaker();
     stop_sound();
     set_freewrite(true);
     // freewrite();
 
+    char painting1[STORAGE_SPACE];
+    char painting2[STORAGE_SPACE];
+    paint(painting1, painting2);
 
-    
 
     struct song songs[] = {
         {SMB_1_1, sizeof(SMB_1_1) / sizeof(SMB_1_1[0])},
@@ -49,9 +56,9 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
 
 
     struct song_player *player = create_song_player();
-    uint32_t n_songs = sizeof(songs) / sizeof(songs[0]);
-    // player->play_song(&songs[8]);
-
+    // uint32_t n_songs = sizeof(songs) / sizeof(songs[0]);
+    // player->play_song(&songs[1]);
+    free(player);
 
     // print("       _.---._    /\\\n\r"
     //    "    ./'       \"--`\\//\n\r"
@@ -59,7 +66,6 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     //    " /./\\  )______   \\__ \\        ( help! )\n\r"
     //    "./  / /\\ \\   | \\ \\  \\ \\       /`-----'\n\r"
     //    "   / /  \\ \\  | |\\ \\  \\7--- ooo ooo ooo ooo ooo ooo\n\r");
-    // printf("%g%d",1,2);
 
 
     while (true){
@@ -68,7 +74,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     
     
 //TODO: 
-//scanf
+//io buffer overflow
 //memory
 //malloc musicplayer
 //improv

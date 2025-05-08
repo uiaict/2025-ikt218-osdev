@@ -14,8 +14,7 @@
 #define ALTGR_CODE 0x38
 #define ESCAPE_CODE 0x01
 
-// OS uses CP437 for extended ASCII, but something else (compiler?) uses othert encoding for extended ASCII
-// https://www.ascii-codes.com/
+// OS uses CP437 for extended ASCII
 #define å 134
 #define Å 143
 #define æ 145
@@ -33,7 +32,6 @@
 static bool shift = false;
 static bool capslock = false;
 static bool altgr = false;
-static bool escaped = false;
 static bool is_freewrite = false;
 
 static bool us_keyboard_layout = false;
@@ -47,7 +45,7 @@ static const uint8_t ASCII_us[] = {
     '2', '3', '0', '.', 0, 0, 0
 };
 static const uint8_t ASCII[] = {
-    0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '\\', '\b', '\t',
+    0, 1, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '\\', '\b', '\t',
     'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', å, ¨, '\n', 0, 'a', 's',
     'd', 'f', 'g', 'h', 'j', 'k', 'l', ø, æ, '|', 0, '\'', 'z', 'x', 'c', 'v',
     'b', 'n', 'm', ',', '.', '-', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,
@@ -56,7 +54,7 @@ static const uint8_t ASCII[] = {
     // enter should be \r\n
 };
 static const uint8_t ASCII_shift[] = {
-    0, 0, '!', '\"', '#', ORB, '%', '&', '/', '(', ')', '=', '?', '`', '\b', '\t',
+    0, 1, '!', '\"', '#', ORB, '%', '&', '/', '(', ')', '=', '?', '`', '\b', '\t',
     'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', Å, '^', '\n', 0, 'A', 'S',
     'D', 'F', 'G', 'H', 'J', 'K', 'L', Ø, Æ, PGRPH, 0, '*', 'Z', 'X', 'C', 'V',
     'B', 'N', 'M', ';', ':', '_', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,
@@ -66,7 +64,7 @@ static const uint8_t ASCII_shift[] = {
 };
 static const uint8_t ASCII_caps[] = {
     // can't be typed: ¨
-    0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '\\', '\b', '\t',
+    0, 1, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '\\', '\b', '\t',
     'Q', 'W', 'E', 'R', 'T', 'T', 'T', 'I', 'O', 'P', Å, ¨, '\n', 0, 'A', 'S',
     'D', 'F', 'G', 'H', 'J', 'K', 'L', Ø, Æ, '|', 0, '\'', 'Z', 'X', 'C', 'V',
     'B', 'N', 'M', ',', '.', '-', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,
@@ -75,7 +73,7 @@ static const uint8_t ASCII_caps[] = {
     // enter should be \r\n
 };
 static const uint8_t ASCII_caps_shift[] = {
-    0, 0, '!', '\"', '#', ORB, '%', '&', '/', '(', ')', '=', '?', '`', '\b', '\t',
+    0, 1, '!', '\"', '#', ORB, '%', '&', '/', '(', ')', '=', '?', '`', '\b', '\t',
     'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', å, '^', '\n', 0, 'a', 's',
     'd', 'f', 'g', 'h', 'j', 'k', 'l', ø, æ, PGRPH, 0, '*', 'z', 'x', 'c', 'v',
     'B', 'N', 'M', ';', ':', '_', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,
@@ -84,7 +82,7 @@ static const uint8_t ASCII_caps_shift[] = {
     // enter is only \n
 };
 static const uint8_t ASCII_altgr[] = {
-    0, 0, 0, '@', GBP, '$', 0, 0, '{', '[', ']', '}', 0, ´, 0, 0,
+    0, 1, 0, '@', GBP, '$', 0, 0, '{', '[', ']', '}', 0, ´, 0, 0,
     0, 0, €, 0, 0, 0, 0, 0, 0, 0, 0, '~', ' ', 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, µ, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -98,6 +96,7 @@ void init_keyboard();
 void keyboard_handler(struct registers);
 void freewrite(); // independent of is_freewrite. Prints from buffer, is blocking
 void set_freewrite(bool); // non-blocking, repeats keystrokes directly
+bool get_freewrite_state();
 
 
 
