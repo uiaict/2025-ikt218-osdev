@@ -27,8 +27,6 @@ void pong_init() {
     }
     cursor_disable();
 
-    input_set_keyboard_subscriber(update_pong);
-
     draw_pong();
 }
 
@@ -48,10 +46,64 @@ void draw_ball(float x, float y) {
     *video = VIDEO_WHITE;
 }
 
+void draw_score(){
+    volatile char *video = cursorPosToAddress(SCREEN_WIDTH / 2 - 5, 0);
+    *video = 'P';
+    video++;
+    *video = VIDEO_WHITE;
+    video++;
+    *video = '1';
+    video++;
+    *video = VIDEO_WHITE;
+    video++;
+    *video = ':';
+    video++;
+    *video = VIDEO_WHITE;
+    video++;
+    *video = '0' + player_1_score;
+    video++;
+    *video = VIDEO_WHITE;
+
+    video = cursorPosToAddress(SCREEN_WIDTH / 2 + 1, 0);
+    *video = 'P';
+    video++;
+    *video = VIDEO_WHITE;
+    video++;
+    *video = '2';
+    video++;
+    *video = VIDEO_WHITE;
+    video++;
+    *video = ':';
+    video++;
+    *video = VIDEO_WHITE;
+    video++;
+    *video = '0' + player_2_score;
+    video++;
+    *video = VIDEO_WHITE;
+}
+
 void draw_pong() {
     while(pong_active){
         for(int i = 0; i < SCREEN_HEIGHT; i++) {
             clear_line(i);
+        }
+
+        // Read input:
+        uint8_t sc = inb(0x60);
+        if (!(sc & 0x80) && sc < SCANCODE_MAX) {
+            char character = scancode_to_ascii[sc];
+
+            if(character == 'w' && paddle_1_y > 0) {
+                paddle_1_y--;
+            } else if(character == 's' && paddle_1_y < SCREEN_HEIGHT - paddle_height) {
+                paddle_1_y++;
+            } else if(character == 'i' && paddle_2_y > 0) {
+                paddle_2_y--;
+            } else if(character == 'k' && paddle_2_y < SCREEN_HEIGHT - paddle_height) {
+                paddle_2_y++;
+            } else if(character == 'q') {
+                pong_active = false;
+            }
         }
 
         draw_paddle(0, paddle_1_y);
@@ -80,58 +132,10 @@ void draw_pong() {
             ball_y = SCREEN_HEIGHT / 2;
         }
 
-        // Display scores
-        volatile char *video = cursorPosToAddress(SCREEN_WIDTH / 2 - 5, 0);
-        *video = 'P';
-        video++;
-        *video = VIDEO_WHITE;
-        video++;
-        *video = '1';
-        video++;
-        *video = VIDEO_WHITE;
-        video++;
-        *video = ':';
-        video++;
-        *video = VIDEO_WHITE;
-        video++;
-        *video = '0' + player_1_score;
-        video++;
-        *video = VIDEO_WHITE;
-
-        video = cursorPosToAddress(SCREEN_WIDTH / 2 + 1, 0);
-        *video = 'P';
-        video++;
-        *video = VIDEO_WHITE;
-        video++;
-        *video = '2';
-        video++;
-        *video = VIDEO_WHITE;
-        video++;
-        *video = ':';
-        video++;
-        *video = VIDEO_WHITE;
-        video++;
-        *video = '0' + player_2_score;
-        video++;
-        *video = VIDEO_WHITE;
-
+        draw_score();
 
         sleep_interrupt(33); // 30 FPS
     }
 
-    input_set_keyboard_subscriber(shell_input);
-}
-
-void update_pong(char character) {
-    if(character == 'w' && paddle_1_y > 0) {
-        paddle_1_y--;
-    } else if(character == 's' && paddle_1_y < SCREEN_HEIGHT - paddle_height) {
-        paddle_1_y++;
-    } else if(character == 'i' && paddle_2_y > 0) {
-        paddle_2_y--;
-    } else if(character == 'k' && paddle_2_y < SCREEN_HEIGHT - paddle_height) {
-        paddle_2_y++;
-    } else if(character == 'q') {
-        pong_active = false;
-    }
+    shell_init();
 }
