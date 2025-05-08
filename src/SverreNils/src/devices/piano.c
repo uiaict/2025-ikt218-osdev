@@ -41,19 +41,19 @@ static void piano_keyboard_wrapper(struct registers* regs) {
 
     uint8_t scancode = inb(0x60);
 
-    if (scancode == 1) { // ESC trykket
+    if (scancode == 1) { 
         printf("\n🎹 Avslutter piano-modus.\n");
         piano_active = 0;
 
-        extern void restore_keyboard_handler();  // 🔁 fra keyboard.c
-        restore_keyboard_handler();              // 👈 gjenopprett shell
+        extern void restore_keyboard_handler();  
+        restore_keyboard_handler();              
 
-        extern void shell_prompt();              // vis ny prompt
+        extern void shell_prompt();              
         shell_prompt();
         return;
     }
 
-    piano_key_handler(scancode); // 🎵 spill tone hvis 1–8
+    piano_key_handler(scancode); 
 }
 
 

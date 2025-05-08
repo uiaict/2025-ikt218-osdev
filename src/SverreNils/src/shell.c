@@ -1,14 +1,14 @@
 #include "printf.h"
 #include <stdint.h>
 #include <stddef.h>
-#include <string.h>               // 👈 MÅ være her tidlig!!
+#include <string.h>              
 #include "song/song.h"
 #include "song/note.h"
 #include "piano.h"
 #include "pit.h"
 #include "devices/keyboard.h"
 
-// Eksterne musikk-variabler
+
 extern Note music_1[];
 extern const size_t music_1_len;
 extern void play_song_impl(Song* song);
@@ -17,12 +17,12 @@ void shell_prompt() {
     printf("UiAOS> ");
 }
 
-// Skriver til I/O-port (brukes for QEMU shutdown)
+
 static inline void outw(uint16_t port, uint16_t val) {
     __asm__ volatile ("outw %0, %1" : : "a"(val), "Nd"(port));
 }
 
-// Kaller QEMU ACPI shutdown
+
 void shutdown() {
     outw(0x604, 0x2000);
 }
@@ -66,7 +66,7 @@ void shell_handle_input(const char* input) {
         __asm__ volatile("sti");
         restore_keyboard_handler();
         reset_input_buffer();
-        return;  // ✅ VIKTIG! Ellers kjører videre og forstyrrer input
+        return;  
     } else {
         printf("Ukjent kommando: %s\n", input);
     }

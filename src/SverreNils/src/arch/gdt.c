@@ -1,12 +1,12 @@
 #include "gdt.h"
 
 struct gdt_entry {
-    uint16_t limit_low;     // Lower 16 bits of the segment limit
-    uint16_t base_low;      // Lower 16 bits of the base
-    uint8_t  base_middle;   // Next 8 bits of the base
-    uint8_t  access;        // Access flags
-    uint8_t  granularity;   // Granularity + high 4 bits of limit
-    uint8_t  base_high;     // Final 8 bits of the base
+    uint16_t limit_low;     
+    uint16_t base_low;      
+    uint8_t  base_middle;   
+    uint8_t  access;        
+    uint8_t  granularity;   
+    uint8_t  base_high;     
 } __attribute__((packed));
 
 struct gdt_ptr {
@@ -14,7 +14,7 @@ struct gdt_ptr {
     uint32_t base;
 } __attribute__((packed));
 
-extern void gdt_load(struct gdt_ptr* gdt_descriptor); // Implemented in ASM
+extern void gdt_load(struct gdt_ptr* gdt_descriptor); 
 
 static struct gdt_entry gdt[3];
 static struct gdt_ptr gdt_descriptor;
@@ -29,9 +29,9 @@ static void gdt_set_entry(int i, uint32_t base, uint32_t limit, uint8_t access, 
 }
 
 void gdt_init() {
-    gdt_set_entry(0, 0, 0, 0, 0);                // NULL descriptor
-    gdt_set_entry(1, 0, 0xFFFFF, 0x9A, 0xCF);     // Code segment
-    gdt_set_entry(2, 0, 0xFFFFF, 0x92, 0xCF);     // Data segment
+    gdt_set_entry(0, 0, 0, 0, 0);               
+    gdt_set_entry(1, 0, 0xFFFFF, 0x9A, 0xCF);     
+    gdt_set_entry(2, 0, 0xFFFFF, 0x92, 0xCF);     
 
     gdt_descriptor.limit = sizeof(gdt) - 1;
     gdt_descriptor.base = (uint32_t)&gdt;

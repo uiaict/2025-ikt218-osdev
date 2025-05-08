@@ -1,6 +1,6 @@
 #include "kernel_memory.h"
 
-// En enkel bump-allocator – vi bare flytter en peker fremover
+
 static uint32_t placement_address;
 
 void init_kernel_memory(uint32_t* kernel_end) {
@@ -14,7 +14,7 @@ void* malloc(size_t size) {
 }
 
 void free(void* ptr) {
-    // Ikke implementert – ikke nødvendig i early OS
+
 }
 #include "printf.h"
 void print_hex(uint32_t val) {

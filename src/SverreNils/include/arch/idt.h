@@ -5,11 +5,11 @@
 
 // Strukturen til én IDT-entry (hver interrupt peker til en handler)
 struct idt_entry {
-    uint16_t offset_low;    // Lower 16 bits av adressen til ISR
-    uint16_t selector;      // Kernel segment selector
-    uint8_t  zero;          // Alltid 0
-    uint8_t  type_attr;     // Type og attributter
-    uint16_t offset_high;   // Upper 16 bits av ISR-adressen
+    uint16_t offset_low;    
+    uint16_t selector;      
+    uint8_t  zero;          
+    uint8_t  type_attr;     
+    uint16_t offset_high;  
 } __attribute__((packed));
 
 // IDT-ptr (brukes av lidt-instruksjonen)

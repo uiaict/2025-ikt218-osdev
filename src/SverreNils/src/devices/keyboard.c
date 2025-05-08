@@ -13,7 +13,7 @@ char scancode_ascii[128] = {
     '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n', 0,
     'a','s','d','f','g','h','j','k','l',';','\'','`',  0,'\\',
     'z','x','c','v','b','n','m',',','.','/',  0, '*', 0,' ',
-    // resten fylles implicit med 0
+
 };
 
 void keyboard_handler(uint8_t scancode) {
@@ -49,7 +49,7 @@ void keyboard_handler(uint8_t scancode) {
 }
 
 static void keyboard_wrapper() {
-    __asm__ volatile("sti");  // ✅ aktiver interrupts eksplisitt
+    __asm__ volatile("sti");  
     uint8_t scancode = inb(0x60);
     keyboard_handler(scancode);
 }
@@ -64,5 +64,5 @@ void restore_keyboard_handler() {
 void reset_input_buffer() {
     input_pos = 0;
     input_buffer[0] = '\0';
-    shell_prompt();  // ✅ viser "UiAOS> "
+    shell_prompt();  
 }

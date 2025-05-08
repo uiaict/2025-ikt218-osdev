@@ -60,7 +60,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_keyboard();
 
     gdt_init();
-    __asm__ volatile("sti"); // Aktiver maskinavbrudd
+    __asm__ volatile("sti"); 
 
     init_kernel_memory(&end);
     init_paging();
@@ -69,16 +69,16 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("[Memory] Placement address: 0x%08X\n", get_placement_address());
     init_pit();
 
-    printf("Hello, Nils!\n");
+    printf("Hello, Nils. skriv help for kommandoer!\n");
 
     void* some_memory = malloc(12345);
     void* memory2 = malloc(54321);
     void* memory3 = malloc(13331);
 
-    shell_prompt(); // vis "UiAOS> "
+    shell_prompt(); 
 
     while (1) {
-        __asm__ volatile("hlt"); // ✅ bare vent på interrupt!
+        __asm__ volatile("hlt"); 
     }
 }
 
