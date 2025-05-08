@@ -3,7 +3,7 @@
 #include "song/frequencies.h"
 #include "pit.h"
 
-uint32_t scancode_to_frequency(uint8_t scancode) { //connects the inputs to the notes and frequencies
+uint32_t scancode_to_frequency(uint8_t scancode) {
     switch (scancode) {
         case 0x1E: return C4; // A
         case 0x1F: return D4; // S
@@ -20,16 +20,16 @@ uint32_t scancode_to_frequency(uint8_t scancode) { //connects the inputs to the 
 }
 
 
-void run_piano() {  //function that loops for playing the piano. No way to end loop at the moment
-    terminal_write("=== Simple PC Speaker Piano ===\n");   //intro
+void run_piano() {
+    terminal_write("=== Simple PC Speaker Piano ===\n");
     terminal_write("Use keys A S D F G H J K L ;\n");
 
     while (1) {
         if (inb(0x64) & 0x1) {
             uint8_t scancode = inb(0x60);
-            uint32_t freq = scancode_to_frequency(scancode); //scans the input
+            uint32_t freq = scancode_to_frequency(scancode);
 
-            if (freq != 0) {  //writes the notes and frequences 
+            if (freq != 0) {
                 terminal_write("Note: ");
                 terminal_putint(freq);
                 terminal_write(" Hz\n");

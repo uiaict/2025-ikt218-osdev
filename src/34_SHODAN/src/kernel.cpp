@@ -1,5 +1,5 @@
 extern "C" {
-    #include "terminal.h"    //getting the neeeded header files for the kernel to use 
+    #include "terminal.h"
     #include "gdt.h"
     #include "idt.h"
     #include "irq.h"
@@ -9,7 +9,7 @@ extern "C" {
     #include "song/song_player.h"
     #include "song/song_data.h"
     #include "port_io.h"
-    #include "piano.h"     
+    #include "piano.h" 
 }
 
 extern "C" uint32_t end;
@@ -39,32 +39,33 @@ extern "C" void kernel_main() {
     void* b = malloc(5678);
     terminal_write("Allocated memory!\n");
 
+    
 
-    __asm__ __volatile__("sti"); //testing
 
 
-    // Trigger software interrupts (ISRs) can be commented out to stop the triggers
+    __asm__ __volatile__("sti");
+
+
+    // Trigger software interrupts (ISRs)
     __asm__ __volatile__("int $0x0");
     __asm__ __volatile__("int $0x3");
     __asm__ __volatile__("int $0x1");
 
-    // Trigger IRQ0 (Timer) for test can also be commented out for testing.
+    // Trigger IRQ0 (Timer) for test
     __asm__ __volatile__("int $0x20");
 
     terminal_write("Back from interrupts.\n");
     terminal_write("\nPress a key:\n");
     terminal_write("Press keys now:\n");
-
-    terminal_write("Playing epic melody...\n"); //playing the melody
+    terminal_write("Playing epic melody...\n");
     Song song = {
-        .notes = zelda_overworld_theme,
-        .note_count = zelda_overworld_theme_length
+        .notes = epic_melody,
+        .note_count = epic_melody_length
     };
     play_song_impl(&song);
-    
-    terminal_write("Finished playing melody.\n"); //done with the melody
+    terminal_write("Finished playing melody.\n");
 
-    run_piano(); // starts up the piano loop
+    run_piano();
     
 
     int counter = 0;
