@@ -41,12 +41,10 @@ int kernel_main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_pit();
     
     print("Starting menu system with Pong game...\n");
-    sleep_interrupt(1000); // Give user time to read messages
+    sleep_interrupt(1000); 
     
-    // Run our new menu system
     run_menu();
     
-    // This code will not be reached, but is here as a fallback
     for (;;) {
         __asm__ __volatile__("hlt");
     }
