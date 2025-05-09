@@ -12,7 +12,7 @@ set(CMAKE_CXX_COMPILER_WORKS 1)
 
 cmake_minimum_required(VERSION 3.22.1)
 
-# Project name and languages used
+# Project name and languages used&
 project(UiAOS LANGUAGES C CXX ASM_NASM)
 
 # Create a lock file to prevent parallel runs of CMake

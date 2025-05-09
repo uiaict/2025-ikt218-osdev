@@ -15,7 +15,15 @@
         "multiboot2.h": "c",
         "interrupts.h": "c",
         "memory.h": "c",
-        "limits.h": "c"
+        "limits.h": "c",
+        "vga.h": "c",
+        "vga_graphics.h": "c",
+        "music_player.h": "c",
+        "text_editor.h": "c",
+        "util.h": "c",
+        "menu.h": "c",
+        "pit.h": "c",
+        "string.h": "c"
     }
 
 }

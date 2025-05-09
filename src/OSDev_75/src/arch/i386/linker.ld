@@ -1,0 +1,38 @@
+OUTPUT_FORMAT(elf32-i386)
+OUTPUT_ARCH(i386)
+ENTRY(_start)
+SECTIONS {
+    . = 1M;
+
+    .boot :
+    {
+        /* Ensure that the multiboot header is at the beginning! */
+        KEEP(*(.multiboot_header))
+    }
+
+    . = ALIGN(4K);
+    .text :
+    {
+        *(.text .text.*)
+    }
+
+    . = ALIGN(4K);
+    .rodata :
+    {
+        *(.rodata .rodata.*)
+    }
+
+    . = ALIGN(4K);
+    .data :
+    {
+        *(.data .data.*)
+    }
+
+    . = ALIGN(4K);
+    .bss :
+    {
+        *(.bss .bss.*)
+    }
+
+	end = .; _end = .; __end = .;
+}
