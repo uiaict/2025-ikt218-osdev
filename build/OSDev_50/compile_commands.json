@@ -1,0 +1,117 @@
+[
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o /workspaces/2025-ikt218-osdev/src/OSDev_50/src/multiboot2.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/multiboot2.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/gdt.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/gdt.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/gdt.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/terminal/terminal.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/terminal/terminal.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/terminal/terminal.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/descriptor_table.asm.o /workspaces/2025-ikt218-osdev/src/OSDev_50/src/descriptor_table.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/descriptor_table.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/libc/panic.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/libc/panic.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/libc/panic.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/libc/system.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/libc/system.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/libc/system.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/libc/string.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/libc/string.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/libc/string.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/libc/stdio.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/libc/stdio.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/libc/stdio.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/common.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/common.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/common.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/monitor.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/monitor.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/monitor.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/idt.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/idt.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/idt.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/irq.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/irq.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/irq.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/isr.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/isr.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/isr.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/isr_asm.asm.o /workspaces/2025-ikt218-osdev/src/OSDev_50/src/isr_asm.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/isr_asm.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/kernel.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/kernel.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-g++ -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -g -std=gnu++20 -o CMakeFiles/uiaos-kernel.dir/src/song_player.cpp.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/song_player.cpp",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/song_player.cpp"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/input.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/input.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/input.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/malloc.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/memory/malloc.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/memory/malloc.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/paging.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/memory/paging.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/memory/paging.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/memutils.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/memory/memutils.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/memory/memutils.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/pit.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/pit.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/pit.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/song.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/song.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/song.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/OSDev_50",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include -I/workspaces/2025-ikt218-osdev/src/OSDev_50/include/libc -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/matrix_rain.c.o -c /workspaces/2025-ikt218-osdev/src/OSDev_50/src/matrix_rain.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/OSDev_50/src/matrix_rain.c"
+}
+]
