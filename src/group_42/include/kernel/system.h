@@ -87,6 +87,12 @@ void update_cursor(int x, int y);
  */
 uint16_t get_cursor_position(void);
 
+/**
+ * @brief Switches the CPU to protected mode.
+ *
+ * This function performs the necessary steps to transition the CPU from real
+ * mode to protected mode, enabling 32-bit capabilities.
+ */
 void switch_to_protected_mode(void);
 
 #endif

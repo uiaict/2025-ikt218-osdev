@@ -7,7 +7,7 @@
 #include "song_player/song_player.h"
 #include "song_player/song_commands.h"
 #include "matrix/matrix.h"
-#include "../pong/pong.h"
+#include "pong/pong.h"
 
 static int command_count = 0;
 static command_t registry[MAX_COMMANDS];

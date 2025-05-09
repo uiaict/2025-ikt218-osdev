@@ -9,6 +9,4 @@ void pong_init();
 
 void draw_pong();
 
-void update_pong(char character);
-
 #endif

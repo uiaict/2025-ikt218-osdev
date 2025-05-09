@@ -41,8 +41,17 @@ extern idt_ptr_t idt_ptr;
 #define IRQ14 46
 #define IRQ15 47
 
-// Function declarations
+/**
+ * @brief Set an entry in the IDT.
+ *
+ * @param n The index of the IDT entry to set.
+ * @param handler The address of the interrupt handler function.
+ */
 void set_idt_entry(int n, uint32_t handler);
+
+/**
+ * @brief Load the IDT.
+ */
 void load_idt();
 
 #endif

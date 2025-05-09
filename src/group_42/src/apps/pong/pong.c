@@ -1,9 +1,9 @@
-#include "pong.h"
+#include "pong/pong.h"
 #include "libc/stdio.h"
 #include "kernel/system.h"
 #include "kernel/pit.h"
 #include "kernel/keyboard.h"
-#include "apps/shell/shell.h"
+#include "shell/shell.h"
 
 
 int paddle_height = 4;
