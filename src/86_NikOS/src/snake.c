@@ -87,7 +87,6 @@ void snake_init() {
     terminal_clear();
     terminal_disable_cursor();
 
-    // Initial setup of the game area
     for (uint32_t x = 0; x < 80; x++) {
         for (uint32_t y = 3; y < 25; y++) {
             if (x == 0 || x == 79 || y == 3 || y == 24) {
@@ -104,13 +103,11 @@ void snake_init() {
     new_snake_direction = SNAKE_WAIT;
 
     memset(snake, 0, sizeof(snake));
-
     for (uint32_t i = 0; i < snake_length; i++) {
         snake[i].x = 78 / 2 - i - 2;
         snake[i].y = 20 / 2;
         snake[i].exists = true;
     }
-
     for (uint32_t i = 0; i < snake_length; i++) {
         if (snake[i].exists) {
             terminal_putentryat('!', SNAKE_COLOR, snake[i].x + 1, snake[i].y + 4);
@@ -174,7 +171,6 @@ void snake_move() {
 
     uint32_t snake_head_x = snake[0].x;
     uint32_t snake_head_y = snake[0].y;
-    
     switch (snake_direction) {
         case SNAKE_UP:
             snake_head_y--;
@@ -238,6 +234,9 @@ void snake_move() {
 }
 
 void snake_draw() {
+    // Used to have more draw logic..
+    // Draw logic was moved out as an optimization
+    // Instead of doing ~10000 writes a second we now do <100
     terminal_setcursor(78 / 4 - 5, 1);
     terminal_writestring_color("Score: ", get_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK));
     terminal_writeint_color(score, get_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK));
