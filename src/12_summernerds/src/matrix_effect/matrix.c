@@ -23,8 +23,9 @@ void init_matrix()
     setupRNG(947);
     for (int i = 0; i < WIDTH; i++)
     {
-        columns[i].y_pos = rand(100) % HEIGHT;
-        columns[i].speed = 1 + rand(100) % 3;
+        columns[i].y_pos = randint(100) % HEIGHT;
+        columns[i].speed = 1 + randint(100) % 3;
+        columns[i].color = color_palette[randint(1000) % 4];
     }
 }
 
@@ -37,27 +38,15 @@ void draw_matrix_frame()
     {
         int y_max = columns[x].y_pos;
 
-        char ch = 33 + rand(1000) % 94;
-        uint8_t color = color_palette[rand(1000) % 4];
-
-        if (y < HEIGHT)
+        for (int y = 0; y < y_max; y++)
         {
-            volatile char *cell = (char *)0xB8000 + 2 * (y * WIDTH + x);
-            cell[0] = ch;
-            cell[1] = color;
-        }
-
-        if (y > 0 && (y - 1) < HEIGHT)
-        {
-            volatile char *cell = (char *)0xB8000 + 2 * ((y - 1) * WIDTH + x);
-            cell[1] = 0x08;
-        }
-
-        if (y > 1 && (y - 2) < HEIGHT)
-        {
-            volatile char *cell = (char *)0xB8000 + 2 * ((y - 2) * WIDTH + x);
-            cell[0] = ' ';
-            cell[1] = 0x00;
+            char ch = 33 + randint(94);
+            if (y < HEIGHT)
+            {
+                volatile char *cell = (char *)0xB8000 + 2 * (y * WIDTH + x);
+                cell[0] = ch;
+                cell[1] = columns[x].color;
+            }
         }
 
         columns[x].y_pos += columns[x].speed;
@@ -65,7 +54,8 @@ void draw_matrix_frame()
         if (columns[x].y_pos >= HEIGHT + 3)
         {
             columns[x].y_pos = 0;
-            columns[x].speed = 1 + rand(1000) % 3;
+            columns[x].speed = 1 + randint(3);
+            columns[x].color = color_palette[randint(1000) % 4];
         }
     }
 }

@@ -23,8 +23,8 @@ void init_pit()
     outb(PIT_CHANNEL0_PORT, (uint8_t)(divisor & 0xFF));
     outb(PIT_CHANNEL0_PORT, (uint8_t)((divisor >> 8) & 0xFF));
 
-    pit_tickets = 0;
-    print("Initialize PIT with %d Hz\n", TARGET_FREQUENCY);
+    pit_ticks = 0;
+    printf("Initialize PIT with %d Hz\n", TARGET_FREQUENCY);
 }
 
 // A safe way to access pit_ticks
