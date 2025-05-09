@@ -1,0 +1,110 @@
+# Interrupt System Implementation Report
+
+## Overview
+
+This report describes the implementation of a basic interrupt system for the operating system, including:
+- Interrupt Descriptor Table (IDT)
+- Interrupt Service Routines (ISRs)
+- Interrupt Requests (IRQs)
+- Keyboard driver
+
+## Implementation Details
+
+### 1. Interrupt Descriptor Table (IDT)
+
+The IDT implementation consists of:
+- A structure to define IDT entries (`idt_entry`)
+- A structure for the IDT pointer (`idt_ptr`)
+- A function to set IDT gates (`idt_set_gate`)
+- An initialization function (`idt_init`) that sets up all 256 interrupts
+
+The IDT is loaded using the `lidt` instruction in assembly, similar to how the GDT was loaded. Each IDT entry points to the corresponding ISR handler.
+
+### 2. Interrupt Service Routines (ISRs)
+
+ISRs are implemented for all CPU exceptions (0-31) and hardware IRQs (32-47). The implementation includes:
+- Assembly stubs for each interrupt vector
+- A common ISR handler that saves registers and calls the C handler
+- A mechanism to register custom handlers for specific interrupts
+
+The ISRs save the processor state, switch to kernel mode, call the C handler, and then restore the state before returning.
+
+Each ISR is defined using a macro in assembly:
+- ISR_NOERRCODE - for interrupts that don't push an error code
+- ISR_ERRCODE - for interrupts that do push an error code (like page faults)
+
+### 3. IRQ Handling
+
+IRQ support includes:
+- Remapping the PIC to move IRQs from vectors 0-15 to 32-47
+- Implementing IRQ handlers for all 16 hardware interrupts
+- Properly acknowledging interrupts by sending EOI signals to the PICs
+- A system for registering custom IRQ handlers
+
+IRQs are remapped to avoid conflicts with CPU exceptions. The Master PIC is remapped to use interrupts 32-39, while the Slave PIC uses 40-47. After handling an IRQ, we send the End of Interrupt (EOI) signal to the appropriate PIC.
+
+### 4. Keyboard Driver
+
+The keyboard driver implements:
+- A handler for IRQ1 (keyboard interrupt)
+- Reading scancodes from keyboard controller port 0x60
+- A US QWERTY scancode-to-ASCII translation table
+- A circular buffer for storing keypresses
+- Functions for reading characters from the keyboard buffer
+
+The keyboard handler reads scancodes from the keyboard port and converts them to ASCII characters. It ignores key release events (scancode with bit 7 set). Characters are displayed on the screen and stored in a circular buffer, which can be read by other parts of the OS.
+
+## Build and Integration
+
+The implementation was integrated into the build system using CMake. The required files are:
+- IDT.h and IDT.c - For IDT setup and C-side interrupt handling
+- interrupt.asm - For assembly-side interrupt handlers and IDT loading
+- keyboard.h and keyboard.c - For the keyboard driver
+
+The CMakeLists.txt was updated to include the new source files.
+
+## Testing
+
+The implementation was tested by:
+1. Initializing the IDT
+2. Triggering a software interrupt using `int $0x3`
+3. Enabling the keyboard and testing character input
+
+The test interrupt (int 0x3) confirms that the CPU exceptions are handled correctly. The keyboard test confirms that hardware interrupts are working and that the PIC remapping was successful.
+
+## Challenges and Solutions
+
+1. PIC Remapping: The PIC had to be remapped to avoid conflicts with CPU exceptions. This was accomplished by sending the appropriate initialization commands to the PIC chips.
+
+2. Interrupt Handling: Created a uniform mechanism for handling both CPU exceptions and hardware interrupts. Both types of interrupts use a similar handler structure, but IRQs require additional EOI signals.
+
+3. Keyboard Mapping: Implemented a basic US QWERTY layout for scancode translation. The mapping table only includes the most common keys and doesn't support modifiers (shift, ctrl, etc.).
+
+4. Register Preservation: Ensuring that all registers are properly saved and restored during interrupt handling. The assembly code uses 'pusha' and 'popa' to save/restore general-purpose registers.
+
+## Future Improvements
+
+1. Implement a more complete keyboard driver with support for:
+   - Shift, Caps Lock, Ctrl, and Alt modifiers
+   - Function keys and special keys
+   - International keyboard layouts
+
+2. Add support for error handling in exception ISRs:
+   - Detailed error messages for different exception types
+   - System recovery for recoverable exceptions
+   - Crash dumps for fatal exceptions
+
+3. Implement a timer interrupt handler for IRQ0:
+   - System clock/time keeping
+   - Task scheduling for multitasking
+   - Sleep and timeout functions
+
+4. Add support for nested interrupts:
+   - Priority-based interrupt handling
+   - Interrupt masking and unmasking
+   - Interrupt controller programming
+
+5. Implement handlers for other hardware interrupts:
+   - Mouse (IRQ12)
+   - Serial ports (IRQ3, IRQ4)
+   - Hard disk controller (IRQ14, IRQ15)

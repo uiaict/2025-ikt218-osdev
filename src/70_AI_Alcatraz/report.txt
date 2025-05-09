@@ -1,0 +1,244 @@
+# Operating System Development Project Report
+
+## Project Overview
+This project focused on implementing several crucial components of an operating system's low-level interaction with hardware: the Interrupt Descriptor Table (IDT), Interrupt Service Routines (ISRs), Interrupt Requests (IRQs), keyboard input handling, memory management, and programmable interval timer (PIT). These components form the foundation of how an operating system responds to both hardware and software events, manages memory resources, and handles time-based operations.
+
+## Task 1: Interrupt Descriptor Table (IDT)
+
+The IDT is a fundamental data structure that maps interrupt numbers to their corresponding handler functions. I implemented the following:
+
+### IDT Structure Definition
+- Created a structured definition of an IDT entry in `IDT.h` with fields for:
+  - Base address (handler function address) split into low and high portions
+  - Segment selector
+  - Flags for access rights and gate type
+  - A zero field as required by the architecture
+
+### IDT Pointer
+- Implemented the IDT pointer structure which contains:
+  - Limit (size of the IDT - 1)
+  - Base address of the IDT
+
+### IDT Setup
+- Created a function `idt_init()` that:
+  - Allocates memory for the IDT entries (256 total)
+  - Sets up the IDT pointer
+  - Populates the IDT with entries for all CPU exceptions (0-31)
+  - Calls an assembly function to load the IDT using `lidt`
+
+### Assembly Integration
+- Implemented `idt_flush()` in assembly that receives the IDT pointer and loads it with the `lidt` instruction
+- Created the assembly side of the ISR framework with proper stack management and C language integration
+
+## Task 2: Interrupt Service Routines (ISRs)
+
+ISRs are the functions that get called when an interrupt occurs. I implemented a robust framework for handling various types of interrupts:
+
+### ISR Handler Framework
+- Created macros for defining ISRs with and without error codes
+- Implemented all 32 processor exception handlers (0-31)
+- Developed a common stub that saves processor state before calling C handlers
+
+### Specialized Handlers
+- Implemented three specialized ISR handlers:
+  1. **Divide by Zero Handler**: Handles interrupt 0, triggered when division by zero occurs
+  2. **Breakpoint Handler**: Handles interrupt 3, triggered by debugging breakpoints
+  3. **General Protection Fault Handler**: Handles interrupt 13, triggered by protection violations
+
+### C Handler Registration
+- Created a registration system that allows C functions to be associated with specific interrupt numbers
+- Implemented a common interrupt handler that routes interrupts to the appropriate registered handlers
+
+### Testing
+- Added test functions in the kernel that explicitly trigger each type of interrupt:
+  - Division by zero test using inline assembly
+  - Breakpoint test using the `int $0x3` instruction
+  - General protection fault test using the `int $0x0D` instruction
+
+## Task 3: Interrupt Requests (IRQs)
+
+IRQs are hardware-generated interrupts that come from external devices. I implemented support for all standard PC IRQs:
+
+### PIC Programming
+- Implemented functions to communicate with the Programmable Interrupt Controller
+- Created a PIC remapping function that shifts IRQs 0-15 to interrupts 32-47 to avoid conflicts with CPU exceptions
+- Implemented proper End-of-Interrupt (EOI) signaling for both master and slave PICs
+
+### IRQ Handlers
+- Added assembly-level IRQ handlers for all 16 standard IRQs (0-15)
+- Created a common C-level IRQ handler that handles EOI signals and routes to specific handlers
+- Implemented the timer interrupt handler (IRQ0) that maintains a system tick counter
+
+### Interrupt Enabling
+- Added code to enable hardware interrupts using the `sti` instruction
+- Ensured proper interrupt acknowledgment to allow for nested interrupts
+
+## Task 4: Keyboard Logger
+
+The keyboard logger builds on the IRQ system to capture, interpret, and display keyboard input:
+
+### Scancode Processing
+- Implemented an IRQ1 handler to process PS/2 keyboard scancodes
+- Created two scancode-to-ASCII lookup tables:
+  - One for regular (unshifted) keys
+  - One for shifted keys (capital letters and symbols)
+- Added support for special keys (Shift, Caps Lock, Backspace)
+
+### Key State Tracking
+- Implemented key state tracking to handle modifier keys:
+  - Maintained state variables for Shift and Caps Lock
+  - Added logic to detect key presses vs. key releases
+  - Created a system that correctly applies capitalization based on Shift and Caps Lock states
+
+### Keyboard Buffer
+- Created a 64-byte circular buffer to store typed characters
+- Implemented buffer management functions:
+  - `add_to_buffer()`: Adds characters to the buffer and handles overflow
+  - `get_keyboard_buffer()`: Returns the current buffer for external access
+  - `clear_keyboard_buffer()`: Resets the buffer
+  - `handle_backspace()`: Removes the last character from the buffer and screen
+
+### Text Editing Features
+- Implemented backspace functionality that:
+  - Moves the cursor back one position
+  - Erases the character at that position in the video buffer
+  - Updates the internal keyboard buffer to match the display
+  - Handles edge cases, like wrapping to the previous line when at the start of a line
+  - Provides a smooth editing experience for user input
+
+### Visual Feedback
+- Added code to display typed characters on the screen in real-time
+- Implemented proper cursor management for text insertion and deletion
+- Created a seamless visual editing experience with immediate feedback
+
+## Task 5: Memory Management
+
+Memory management is a fundamental aspect of any operating system. I implemented a simple but effective memory management system for the kernel:
+
+### Memory Manager Initialization
+- Created a function `init_kernel_memory()` that:
+  - Takes the address after the kernel's end as a parameter
+  - Aligns the heap start address to a 4KB boundary
+  - Sets up initial memory management structures
+
+### Memory Allocation System
+- Implemented a dynamic memory allocation system with:
+  - `malloc()` function for allocating memory blocks
+  - `free()` function for returning memory to the system
+  - Memory block metadata tracking for efficient reuse
+
+### Memory Block Management
+- Designed a linked list structure to track allocated and free memory blocks
+- Implemented algorithms to:
+  - Find suitable free blocks when requested
+  - Split larger blocks to reduce memory waste
+  - Expand the heap when no suitable blocks are available
+
+### Memory Layout Reporting
+- Created `print_memory_layout()` function that displays:
+  - Heap start and current end addresses
+  - Maximum heap size
+  - List of allocated and free memory blocks with their sizes
+  - Summary of total allocated and free memory
+
+### Memory Paging
+- Implemented basic paging functionality in `init_paging()` function:
+  - Created page directory and first page table
+  - Identity mapped the first 4MB of physical memory
+  - Enabled paging via CR3 and CR0 registers
+  - Set appropriate page flags for read/write access
+
+## Task 6: Programmable Interval Timer (PIT)
+
+The PIT provides essential timing capabilities for the operating system. I implemented:
+
+### Timer Configuration
+- Created an initialization function `init_pit()` that:
+  - Configures the PIT to operate at 100Hz (10ms resolution)
+  - Sets up Channel 0 in Mode 3 (square wave generator)
+  - Registers the timer interrupt handler
+
+### System Tick Management
+- Implemented a tick counting system:
+  - Maintains a global tick counter incremented on each timer interrupt
+  - Provides `get_tick_count()` function to access the current tick value
+  - Reports tick status at regular intervals for debugging
+
+### Sleep Function
+- Developed a `sleep()` function that:
+  - Takes millisecond duration as a parameter
+  - Calculates target tick count based on the timer frequency
+  - Halts the CPU while waiting for the specified time to pass
+  - Allows efficient CPU usage during wait periods
+
+### Timer Integration
+- Integrated the PIT timer with the existing interrupt system:
+  - Registered the timer handler for IRQ0
+  - Ensured proper interrupt acknowledgment
+  - Implemented clean separation between hardware and software timing logic
+
+## Task 7: Creative Feature - Matrix Rain Animation
+
+As a creative showcase of OS component integration, I implemented a Matrix-style rain animation feature that demonstrates real-time system programming and graphical effects.
+
+### Animation System Design
+- Created a comprehensive animation system that:
+  - Generates falling character "raindrops" in the iconic Matrix style
+  - Implements variable raindrop lengths, speeds, and positions
+  - Uses different colors to enhance visual appeal (white heads, bright/dark green characters)
+  - Manages animation state without requiring dynamic memory allocation
+
+### VGA Text Mode Manipulation
+- Directly manipulated the VGA text buffer for efficient character rendering:
+  - Utilized the high byte of each screen position for color attributes
+  - Implemented custom color codes (MATRIX_GREEN, MATRIX_DARK_GREEN, MATRIX_WHITE)
+  - Maintained a backup of the screen content to restore after animation completes
+  - Created a clean drawing cycle that avoids screen tearing
+
+### Animation Physics
+- Implemented a physically-inspired animation system:
+  - Created variable-speed raindrops with individual tick counters
+  - Programmed staggered starting positions for visual variety
+  - Applied probabilistic algorithms for raindrop reactivation
+  - Designed smooth screen transitions between the menu and animation
+
+### Integration with Existing Components
+- Leveraged multiple OS components in a cohesive application:
+  - **Memory Management**: Used static memory allocation to avoid heap fragmentation
+  - **PIT/Timing**: Applied frame rate control with sleep_interrupt
+  - **Keyboard Interrupts**: Added menu selection via keyboard input
+  - **Screen Output**: Built sophisticated text-based visual effects
+  - **System Integration**: Created a feature menu that allows switching between features
+
+### State Management
+- Implemented robust animation state management:
+  - Tracked raindrop positions, lengths, and activity states
+  - Managed frame timing using the PIT's tick counter
+  - Created a simple pseudo-random number generator for varied animation
+  - Designed the animation to gracefully exit after a set duration
+
+### Feature Menu System
+- Added a keyboard-driven menu system that:
+  - Displays available features (Matrix animation and music player)
+  - Allows keyboard selection of different features
+  - Provides a clean interface for system interaction
+  - Demonstrates practical event-driven programming
+
+### Technical Challenges
+- Addressed several technical challenges:
+  - Optimized rendering to work efficiently within available system resources
+  - Created visually interesting effects using only text characters
+  - Integrated timing controls to maintain consistent animation speed
+  - Ensured clean transitions between system features
+
+This creative feature effectively demonstrates the integration of multiple OS components in a practical application. By combining screen output, timing, and keyboard handling, the Matrix rain animation showcases the fundamental capabilities of the operating system while providing an engaging visual experience.
+
+## Conclusion
+
+This implementation provides a solid foundation for a basic operating system kernel. The combination of interrupt handling, keyboard input, memory management, and timing services enables the creation of more complex system functionality. The design is modular and extensible, allowing for future enhancements.
+
+The memory management system efficiently allocates and tracks memory, providing the foundation for dynamic data structures and program loading. The PIT implementation enables time-based operations essential for multitasking, scheduling, and user interface timing.
+
+The addition of creative features like the Matrix rain animation demonstrates the practical application of OS concepts in an engaging way. By integrating multiple system components into a cohesive application, the project showcases both technical understanding and creative problem-solving.
+
+The most challenging aspects involved ensuring proper interaction between hardware and software components, managing system state across interrupts, and implementing efficient algorithms for memory management. Despite these challenges, the implementation successfully provides the core services needed by a modern operating system kernel.
