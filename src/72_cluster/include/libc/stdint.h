@@ -1,10 +1,16 @@
-#pragma once
+#ifndef _STDINT_H_
+#define _STDINT_H_
 
-
-typedef long unsigned int size_t;
-typedef long unsigned int uint32_t;
-typedef unsigned short uint16_t;
-typedef unsigned char uint8_t;
-typedef long int int32_t;
-typedef short int16_t;
 typedef signed char int8_t;
+typedef unsigned char uint8_t;
+
+typedef signed short int16_t;
+typedef unsigned short uint16_t;
+
+typedef signed long int int32_t;
+typedef unsigned long int uint32_t;
+
+typedef signed long long int int64_t;
+typedef unsigned long long int uint64_t;
+
+#endif

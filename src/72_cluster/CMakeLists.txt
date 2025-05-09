@@ -42,14 +42,12 @@ set(CMAKE_C_STANDARD 99)
 ########################################
 set(CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS "s;S;asm")
 if(OS_ARCH_TARGET STREQUAL "i386")
-	set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf32")
+  set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf32")
 elseif(OS_ARCH_TARGET STREQUAL "x86_64")
-	set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf64")
+  set(CMAKE_ASM_NASM_OBJECT_FORMAT "elf64")
 endif()
+set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
 
-# Command to compile NASM files
-set(CMAKE_ASM_NASM_COMPILE_OBJECT 
-    "<CMAKE_ASM_NASM_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
 
 ########################################
 # OS Target
@@ -58,8 +56,48 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 
 # Add executable target for the kernel
 add_executable(uiaos-kernel 
-	# src/multiboot2.asm # TODO: Add multiboot2 support
+	src/multiboot2.asm # TODO: Add multiboot2 support
     src/kernel.c
+	src/kernel.cpp
+	
+	# global descriptor table
+	src/gdt/gdt.c
+	src/gdt/gdt.asm
+
+	# interrupts 
+	# src/interrupts/isr/isr.asm		#(interrupt service routines)
+	src/interrupts/isr/isr.c		
+	src/interrupts/idt/idt.c 		#(interrupt descriptor table)
+	src/interrupts/idt/idt.asm
+	src/interrupts/io/io.c
+	# src/interrupts/io/io.asm
+	src/interrupts/pic/pic.c
+	# src/interrupts/irq/irq.c
+
+	# programmable interval timer
+	src/interrupts/pit/pit.c
+	src/interrupts/irq/timer.c
+
+	# memory
+	src/memory/memory.c
+	src/memory/malloc.c
+	src/memory/memutils.c
+
+
+	# music player
+	src/apps/song/src/song.cpp
+
+	# drivers
+	src/drivers/keyboard.c
+	src/drivers/vga.c
+
+	#miscallenious
+	src/util.c
+	src/system.c 
+
+	#libc functions:
+	src/lib_src/stdio.c
+	src/lib_src/string.c
 )
 
 # Include directories for the kernel target
@@ -77,6 +115,7 @@ target_compile_options(uiaos-kernel PRIVATE
 # Specify link options for C and C++
 target_link_options(uiaos-kernel PUBLIC
     $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-ffreestanding -nostdlib -fno-builtin -static -pie -O0 -T${OS_KERNEL_LINKER} -g>
+
 )
 
 
@@ -135,3 +174,4 @@ add_custom_target(
 	DEPENDS create-fat32-disk uiaos-kernel
 	VERBATIM
 )
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -ffreestanding -nostdlib -nostdinc -nostartfiles")

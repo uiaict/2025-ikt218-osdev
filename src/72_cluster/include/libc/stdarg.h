@@ -1,14 +1,10 @@
-#pragma once
+#ifndef _STDARG_H
+#define _STDARG_H
 
-// va_list
-typedef __builtin_va_list va_list;
+typedef char *va_list;
 
-// va_start
-#define va_start(v, l) __builtin_va_start(v, l)
+#define va_start(ap, v) (ap = (va_list) & v + sizeof(v))
+#define va_arg(ap, type) (*(type *)((ap += sizeof(type)) - sizeof(type)))
+#define va_end(ap) (ap = (va_list)0)
 
-// va_end
-#define va_end(v) __builtin_va_end(v)
-
-// va_arg
-#define va_arg(v, l) __builtin_va_arg(v, l)
-
+#endif
