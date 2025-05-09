@@ -1,6 +1,5 @@
 #ifndef IDT_H
 #define IDT_H
-
 #include "libc/stdint.h"
 
 // An entry in the IDT (8 bytes total)
@@ -18,9 +17,7 @@ struct idt_ptr {
     uint32_t base;         // Address of first element in IDT
 } __attribute__((packed));
 
-#define IDT_ENTRIES 256       // Total number of interrupt vectors
-
-extern struct idt_entry idt[IDT_ENTRIES];
+extern struct idt_entry idt[256];
 extern struct idt_ptr   idtp;
 
 // Set an entry in the IDT

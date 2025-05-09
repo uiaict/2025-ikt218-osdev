@@ -1,11 +1,8 @@
-// === idt.c ===
-// C implementation for setting up the IDT and handling interrupts
-
 #include "idt.h"
 #include "libc/stdio.h"
 
 // Define the IDT and its pointer
-struct idt_entry idt[IDT_ENTRIES];
+struct idt_entry idt[256];
 struct idt_ptr   idtp;
 
 // Assembly function to load the IDT (lidt)
@@ -31,7 +28,7 @@ void install_idt(void) {
     idtp.base  = (uint32_t)&idt;
 
     // fill up IDT with default values
-    for (int i = 0; i < IDT_ENTRIES; i++) {
+    for (int i = 0; i < 256; i++) {
         idt_set_gate(i, 0, 0, 0);
     }
 

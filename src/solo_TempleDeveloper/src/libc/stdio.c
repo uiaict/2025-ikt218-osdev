@@ -12,8 +12,29 @@ static size_t terminal_row = 0;
 static size_t terminal_column = 0;
 static uint8_t terminal_color = 0x07;
 
+static void scroll_terminal() {
+    // Move each row up by one
+    for (size_t y = 1; y < VGA_HEIGHT; y++) {
+        for (size_t x = 0; x < VGA_WIDTH; x++) {
+            size_t from = (y * VGA_WIDTH + x) * 2;
+            size_t to = ((y - 1) * VGA_WIDTH + x) * 2;
+            VIDEO_MEMORY[to] = VIDEO_MEMORY[from];
+            VIDEO_MEMORY[to + 1] = VIDEO_MEMORY[from + 1];
+        }
+    }
+
+    // Clear the last row
+    for (size_t x = 0; x < VGA_WIDTH; x++) {
+        size_t index = ((VGA_HEIGHT - 1) * VGA_WIDTH + x) * 2;
+        VIDEO_MEMORY[index] = ' ';
+        VIDEO_MEMORY[index + 1] = terminal_color;
+    }
+
+    terminal_row = VGA_HEIGHT - 1;
+}
+
 // --- put_entry_at: Write a character with color at screen coordinates (x, y) ---
-static void put_entry_at(char c, uint8_t color, size_t x, size_t y) {
+void put_entry_at(char c, uint8_t color, size_t x, size_t y) {
     size_t index = (y * VGA_WIDTH + x) * 2;
     VIDEO_MEMORY[index] = c;
     VIDEO_MEMORY[index + 1] = color;
@@ -26,7 +47,7 @@ int putchar(int c) {
     if (ch == '\n') {
         terminal_column = 0;
         terminal_row++;
-        if (terminal_row >= VGA_HEIGHT) terminal_row = 0;
+        if (terminal_row >= VGA_HEIGHT) scroll_terminal();
         return c;
     }
 
@@ -36,7 +57,7 @@ int putchar(int c) {
     if (terminal_column >= VGA_WIDTH) {
         terminal_column = 0;
         terminal_row++;
-        if (terminal_row >= VGA_HEIGHT) terminal_row = 0;
+       if (terminal_row >= VGA_HEIGHT) scroll_terminal();
     }
 
     return c;
