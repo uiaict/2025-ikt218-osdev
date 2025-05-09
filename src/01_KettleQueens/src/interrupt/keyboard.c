@@ -2,6 +2,7 @@
 #include "interrupt/interrupts.h"
 #include "libc/stdint.h"
 #include "libc/stdbool.h"
+#include "kernel/common.h"
 
 static const char scancode_ascii[128] = {
     0,  27, '1','2','3','4','5','6','7','8','9','0','-','=','\b',
