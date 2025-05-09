@@ -65,6 +65,7 @@ add_executable(uiaos-kernel
 	src/libc/string.c
 	src/libc/stdio.c
 
+    src/matrix.c
 	src/common.c
 	src/monitor.c
 	src/gdt.c

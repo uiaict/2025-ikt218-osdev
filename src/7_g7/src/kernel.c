@@ -11,6 +11,9 @@
 #include "interrupts.h"
 #include "monitor.h"
 #include "memory/memory.h"
+#include "matrix.h"
+
+
 
 // Structure to hold multiboot information.
 struct multiboot_info {
@@ -54,7 +57,8 @@ int kernel_main_c(uint32_t magic, struct multiboot_info* mb_info_addr) {
 
     // Print a hello world message.
     printf("Hello World!\n");
-
+    
+   start_matrix_rain();
     // Call the C++ main function of the kernel.
     return kernel_main();
 }
