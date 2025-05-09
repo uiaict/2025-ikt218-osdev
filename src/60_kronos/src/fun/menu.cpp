@@ -27,11 +27,13 @@ void init_menu() {
     printf("________________________________________________\n\n");
     printf("[1]: Spin a donut\n");
     printf("[2]: Play music\n");
-    printf("[3]: Debug interupts\n");
+    printf("[3]: Toggle printing interupts\n");
     printf("[4]: Print memory layout\n");
 
     Song* time_song = new Song {song_of_time, sizeof(song_of_time) / sizeof(Note)};
     SongPlayer* player = create_song_player();
+
+    bool printing_interupts = false;
 
     while (1) {
         if (is_key_pressed('1')) {
@@ -43,7 +45,34 @@ void init_menu() {
             keyboard_get_last_char();
             break;
         } else if (is_key_pressed('3')) {
-            printf("\n");
+            printf("\n"); 
+            printing_interupts = !printing_interupts;
+            if (printing_interupts) {
+                printf("Printing interrupts enabled\n");
+            } else {
+                printf("Printing interrupts disabled\n");
+            }
+            if (printing_interupts) {
+                for (int i = 0; i < 256; i++) {
+                    if (i == 32 || i == 33) {
+                        continue;
+                    }
+                    register_interrupt_handler(i, print_interrupts);
+                }
+
+                printf("Simulating interrupt 1, 3 and 4\n");
+                asm volatile("int $1");
+                asm volatile("int $3");
+                asm volatile("int $4");
+            } else {
+                for (int i = 0; i < 256; i++) {
+                    if (i == 32 || i == 33) {
+                        continue;
+                    }
+                    register_interrupt_handler(i, nullptr);
+                }
+            }
+
             
             keyboard_get_last_char();
         } else if (is_key_pressed('4')) {
