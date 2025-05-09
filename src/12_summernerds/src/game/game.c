@@ -7,6 +7,7 @@
 #include "kernel/pit.h"
 #include "i386/keyboard.h"
 #include "i386/monitor.h"
+#include "game/game.h"
 
 #define LNLIMIT 100
 
@@ -261,7 +262,7 @@ void automate_player(unsigned int index, uint grid[ROWS][COLS])
     }
 }
 
-int run_pong(int argc, char *argv[])
+int run_pong()
 {
     uint grid[ROWS][COLS];
 

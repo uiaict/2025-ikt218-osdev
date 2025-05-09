@@ -88,23 +88,21 @@ add_executable(uiaos-kernel
     # SONG
     src/song/songPlayer.c
 
+    # GAME
+    src/game/game.c
+
+	# ASSEMBLY
+	src/arch/i386/descriptor_tables.asm
+    src/arch/i386/ISR.asm
+    src/multiboot2.asm
+
+
 )
 
-
-# Assembly (NASM)
-add_library(gdt_asm OBJECT src/arch/i386/gdt.asm)
-set_target_properties(gdt_asm PROPERTIES LANGUAGE ASM_NASM)
-
-add_library(isr_asm OBJECT src/arch/i386/ISR.asm)
-set_target_properties(isr_asm PROPERTIES LANGUAGE ASM_NASM)
-
-add_library(idt_asm OBJECT src/arch/i386/IDT.asm)
-set_target_properties(idt_asm PROPERTIES LANGUAGE ASM_NASM)
-
-# Link alle ASM-libraries til hovedkernel
-target_link_libraries(uiaos-kernel gdt_asm isr_asm idt_asm)
-
-
+# Necessary for .asm files to be in the add_executable function
+set_source_files_properties(src/arch/i386/descriptor_tables.asm PROPERTIES LANGUAGE ASM_NASM)
+set_source_files_properties(src/arch/i386/ISR.asm PROPERTIES LANGUAGE ASM_NASM)
+set_source_files_properties(src/multiboot2.asm PROPERTIES LANGUAGE ASM_NASM)
 
 # Include directories for the kernel target
 target_include_directories(uiaos-kernel PUBLIC include)
