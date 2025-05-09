@@ -58,12 +58,31 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 
 # Add executable target for the kernel
 add_executable(uiaos-kernel 
-	# src/multiboot2.asm # TODO: Add multiboot2 support
-    src/kernel.c
+	src/multiboot2.asm # TODO: Add multiboot2 support
+	src/kernel.c
+	src/kernel.cpp
+
+	src/descriptor_tables.c
+	src/printf.c 
+	src/idt.c
+	src/utils.c 
+	src/keyboard.c 	
+	src/monitor.c 
+	src/pit.c 
+	src/paging.c 
+	src/malloc.c 
+	src/songplayer.c 
+	src/editor.c 
+
+	src/descriptor_tables.asm
+	src/idt.asm
 )
 
 # Include directories for the kernel target
-target_include_directories(uiaos-kernel PUBLIC include)
+target_include_directories(uiaos-kernel PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
 
 
 # Specify compile options for C and C++
