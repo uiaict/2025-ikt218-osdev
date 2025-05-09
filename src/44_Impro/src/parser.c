@@ -4,6 +4,7 @@
 #include "libc/stdio.h"
 #include "random.h"
 #include "memory.h"
+#include "pit.h"
 
 
 char input_buffer[INPUT_BUFFER_SIZE];
@@ -24,24 +25,22 @@ void process_command(const char* input) {
         play_music();
     } else if (strcmp(input, "clear") == 0) {
         clear();
-    } else if (strcmp(input, "time") == 0) {
-        printf("Time function not implemented.\n\r");
-    } 
+    }
     else if (strcmp(input, "help") == 0){
         printf("HELP! i need somebody!\n\r");
         printf("HELP! not just anybody!\n\r");
         printf("HELP! you know i need someone!\n\r");
         printf("HEEELP!\n\r");
+        sleep_interrupt(3000);
+        clear();
+        printf("play song - To play songs\n\r");
+        printf("clear - To clear screen\n\r");
+        printf("random - To get a random number\n\r");
+        printf("memory - To print the memory layout\n\r");
     }
     else if (strcmp(input, "random") == 0) {
         int random = rand();
         printf("Random number: %d\n\r", random);
-    } else if (strcmp(input, "exit") == 0) {
-        printf("Exiting...\n\r");
-    } else if (strcmp(input, "reboot") == 0) {
-        printf("Rebooting...\n\r");
-    } else if (strcmp(input, "shutdown") == 0) {
-        printf("Shutting down...\n\r");
     } else if(strcmp(input, "memory") == 0){
         print_memory_layout();
     }

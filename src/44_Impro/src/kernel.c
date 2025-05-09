@@ -73,6 +73,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     printf("everything is ok\n\r");
     sleep_busy(1000);
     clear();
+    malloc(1000);
 
     //test malloc of pointer
     /*

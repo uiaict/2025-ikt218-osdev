@@ -103,10 +103,6 @@ void isr_handler(InterruptRegisters* regs) {
     }
 }
 
-void isr33_handler(struct InterruptRegisters* regs) {
-  printf("INT 33 (software) triggered.\n\r");
-}
-
 void keyboard_callback(struct InterruptRegisters* r) {
   uint8_t scancode = inPortB(0x60);
 

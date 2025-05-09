@@ -1,6 +1,7 @@
 #include "random.h"
 
-static unsigned long int rand_state = 2463534242;
+static unsigned long int rand_state;
+extern volatile uint32_t tick;
 
 int rand(void) {
     rand_state = rand_state * 1103515245 + 12345;
