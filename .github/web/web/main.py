@@ -42,7 +42,7 @@ if __name__ == "__main__":
     @app.route('/')
     @app.route('/index')
     def index():
-        os_list = [file.name for file in os_dir.glob("*.img") + os_dir.glob("*.bin")]
+        os_list = [file.name for file in os_dir.glob("*.iso") + os_dir.glob("*.img")]
         return render_template('index.html', os_list=os_list)
 
     app.run(debug=True)
