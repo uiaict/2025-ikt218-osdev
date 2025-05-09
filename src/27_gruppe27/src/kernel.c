@@ -33,7 +33,7 @@ int kernel_main_c(uint32_t magic, struct multiboot_info* mb_info_addr) {
     monitor_initialize();
   
     // Initialize the Global Descriptor Table (GDT).
-    //init_gdt();
+    init_gdt();
     
     // Initialize the Interrupt Descriptor Table (IDT).
     init_idt();
@@ -53,15 +53,19 @@ int kernel_main_c(uint32_t magic, struct multiboot_info* mb_info_addr) {
     //init_pit();
 
     // Print a hello world message.
-    //Uprintf("Hello World!\n");
+    //printf("Hello World!\n");
 
     
-   
-    
+    // Trigger test ISRs
+    asm volatile("int $0x3");
+    asm volatile("int $0x4");
 
-      // Trigger test ISRs
-      asm volatile("int $0x3");
-      asm volatile("int $0x4");
+    //while (true) {
+    //  asm volatile("hlt");
+    //}
+          // Main loop  
+    printf("Kernel main loop\n");
+    
 
     // Call the C++ main function of the kernel.
     return kernel_main();

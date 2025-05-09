@@ -1,5 +1,20 @@
 #include "input.h"
 #include "libc/system.h"
+#include "interrupts.h"
+#include "monitor.h"
+
+void keyboard_handler(registers_t* regs, void* ctx) {
+    uint8_t scancode = inb(0x60);
+
+    // Ignore break codes (key release scancodes are >= 0x80)
+    if (scancode & 0x80) return;
+
+    char ascii = scancode_to_ascii(scancode);
+    if (ascii != 0) {
+        monitor_put(ascii);
+    }
+}
+
 
 
 bool capsEnabled = false;
@@ -15,8 +30,7 @@ const char small_ascii[] = {'?', '?', '1', '2', '3', '4', '5', '6',
                          'h', 'j', 'k', 'l', ';', '\'', '`', '?', '\\', 'z', 'x', 'c', 'v',
                          'b', 'n', 'm', ',', '.', '/', '?', '?', '?', ' '};
 
-char scancode_to_ascii(uint8_t scan_code) {
-    unsigned char a = scan_code;
+char scancode_to_ascii(uint8_t a) {
     switch (a){
         case 1:     //ESC
             return 0;    
@@ -26,7 +40,7 @@ char scancode_to_ascii(uint8_t scan_code) {
         case 15:
             return 0;    
         case 28:    // ENTER
-		    return 2;
+		    return '\n';
         case 29:    //CTRL
             return 0;    
         case 42:    // LSHIFT
@@ -38,7 +52,7 @@ char scancode_to_ascii(uint8_t scan_code) {
         case 56:   
             return 0;
         case 57:       //SPACE
-            return 3;
+            return ' ';
         case 58:   
             capsEnabled = !capsEnabled;
             return 0; 

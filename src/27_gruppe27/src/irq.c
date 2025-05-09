@@ -20,20 +20,20 @@ void register_irq_handler(int irq, isr_t handler, void* ctx) {
 // This gets called from our ASM interrupt handler stub.
 void irq_handler(registers_t regs)
 {
-    // Send an EOI (end of interrupt) signal to the PICs.
-    // If this interrupt involved the slave.
-    if (regs.int_no >= 40)
-    {
-        // Send reset signal to slave.
-        outb(0xA0, 0x20);
+    // Send EOI (End of Interrupt) to PIC
+    if (regs.int_no >= 40) {
+        outb(0xA0, 0x20); // Slave PIC
     }
-    // Send reset signal to master. (As well as slave, if necessary).
-    outb(0x20, 0x20);
+    outb(0x20, 0x20);     // Master PIC
 
-    struct int_handler_t intrpt = irq_handlers[regs.int_no];
-    if (intrpt.handler != 0)
-    {
+    uint8_t irq = regs.int_no - 32;
+
+    struct int_handler_t intrpt = irq_handlers[irq];
+    if (intrpt.handler != 0) {
         intrpt.handler(&regs, intrpt.data);
-    }
-
+    } //else {
+        //monitor_writestring("Unhandled IRQ: ");
+        //monitor_write_dec(irq);
+        //monitor_put('\n');
+    //}
 }

@@ -1,12 +1,25 @@
 #include "interrupts.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
+#include "monitor.h"
 
 
 void register_interrupt_handler(uint8_t n, isr_t handler, void* context)
 {
     int_handlers[n].handler = handler;
     int_handlers[n].data = context;
+}
+
+void isr_custom0(registers_t* regs, void* ctx) {
+    printf("ISR triggered: 0\n");
+}
+
+void isr_custom1(registers_t* regs, void* ctx) {
+    printf("ISR triggered: 1\n");
+}
+
+void isr_custom2(registers_t* regs, void* ctx) {
+    printf("ISR triggered: 2\n");
 }
 
 // This gets called from our ASM interrupt handler stub.
@@ -24,10 +37,11 @@ void isr_handler(registers_t regs)
     }
     else
     {
-        /*monitor_write("unhandled interrupt: ");
-        monitor_write_hex(int_no);
-        monitor_put('\n');*/
-        for(;;);
+        //monitor_write("unhandled interrupt: ", 24);
+        //monitor_write_hex(int_no);
+        //monitor_put('\n');
+
+        //for(;;);
     }
 }
 
