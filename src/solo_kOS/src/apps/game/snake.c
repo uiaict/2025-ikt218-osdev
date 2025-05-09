@@ -41,8 +41,6 @@ static Point random_free_cell(void)
 }
 
 // Places food on a random free cell and draws it on screen
-
-
 static void draw_food(void)
 {
     Point f = game.food;
@@ -159,17 +157,22 @@ static int move_snake(void)
 
     // Check for wall collision
     if (new_head.x <= 0 || new_head.x >= SNAKE_BOARD_WIDTH  - 1 ||
-        new_head.y <= 0 || new_head.y >= SNAKE_BOARD_HEIGHT - 1)
+        new_head.y <= 0 || new_head.y >= SNAKE_BOARD_HEIGHT - 1){
+        if (sound_on) game_sound_fail();
         return 0;
+        }
+    
 
     // Check for collision with itself
     for (int i = 0; i < game.snake.length; ++i)
         if (new_head.x == game.snake.segments[i].x &&
-            new_head.y == game.snake.segments[i].y)
-            return 0;                         // bit our tail
+            new_head.y == game.snake.segments[i].y){
+            if (sound_on) game_sound_fail();
+            return 0;  // bit our tail
+            } 
 
     // Save the old tail in case we grow
-    Point old_tail = game.snake.segments[ game.snake.length - 1 ];   // <-- save me
+    Point old_tail = game.snake.segments[ game.snake.length - 1 ];   // save me tail
     
     // Shift all segments forward
     for (int i = game.snake.length - 1; i > 0; --i)
@@ -258,16 +261,19 @@ static int pause_menu(void)
         else if (last_key == 2 && selected < 2)      ++selected;   // menu down
         else if (last_key == 6) {                                  // select
             if (selected == 0) {           // contiue 
+                if (sound_on) game_sound_confirm();
                 clear_menu_area();
                 return 0;
             }
-            if (selected == 1) {           // Toggle sound, stay in menu 
+            if (selected == 1) { // Toggle sound, stay in menu 
                 sound_on = !sound_on;
-            } else {                       // Exit to main menu 
+                if (sound_on) game_sound_toggle();
+            } else { // Exit to main menu 
+                if (sound_on) game_sound_confirm();
                 clear_menu_area();
                 return 2;
             }
-        } else if (last_key == 9) {                        // ESC key  
+        } else if (last_key == 9) { // ESC key  
             clear_menu_area();
             return 0;
         }
@@ -311,12 +317,12 @@ void snake_main(void) {
     last_key = 0;
     while (1) {
         // Pause menu trigger
-        if (last_key == 5) {                           // P key
+        if (last_key == 5) {// P key
             int res = pause_menu();
             if (res == 2) {
                 game_start = true; // reset the game start flag
                 return;
-            };                      // exit to main menu
+            }; // exit to main menu
             // resume on return 0: redraw everything
             draw_board();
             draw_food(); 
@@ -334,6 +340,7 @@ void snake_main(void) {
                     snake_main(); // Restart game
                     return;
                 } else if (last_key == 9) {
+                    game_start = true; // reset the game start flag
                     return; // Exit to menu
                 }
                 sleep_busy(100);

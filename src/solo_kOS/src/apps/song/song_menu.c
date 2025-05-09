@@ -6,17 +6,19 @@
 
 extern volatile int last_key;
 
+// Function to run the song menu
 void run_song_menu() {
-    Song songs[] = {
-        {music_1, sizeof(music_1) / sizeof(Note)},
-        {starwars_theme, sizeof(starwars_theme) / sizeof(Note)},
-        {music_2, sizeof(music_2) / sizeof(Note)},
-        {music_3, sizeof(music_3) / sizeof(Note)},
-        {music_4, sizeof(music_4) / sizeof(Note)},
-        {music_5, sizeof(music_5) / sizeof(Note)},
-        {music_6, sizeof(music_6) / sizeof(Note)}
+    // Define the songs
+    Song* songs[] = {
+        &song_music_1,
+        &song_starwars,
+        &song_music_2,
+        &song_music_3,
+        &song_music_4,
+        &song_music_5,
+        &song_music_6
     };
-
+    // Define the song names
     const char* song_names[] = {
         "Music 1",
         "Star Wars Theme",
@@ -27,17 +29,20 @@ void run_song_menu() {
         "Music 6",
         "Back to Main Menu" // Extra menu entry
     };
-
-    const int song_count = sizeof(songs) / sizeof(Song);
+    // Create a song player
+    const int song_count = sizeof(songs) / sizeof(Song*);
     const int menu_count = song_count + 1; // +1 for the "Back" option
     SongPlayer* player = create_song_player();
     int selected = 0;
 
+    // Start loop for the menu
+    // This loop will run until the user selects "Back to Main Menu"
     while (1) {
         monitor_clear();
         printf("=== Music Player ===\n");
         printf("Use arrow keys to select a song. Press ENTER to play.\n\n");
 
+        // Display the menu
         for (int i = 0; i < menu_count; i++) {
             if (i == selected) {
                 printf("  > [%d] %s <\n", i + 1, song_names[i]);
@@ -50,7 +55,7 @@ void run_song_menu() {
         while (last_key == 0) {
             sleep_busy(50);
         }
-
+        // Handle key presses
         if (last_key == 1 && selected > 0) {
             selected--; // UP
         } else if (last_key == 2 && selected < menu_count - 1) {
@@ -62,8 +67,9 @@ void run_song_menu() {
             }
 
             monitor_clear();
+            
             printf("Now playing: %s\n\n", song_names[selected]);
-            player->play_song(&songs[selected]);
+            player->play_song(songs[selected]);
             printf("Song finished.\n");
         }
 

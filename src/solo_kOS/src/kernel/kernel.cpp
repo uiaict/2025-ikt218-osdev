@@ -47,17 +47,26 @@ void operator delete[](void* ptr, size_t size) noexcept {
     free(ptr);
 }
 
-void run_game_stub() {
-    printf("Game feature is under construction...\n");
-    printf("Press any key to return to the main menu.\n");
+void print_open_screen(){
+    monitor_clear();
+    printf("\n\n\n\n");
+    printf("                     __      _____   ____       \n");
+    printf("                    /\\ \\    /\\  __`\\/\\  _`\\     \n");
+    printf("                     \\ \\ , < \\ \\ \\ \\ \\/_\\__ \\   \n");
+    printf("                      \\ \\ \\`\\ \\ \\_\\ \\/\\ \\L\\ \\ \n");
+    printf("                       \\ \\_\\ \\_\\ \\_____\\ `\\____\\\n");
+    printf("                        \\/_/\\/_/\\/_____/\\/_____/\n");
+    printf("                      \n");
+    printf("                      Press enter to continue!  \n");
     while (last_key == 0) {
-        sleep_busy(100);
+        sleep_busy(500);
     }
     last_key = 0;
 }
 
 extern "C" int kernel_main(void);
 int kernel_main() {
+    print_open_screen();
     const char* options[] = {
         "Music Player",
         "Game"
@@ -67,14 +76,15 @@ int kernel_main() {
 
     while (1) {
         monitor_clear();
-        printf("=== Main Menu ===\n");
-        printf("Use UP/DOWN arrows to select. ENTER to confirm.\n\n");
+         printf("\n\n\n\n\n\n\n");
+        printf("                          === Main Menu ===\n");
+        printf("               Use UP/DOWN arrows to select. ENTER to confirm.\n\n");
 
         for (int i = 0; i < option_count; i++) {
             if (i == selected) {
-                printf("  > [%d] %s <\n", i + 1, options[i]);
+                printf("                            > [%d] %s <\n", i + 1, options[i]);
             } else {
-                printf("    [%d] %s\n", i + 1, options[i]);
+                printf("                              [%d] %s\n", i + 1, options[i]);
             }
         }
 

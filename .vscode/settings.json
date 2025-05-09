@@ -15,7 +15,13 @@
         "multiboot2.h": "c",
         "interrupts.h": "c",
         "memory.h": "c",
-        "limits.h": "c"
+        "limits.h": "c",
+        "string.h": "c",
+        "itoa.h": "c",
+        "snake.h": "c",
+        "song.h": "c",
+        "input.h": "c",
+        "pit.h": "c"
     }
 
 }

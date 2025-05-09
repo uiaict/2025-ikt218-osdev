@@ -65,13 +65,13 @@ add_executable(uiaos-kernel
 	src/kernel/descriptor_tables/gdt/gdt.c
 	src/kernel/descriptor_tables/gdt/gdt_flush.asm
 
-	src/kernel/descriptor_tables/idt/idt.c
-	src/kernel/descriptor_tables/idt/idt_flush.asm
-	src/kernel/descriptor_tables/idt/irq.c
-	src/kernel/descriptor_tables/idt/isr.c
-	src/kernel/descriptor_tables/idt/interrupt_stubs.asm
-	src/kernel/descriptor_tables/idt/interrupt_functions.c
-	src/kernel/descriptor_tables/idt/pit.c
+	src/kernel/descriptor_tables/interrupt/idt.c
+	src/kernel/descriptor_tables/interrupt/idt_flush.asm
+	src/kernel/descriptor_tables/interrupt/irq.c
+	src/kernel/descriptor_tables/interrupt/isr.c
+	src/kernel/descriptor_tables/interrupt/interrupt_stubs.asm
+	src/kernel/descriptor_tables/interrupt/interrupt_functions.c
+	src/kernel/descriptor_tables/interrupt/pit.c
 
 	src/libc_src/string.c
 	src/libc_src/stdio.c
@@ -90,6 +90,7 @@ add_executable(uiaos-kernel
 
 	src/apps/song/song.cpp
 	src/apps/song/song_menu.c
+	src/apps/song/song.c
 
 	src/apps/game/snake.c
 	src/apps/game/game_monitor.c
