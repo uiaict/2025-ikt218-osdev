@@ -3,6 +3,8 @@
 
 #include "libc/system.h"
 
+extern volatile uint32_t system_ticks;
+
 // PIT (Programmable Interval Timer) related macros
 #define PIT_CMD_PORT 0x43
 #define PIT_CHANNEL0_PORT 0x40
@@ -22,7 +24,7 @@
 #define DIVIDER (PIT_BASE_FREQUENCY / TARGET_FREQUENCY)
 #define TICKS_PER_MS 1
 
-
+void test_pit_10seconds(void);
 void init_pit();
 void sleep_interrupt(uint32_t milliseconds);
 void sleep_busy(uint32_t milliseconds);

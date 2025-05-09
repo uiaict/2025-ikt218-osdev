@@ -5,40 +5,72 @@
 #include "monitor.h"
 static uint32_t ticks = 0;
 
-
-void test_pit_hardware() {
-    printf("Testing PIT hardware directly...\n");
+// Test the PIT for 10 seconds
+// This test will check if the PIT is accurate within 1% of the expected time
+void test_pit_10seconds(void) {
+    uint32_t start_ticks, end_ticks, elapsed_ticks;
+   
+    printf("Starting 10-second PIT accuracy test...\n");
+   
+    // Ensure interrupts are enabled
+    asm volatile("sti");
+   
+    // Record starting ticks
+    start_ticks = ticks;
+    printf("Start ticks: %d\n", start_ticks);
+   
+    // Sleep for 10 seconds (10000 ms)
+    printf("Sleeping for 10 seconds...\n");
+    sleep_interrupt(10000);
+   
+    // Record ending ticks
+    end_ticks = ticks;
+   
+    // Calculate elapsed ticks
+    elapsed_ticks = end_ticks - start_ticks;
+   
+    printf("End ticks: %d\n", end_ticks);
+    printf("Elapsed ticks: %d\n", elapsed_ticks);
+    printf("Expected ticks: 10000\n");
+   
+    // Calculate the actual accuracy
+    uint32_t percent;
+    uint32_t decimal;
     
-    // Read initial counter value
-    outb(PIT_CMD_PORT, 0x00);  // Latch counter value
-    uint8_t low = inb(PIT_CHANNEL0_PORT);
-    uint8_t high = inb(PIT_CHANNEL0_PORT);
-    uint16_t initial = (high << 8) | low;
-    
-    printf("Initial PIT counter: %d\n", initial);
-    
-    // Wait a bit using a busy loop
-    for (volatile int i = 0; i < 1000000; i++) {}
-    
-    // Read final counter value
-    outb(PIT_CMD_PORT, 0x00);  // Latch counter value
-    low = inb(PIT_CHANNEL0_PORT);
-    high = inb(PIT_CHANNEL0_PORT);
-    uint16_t final = (high << 8) | low;
-    
-    printf("Final PIT counter: %d\n", final);
-    
-    if (initial != final) {
-        printf("PIT HARDWARE IS RUNNING! Counter changed.\n");
+    if (elapsed_ticks == 10000) {
+        percent = 100;
+        decimal = 0;
+    } else if (elapsed_ticks > 10000) {
+        uint32_t accuracy_x10000 = (10000 * 10000) / elapsed_ticks;
+        percent = accuracy_x10000 / 100;
+        decimal = accuracy_x10000 % 100;
     } else {
-        printf("PIT HARDWARE NOT RUNNING! Counter didn't change.\n");
+        uint32_t accuracy_x10000 = (elapsed_ticks * 10000) / 10000;
+        percent = accuracy_x10000 / 100;
+        decimal = accuracy_x10000 % 100;
+    }
+    if (decimal < 10) {
+        printf("PIT timing accuracy: %d.0%d%%\n", percent, decimal);
+    } else {
+        printf("PIT timing accuracy: %d.%d%%\n", percent, decimal);
+    }
+    if (elapsed_ticks >= 9900 && elapsed_ticks <= 10100) {
+        printf("TEST PASSED! Timing is accurate within 1%%.\n");
+    } else if (elapsed_ticks >= 9500 && elapsed_ticks <= 10500) {
+        printf("TEST FAILED! Timing is outside accurate range (>1%%).\n");
+        printf("However, it's still within 5%% which may be acceptable.\n");
+    } else {
+        printf("TEST FAILED! Timing is significantly inaccurate (>5%%).\n");
     }
 }
 
+uint32_t get_uptime_seconds(void) {
+    // Convert ticks to seconds based on your PIT frequency
+    return ticks / TARGET_FREQUENCY;
+}
 // The PIT IRQ handler
 void pit_irq_handler(registers_t* regs, void* context) {
     ticks++;
-    // No need to send EOI - the irq_controller already does this
 }
 
 void init_pit() {

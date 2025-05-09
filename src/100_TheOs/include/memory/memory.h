@@ -6,12 +6,10 @@
 #include "memory/memory.h" 
 #include "libc/stdbool.h" 
 #include "libc/stdint.h"
-#include "libc/stddef.h"  // for size_t
-
-uint32_t get_memory_used(void);
+#include "libc/stddef.h" 
 
 
-// Optional: allocation block metadata
+
 typedef struct {
     uint8_t used;       // 0 = free, 1 = used
     uint32_t size;      // size in bytes
@@ -33,6 +31,7 @@ void free(void* ptr);
 void* pmalloc(size_t size);
 
 // Memory helper functions
+void test_memory(void);
 void* memcpy(void* dest, const void* src, size_t n);
 void* memset(void* ptr, int value, size_t n);
 void* memset16(void* ptr, uint16_t value, size_t n);

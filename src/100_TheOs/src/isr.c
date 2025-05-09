@@ -22,9 +22,7 @@ void isr_controller(registers_t* regs)
     }
     else
     {
-        // Print a message instead of hanging
         terminal_printf("No handler for interrupt %d\n", int_no);
-        // Just return instead of hanging
     }
 }
 

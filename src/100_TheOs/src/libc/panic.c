@@ -2,7 +2,7 @@
 #include "libc/stdarg.h"
 
 
-// less risky when the stack is blown out
+// Global buffer to avoid stack usage in critical errors
 static char buffer[4096];
 
 #define frp(N, ra)                                 \

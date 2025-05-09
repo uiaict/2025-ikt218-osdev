@@ -1,5 +1,4 @@
-// monitor.h -- Defines the interface for monitor.h
-//              From JamesM's kernel development tutorials.
+// From JamesM's kernel development tutorials.
 
 #ifndef MONITOR_H
 #define MONITOR_H
@@ -10,7 +9,6 @@
 
 void monitor_initialize() ;
 void monitor_setcolor(uint8_t color);
-//void monitor_putentryat(char c, uint8_t color, size_t x, size_t y);
 
 void monitor_put(char c);
 void monitor_clear();

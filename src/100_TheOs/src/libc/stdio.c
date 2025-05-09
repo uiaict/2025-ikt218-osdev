@@ -19,8 +19,6 @@ bool print(const char* data, size_t length) {
 	return true;
 }
  int printf(const char* __restrict__ format, ...) {
-    // TODO %d and alot of formatting is missing!
-    // This you can implement yourtself!
 	va_list parameters;
 	va_start(parameters, format);
  
@@ -36,7 +34,6 @@ bool print(const char* data, size_t length) {
 			while (format[amount] && format[amount] != '%')
 				amount++;
 			if (maxrem < amount) {
-				// TODO: Set errno to EOVERFLOW.
 				return -1;
 			}
 			if (!print(format, amount))
@@ -52,7 +49,6 @@ bool print(const char* data, size_t length) {
 			format++;
 			char c = (char) va_arg(parameters, int /* char promotes to int */);
 			if (!maxrem) {
-				// TODO: Set errno to EOVERFLOW.
 				return -1;
 			}
 			if (!print(&c, sizeof(c)))
@@ -63,7 +59,6 @@ bool print(const char* data, size_t length) {
 			const char* str = va_arg(parameters, const char*);
 			size_t len = strlen(str);
 			if (maxrem < len) {
-				// TODO: Set errno to EOVERFLOW.
 				return -1;
 			}
 			if (!print(str, len))
@@ -86,7 +81,6 @@ bool print(const char* data, size_t length) {
             }
             while (i > 0) {
                 if (maxrem < 1) {
-                    // TODO: Set errno to EOVERFLOW.
                     return -1;
                 }
                 if (!print(&buffer[--i], 1))
@@ -112,7 +106,6 @@ bool print(const char* data, size_t length) {
             }
             while (i > 0) {
                 if (maxrem    < 1) {
-                // TODO: Set errno to EOVERFLOW.
                 return -1;
             }
             if (!print(&buffer[--i], 1))
@@ -124,7 +117,6 @@ bool print(const char* data, size_t length) {
 			format = format_begun_at;
 			size_t len = strlen(format);
 			if (maxrem < len) {
-				// TODO: Set errno to EOVERFLOW.
 				return -1;
 			}
 			if (!print(format, len))

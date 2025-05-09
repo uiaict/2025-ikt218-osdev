@@ -33,10 +33,6 @@ void operator delete[](void* ptr, unsigned long) noexcept { free(ptr); }
 
 extern "C" int kernel_main(void) {
     printf("Booting C++ kernel...\n");
-    // 0. Initialize memory management
-    extern uint32_t end; // This should be defined in your linker script
-    init_kernel_memory(&end);
-    printf("Memory management initialized\n");
     
     // 1. Initialize GDT
     init_gdt();

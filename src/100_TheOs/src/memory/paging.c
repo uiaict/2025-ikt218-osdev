@@ -57,5 +57,5 @@ void init_paging() {
 
     paging_enable();
 
-    terminal_printf("Paging is enabled and 0–8MB mapped!\n");
+    terminal_printf("Paging is enabled and 0-8MB mapped!\n");
 }
