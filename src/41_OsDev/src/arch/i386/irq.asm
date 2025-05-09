@@ -1,6 +1,16 @@
-;irq.asm
 [bits 32]
-extern pit_ticks    
+
+;///////////////////////////////////////
+; External Symbols
+;///////////////////////////////////////
+
+extern pit_ticks
+extern isr_handler
+
+;///////////////////////////////////////
+; Exported IRQ Handlers
+;///////////////////////////////////////
+
 global irq0
 global irq1
 global irq2
@@ -18,13 +28,21 @@ global irq13
 global irq14
 global irq15
 
-extern isr_handler
+;///////////////////////////////////////
+; PIC Command Ports
+;///////////////////////////////////////
 
-; EOI port
 %define PIC1_COMMAND 0x20
 %define PIC2_COMMAND 0xA0
 
-; Macro to define IRQ handlers
+;///////////////////////////////////////
+; IRQ Handler Macro
+;///////////////////////////////////////
+; %1 = IRQ label, %2 = IRQ number
+; Handles saving state, calling C handler,
+; sending EOI, and returning from interrupt
+;///////////////////////////////////////
+
 %macro IRQ_HANDLER 2
 %1:
     cli
@@ -32,29 +50,31 @@ extern isr_handler
     push dword %2
     call isr_handler
     add esp, 4
-    
-%ifidni %1, irq0         
-    inc dword [pit_ticks] 
+
+%ifidni %1, irq0
+    inc dword [pit_ticks]
 %endif
 
-    ; Send EOI
+    ; Send EOI to slave PIC if IRQ >= 40
     mov eax, %2
     cmp eax, 40
     jb .skip_slave
     mov al, 0x20
-    mov dx, 0xA0     ; PIC2_COMMAND
+    mov dx, PIC2_COMMAND
     out dx, al
 .skip_slave:
     mov al, 0x20
-    mov dx, 0x20     ; PIC1_COMMAND
+    mov dx, PIC1_COMMAND
     out dx, al
 
     popa
     iret
 %endmacro
 
+;///////////////////////////////////////
+; Define IRQ Handlers (IRQ 0–15)
+;///////////////////////////////////////
 
-; Define all IRQs
 IRQ_HANDLER irq0, 32
 IRQ_HANDLER irq1, 33
 IRQ_HANDLER irq2, 34

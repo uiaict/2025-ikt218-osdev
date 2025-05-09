@@ -1,7 +1,7 @@
-#include "kernel/memory.h"
+#include <kernel/memory/memory.h>
 #include <libc/system.h>
 
-#define MAX_PAGE_ALIGNED_ALLOCS 32
+#define MAX_PAGE_ALIGNED_ALLOCS 50
 
 uint32_t last_alloc = 0;
 uint32_t heap_end = 0;
