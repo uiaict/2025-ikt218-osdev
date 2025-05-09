@@ -6,6 +6,12 @@ void outb(uint16_t port, uint8_t value)
    asm volatile("outb %1, %0" : : "dN"(port), "a"(value));
 }
 
+// writes a byte (uint16_t) to a specified I/O port (uint16_t).
+void outw(uint16_t port, uint16_t value)
+{
+   asm volatile("outw %1, %0" : : "dN"(port), "a"(value));
+}
+
 // reads a byte (uint8_t) from a specified I/O port (uint16_t).
 uint8_t inb(uint16_t port)
 {

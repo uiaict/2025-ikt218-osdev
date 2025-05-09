@@ -33,19 +33,11 @@ void play_sound(uint32_t frequency)
     }
 }
 
-// make it shut up
-static void nosound()
-{
-    uint8_t tmp = inb(0x61) & 0xFC;
-
-    outb(0x61, tmp);
-}
-
 void beep()
 {
     play_sound(1000);
     sleep_busy(100);
-    nosound();
+    stop_sound();
 }
 
 void stop_sound()

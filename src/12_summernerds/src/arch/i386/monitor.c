@@ -2,7 +2,6 @@
 #include "libc/system.h"
 int lastrowlen;
 
-
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
 
@@ -178,85 +177,4 @@ void monitor_clear()
     terminal_row = 0;
     terminal_column = 0;
     move_cursor();
-}
-
-void monitor_write_hex(uint32_t n)
-{
-    int32_t tmp;
-    char *item = "0x";
-
-    monitor_write(item, strlen(item));
-
-    char noZeroes = 1;
-
-    int i;
-    for (i = 28; i > 0; i -= 4)
-    {
-        tmp = (n >> i) & 0xF;
-        if (tmp == 0 && noZeroes != 0)
-        {
-            continue;
-        }
-
-        if (tmp >= 0xA)
-        {
-            noZeroes = 0;
-            monitor_put(tmp - 0xA + 'a');
-        }
-        else
-        {
-            noZeroes = 0;
-            monitor_put(tmp + '0');
-        }
-    }
-
-    tmp = n & 0xF;
-    if (tmp >= 0xA)
-    {
-        monitor_put(tmp - 0xA + 'a');
-    }
-    else
-    {
-        monitor_put(tmp + '0');
-    }
-
-    char buffer[9];
-    buffer[8] = '\0';
-    for (int i = 7; i >= 0; i--)
-    {
-        int digit = n & 0xF;
-        buffer[i] = (digit < 10) ? '0' + digit : 'a' + (digit - 10);
-        n >>= 4;
-    }
-    monitor_write(buffer, 8);
-}
-
-void monitor_write_dec(uint32_t n)
-{
-
-    if (n == 0)
-    {
-        monitor_put('0');
-        return;
-    }
-
-    int32_t acc = n;
-    char c[32];
-    int i = 0;
-    while (acc > 0)
-    {
-        c[i] = '0' + acc % 10;
-        acc /= 10;
-        i++;
-    }
-    c[i] = 0;
-
-    char c2[32];
-    c2[i--] = 0;
-    int j = 0;
-    while (i >= 0)
-    {
-        c2[i--] = c[j++];
-    }
-    monitor_write(c2, strlen(c2));
 }
