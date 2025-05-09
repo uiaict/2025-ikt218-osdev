@@ -58,9 +58,36 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 
 # Add executable target for the kernel
 add_executable(uiaos-kernel 
-	# src/multiboot2.asm # TODO: Add multiboot2 support
+	src/multiboot2.asm
+
+
     src/kernel.c
-)
+	src/idt.c
+
+	# GDT support
+	src/gdt.c
+	src/descriptor_tables.asm
+
+	# IDT support
+	src/isr_asm.asm
+	
+	# VGA terminal support
+	src/terminal.c
+
+	# Memory management
+	#src/memory/malloc.c
+	#src/memory/paging.c
+	#src/memory/memutils.c
+	#src/pit.c
+
+
+	src/io.c
+	src/irq.c
+	src/input.c
+
+	
+
+	)
 
 # Include directories for the kernel target
 target_include_directories(uiaos-kernel PUBLIC include)
@@ -77,16 +104,6 @@ target_compile_options(uiaos-kernel PRIVATE
 # Specify link options for C and C++
 target_link_options(uiaos-kernel PUBLIC
     $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-ffreestanding -nostdlib -fno-builtin -static -pie -O0 -T${OS_KERNEL_LINKER} -g>
-)
-
-
-target_link_options(
-	uiaos-kernel
-	PUBLIC "-ffreestanding"
-	PUBLIC "-nostdlib"
-	PUBLIC "-static"
-	PUBLIC "-pie"
-	PUBLIC "-T${OS_KERNEL_LINKER}"
 )
 
 
