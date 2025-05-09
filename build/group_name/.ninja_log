@@ -1,0 +1,7 @@
+# ninja log v5
+0	44	1740771683758919800	CMakeFiles/uiaos-kernel.dir/src/kernel.c.o	5686e16cba18e0d5
+44	49	1740771683778252497	kernel.bin	d5c5dfcda9a595cd
+0	64	0	CMakeFiles/create-fat32-disk	c556f1e160015ba2
+0	64	0	/workspaces/2025-ikt218-osdev/build/group_name/CMakeFiles/create-fat32-disk	c556f1e160015ba2
+65	216	0	CMakeFiles/uiaos-create-image	6a50b5ccea9b94e3
+65	216	0	/workspaces/2025-ikt218-osdev/build/group_name/CMakeFiles/uiaos-create-image	6a50b5ccea9b94e3
