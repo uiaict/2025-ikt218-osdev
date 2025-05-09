@@ -30,21 +30,19 @@ void disable_speaker() {
 
 
 void play_sound(uint32_t frequency) {
-    if (frequency == 0) {
-        return;
-    }
+    if (frequency == 0) return;
+
+    printf(">> Playing frequency: %u Hz\n", frequency);
 
     uint16_t divisor = (uint16_t)(PIT_BASE_FREQUENCY / frequency);
-
-    // Set up the PIT
     outb(PIT_CMD_PORT, 0b10110110); 
     outb(PIT_CHANNEL2_PORT, (uint8_t)(divisor & 0xFF));
     outb(PIT_CHANNEL2_PORT, (uint8_t)(divisor >> 8));
 
-    // Enable the speaker by setting bits 0 and 1
     uint8_t speaker_state = inb(PC_SPEAKER_PORT);
     outb(PC_SPEAKER_PORT, speaker_state | 0x03);
 }
+
 
 void stop_sound(){
     // Stop the sound by disabling the gate to the speaker

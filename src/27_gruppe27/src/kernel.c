@@ -53,9 +53,11 @@ int kernel_main_c(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_pit();
     asm volatile("sti");
     // Print a hello world message.
-    //printf("Hello World!\n");
+    printf("Hello World!\n");
     
-  
+    while (true) {
+      asm volatile("hlt");
+    }
 
     int counter = 0;
     while (true) {
@@ -73,9 +75,7 @@ int kernel_main_c(uint32_t magic, struct multiboot_info* mb_info_addr) {
     //asm volatile("int $0x3");
     //asm volatile("int $0x4");
 
-    //while (true) {
-    //  asm volatile("hlt");
-    //}
+    
 
     // Call the C++ main function of the kernel.
     return kernel_main();

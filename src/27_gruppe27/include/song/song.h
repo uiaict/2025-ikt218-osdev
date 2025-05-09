@@ -13,7 +13,7 @@ typedef struct {
 // Define a struct to represent a song
 typedef struct {
     Note* notes;        // Pointer to an array of Note structs representing the song
-    uint32_t length;    // The number of notes in the song
+    uint32_t length;    // The num  ber of notes in the song
 } Song;
 
 // Define a struct to represent a song player
@@ -123,3 +123,6 @@ static Note music_6[] = {
 };
 
 #endif
+
+void play_sound(uint32_t frequency);
+void stop_sound();

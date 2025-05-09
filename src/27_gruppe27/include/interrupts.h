@@ -51,7 +51,6 @@
 #define IRQ13 45
 #define IRQ14 46
 #define IRQ15 47
-#define IRQ_COUNT 16
 
 
 extern void isr0 ();
