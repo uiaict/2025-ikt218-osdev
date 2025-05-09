@@ -10,6 +10,7 @@
 #include "song.h"
 #include "snake.h"
 #include "welcome.h"
+#include "memory.h"
 
 int32_t shift_pressed = 0;
 static bool extended_scancode = false;
@@ -41,6 +42,7 @@ const char* tab_completable_commands[] = {
     "roll",
     "rand",
     "randint",
+    "memory",
     NULL
 };
 const char* tab_completable_commands_help[] = {
@@ -54,6 +56,7 @@ const char* tab_completable_commands_help[] = {
     "Roll dice (e.g., 2d6)",
     "Generate a random number",
     "Generate a random integer between two numbers",
+    "Display memory usage",
     NULL
 };
 
@@ -240,6 +243,8 @@ void execute_command(const char* cmd) {
     } else if (strncmp(argv[0], "uptime", 6) == 0) {;
         terminal_writeuint_color(pit_get_ticks() / TICKS_PER_MS, get_color(VGA_COLOR_CYAN, VGA_COLOR_BLACK));
         terminal_writestring_color("ms\n", get_color(VGA_COLOR_BROWN, VGA_COLOR_BLACK));
+    } else if (strncmp(argv[0], "memory", 6) == 0) {
+        print_memory_layout();
     } else {
         terminal_writestring("Unknown command: ");
         terminal_writestring(argv[0]);

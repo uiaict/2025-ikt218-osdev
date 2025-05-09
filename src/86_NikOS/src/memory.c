@@ -8,6 +8,7 @@
 static uint32_t* heap_start;
 static uint32_t* heap_end;
 static uint32_t* last_allocated;
+uint32_t memory_used = 0;
 
 void kernel_memory_init(uint32_t* end) {
     heap_start = (uint32_t*)(((uint32_t)end + 0xFFF) & ~0xFFF);
@@ -42,6 +43,8 @@ void* malloc(size_t size) {
     void* ptr = (void*)(last_allocated + sizeof(alloc_t));
     last_allocated += sizeof(alloc_t) + size;
 
+    memory_used += size + sizeof(alloc_t);
+
     return ptr;
 }
 
@@ -49,7 +52,30 @@ void free(void* ptr) {
     if (!ptr) return;
 
     alloc_t* alloc = (alloc_t*)((uint32_t)ptr - sizeof(alloc_t));
+    memory_used -= alloc->size + sizeof(alloc_t);
     if (alloc->status == 1) {
         alloc->status = 0;
     }
+}
+
+void print_memory_layout() {
+    terminal_writestring("Memory used: ");
+    terminal_writeuint_color(memory_used, get_color(10, 0));
+    terminal_writestring(" bytes\n");
+
+    terminal_writestring("Memory free: ");
+    terminal_writeuint_color(heap_end - heap_start - memory_used, get_color(10, 0));
+    terminal_writestring(" bytes\n");
+    
+    terminal_writestring("Heap size: ");
+    terminal_writeuint_color(heap_end - heap_start, get_color(10, 0));
+    terminal_writestring(" bytes\n");
+
+    terminal_writestring("Heap start: ");
+    terminal_writeuint_color((uint32_t)heap_start, get_color(10, 0));
+    terminal_writestring(" bytes\n");
+
+    terminal_writestring("Heap end: ");
+    terminal_writeuint_color((uint32_t)heap_end, get_color(10, 0));
+    terminal_writestring(" bytes\n");
 }

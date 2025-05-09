@@ -13,4 +13,6 @@ void kernel_memory_init(uint32_t*);
 void* malloc(size_t size);
 void free(void* ptr);
 
+void print_memory_layout(void);
+
 #endif
