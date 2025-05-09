@@ -12,7 +12,6 @@ uint32_t pheap_end = 0;
 uint8_t *pheap_desc = 0;
 uint32_t memory_used = 0;
 
-// Initialize the kernel memory manager
 void init_kernel_memory(uint32_t* kernel_end)
 {
     last_alloc = (uint32_t)kernel_end + 0x1000;
@@ -25,7 +24,6 @@ void init_kernel_memory(uint32_t* kernel_end)
     printf("Kernel heap starts at 0x%x\n", last_alloc);
 }
 
-// Print the current memory layout
 void print_memory_layout()
 {
     printf("Memory used: %d bytes\n", memory_used);

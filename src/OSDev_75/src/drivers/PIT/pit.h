@@ -18,13 +18,15 @@
 #define PIC_EOI     0x20        /* End-of-interrupt command code */
  
 // Custom sleep function constants
-#define PIT_BASE_FREQUENCY 1193180
-#define TARGET_FREQUENCY 1000 // 1000 Hz
-#define DIVIDER (PIT_BASE_FREQUENCY / TARGET_FREQUENCY)
-#define TICKS_PER_MS (TARGET_FREQUENCY / TARGET_FREQUENCY)
+#define PIT_FREQUENCY 1193180  // Base frequency for the PIT
+#define PIT_BASE_FREQUENCY 1193180 // For backward compatibility
+#define TARGET_FREQUENCY 1000  // 1000 Hz
+#define DIVIDER (PIT_FREQUENCY / TARGET_FREQUENCY)
+#define TICKS_PER_MS (TARGET_FREQUENCY / 1000)
 
 void init_pit();
 void sleep_interrupt(uint32_t milliseconds);
 void sleep_busy(uint32_t milliseconds);
+uint32_t get_current_tick();  // Add this declaration
 
-#endif 
+#endif

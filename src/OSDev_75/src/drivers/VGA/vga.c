@@ -118,7 +118,7 @@ void enable_cursor(uint8_t cursor_start, uint8_t cursor_end)
 
 void update_cursor(uint16_t x, uint16_t y)
 {
-    uint16_t pos = y * width + x;
+    uint16_t pos = y * VGA_WIDTH  + x;
 
     outPortB(0x3D4, 0x0F);
     outPortB(0x3D5, (uint8_t)(pos & 0xFF));
@@ -153,11 +153,11 @@ void Reset(void)
     cursor_y = 0;
     currentAttribute = DEFAULT_ATTRIBUTE;
 
-    for (uint16_t y = 0; y < height; y++)
+    for (uint16_t y = 0; y < VGA_HEIGHT; y++)
     {
-        for (uint16_t x = 0; x < width; x++)
+        for (uint16_t x = 0; x < VGA_WIDTH ; x++)
         {
-            VGA_MEMORY[y * width + x] = makeVgaCell(' ', DEFAULT_ATTRIBUTE);
+            VGA_MEMORY[y * VGA_WIDTH  + x] = makeVgaCell(' ', DEFAULT_ATTRIBUTE);
         }
     }
 
@@ -169,24 +169,24 @@ void Reset(void)
 
 void scrollUp(void)
 {
-    for (uint16_t y = 1; y < height; y++)
+    for (uint16_t y = 1; y < VGA_HEIGHT; y++)
     {
-        for (uint16_t x = 0; x < width; x++)
+        for (uint16_t x = 0; x < VGA_WIDTH ; x++)
         {
-            VGA_MEMORY[(y - 1) * width + x] = VGA_MEMORY[y * width + x];
+            VGA_MEMORY[(y - 1) * VGA_WIDTH  + x] = VGA_MEMORY[y * VGA_WIDTH  + x];
         }
     }
     // Clear last line
-    for (uint16_t x = 0; x < width; x++)
+    for (uint16_t x = 0; x < VGA_WIDTH ; x++)
     {
-        VGA_MEMORY[(height - 1) * width + x] = makeVgaCell(' ', currentAttribute);
+        VGA_MEMORY[(VGA_HEIGHT - 1) * VGA_WIDTH  + x] = makeVgaCell(' ', currentAttribute);
     }
 }
 
 void newLine(void)
 {
     cursor_x = 0;
-    if (cursor_y < height - 1)
+    if (cursor_y < VGA_HEIGHT - 1)
     {
         cursor_y++;
     }
@@ -219,25 +219,25 @@ void print(const char* text)
             if (cursor_x > 0)
             {
                 cursor_x--;
-                VGA_MEMORY[cursor_y * width + cursor_x] = makeVgaCell(' ', currentAttribute);
+                VGA_MEMORY[cursor_y * VGA_WIDTH  + cursor_x] = makeVgaCell(' ', currentAttribute);
             }
             else if (cursor_y > 0)
             {
                 // Optional: handle backspace at start of line
                 cursor_y--;
-                cursor_x = width - 1;
-                VGA_MEMORY[cursor_y * width + cursor_x] = makeVgaCell(' ', currentAttribute);
+                cursor_x = VGA_WIDTH  - 1;
+                VGA_MEMORY[cursor_y * VGA_WIDTH  + cursor_x] = makeVgaCell(' ', currentAttribute);
             }
             update_cursor(cursor_x, cursor_y);
         }
         else
         {
             // Normal character
-            if (cursor_x >= width)
+            if (cursor_x >= VGA_WIDTH )
             {
                 newLine();
             }
-            VGA_MEMORY[cursor_y * width + cursor_x] = makeVgaCell(c, currentAttribute);
+            VGA_MEMORY[cursor_y * VGA_WIDTH  + cursor_x] = makeVgaCell(c, currentAttribute);
             cursor_x++;
             update_cursor(cursor_x, cursor_y);
         }
@@ -326,4 +326,50 @@ void show_animation(void)
     // Revert to default (white text on black background) for "hello world"
     setColor(COLOR8_WHITE, COLOR8_BLACK);
     Reset();
+}
+//------------------------------------------------
+
+void putCharAt(uint16_t x, uint16_t y, char c, uint8_t fg, uint8_t bg) {
+    // Check if x and y are within bounds
+    if (x >= VGA_WIDTH  || y >= VGA_HEIGHT) {
+        return;
+    }
+    
+    // Calculate attribute byte
+    uint8_t attr = ((bg & 0x0F) << 4) | (fg & 0x0F);
+    
+    // Put character at the specified position
+    VGA_MEMORY[y * VGA_WIDTH  + x] = makeVgaCell(c, attr);
+}
+
+void setCursorPosition(uint16_t x, uint16_t y) {
+    // Check if x and y are within bounds
+    if (x >= VGA_WIDTH  || y >= VGA_HEIGHT) {
+        return;
+    }
+    
+    // Set internal cursor position
+    cursor_x = x;
+    cursor_y = y;
+    
+    // Update hardware cursor
+    update_cursor(x, y);
+}
+
+void getCursorPosition(uint16_t* x, uint16_t* y) {
+    if (x) {  // Instead of NULL check, just check if pointer is non-zero
+        *x = cursor_x;
+    }
+    
+    if (y) {  // Instead of NULL check, just check if pointer is non-zero
+        *y = cursor_y;
+    }
+}
+
+uint16_t getScreenWidth() {
+    return VGA_WIDTH ;
+}
+
+uint16_t getScreenHeight() {
+    return VGA_HEIGHT;
 }

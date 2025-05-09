@@ -2,30 +2,109 @@
 #define SONG_H
 #include <stdint.h>
 
-#include "../audio/ frequencies.h"
 
-// Define a struct to represent a single musical note
+#define R 0
+
+#define C0 16
+#define Cs0 17
+#define D0 18
+#define Ds0 19
+#define E0 21
+#define F0 22
+#define Fs0 23
+#define G0 25
+#define Gs0 26
+#define A0 27
+#define As0 29
+#define B0 31
+
+#define C1 33
+#define Cs1 35
+#define D1 37
+#define Ds1 39
+#define E1 41
+#define F1 44
+#define Fs1 46
+#define G1 49
+#define Gs1 52
+#define A1 55
+#define As1 58
+#define B1 62
+
+#define C2 65
+#define Cs2 69
+#define D2 73
+#define Ds2 78
+#define E2 82
+#define F2 87
+#define Fs2 92
+#define G2 98
+#define Gs2 104
+#define A2 110
+#define As2 117
+#define B2 123
+
+#define C3 131
+#define Cs3 139
+#define D3 147
+#define Ds3 156
+#define E3 165
+#define F3 175
+#define Fs3 185
+#define G3 196
+#define Gs3 208
+#define A3 220
+#define As3 233
+#define B3 247
+
+#define C4 262
+#define Cs4 277
+#define D4 294
+#define Ds4 311
+#define E4 330
+#define F4 349
+#define Fs4 370
+#define G4 392
+#define Gs4 415
+#define G_SHARP4 415
+#define A4 440
+#define As4 466
+#define A_SHARP4 466
+#define B4 494
+
+#define C5 523
+#define Cs5 554
+#define D5 587
+#define Ds5 622
+#define E5 659
+#define F5 698
+#define Fs5 740
+#define G5 784
+#define Gs5 831
+#define G_SHARP5 831
+#define A5 880
+#define As5 932
+#define A_SHARP5 932
+#define B5 988
+
 typedef struct {
     uint32_t frequency; // The frequency of the note in Hz (e.g., A4 = 440 Hz)
     uint32_t duration;  // The duration of the note in milliseconds
 } Note;
 
-// Define a struct to represent a song
 typedef struct {
     Note* notes;        // Pointer to an array of Note structs representing the song
     uint32_t length;    // The number of notes in the song
 } Song;
 
-// Define a struct to represent a song player
 typedef struct {
-    void (*play_song)(Song* song); // Function pointer to a function that plays a song
+    void (*play_song)(Song* song); 
 } SongPlayer;
 
-// Function prototype for creating a new SongPlayer instance
-// Returns a pointer to a newly created SongPlayer object
+
 SongPlayer* create_song_player();
 
-
+// Static note arrays for various songs
 static Note music_1[] = {
     {E5, 250}, {R, 125}, {E5, 125}, {R, 125}, {E5, 125}, {R, 125},
     {C5, 125}, {E5, 125}, {G5, 125}, {R, 125}, {G4, 125}, {R, 250},

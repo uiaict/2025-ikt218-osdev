@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <stddef.h>
 
-// Function to copy memory from source to destination
 void* memcpy(void* dest, const void* src, size_t count)
 {
     char* dst8 = (char*)dest;
@@ -35,7 +34,6 @@ void* memset16(void *ptr, uint16_t value, size_t num)
     return ptr;
 }
 
-// Function to set a block of memory with a byte value
 void* krnl_memset(void *ptr, int value, size_t num)
 {
     unsigned char* p = ptr;

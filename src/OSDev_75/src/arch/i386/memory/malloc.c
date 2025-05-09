@@ -1,7 +1,6 @@
 #include "../memory/memory.h"
 #include <system.h>
 
-// These variables are defined in memory.c but are needed here
 extern uint32_t last_alloc;
 extern uint32_t heap_end;
 extern uint32_t heap_begin;
@@ -11,7 +10,6 @@ extern uint8_t *pheap_desc;
 extern uint32_t memory_used;
 #define MAX_PAGE_ALIGNED_ALLOCS 32
 
-// Free a block of memory
 void free(void *mem)
 {
     alloc_t *alloc = (mem - sizeof(alloc_t));
@@ -19,24 +17,19 @@ void free(void *mem)
     alloc->status = 0;
 }
 
-// Free a block of page-aligned memory
 void pfree(void *mem)
 {
     if(mem < (void*)pheap_begin || mem > (void*)pheap_end) return;
 
-    // Determine the page ID
     uint32_t ad = (uint32_t)mem;
     ad -= pheap_begin;
     ad /= 4096;
 
-    // Set the page descriptor to free
     pheap_desc[ad] = 0;
 }
 
-// Allocate a block of page-aligned memory
 char* pmalloc(size_t size)
 {
-    // Loop through the available list
     for(int i = 0; i < MAX_PAGE_ALIGNED_ALLOCS; i++)
     {
         if(pheap_desc[i]) continue;
@@ -48,12 +41,10 @@ char* pmalloc(size_t size)
     return 0;
 }
 
-// Allocate a block of memory
 void* malloc(size_t size)
 {
     if(!size) return 0;
 
-    // Loop through blocks to find an available block with enough size
     uint8_t *mem = (uint8_t *)heap_begin;
     while((uint32_t)mem < last_alloc)
     {
@@ -66,8 +57,7 @@ void* malloc(size_t size)
             mem += 4;
             continue;
         }
-        // If the block is not allocated and its size is big enough,
-        // adjust its size, set the status, and return the location.
+        
         if(a->size >= size)
         {
             a->status = 1;
@@ -76,8 +66,6 @@ void* malloc(size_t size)
             memory_used += size + sizeof(alloc_t);
             return (char *)(mem + sizeof(alloc_t));
         }
-        // If the block is not allocated and its size is not big enough,
-        // add its size and the sizeof(alloc_t) to the pointer and continue.
         mem += a->size;
         mem += sizeof(alloc_t);
         mem += 4;

@@ -60,9 +60,19 @@ set(OS_KERNEL_LINKER "${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${OS_ARCH_TARGET}/lin
 add_executable(uiaos-kernel
     src/multiboot2.asm
     src/drivers/PIT/pit.c
+    
+    
+    src/menu.c
+    src/pong.c
+    src/music_player.c
+    src/text_editor.c
 
     # VGA text-mode driver
     src/drivers/VGA/vga.c
+    src/drivers/VGA/vga_graphics.c
+    src/drivers/VGA/graphics_demo.c
+
+
     # Audio driver
     src/drivers/audio/song.c
     # GDT: 32-bit i386

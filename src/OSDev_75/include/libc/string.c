@@ -1,5 +1,6 @@
 #include "stdint.h"
 #include "stddef.h"
+#include "stdarg.h"
 #include "string.h"
 
 void* memset(void* dest, int value, size_t count) {
@@ -66,4 +67,69 @@ char* itoa(int value, char* str, int base) {
     }
 
     return str;
+}
+
+// Copy string src to dest
+char* strcpy(char* dest, const char* src) {
+    size_t i = 0;
+    while ((dest[i] = src[i]) != '\0') {
+        i++;
+    }
+    return dest;
+}
+
+// Concatenate src to the end of dest
+char* strcat(char* dest, const char* src) {
+    char* ptr = dest + strlen(dest);
+    while ((*ptr = *src) != '\0') {
+        ptr++;
+        src++;
+    }
+    return dest;
+}
+
+// Simple implementation of sprintf with support for %d
+int sprintf(char* str, const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    
+    int written = 0;
+    
+    for (int i = 0; format[i] != '\0'; i++) {
+        if (format[i] != '%') {
+            // Regular character
+            str[written++] = format[i];
+        } else {
+            // Format specifier
+            i++; // Move past '%'
+            
+            if (format[i] == 'd') {
+                // Integer
+                int val = va_arg(args, int);
+                char buffer[32];
+                itoa(val, buffer, 10);
+                
+                // Copy the converted number
+                for (int j = 0; buffer[j] != '\0'; j++) {
+                    str[written++] = buffer[j];
+                }
+            } else if (format[i] == 's') {
+                // String
+                char* s = va_arg(args, char*);
+                while (*s) {
+                    str[written++] = *s++;
+                }
+            } else if (format[i] == '%') {
+                // Literal %
+                str[written++] = '%';
+            }
+            // Add more format specifiers as needed
+        }
+    }
+    
+    // Add null terminator
+    str[written] = '\0';
+    
+    va_end(args);
+    return written;
 }

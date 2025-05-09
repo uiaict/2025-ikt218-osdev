@@ -1,6 +1,7 @@
 #include "song.h"
 #include "pit.h"
 #include <system.h>
+#include "memory.h"
 
 // Function declarations that need to be visible to other modules
 void enable_speaker();
@@ -77,6 +78,7 @@ void stop_sound() {
     // 0xFD is 11111101 in binary, which keeps all bits except bit 1
     outb(PC_SPEAKER_PORT, speaker_state & 0xFD);
 }
+
 
 SongPlayer* create_song_player() {
     SongPlayer* player = (SongPlayer*)malloc(sizeof(SongPlayer));
