@@ -6,6 +6,7 @@ extern "C"{
     #include "interrupts.h"
     #include "input.h"
     #include "song/song.h"
+    #include "pit.h"
 }
 
 
@@ -45,6 +46,19 @@ SongPlayer* create_song_player() {
     auto* player = new SongPlayer();
     player->play_song = play_song_impl;
     return player;
+}
+
+int counter = 0;
+while (true) {
+    printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+    sleep_busy(1000);
+
+    printf("[%d]: Slept using busy-waiting.\n", counter++);
+
+    printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+    sleep_interrupt(1000);
+
+    printf("[%d]: Slept using interrupts.\n", counter++);
 }
 
 extern "C" int kernel_main(void);
