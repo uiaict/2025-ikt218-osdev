@@ -377,8 +377,6 @@ void display_cpu_info() {
 
 // Function to display memory information
 void display_memory_info() {
-    terminal_printf("Memory Information\n");
-    terminal_printf("------------------\n");
     print_memory_layout();
 }
 
@@ -453,18 +451,18 @@ void process_command(const char *cmd)
                 // Uptime information
                 display_uptime_info();
             }
-            else if (strcmp(flag, "cmd") == 0) {
+            else if (strcmp(flag, "cd") == 0) {
                 // Command statistics
                 display_command_stats();
             }
             else if (strcmp(flag, "h") == 0) {
                 // Available flags
-                terminal_printf("Available flags: -c (CPU)\n -m (Memory)\n -os (OS)\n -up (Uptime)\n -cmd (Commands)\n");
+                terminal_printf("Available flags:\n -c (CPU)\n -m (Memory)\n -os (OS)\n -up (Uptime)\n -cd (Commands)\n");
             }
             else {
                 // Unknown flag
                 terminal_printf("Unknown flag: %s\n", flag);
-                terminal_printf("Available flags: -c (CPU), -m (Memory), -os (OS), -up (Uptime), -cmd (Commands)\n");
+                terminal_printf("Available flags: -c (CPU), -m (Memory), -os (OS), -up (Uptime), -cd (Commands)\n");
             }
         }
         else {

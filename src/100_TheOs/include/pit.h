@@ -20,7 +20,7 @@ extern volatile uint32_t system_ticks;
  
 
 #define PIT_BASE_FREQUENCY 1193180
-#define TARGET_FREQUENCY 1000 // 1000 Hz
+#define TARGET_FREQUENCY 1000
 #define DIVIDER (PIT_BASE_FREQUENCY / TARGET_FREQUENCY)
 #define TICKS_PER_MS 1
 
