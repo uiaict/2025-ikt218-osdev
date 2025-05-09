@@ -74,18 +74,18 @@ void monitorPut(char c) {
         case '\n':
             terminalRow++;
             terminalColumn = 0;
-            return;
+            break;
         default:
+            const size_t index = terminalRow * VGA_WIDTH + terminalColumn;
+            terminalBuffer[index] = (uint16_t) c | (uint16_t) terminalColor << 8;
+            // Moves to the next line when the current line is full
+            if (++terminalColumn == VGA_WIDTH){
+                terminalColumn = 0;
+                terminalRow++;
+            }    
             break;
     }
 
-	const size_t index = terminalRow * VGA_WIDTH + terminalColumn;
-    terminalBuffer[index] = (uint16_t) c | (uint16_t) terminalColor << 8;
-    // Moves to the next line when the current line is full
-    if (++terminalColumn == VGA_WIDTH){
-        terminalColumn = 0;
-        terminalRow++;
-    }
 
     moveCursor();
     scroll();

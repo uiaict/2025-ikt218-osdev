@@ -17,11 +17,11 @@ struct gdtEntry {
 } __attribute__((packed));  // packed = No padding
 
 struct idtEntry {
-	uint16_t    baseLow;      // The lower 16 bits of the ISR's address
-	uint16_t    selector;    // The Idt segment selector that the CPU will load into CS before calling the ISR
-	uint8_t     zero;     // Set to zero
-	uint8_t     flags;   // Type and attributes; see the IDT page
-	uint16_t    baseHigh;     // The higher 16 bits of the ISR's address
+	uint16_t    baseLow;    // The lower 16 bits of the ISR's address
+	uint16_t    selector;   // The Idt segment selector that the CPU will load into CS before calling the ISR
+	uint8_t     zero;       // Set to zero
+	uint8_t     flags;      // Type and attributes; see the IDT page
+	uint16_t    baseHigh;   // The higher 16 bits of the ISR's address
 } __attribute__((packed));
 
 // A pointer to the GDT passed to lgdt
@@ -45,7 +45,6 @@ void initIdt(); // Initializes and loads the Idt
 
 
 void gdtLoad(struct gdtPtr *gp);     // Load the GDT into GDTR using `lgdt`
-void idtLoad(struct idtPtr *gp);     // Load the Idt into IdtR using `lIdt`
 
 
 

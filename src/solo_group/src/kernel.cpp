@@ -19,8 +19,6 @@ int kernel_main(){
         printf("Interrupt 3 - OK\n");
     }, NULL);
 
-    printf("ABCDEFG\n");
-
     asm volatile ("int $0x1");
     asm volatile ("int $0x2");
     asm volatile ("int $0x3");
@@ -31,7 +29,9 @@ int kernel_main(){
         // Read from keyboard
         uint8_t scancode = inb(0x60);
         char c = scancodeToAscii(&scancode);
-        if (c != 0)
+        if (c == 28)
+            printf("\n");
+        else if (c != 0)
             printf("%c", c);
 
         outb(0x20, 0x20); // EOI to master PIC        

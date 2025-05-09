@@ -6,7 +6,6 @@
 struct idtEntry idt[IDT_ENTRIES];
 struct idtPtr ip;
 
-
 void initIdt() {
     ip.limit = sizeof(struct idtEntry) * IDT_ENTRIES - 1;
     ip.base = (uint32_t) &idt;
@@ -23,12 +22,6 @@ void initIdt() {
     
   }
 
-void idtLoad(struct idtPtr *ip) {
-    asm volatile("lidt %0" : : "m" (ip));
-}
-
-
-
 void idtSetGate(int32_t num, uint32_t base, uint8_t flags)
 {
     idt[num].baseLow = (uint32_t)base & 0xFFFF;
@@ -38,7 +31,6 @@ void idtSetGate(int32_t num, uint32_t base, uint8_t flags)
     idt[num].flags = flags;
     idt[num].zero = 0;
 }
-
 
 void idtFlush(uint32_t idtPtr) {
     asm volatile(

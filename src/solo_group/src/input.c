@@ -25,7 +25,7 @@ char scancodeToAscii(unsigned char* scanCode){
         case 15:
             return 0;    
         case 28:    // ENTER
-		    return 2;
+		    return 28;
         case 29:    //CTRL
             return 0;    
         case 42:    // LSHIFT
