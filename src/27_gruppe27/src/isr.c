@@ -3,6 +3,9 @@
 #include "libc/stddef.h"
 #include "monitor.h"
 
+struct int_handler_t int_handlers[IDT_ENTRIES];
+struct int_handler_t irq_handlers[IRQ_COUNT];
+
 
 void register_interrupt_handler(uint8_t n, isr_t handler, void* context)
 {

@@ -36,11 +36,11 @@ int kernel_main_c(uint32_t magic, struct multiboot_info* mb_info_addr) {
     init_gdt();
     
     // Initialize the Interrupt Descriptor Table (IDT).
-    //init_idt();
+    init_idt();
 
     // Initialize the hardware interrupts.
-    //init_irq();
-
+    init_irq();
+   
     // Initialize the kernel's memory manager using the end address of the kernel.
     init_kernel_memory(&end);
 
@@ -50,26 +50,32 @@ int kernel_main_c(uint32_t magic, struct multiboot_info* mb_info_addr) {
     // Print memory information.
     print_memory_layout();
 
-    //init_pit();
-
+    init_pit();
+    asm volatile("sti");
     // Print a hello world message.
     //printf("Hello World!\n");
+    
+  
+
+    int counter = 0;
+    while (true) {
+        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+        sleep_busy(1000);
+        printf("[%d]: Slept using busy-waiting.\n", counter++);
+
+        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+        sleep_interrupt(1000);
+        printf("[%d]: Slept using interrupts.\n", counter++);
+    }
 
     
     // Trigger test ISRs
     //asm volatile("int $0x3");
     //asm volatile("int $0x4");
 
-    while (true) {
-      asm volatile("hlt");
-    }
-          // Main loop  
-
-          // Test allocations
-    void* some_memory = malloc(12345); 
-    void* memory2 = malloc(54321); 
-    void* memory3 = malloc(13331);
-    
+    //while (true) {
+    //  asm volatile("hlt");
+    //}
 
     // Call the C++ main function of the kernel.
     return kernel_main();

@@ -134,11 +134,11 @@ void register_irq_handler(int irq, isr_t handler, void* ctx);
 void register_interrupt_handler(uint8_t n, isr_t handler, void*);
 
 
-static struct int_handler_t int_handlers[IDT_ENTRIES];
-static struct int_handler_t irq_handlers[IRQ_COUNT];
+#define IRQ_COUNT 48
 
+extern struct int_handler_t int_handlers[IDT_ENTRIES];
+extern struct int_handler_t irq_handlers[IRQ_COUNT];
 
-#define IRQ_COUNT 16
 
 
 

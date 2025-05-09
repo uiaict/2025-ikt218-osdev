@@ -48,18 +48,6 @@ SongPlayer* create_song_player() {
     return player;
 }
 
-int counter = 0;
-while (true) {
-    printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-    sleep_busy(1000);
-
-    printf("[%d]: Slept using busy-waiting.\n", counter++);
-
-    printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-    sleep_interrupt(1000);
-
-    printf("[%d]: Slept using interrupts.\n", counter++);
-}
 
 extern "C" int kernel_main(void);
 int kernel_main(){
@@ -134,8 +122,22 @@ int kernel_main(){
     //    printf("Finished playing the song.\n");
     //}
 
+    init_pit();
+
     // Main loop  
     printf("Kernel main loop\n");
+    int counter = 0;
+    while (true) {
+        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
+        sleep_busy(1000);
+
+        printf("[%d]: Slept using busy-waiting.\n", counter++);
+
+        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
+        sleep_interrupt(1000);
+
+        printf("[%d]: Slept using interrupts.\n", counter++);
+    }
     while (true) {
         asm volatile("hlt");
     }
