@@ -37,6 +37,9 @@ set(OS_KERNEL_IMAGE "kernel.iso")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 99)
 
+# Add explicit linker flag to ensure i386 output
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m32")
+
 ########################################
 # Assembly Configuration
 ########################################
@@ -114,16 +117,15 @@ target_compile_options(uiaos-kernel PRIVATE
 
 # Specify link options for C and C++
 target_link_options(uiaos-kernel PUBLIC
-    $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-ffreestanding -nostdlib -fno-builtin -static -pie -O0 -T${OS_KERNEL_LINKER} -g>
-
+    $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:-ffreestanding -nostdlib -fno-builtin -static -m32 -pie -O0 -T${OS_KERNEL_LINKER} -g>
 )
-
 
 target_link_options(
 	uiaos-kernel
 	PUBLIC "-ffreestanding"
 	PUBLIC "-nostdlib"
 	PUBLIC "-static"
+	PUBLIC "-m32"
 	PUBLIC "-pie"
 	PUBLIC "-T${OS_KERNEL_LINKER}"
 )

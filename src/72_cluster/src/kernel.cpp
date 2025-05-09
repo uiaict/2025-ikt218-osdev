@@ -19,20 +19,20 @@ extern "C"
 #include "../../72_cluster/src/apps/song/include/song/song.h"
 }
 
+// C++ memory operators with corrected signatures
 
-// Existing global operator new overloads
-void* operator new[](size_t size)
+// Global operator new overloads with correct signatures
+void* operator new(unsigned int size) noexcept
 {
     return malloc(size);
 }
 
-void *operator new(size_t size)
+void* operator new[](unsigned int size) noexcept
 {
     return malloc(size);
 }
 
-
-// Existing global operator delete overloads
+// Global operator delete overloads
 void operator delete(void *ptr) noexcept
 {
     free(ptr);
@@ -43,17 +43,16 @@ void operator delete[](void *ptr) noexcept
     free(ptr);
 }
 
-
-// Add sized-deallocation functions
-void operator delete(void *ptr, size_t size) noexcept
+// Add sized-deallocation functions to resolve warnings
+void operator delete(void *ptr, unsigned int size) noexcept
 {
-    (void)size; //unused, added to match required signature
+    (void)size; // unused parameter
     free(ptr);
 }
 
-void operator delete[](void *ptr, size_t size) noexcept
+void operator delete[](void *ptr, unsigned int size) noexcept
 {
-    (void)size; // unused, added to match required signature
+    (void)size; // unused parameter
     free(ptr);
 }
 

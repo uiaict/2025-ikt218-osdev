@@ -3,6 +3,8 @@
 #include "libc/stdlib.h" // For malloc
 #include "libc/stdio.h"  // For printf
 #include "libc/stddef.h" // For size_t
+#include "libc/string.h" // For memset
+#include "util.h" // For panic function
 
 #define MAX_PAGE_ALIGNED_ALLOCS 32
 
@@ -16,13 +18,22 @@ uint32_t memory_used = 0;
 
 void init_kernel_memory(uint32_t *kernel_end)
 {
-    last_alloc = kernel_end + 0x1000;
+    // Fix integer from pointer conversion
+    last_alloc = (uint32_t)kernel_end + 0x1000;
     heap_begin = last_alloc;
     pheap_end = 0x400000;
     pheap_begin = pheap_end - (MAX_PAGE_ALIGNED_ALLOCS * 4096);
     heap_end = pheap_begin;
     memset((char *)heap_begin, 0, heap_end - heap_begin);
+    
+    // Initialize pheap_desc properly
     pheap_desc = (uint8_t *)malloc(MAX_PAGE_ALIGNED_ALLOCS);
+    if (pheap_desc) {
+        memset(pheap_desc, 0, MAX_PAGE_ALIGNED_ALLOCS);
+    } else {
+        panic("Could not allocate memory for page-aligned heap descriptor");
+    }
+    
     printf("Kernel heap starts at 0x%x\n", last_alloc);
 }
 
@@ -45,7 +56,9 @@ void free(void *mem)
 
 void pfree(void *mem)
 {
-    if (mem < pheap_begin || mem > pheap_end)
+    // Fix pointer to integer comparisons
+    uint32_t mem_addr = (uint32_t)mem;
+    if (mem_addr < pheap_begin || mem_addr > pheap_end)
         return;
 
     // page ID

@@ -2,9 +2,12 @@
 #define UTIL_H
 
 #include "libc/stdint.h"
+#include "libc/stddef.h"
 
-    void
-    memset(void *dest, char val, uint32_t count);
+// Function to panic the system with an error message
+void panic(const char* message);
+
+void memset(void *dest, char val, uint32_t count);
 void outPortB(uint16_t Port, uint8_t Value);
 char inPortB(uint16_t port);
 
