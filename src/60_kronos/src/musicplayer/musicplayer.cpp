@@ -51,17 +51,18 @@ void play_sound(uint32_t frequency) {
 void play_song_impl(Song *song) {
     for (uint32_t i = 0; i < song->length; i++) {
         Note* note = &song->notes[i];
-        // printf("Note: %d, Freq=%d, Sleep=%d\n", i, note->frequency, note->duration);
+        printf("Note: %d, Freq=%d, Sleep=%d\n", i, note->frequency, note->duration);
         if (note->frequency > 0) {
             enable_speaker();
             play_sound(note->frequency);
         } else {
             disable_speaker();
         }
-        
-        sleep_interrupt(note->duration);
+        sleep_busy(note->duration);
         disable_speaker();
     }
+
+    printf("finished playing song with %i notes", song->length);
     return;
 }
 

@@ -8,7 +8,10 @@ extern "C"
     #include "sys/io.h"
     #include "drivers/keyboard.h"
     #include "fun/donut.h"
+    #include "kernel/pit.h"
 }
+
+
 
 void init_menu() {
     terminal_clear();
@@ -24,6 +27,8 @@ void init_menu() {
     printf("________________________________________________\n\n");
     printf("[1]: Spin a donut\n");
     printf("[2]: Play music\n");
+    printf("[3]: Debug interupts\n");
+    printf("[4]: Print memory layout\n");
 
     Song* time_song = new Song {song_of_time, sizeof(song_of_time) / sizeof(Note)};
     SongPlayer* player = create_song_player();
@@ -33,13 +38,24 @@ void init_menu() {
             animate_donut();
             break;
         } else if (is_key_pressed('2')) {
+            printf("\n");
             player->play_song(time_song);
-            printf("sadasd\n\n");
+            keyboard_get_last_char();
             break;
+        } else if (is_key_pressed('3')) {
+            printf("\n");
+            
+            keyboard_get_last_char();
+        } else if (is_key_pressed('4')) {
+            printf("\n");
+            print_memory_layout();
+        } else {
+            keyboard_get_last_char();
         }
     }
 
-    terminal_clear();
+    sleep_busy(10);
+
     delete time_song;
     delete player;
 }

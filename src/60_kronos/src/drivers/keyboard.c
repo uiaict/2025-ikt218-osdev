@@ -114,11 +114,32 @@ void keyboard_buffer_clear() {
 }
 
 int is_key_pressed(char key) {
-    char last_key = keyboard_get_last_char();
+    if (buffer_read_index == buffer_index) {
+        return 0;
+    }
+
+    char last_key = keyboard_buffer[buffer_read_index];
     
+    if (key >= 'A' && key <= 'Z') {
+        key = key + ('a' - 'A');
+    }
+
     if (last_key >= 'A' && last_key <= 'Z') {
-        return (last_key - ('a' - 'A') == key);
+        last_key = last_key + ('a' - 'A');
+    }
+
+    if (last_key == key) {
+        buffer_read_index = (buffer_read_index + 1) % KEYBOARD_BUFFER_SIZE;
+        return 1;
+    }
+
+    return 0;
+}
+
+char keyboard_peek_char() {
+    if (buffer_read_index == buffer_index) {
+        return 0;
     }
     
-    return (last_key == key);
+    return keyboard_buffer[buffer_read_index];
 }
