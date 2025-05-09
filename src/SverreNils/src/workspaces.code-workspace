@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../../.."
+		},
+		{
+			"name": "build",
+			"path": "../../../../build"
+		}
+	],
+	"settings": {}
+}
+// Removed the extra JSON object to fix the error
+  

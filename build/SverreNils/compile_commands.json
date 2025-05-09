@@ -1,0 +1,102 @@
+[
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o /workspaces/2025-ikt218-osdev/src/SverreNils/src/multiboot2.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/multiboot2.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/kernel.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/kernel.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/printf.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/printf.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/printf.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/arch/gdt.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/gdt.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/gdt.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/arch/gdt.asm.o /workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/gdt.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/gdt.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/arch/idt.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/idt.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/idt.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/arch/idt_load.asm.o /workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/idt_load.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/idt_load.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/arch/isr.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/isr.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/isr.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/arch/isr.asm.o /workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/isr.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/isr.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/arch/irq.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/irq.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/irq.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/arch/irq.asm.o /workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/irq.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/arch/irq.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/devices/keyboard.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/devices/keyboard.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/devices/keyboard.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/devices/piano.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/devices/piano.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/devices/piano.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/shell.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/shell.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/shell.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/paging.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/paging.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/paging.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/pit.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/pit.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/pit.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel_memory.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/kernel_memory.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/kernel_memory.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/devices/song_player.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/devices/song_player.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/devices/song_player.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/song/music_1.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/src/song/music_1.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/src/song/music_1.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/SverreNils",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/devices -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/arch -I/workspaces/2025-ikt218-osdev/src/SverreNils/include/song -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/include/libc/string.c.o -c /workspaces/2025-ikt218-osdev/src/SverreNils/include/libc/string.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/SverreNils/include/libc/string.c"
+}
+]
