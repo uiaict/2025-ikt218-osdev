@@ -1,0 +1,82 @@
+[
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/multiboot2.asm.o /workspaces/2025-ikt218-osdev/src/44_Impro/src/multiboot2.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/multiboot2.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/kernel.c.o -c /workspaces/2025-ikt218-osdev/src/44_Impro/src/kernel.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/kernel.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/tools/string.c.o -c /workspaces/2025-ikt218-osdev/src/44_Impro/src/tools/string.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/tools/string.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/gdt/gdt.c.o -c /workspaces/2025-ikt218-osdev/src/44_Impro/src/gdt/gdt.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/gdt/gdt.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/gdt/gdt_flush.asm.o /workspaces/2025-ikt218-osdev/src/44_Impro/src/gdt/gdt_flush.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/gdt/gdt_flush.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/tools/util.c.o -c /workspaces/2025-ikt218-osdev/src/44_Impro/src/tools/util.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/tools/util.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/interrupts/idt.asm.o /workspaces/2025-ikt218-osdev/src/44_Impro/src/interrupts/idt.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/interrupts/idt.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/interrupts/idt.c.o -c /workspaces/2025-ikt218-osdev/src/44_Impro/src/interrupts/idt.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/interrupts/idt.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/vga.c.o -c /workspaces/2025-ikt218-osdev/src/44_Impro/src/vga.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/vga.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/memory.c.o -c /workspaces/2025-ikt218-osdev/src/44_Impro/src/memory/memory.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/memory/memory.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/memory/paging.c.o -c /workspaces/2025-ikt218-osdev/src/44_Impro/src/memory/paging.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/memory/paging.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/bin/nasm -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -f elf32 -o CMakeFiles/uiaos-kernel.dir/src/memory/paging.asm.o /workspaces/2025-ikt218-osdev/src/44_Impro/src/memory/paging.asm",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/memory/paging.asm"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/pit.c.o -c /workspaces/2025-ikt218-osdev/src/44_Impro/src/pit.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/pit.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/song.c.o -c /workspaces/2025-ikt218-osdev/src/44_Impro/src/song.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/song.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/parser.c.o -c /workspaces/2025-ikt218-osdev/src/44_Impro/src/parser.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/parser.c"
+},
+{
+  "directory": "/workspaces/2025-ikt218-osdev/build/44_Impro",
+  "command": "/usr/local/bin/i686-elf-gcc -I/workspaces/2025-ikt218-osdev/src/44_Impro/include -g -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m32 -march=i386 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -Wno-main -g -Wno-unused-variable -Wno-unused-parameter -std=gnu99 -o CMakeFiles/uiaos-kernel.dir/src/random.c.o -c /workspaces/2025-ikt218-osdev/src/44_Impro/src/random.c",
+  "file": "/workspaces/2025-ikt218-osdev/src/44_Impro/src/random.c"
+}
+]
