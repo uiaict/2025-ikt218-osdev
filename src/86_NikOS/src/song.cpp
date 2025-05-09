@@ -42,6 +42,4 @@ extern "C" void play_star_wars() {
     SongPlayer* player = create_song_player();
     Song* song = new Song({starwars_theme, sizeof(starwars_theme) / sizeof(Note)});
     player->play_song(song);
-    delete song;
-    delete player;
 }

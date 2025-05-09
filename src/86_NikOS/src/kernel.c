@@ -16,7 +16,7 @@
 #include "paging.h"
 #include "pit.h"
 #include "rng.h"
-
+#include "song.h"
 
 struct multiboot_info {
     uint32_t size;
@@ -44,6 +44,7 @@ int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
     
     terminal_initialize();
     welcome_message();
+    terminal_writestring("> ");
 
     __asm__ __volatile__("sti");
 

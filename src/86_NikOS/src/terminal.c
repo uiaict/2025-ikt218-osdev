@@ -3,6 +3,7 @@
 #include "terminal.h"
 #include "libc/conv.h"
 #include "libc/string.h"
+#include "ports.h"
 
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
@@ -13,6 +14,14 @@ static size_t terminal_column;
 static uint8_t terminal_color;
 static uint16_t* terminal_buffer;
 
+size_t terminal_get_width(void) {
+    return VGA_WIDTH;
+}
+
+size_t terminal_get_height(void) {
+    return VGA_HEIGHT;
+}
+
 uint8_t get_color(uint8_t fg, uint8_t bg) {
     return (bg << 4) | (fg & 0x0F);
 }
@@ -20,6 +29,20 @@ uint8_t get_color(uint8_t fg, uint8_t bg) {
 uint16_t create_vga_entry(char c, uint8_t color) {
     return (uint16_t)(color << 8 | (uint8_t)c);
 }
+
+void terminal_disable_cursor() {
+    outb(0x3D4, 0x0A);
+    outb(0x3D5, 0x20);
+}
+
+void terminal_enable_cursor() {
+    outb(0x3D4, 0x0A);
+    outb(0x3D5, (inb(0x3D5) & 0xC0) | 14);
+
+    outb(0x3D4, 0x0B);
+    outb(0x3D5, (inb(0x3D5) & 0xE0) | 15);
+}
+
 
 void terminal_initialize() {
     terminal_row = 0;
@@ -32,6 +55,7 @@ void terminal_initialize() {
             VGA_BUFFER[index] = create_vga_entry(' ', terminal_color);
         }
     }
+    terminal_enable_cursor();
 }
 
 void scroll() {

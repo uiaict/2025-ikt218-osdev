@@ -3,6 +3,9 @@
 #include "ports.h"
 #include "pit.h"
 #include "rng.h"
+#include "terminal.h"
+#include "keyboard.h"
+#include "snake.h"
 
 static uint32_t pit_ticks = 0;
 static bool pit_initialized = false;
@@ -23,6 +26,10 @@ void pit_handler() {
     uint32_t _ = rand();
 
     pit_ticks++;
+
+    if (is_playing_snake()) {
+        snake_update();
+    }
 }
 
 uint32_t pit_get_ticks() {

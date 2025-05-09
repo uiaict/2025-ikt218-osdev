@@ -16,9 +16,9 @@
 #define PIC_EOI		0x20
 
 #define PIT_FREQUENCY 1193180
-#define TARGET_FREQUENCY 1000 // 1000 Hz
+#define TARGET_FREQUENCY 1000
 #define DIVIDER (PIT_FREQUENCY / TARGET_FREQUENCY)
-#define TICKS_PER_MS (TARGET_FREQUENCY / TARGET_FREQUENCY)
+#define TICKS_PER_MS (TARGET_FREQUENCY / 1000)
 
 void pit_init();
 void sleep_interrupt(uint32_t milliseconds);

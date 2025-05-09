@@ -86,7 +86,9 @@ add_executable(uiaos-kernel
 
 	src/song.c
 	src/song.cpp
+	
 	src/rng.c
+	src/snake.c
 )
 
 # Include directories for the kernel target

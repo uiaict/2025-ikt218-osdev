@@ -5,10 +5,14 @@
 #include "irq.h"
 #include "isr.h"
 #include "keyboard.h"
+#include "pit.h"
 
 extern void keyboard_handler(); // Declare it
 
 void irq_handler(struct isr_regs* regs) {
+    if (regs->int_no == 32) {
+        pit_handler(); // IRQ0 = Timer
+    }
     if (regs->int_no == 33) {
         keyboard_handler(); // IRQ1 = Keyboard
     }

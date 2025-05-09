@@ -465,6 +465,5 @@ void welcome_message() {
     terminal_putchar_color((char)32, get_color(11, 0));
     terminal_putchar_color((char)32, get_color(9, 0));
     terminal_putchar('\n');
-
-    terminal_writestring("\n> ");
+    terminal_putchar('\n');
 }

@@ -8,6 +8,8 @@
 #include "libc/stdbool.h"
 #include "libc/stddef.h"
 #include "song.h"
+#include "snake.h"
+#include "welcome.h"
 
 int32_t shift_pressed = 0;
 static bool extended_scancode = false;
@@ -29,11 +31,33 @@ uint32_t last_key_tick = 0;
 #define TAB_COMPLETION_BUFFER_SIZE 32
 char tab_completion_buffer[TAB_COMPLETION_BUFFER_SIZE];
 const char* tab_completable_commands[] = {
+    "help",
     "clear",
     "echo",
+    "music",
+    "snake",
+    "nikos",
+    "uptime",
     "roll",
+    "rand",
+    "randint",
     NULL
 };
+const char* tab_completable_commands_help[] = {
+    "Display help information",
+    "Clear the terminal screen",
+    "Echo the input string",
+    "Play the star wars theme",
+    "Play snake",
+    "Display the NikOS logo",
+    "Display system uptime",
+    "Roll dice (e.g., 2d6)",
+    "Generate a random number",
+    "Generate a random integer between two numbers",
+    NULL
+};
+
+static bool playing_snake = false;
 
 char scancode_to_ascii[128] = {
     0, 27, '1', '2', '3', '4', '5', '6',
@@ -88,6 +112,25 @@ static bool parse_roll_command(const char* str, uint32_t* count, uint32_t* sides
     }
 
     return *str == '\0' && *count > 0 && *sides > 0;
+}
+
+static bool parse_randint_command(const char* str_min, const char* str_max, uint32_t* min, uint32_t* max) {
+    *min = 0;
+    *max = 0;
+
+    while (*str_min) {
+        if (*str_min < '0' || *str_min > '9') return false;
+        *min = *min * 10 + (*str_min - '0');
+        str_min++;
+    }
+
+    while (*str_max) {
+        if (*str_max < '0' || *str_max > '9') return false;
+        *max = *max * 10 + (*str_max - '0');
+        str_max++;
+    }
+
+    return *str_min == '\0' && *str_max == '\0' && *min < *max;
 }
 
 void save_command_to_history(const char* cmd) {
@@ -161,15 +204,42 @@ void execute_command(const char* cmd) {
         uint32_t count;
         uint32_t sides;
         if (parse_roll_command(argv[1], &count, &sides)) {
-            uint32_t result = roll_dice(count, sides);
-            terminal_writeuint_color(result, get_color(VGA_COLOR_GREEN, VGA_COLOR_BLACK));
+            terminal_writeuint_color(roll_dice(count, sides), get_color(VGA_COLOR_GREEN, VGA_COLOR_BLACK));
             terminal_putchar('\n');
         } else {
             terminal_writestring_color("Invalid roll command format. Use <count>d<sides>.\n", get_color(VGA_COLOR_RED, VGA_COLOR_BLACK));
         }
+    } else if (strncmp(argv[0], "randint", 7) == 0) {
+        uint32_t min;
+        uint32_t max;
+        if (parse_randint_command(argv[1], argv[2], &min, &max)) {
+            terminal_writeuint_color(rand_range(min, max), get_color(VGA_COLOR_GREEN, VGA_COLOR_BLACK));
+            terminal_putchar('\n');
+        } else {
+            terminal_writestring_color("Invalid RNG command format. Use <min> <max>.\n", get_color(VGA_COLOR_RED, VGA_COLOR_BLACK));
+        }
+    } else if (strncmp(argv[0], "rand", 3) == 0) {
+        terminal_writeuint_color(rand(), get_color(VGA_COLOR_GREEN, VGA_COLOR_BLACK));
+        terminal_putchar('\n');
     } else if (strncmp(argv[0], "music", 5) == 0) {
         terminal_writestring_color("Execute order 66\n", get_color(VGA_COLOR_RED, VGA_COLOR_BLACK));
         play_star_wars();
+    } else if (strncmp(argv[0], "snake", 5) == 0) {
+        playing_snake = true;
+        snake_init();
+    } else if (strncmp(argv[0], "nikos", 5) == 0) {
+        welcome_message();
+    } else if (strncmp(argv[0], "help", 4) == 0) {
+        terminal_writestring_color("Available commands:\n", get_color(VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK));
+        for (int32_t i = 0; tab_completable_commands[i] != NULL; i++) {
+            terminal_writestring_color(tab_completable_commands[i], get_color(VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK));
+            terminal_writestring_color(" - ", get_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK));
+            terminal_writestring_color(tab_completable_commands_help[i], get_color(VGA_COLOR_YELLOW, VGA_COLOR_BLACK));
+            terminal_putchar('\n');
+        }
+    } else if (strncmp(argv[0], "uptime", 6) == 0) {;
+        terminal_writeuint_color(pit_get_ticks() / TICKS_PER_MS, get_color(VGA_COLOR_CYAN, VGA_COLOR_BLACK));
+        terminal_writestring_color("ms\n", get_color(VGA_COLOR_BROWN, VGA_COLOR_BLACK));
     } else {
         terminal_writestring("Unknown command: ");
         terminal_writestring(argv[0]);
@@ -223,6 +293,11 @@ void tab_completion_prompt() {
 
 void keyboard_handler() {
     uint8_t scancode = inb(0x60);
+
+    if (playing_snake) {
+        snake_change_direction(scancode);
+        return;
+    }
 
     if (scancode == 0xE0) {
         extended_scancode = true;
@@ -305,4 +380,12 @@ void keyboard_handler() {
 
 void keyboard_install() {
     outb(0x21, inb(0x21) & ~0x02);
+}
+
+void not_playing_snake() {
+    playing_snake = false;
+}
+
+bool is_playing_snake() {
+    return playing_snake;
 }
