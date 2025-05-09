@@ -3,9 +3,9 @@
 #include "libc/stdio.h"
 #include "libc/system.h"
 
-#define MAX_PAGE_ALIGNED_ALLOCS 32 // Max pages allowed (maybe arbitrary?)
+#define MAX_PAGE_ALIGNED_ALLOCS 32 // Max pages allowed
 
-// stores adresses. Asress is value, not pointer
+// stores adresses. Adress is value, not pointer
 uint32_t last_alloc = 0; // adress before header
 uint32_t heap_begin = 0;
 uint32_t heap_end = 0;
@@ -52,6 +52,7 @@ void* malloc(size_t size){
     }
 
     // Loop through blocks to find an available block with enough size
+    
     uint8_t *mem = (uint8_t*)heap_begin;
 
     while((uint32_t)mem < last_alloc){
@@ -68,7 +69,7 @@ void* malloc(size_t size){
             // block is allocated
             mem += sizeof(alloc_t); // skip header
             mem += a->size;         // skip allocated
-            mem += 4;               // padding?
+            mem += 4;               
             continue;
         }
 
@@ -86,7 +87,7 @@ void* malloc(size_t size){
         // block not allocated, but too small
         mem += sizeof(alloc_t); // skip header
         mem += a->size;         // skip block
-        mem += 4;               // padding?
+        mem += 4;               
     }
 
 
@@ -103,7 +104,7 @@ void* malloc(size_t size){
     // updates last_alloc
     last_alloc += size;
     last_alloc += sizeof(alloc_t);
-    last_alloc += 4;                // padding?
+    last_alloc += 4;                
 
     if (do_print){printf("Allocated %d bytes from 0x%x to 0x%x\n\r", size, (uint32_t)alloc + sizeof(alloc_t), last_alloc);}
 

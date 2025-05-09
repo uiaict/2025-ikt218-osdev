@@ -20,7 +20,7 @@ void init_paging(){
     last_page = (uint32_t *)0x404000;          // gives page_directory 4kb of space
 
     for(int i = 0; i < DIRECTORY_SIZE; i++){   // 4*uint8_t = uint32_t, 4*1024 = 4kb          
-        page_directory[i] = 0 | 2;             // Set the page directory entry to not present with supervisor level read/write permissions
+        page_directory[i] = 0 | 2;             // 0b...010, supervisor, readwrite, not present
     }
 
     paging_map_virtual_to_phys(0, 0);               // Map the first 4 MB of virtual memory to the first 4 MB of physical memory
@@ -41,10 +41,10 @@ void paging_map_virtual_to_phys(uint32_t virt, uint32_t phys){
 
     for(int i = 0; i < DIRECTORY_SIZE; i++){   // Loop through all 1024 page table entries
     
-        last_page[i] = phys | 3;    // Set the page table entry to the physical address with the present and write permissions set
-        phys += PAGE_SIZE;               // Increment the physical address by the page size of 4 KB
+        last_page[i] = phys | 3;    // 0b..phys..11, read/write, present
+        phys += PAGE_SIZE;          // Increment by page size
     }
     
-    page_directory[id] = ((uint32_t)last_page) | 3;  // Set the page directory entry for the virtual address to the physical address of the page table with present and write permissions set
-    last_page = (uint32_t *)(((uint32_t)last_page) + PAGE_SIZE); // Move to the next page in memory
+    page_directory[id] = ((uint32_t)last_page) | 3;  // Set the page table in the correct place in page directory
+    last_page = (uint32_t *)(((uint32_t)last_page) + PAGE_SIZE); // increment last page
 }

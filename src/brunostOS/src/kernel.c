@@ -36,21 +36,21 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     uint32_t pit_Hz = 500;
     init_pit(500);
 
-    // printf("initializing gdt...\n\r");
-    // busy_sleep(100);
-    // printf("initializing idt...\n\r");
-    // busy_sleep(100);
-    // printf("initializing memory...\n\r");
-    // busy_sleep(300);
-    // printf("kernel heap starts at 0x%x\n\r", begin);
-    // printf("enablling paging...\n\r");
-    // busy_sleep(100);
-    // printf("initializing keyboard with mapping:no...\n\r");
-    // busy_sleep(100);
-    // printf("initializing pit at %uHz...\n\r", pit_Hz);
-    // busy_sleep(100);
-    // printf("enabling speakers...\n\r");
-    // busy_sleep(400);
+    printf("initializing gdt...\n\r");
+    busy_sleep(100);
+    printf("initializing idt...\n\r");
+    busy_sleep(100);
+    printf("initializing memory...\n\r");
+    busy_sleep(300);
+    printf("kernel heap starts at 0x%x\n\r", begin);
+    printf("enablling paging...\n\r");
+    busy_sleep(100);
+    printf("initializing keyboard with mapping:no...\n\r");
+    busy_sleep(100);
+    printf("initializing pit at %uHz...\n\r", pit_Hz);
+    busy_sleep(100);
+    printf("enabling speakers...\n\r");
+    busy_sleep(400);
 
     set_freewrite(true);
 
@@ -58,7 +58,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
     
     enum vga_color txt_clr = get_vga_txt_clr();
     enum vga_color bg_clr = get_vga_bg_clr();
-
+    char *test_storage = malloc(STORAGE_SPACE);
     while (true){
         clear_terminal();
         reset_cursor_pos();
@@ -75,7 +75,9 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
                 bg_clr = get_vga_bg_clr();
                 break;
             case '2':
+                set_freewrite(false);
                 freewrite();
+                set_freewrite(true);
                 break;
             case '3':
                 print_memory_layout();
@@ -87,7 +89,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
             case '5':
                 txt_clr = get_vga_txt_clr();
                 bg_clr = get_vga_bg_clr();
-                paint(painting1, painting2);
+                paint(painting1, test_storage);
                 break;
             case '6':
                 suicide();
@@ -99,6 +101,7 @@ int main(uint32_t magic, struct multiboot_info *mb_info_addr) {
         set_vga_color(txt_clr, bg_clr);
         
     }
+    free(test_storage);
   
     
 //TODO: 

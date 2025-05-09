@@ -115,6 +115,7 @@ void print_music_menu(){
 }
 
 void music_player(){
+    // define array of all songs
     struct song songs[] = {
         {SMB_1_1, sizeof(SMB_1_1) / sizeof(SMB_1_1[0])},
         {imperial_march, sizeof(imperial_march) / sizeof(imperial_march[0])},
@@ -126,7 +127,8 @@ void music_player(){
         {music_6, sizeof(music_6) / sizeof(music_6[0])},
         {megalovania, sizeof(megalovania) / sizeof(megalovania[0])}
     };
-
+    
+    // create a song player
     struct song_player *player = create_song_player();
     int c = 0;
     while (c != 1){

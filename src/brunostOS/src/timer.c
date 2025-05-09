@@ -15,16 +15,13 @@ void init_pit(uint32_t frequency){
         return;
     }
     
-
     ticks_per_ms = frequency/1000;
     if (ticks_per_ms == 0){
         // Makes all sleeps wait at least 1 tick
         ticks_per_ms++;
     }
-    
 
     register_interrupt_handler(IRQ0, pit_handler);
-    
     
     uint32_t divisor = PIT_REFRESHRATE / frequency;
     // Divisor max value 65535 or 0xFFFF

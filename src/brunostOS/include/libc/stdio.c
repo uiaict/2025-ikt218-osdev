@@ -43,32 +43,22 @@ void ctrlchar(int c){
     switch (c){
         case '\n':
             cursor_ypos++;
-            break;
-            
+            break;   
         case '\r':
             cursor_xpos = 0;
-            break;
-            
+            break;   
         case '\t':
             cursor_xpos = (cursor_xpos / 8 + 1) * 8;
-            break;
-            
+            break;  
         case '\b':
             cursor_xpos--;
             putchar(' ');
             cursor_xpos--;
-            break; 
-            
-        case '\f':
-            cursor_ypos = (cursor_ypos / VGA_HEIGHT + 1) * VGA_HEIGHT;
-            cursor_xpos = 0;
-            break;
-            
+            break;          
         case '\a':
             // Speaker must be enabled
             beep();
             break;
-        
         default:
             break;
     }
@@ -76,19 +66,16 @@ void ctrlchar(int c){
 }
 
 
-void print(const unsigned char *string){
-    
-    for (size_t i = 0; i < strlen(string); i++) {
+void print(const unsigned char *string, size_t len){
+    for (size_t i = 0; i < len; i++) {
         putchar((int)string[i]);        
     }
 }
 
-int putchar(const int c){
-    
+int putchar(const int c){   
     if (c > 255 || c < 0){
         return false;
     }
-    
     if (c < 32){
         ctrlchar(c);
         return true;
@@ -100,7 +87,6 @@ int putchar(const int c){
     
     cursor_xpos++;
     verify_cursor_pos();
-    
     return true;
 }
 
@@ -135,18 +121,20 @@ int printf(const char* __restrict__ format, ...) {
             int num = va_arg(parameters, int);
             unsigned char strnum[15] = {0};
             itoa(num, (char*)strnum);
-            print(strnum);
+            size_t len = strlen(strnum);
+            print(strnum, len);
             format++;
-            written += strlen((char*)strnum);
+            written += len;
             continue;
         }   
 
         // %s for string (char*)
         if(*format == 's'){
             const unsigned char *string = va_arg(parameters, const unsigned char*);
-            print(string);
+            size_t len = strlen(string);
+            print(string, len);
             format++;
-            written += strlen((char*)string);
+            written += len;
             continue;
         }
 
@@ -165,9 +153,10 @@ int printf(const char* __restrict__ format, ...) {
             unsigned int num = va_arg(parameters, unsigned int);
             unsigned char strnum[15] = {0};
             utoa(num, (char*)strnum);
-            print(strnum);
+            size_t len = strlen(strnum);
+            print(strnum, len);
             format++;
-            written += strlen((char*)strnum);
+            written += len;
             continue;
         } 
 
@@ -176,9 +165,10 @@ int printf(const char* __restrict__ format, ...) {
             unsigned int num = va_arg(parameters, unsigned int);
             unsigned char strnum[15] = {0};
             xtoa(num, (char*)strnum);
-            print(strnum);
+            size_t len = strlen(strnum);
+            print(strnum, len);
             format++;
-            written += strlen((char*)strnum);
+            written += len;
             continue;
         } 
 
@@ -187,9 +177,10 @@ int printf(const char* __restrict__ format, ...) {
             double num = va_arg(parameters, double);
             unsigned char strnum[15] = {0};
             ftoa(num, (char*)strnum, 6);
-            print(strnum);
+            size_t len = strlen(strnum);
+            print(strnum, len);
             format++;
-            written += strlen((char*)strnum);
+            written += len;
             continue;
         } 
 
@@ -197,7 +188,7 @@ int printf(const char* __restrict__ format, ...) {
             int precision = 0;
             format++;
             // 32bit barely allows 10 digit precision, max would be 0.4294967296 (unsigned long int), 
-            // printf("%.10f", 0.4294967295); maxe due to floating point (non)precision
+            // printf("%.10f", 0.4294967295); max due to floating point (non)precision
             while (*format >= '0' && *format <= '9'){ // If charcode for format is within charcode for 0-9
                 precision = precision * 10 + (*format - '0'); // For every loop, a leading 0 is added, then format is appended
                 format++;
@@ -206,9 +197,10 @@ int printf(const char* __restrict__ format, ...) {
                 double num = va_arg(parameters, double);
                 unsigned char strnum[15] = {0};
                 ftoa(num, (char*)strnum, precision);
-                print(strnum);
+                size_t len = strlen(strnum);
+                print(strnum, len);
                 format++;
-                written += strlen((char*)strnum);
+                written += len;
                 continue;
             }
             
@@ -231,7 +223,6 @@ int getchar(){
 
     while (buffer_index == buffer_snapshot){
     }
-
     unsigned char c = buffer[buffer_index];
     buffer_index--;
 
@@ -308,8 +299,5 @@ void scanf(unsigned char* __restrict__ format, ...){
         //Invalid flag, skip over
         format++;  
     }
-
- 
-	va_end(parameters);
-        
+	va_end(parameters);    
 }

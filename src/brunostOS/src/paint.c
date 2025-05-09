@@ -33,19 +33,19 @@ void paint(char storage1[], char storage2[]){
         enum vga_color bg_clr = get_vga_bg_clr();
 
         switch (c){
-            case '2':
+            case '2': // down
                 cursor_ypos++;
                 verify_cursor_pos();
                 break;
-            case '4':
+            case '4': // left
                 cursor_xpos--;
                 verify_cursor_pos();
                 break;
-            case '6':
+            case '6': // right
                 cursor_xpos++;
                 verify_cursor_pos();
                 break;
-            case '8':
+            case '8': // up
                 cursor_ypos--;
                 verify_cursor_pos();
                 break;
@@ -149,6 +149,7 @@ void paint(char storage1[], char storage2[]){
             default:
                 break;
         }
+        // update selected color
         x = cursor_xpos;
         y = cursor_ypos;
         cursor_xpos = 9;
@@ -157,6 +158,7 @@ void paint(char storage1[], char storage2[]){
         cursor_xpos = x;
         cursor_ypos = y;
 
+        // keeps cursor within border
         if (cursor_ypos < 2){
             cursor_ypos = 2;
         } else if (cursor_ypos > 22){
@@ -164,12 +166,13 @@ void paint(char storage1[], char storage2[]){
         }
         
         if (!basic_mode){
+            // if swift mode, paint on all keypress
             printf(" \b");
         } 
         update_cursor();
     }
     
-
+    // restore before exit
     set_freewrite(freewrite_state);
     enable_cursor(14, 15);
     reset_cursor_pos();
@@ -314,7 +317,7 @@ void save_painting(char storage1[], char storage2[]){
         enable_cursor(14,15);
         update_cursor();
         set_freewrite(true);
-        scanf("%s", h1->filename);
+        scanf("%s", h2->filename);
         h2->filename[20] = '\0';
         h2->magic = magic;
         savemenu_clear(1);
@@ -355,7 +358,7 @@ void load_painting(char storage1[], char storage2[]){
         is_empty2 = false;
         cursor_xpos = 51;
         cursor_ypos = 1;
-        printf("storageB:%s", h1->filename);
+        printf("storageB:%s", h2->filename);
     } else{
         cursor_xpos = 51;
         cursor_ypos = 1;

@@ -1,28 +1,25 @@
 #ifndef SONG_H
 #define SONG_H
 
-#include "frequencies.h"
+#include "song/frequencies.h" // defines for note name->frequency
 #include "libc/stdint.h"
-// #include "libc/system.h"
 
-// Define a struct to represent a single musical note
+// singular note
 struct note{
-    uint32_t frequency; // The frequency of the note in Hz
-    uint32_t duration;  // The duration of the note in ms
+    uint32_t frequency;
+    uint32_t duration;
 };
 
-// Define a struct to represent a song
 struct song{
-    struct note* notes;  // Pointer to an array of Note structs representing the song
-    uint32_t length;    // The number of notes in the song
+    struct note* notes; // all notes in a song
+    uint32_t length;    // number of notes
 };
 
-// Define a struct to represent a song player
 struct song_player{
     void (*play_song)(struct song*); // Function pointer to a function that plays a song
 };
 
-// Function prototype for creating a new SongPlayer instance
+
 // Returns a pointer to a newly created SongPlayer object
 struct song_player* create_song_player();
 void play_song(struct song*); // Disables speaker to prevent white noise after

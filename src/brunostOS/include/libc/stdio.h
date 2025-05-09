@@ -8,7 +8,7 @@ void verify_cursor_pos();
 void ctrlchar(int);
 
 int putchar(const int);
-void print(const unsigned char*);
+void print(const unsigned char*, size_t);
 // Only printf will automatically update cursor
 int printf(const char* __restrict__ format, ...);
 

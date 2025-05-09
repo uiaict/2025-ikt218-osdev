@@ -21,7 +21,6 @@ void init_gdt(){
     gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF); // User mode code segment, [[maybe_unused]]
     gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF); // User mode data segment, [[maybe_unused]] 		
 
-
     // Flush GDT pointer
     gdt_flush((uint32_t)&gdt_ptr); 
 }

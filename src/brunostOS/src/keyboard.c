@@ -29,11 +29,9 @@ void keyboard_handler(struct registers reg){
             case ALTGR_CODE:
                 altgr = false;
                 return;
-            
             default:
                 return; // We dont want to print on release
         }
-        
     } else{
         
         switch (scan_code){
@@ -50,7 +48,6 @@ void keyboard_handler(struct registers reg){
             case CAPSLOCK_CODE:
                 capslock = !capslock;
                 return;
-                
             default:
                 break;
         }
@@ -105,10 +102,10 @@ void keyboard_handler(struct registers reg){
 
 void freewrite(){
     // Independent of is_freewrite. Prints from buffer
-
+    int buffer_snapshot = buffer_index;
     while (true){
 
-        while (buffer_index == 0){
+        while (buffer_index == buffer_snapshot){
         }
 
         unsigned char c = buffer[buffer_index];
@@ -118,7 +115,7 @@ void freewrite(){
 
         printf("%c", c);
         buffer_index--;
-        if (!shift && c == 'n'){
+        if (!shift && c == '\n'){
             // Generally, we want CRLF when we hit enter
             printf("%c", '\r');
         }  
