@@ -4,85 +4,378 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>IKT218 - Operating Systems</title>
-
     <!-- Bootstrap CSS -->
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <!-- Custom styles -->
     <style>
+        :root {
+            --primary: #007bff;
+            --secondary: #6610f2;
+            --dark: #343a40;
+            --light: #f8f9fa;
+        }
+        
         body {
             margin-top: 60px;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            background-image: linear-gradient(135deg, rgba(0,123,255,0.1) 0%, rgba(102,16,242,0.1) 100%);
+            min-height: 100vh;
         }
+        
+        .navbar-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .navbar {
+            background: linear-gradient(90deg, var(--dark) 0%, #1a1e21 100%) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
         canvas {
             display: none;
         }
+        
         .console {
             white-space: pre; 
             font: 11px monospace; 
             line-height: 12px;
+            background-color: #1a1a1a;
+            color: #33ff33;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            height: 150px;
+            overflow-y: auto;
         }
+        
+        .os-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .os-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .os-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .os-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .os-title {
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+            color: #333;
+            font-weight: 700;
+        }
+        
+        .os-body {
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        
+        .os-content {
+            display: none; /* Initially hidden */
+            margin-top: 15px;
+        }
+        
+        .start-btn {
+            font-family: 'Orbitron', sans-serif;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .start-btn:disabled {
+            background-color: #6c757d !important;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .start-btn i {
+            margin-right: 8px;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .page-title {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--dark);
+            font-weight: 700;
+        }
+        
+        .intro-text {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            text-align: center;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        /* OS-specific styles */
+        .linux-card .os-icon { background: linear-gradient(135deg, #F9A825 0%, #F57F17 100%); }
+        .freebsd-card .os-icon { background: linear-gradient(135deg, #D32F2F 0%, #B71C1C 100%); }
+        .windows-card .os-icon { background: linear-gradient(135deg, #1E88E5 0%, #0D47A1 100%); }
+        .macos-card .os-icon { background: linear-gradient(135deg, #757575 0%, #424242 100%); }
+        .other-card .os-icon { background: linear-gradient(135deg, #00897B 0%, #00695C 100%); }
+        
+        .linux-card .start-btn { background: linear-gradient(135deg, #F9A825 0%, #F57F17 100%); }
+        .freebsd-card .start-btn { background: linear-gradient(135deg, #D32F2F 0%, #B71C1C 100%); }
+        .windows-card .start-btn { background: linear-gradient(135deg, #1E88E5 0%, #0D47A1 100%); }
+        .macos-card .start-btn { background: linear-gradient(135deg, #757575 0%, #424242 100%); }
+        .other-card .start-btn { background: linear-gradient(135deg, #00897B 0%, #00695C 100%); }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">IKT218 - Operating Systems</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-microchip mr-2"></i>
+                IKT218 - Operating Systems
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
     </nav>
-
+    
     <main role="main" class="container">
-        <div id="starter" class="starter-template">
-            <button id="startButton" class="btn btn-primary">Start</button>
+        <h1 class="page-title">Virtual Machine Library</h1>
+        <p class="intro-text">
+            Welcome to the Operating Systems virtual laboratory. Click the Start button on any OS card to launch its virtual machine.
+        </p>
+        
+        <div id="os-library" class="row">
+            <!-- OS cards will be dynamically added here -->
         </div>
     </main>
-
+    
     <!-- Scripts -->
     <script src="libv86.js"></script>
     <script>
         "use strict";
-
-        document.getElementById('startButton').addEventListener('click', function() {
+        
+        // On document load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Memory settings
             let memory = 32; // MB
             let video_memory = 2; // MB
+            
+            // Get OS list from template variable
             let operating_systems = {{ os_list | safe }};
-
-            operating_systems.forEach((item) => {
-                let top_container = document.createElement("div");
-                let top_title = document.createElement("h3");
-                top_title.innerHTML = "Virtual Machine: " + item.name;
-
-                let container = document.createElement("div");
-                container.id = "vm-" + item.name;
-
-                let canvas = document.createElement("canvas");
-                container.appendChild(canvas);
-
-                let div = document.createElement("div");
-                div.className = "console";
-                container.appendChild(div);
-
-                document.getElementById("starter").appendChild(top_container);
-                top_container.appendChild(top_title);
-                top_container.appendChild(container);
-
-                new V86Starter({
-                    wasm_path: "v86.wasm",
-                    memory_size: memory * 1024 * 1024,
-                    vga_memory_size: video_memory * 1024 * 1024,
-                    screen_container: container,
-                    bios: { url: "bios/seabios.bin" },
-                    vga_bios: { url: "bios/vgabios.bin" },
-                    hda: { url: "os/" + item.kernel },
-                    hdb: { url: "os/" + item.disk }, 
-                    autostart: true,
+            
+            // Function to get OS icon class
+            function getOsIcon(osName) {
+                const name = osName.toLowerCase();
+                
+                if (name.includes('linux')) {
+                    return 'fa-brands fa-linux';
+                } else if (name.includes('freebsd')) {
+                    return 'fa-solid fa-server';
+                } else if (name.includes('windows')) {
+                    return 'fa-brands fa-windows';
+                } else if (name.includes('macos') || name.includes('mac os') || name.includes('osx')) {
+                    return 'fa-brands fa-apple';
+                } else {
+                    return 'fa-solid fa-desktop';
+                }
+            }
+            
+            // Function to get OS card class
+            function getOsCardClass(osName) {
+                const name = osName.toLowerCase();
+                
+                if (name.includes('linux')) {
+                    return 'linux-card';
+                } else if (name.includes('freebsd')) {
+                    return 'freebsd-card';
+                } else if (name.includes('windows')) {
+                    return 'windows-card';
+                } else if (name.includes('macos') || name.includes('mac os') || name.includes('osx')) {
+                    return 'macos-card';
+                } else {
+                    return 'other-card';
+                }
+            }
+            
+            // Get OS library container
+            const osLibrary = document.getElementById('os-library');
+            
+            // Create OS cards
+            operating_systems.forEach((os, index) => {
+                // Create OS card
+                const cardCol = document.createElement('div');
+                cardCol.className = 'col-md-6 col-lg-4';
+                
+                const osCard = document.createElement('div');
+                osCard.className = `os-card ${getOsCardClass(os.name)}`;
+                
+                // Create card header
+                const osHeader = document.createElement('div');
+                osHeader.className = 'os-header';
+                
+                const osIcon = document.createElement('div');
+                osIcon.className = 'os-icon';
+                osIcon.innerHTML = `<i class="${getOsIcon(os.name)}"></i>`;
+                
+                const osTitle = document.createElement('h3');
+                osTitle.className = 'os-title';
+                osTitle.textContent = os.name;
+                
+                osHeader.appendChild(osIcon);
+                osHeader.appendChild(osTitle);
+                
+                // Create card body
+                const osBody = document.createElement('div');
+                osBody.className = 'os-body';
+                
+                // Create start button
+                const startBtn = document.createElement('button');
+                startBtn.className = 'start-btn';
+                startBtn.id = `start-${index}`;
+                startBtn.innerHTML = `<i class="fas fa-power-off"></i> Start VM`;
+                
+                // Create loading indicator (initially hidden)
+                const loading = document.createElement('div');
+                loading.className = 'loading';
+                loading.id = `loading-${index}`;
+                loading.style.display = 'none';
+                loading.innerHTML = `
+                    <div class="spinner"></div>
+                    <span>Booting...</span>
+                `;
+                
+                // Create content container for VM
+                const osContent = document.createElement('div');
+                osContent.className = 'os-content';
+                osContent.id = `content-${index}`;
+                
+                // Add elements to body
+                osBody.appendChild(startBtn);
+                osBody.appendChild(loading);
+                osBody.appendChild(osContent);
+                
+                // Build the card
+                osCard.appendChild(osHeader);
+                osCard.appendChild(osBody);
+                cardCol.appendChild(osCard);
+                osLibrary.appendChild(cardCol);
+                
+                // Add event listener to start button
+                startBtn.addEventListener('click', function() {
+                    // Disable button
+                    this.disabled = true;
+                    this.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Starting...`;
+                    
+                    // Show loading indicator
+                    document.getElementById(`loading-${index}`).style.display = 'flex';
+                    
+                    // Start VM after a short delay for UI feedback
+                    setTimeout(() => {
+                        // Get content container
+                        const contentDiv = document.getElementById(`content-${index}`);
+                        contentDiv.style.display = 'block';
+                        
+                        // Create VM elements
+                        let container = document.createElement("div");
+                        container.id = `vm-${os.name}`;
+                        
+                        let canvas = document.createElement("canvas");
+                        container.appendChild(canvas);
+                        
+                        let consoleDiv = document.createElement("div");
+                        consoleDiv.className = "console";
+                        container.appendChild(consoleDiv);
+                        
+                        contentDiv.appendChild(container);
+                        
+                        // Initialize V86 instance
+                        new V86Starter({
+                            wasm_path: "v86.wasm",
+                            memory_size: memory * 1024 * 1024,
+                            vga_memory_size: video_memory * 1024 * 1024,
+                            screen_container: container,
+                            bios: { url: "bios/seabios.bin" },
+                            vga_bios: { url: "bios/vgabios.bin" },
+                            hda: { url: "os/" + os.kernel },
+                            hdb: { url: "os/" + os.disk }, 
+                            autostart: true,
+                        });
+                        
+                        // Hide loading indicator
+                        document.getElementById(`loading-${index}`).style.display = 'none';
+                        
+                        // Update button
+                        this.innerHTML = `<i class="fas fa-check"></i> VM Running`;
+                    }, 500);
                 });
             });
-
-            this.disabled = true;
-    });
+        });
     </script>
-
     <!-- Bootstrap and jQuery -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
