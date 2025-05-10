@@ -9,7 +9,7 @@ void start_adventure() {
     terminal_printf("You wake up in a dark forest. There's a path to the LEFT and one to the RIGHT.\n");
     terminal_printf("Which direction do you go? [l/r]: ");
 
-    char choice = keyboard_read_char(); // kendi tanımlı klavye input'un
+    char choice = keyboard_read_char(); 
     terminal_printf("%c\n", choice);
 
     if (choice == 'l') {
