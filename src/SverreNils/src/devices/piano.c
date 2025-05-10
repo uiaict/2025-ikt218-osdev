@@ -42,7 +42,7 @@ static void piano_keyboard_wrapper(struct registers* regs) {
     uint8_t scancode = inb(0x60);
 
     if (scancode == 1) { 
-        printf("\n🎹 Avslutter piano-modus.\n");
+        printf("\n Avslutter piano-modus.\n");
         piano_active = 0;
 
         extern void restore_keyboard_handler();  
@@ -60,5 +60,5 @@ static void piano_keyboard_wrapper(struct registers* regs) {
 void init_piano() {
     piano_active = 1;
     irq_register_handler(1, piano_keyboard_wrapper);
-    printf("\n🎹 Piano mode aktiv! Trykk 1-8 for toner. (ESC for å avslutte)\n");
+    printf("\n Piano mode aktiv! Trykk 1-8 for toner. (ESC for å avslutte)\n");
 }

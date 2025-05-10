@@ -1,5 +1,5 @@
 #pragma once
-#include <stdint.h> // 🔧 legg til denne
+#include <stdint.h>  
 
 typedef struct {
     uint32_t frequency;

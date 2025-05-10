@@ -25,8 +25,6 @@ void enable_speaker() {
     uint8_t tmp = inb(PC_SPEAKER_PORT);
     outb(PC_SPEAKER_PORT, tmp | 3); 
 }
-
-
 void disable_speaker() {
     uint8_t tmp = inb(PC_SPEAKER_PORT);
     outb(PC_SPEAKER_PORT, tmp & 0xFC); 
